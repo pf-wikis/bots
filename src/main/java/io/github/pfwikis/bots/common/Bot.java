@@ -109,8 +109,8 @@ public abstract class Bot {
 		try {
 			if(!run.masterWiki.accountExists(botName)) {
 				run.masterWiki.createAccount(botName, rootPassword+botName);
+				run.masterWiki.addRight(botName, "bot|sysop|techadmin", "never");
 			}
-			run.masterWiki.addTemporaryRight(botName);
 		} catch(Exception e) {
 			log.error("Failed to check account {}", botName, e);
 			System.exit(-1);

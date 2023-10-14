@@ -68,7 +68,7 @@ public class WikiAPI {
 		}
 	}
 	
-	public void addTemporaryRight(String botName) throws IOException {
+	public void addRight(String botName, String rights, String expiry) throws IOException {
 		
 		String token = requestToken("userrights");
 		
@@ -78,8 +78,8 @@ public class WikiAPI {
 			"utf8", "1",
 			"formatversion", "2",
 			"user", botName,
-			"add", "bot|sysop|techadmin",
-			"expiry", "10 minutes",
+			"add", rights,
+			"expiry", expiry,
 			"reason", "VirenerusBot sub bots get temporary permissions",
 			"token", token
 		)));
