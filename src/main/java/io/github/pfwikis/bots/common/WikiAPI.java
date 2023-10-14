@@ -80,7 +80,7 @@ public class WikiAPI {
 			"user", botName,
 			"add", rights,
 			"expiry", expiry,
-			"reason", "VirenerusBot sub bots get temporary permissions",
+			"reason", "VirenerusBot sub bots need permissions",
 			"token", token
 		)));
 		var json = resp.body().string();
