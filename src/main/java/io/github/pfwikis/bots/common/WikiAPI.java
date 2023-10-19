@@ -1,20 +1,31 @@
 package io.github.pfwikis.bots.common;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.fastily.jwiki.core.Wiki;
+import io.github.fastily.jwiki.dwrap.RCEntry;
+import io.github.fastily.jwiki.dwrap.Revision;
+import io.github.pfwikis.bots.common.model.ParseResponse;
 import io.github.pfwikis.bots.common.model.QueryListUsers;
 import io.github.pfwikis.bots.common.model.QueryResponse;
 import io.github.pfwikis.bots.common.model.QueryTokens;
+import io.github.pfwikis.bots.common.model.RecentChanges;
+import io.github.pfwikis.bots.common.model.RecentChanges.RecentChange;
 import okhttp3.HttpUrl;
 
 public class WikiAPI {
@@ -28,6 +39,22 @@ public class WikiAPI {
 	            .withApiEndpoint(HttpUrl.get(url+"/w/api.php"))
 	            .withLogin(name, password)
 	            .build();
+	}
+	
+	public List<RecentChange> getRecentChanges(Duration timeRange) {
+		return Arrays.asList(query(
+			RecentChanges.class,
+			"list", "recentchanges",
+			"rcend", Instant.now().minus(timeRange).truncatedTo(ChronoUnit.SECONDS).toString(),
+			"rcnamespace", "0",
+			"rclimit", "5000",
+			"rcshow", "!minor|!bot",
+			"rcprop", "title|timestamp|ids|user|sizes"
+		).recentchanges());
+	}
+	
+	public ArrayList<Revision> getRevisions(String title, Duration timeRange) {
+		return wiki.getRevisions(title, 0, false, Instant.now().minus(timeRange).truncatedTo(ChronoUnit.SECONDS), null);
 	}
 
 	public void editIfChange(String page, String content, String reason) {
@@ -69,7 +96,6 @@ public class WikiAPI {
 	}
 	
 	public void addRight(String botName, String rights, String expiry) throws IOException {
-		
 		String token = requestToken("userrights");
 		
 		var resp = wiki.basicPOST(
@@ -99,22 +125,36 @@ public class WikiAPI {
 	}
 	
 	private static final ObjectMapper JACKSON = new ObjectMapper()
+		.findAndRegisterModules()
 		.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 	private <T> T query(Class<T> type, String... params) {
+		return this.<QueryResponse<T>>get(JACKSON.getTypeFactory().constructParametricType(QueryResponse.class, type), "query", params)
+				.query();
+	}
+	
+	private <T> T get(JavaType type, String action, String... params) {
 		params = ArrayUtils.addAll(params,
 			"format", "json",
 			"utf8", "1",
 			"formatversion", "2"
 		);
-		var response = wiki.basicGET("query", params);
+		var response = wiki.basicGET(action, params);
 		try (var in = response.body().byteStream()) {
-			QueryResponse<T> resp = JACKSON.readValue(in, JACKSON.getTypeFactory().constructParametricType(QueryResponse.class, type));
-			if(resp.batchcomplete())
-				return resp.query();
-			else
-				throw new IllegalStateException();
+			return JACKSON.readValue(in, type);
 		} catch (Exception e) {
-			throw new RuntimeException("Failed wiki query with "+Arrays.toString(params), e);
+			throw new RuntimeException("Failed wiki "+action+" with "+Arrays.toString(params), e);
 		}
+	}
+
+	private <T> T get(Class<T> type, String action, String... params) {
+		return get(JACKSON.getTypeFactory().constructType(type), action, params);
+	}
+
+	public ParseResponse.Content getParsed(String title) {
+		return get(ParseResponse.class, "parse", "page", title).parse();
+	}
+	
+	public ParseResponse.Content getParsed(long oldid) {
+		return get(ParseResponse.class, "parse", "oldid", Long.toString(oldid)).parse();
 	}
 }

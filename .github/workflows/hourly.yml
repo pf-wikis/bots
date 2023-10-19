@@ -1,4 +1,4 @@
-name: Run Bots
+name: Run hourly bots
 
 on:
   schedule:

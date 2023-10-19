@@ -61,11 +61,11 @@ public abstract class Bot {
 			//create bot report
 			try {
 				var report = """
-				This account is a bot.
+				{{Bot|Virenerus}}
 				
 				%s
 				
-				This bot was created by [[User:Virenerus|]] and is a sub bot of [[User:VirenerusBot|]].
+				This bot is a sub bot of [[User:VirenerusBot|]].
 				
 				The code for this bot can be found [%s here].
 				
