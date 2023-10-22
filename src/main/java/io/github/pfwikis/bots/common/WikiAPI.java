@@ -18,8 +18,9 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.fastily.jwiki.core.Wiki;
-import io.github.fastily.jwiki.dwrap.RCEntry;
 import io.github.fastily.jwiki.dwrap.Revision;
+import io.github.pfwikis.bots.common.model.Page;
+import io.github.pfwikis.bots.common.model.PageQuery;
 import io.github.pfwikis.bots.common.model.ParseResponse;
 import io.github.pfwikis.bots.common.model.QueryListUsers;
 import io.github.pfwikis.bots.common.model.QueryResponse;
@@ -117,7 +118,7 @@ public class WikiAPI {
 		
 	}
 
-	private String requestToken(String token) {
+	public String requestToken(String token) {
 		return Objects.requireNonNull(query(QueryTokens.class,
 			"meta", "tokens",
 			"type", token
@@ -149,6 +150,14 @@ public class WikiAPI {
 	private <T> T get(Class<T> type, String action, String... params) {
 		return get(JACKSON.getTypeFactory().constructType(type), action, params);
 	}
+	
+	public boolean pageExists(String title) {
+		return wiki.exists(title);
+	}
+	
+	public String getPageText(String title) {
+		return wiki.getPageText(title);
+	}
 
 	public ParseResponse.Content getParsed(String title) {
 		return get(ParseResponse.class, "parse", "page", title).parse();
@@ -156,5 +165,27 @@ public class WikiAPI {
 	
 	public ParseResponse.Content getParsed(long oldid) {
 		return get(ParseResponse.class, "parse", "oldid", Long.toString(oldid)).parse();
+	}
+
+	public List<Page> getPagesInCategory(String category, String namespace) {
+		return query(PageQuery.class,
+			"generator", "categorymembers",
+			"gcmtitle", category,
+			"gcmprop", "ids",
+			"gcmnamespace", namespace,
+			"gcmlimit", "1000"
+		).getPages();
+	}
+
+	public void protect(String title, String protections, String reason, String token) {
+		wiki.basicPOST("protect", new HashMap<>(Map.of(
+				"format", "json",
+				"title", title,
+				"protections", protections,
+				"reason", reason,
+				"token", token,
+				"utf8", "1",
+				"formatversion", "2"
+		)));
 	}
 }

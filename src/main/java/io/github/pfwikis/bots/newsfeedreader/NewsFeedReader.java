@@ -12,11 +12,11 @@ import com.apptasticsoftware.rssreader.Item;
 import com.apptasticsoftware.rssreader.RssReader;
 import com.beust.jcommander.Parameters;
 
-import io.github.pfwikis.bots.common.Bot;
 import io.github.pfwikis.bots.common.Style;
+import io.github.pfwikis.bots.common.bots.SimpleBot;
 
 @Parameters(commandDescription = "Reading paizo feeds and updating PathfinderWiki:News feeds")
-public class NewsFeedReader extends Bot {
+public class NewsFeedReader extends SimpleBot {
 
 	public NewsFeedReader() {
 		super("news-feed-reader", "Bot News Feed Reader");
@@ -58,7 +58,7 @@ public class NewsFeedReader extends Bot {
 			</div>
 			""".formatted(title, String.join("", items));
 		} catch(Exception e) {
-			run.getExceptions().add(e);
+			run.addException(e);
 			return "";
 		}
 	}
@@ -78,7 +78,7 @@ public class NewsFeedReader extends Bot {
 				renderPreview(item.getDescription().get())
 			);
 		} catch(Exception e) {
-			run.getExceptions().add(e);
+			run.addException(e);
 			return "";
 		}
 	}
@@ -100,7 +100,7 @@ public class NewsFeedReader extends Bot {
 				.limit(100)
 				.collect(Collectors.joining(" "));
 		} catch(Exception e) {
-			run.getExceptions().add(e);
+			run.addException(e);
 			return "";
 		}
 	}

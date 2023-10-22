@@ -13,7 +13,8 @@ import org.jsoup.nodes.Document;
 import com.beust.jcommander.Parameters;
 import com.beust.jcommander.internal.Lists;
 
-import io.github.pfwikis.bots.common.Bot;
+import io.github.pfwikis.bots.common.bots.Run.SingleRun;
+import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.common.model.ParseResponse.Content;
 import io.github.pfwikis.bots.common.model.RecentChanges.RecentChange;
 import lombok.Data;
@@ -22,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Parameters(commandDescription = "Find the article with the most additions of the last week")
-public class ArticleOfTheWeek extends Bot {
+public class ArticleOfTheWeek extends SimpleBot {
 
 	public ArticleOfTheWeek() {
 		super("article-of-the-week", "Bot Article of the Week");
@@ -185,7 +186,7 @@ public class ArticleOfTheWeek extends Bot {
 		private Document html;
 		private Document beforeEditsHtml;
 		
-		public void calculateChangeSize(Run run) {
+		public void calculateChangeSize(SingleRun run) {
 			log.info("Loading past text for {}", title);
 			beforeEditsParsed = run.getWiki().getParsed(changes.stream().mapToLong(RecentChange::getOld_revid).min().getAsLong());
 			
@@ -199,7 +200,7 @@ public class ArticleOfTheWeek extends Bot {
 			}
 		}
 
-		public boolean loadHTML(Run run) {
+		public boolean loadHTML(SingleRun run) {
 			log.info("Loading text for {}", title);
 			parsed = run.getWiki().getParsed(title);
 			if(parsed != null) {

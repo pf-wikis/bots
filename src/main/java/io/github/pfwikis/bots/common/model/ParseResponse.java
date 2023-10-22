@@ -2,7 +2,6 @@ package io.github.pfwikis.bots.common.model;
 
 import java.util.List;
 
-import io.github.pfwikis.bots.common.model.ParseResponse.Content;
 import lombok.Data;
 
 public record ParseResponse(

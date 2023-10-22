@@ -5,7 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import com.beust.jcommander.JCommander;
 
 import io.github.classgraph.ClassGraph;
-import io.github.pfwikis.bots.common.Bot;
+import io.github.pfwikis.bots.common.bots.Bot;
 
 public class Runner {
 
@@ -25,7 +25,12 @@ public class Runner {
 		var commander = commands.build();
 		commander.parse(args);
 		
-		var bot = (Bot)commander.getCommands().get(commander.getParsedCommand())
+		if(commander.getParsedCommand() == null) {
+			commander.usage();
+			System.exit(-1);
+		}
+		
+		var bot = (Bot<?>)commander.getCommands().get(commander.getParsedCommand())
 			.getObjects().get(0);
 		bot.start();
 	}
