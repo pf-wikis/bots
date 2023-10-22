@@ -18,7 +18,7 @@ public abstract class SimpleBot extends Bot<SingleRun> {
 	protected List<SingleRun> createRuns() {
 		var runs = new ArrayList<SingleRun>(2);
 		for(boolean starfinder : new boolean[] {false, true}) {
-			var run = new SingleRun();
+			var run = new SingleRun(starfinder);
 			try {
 				run.setMasterWiki(new WikiAPI(starfinder, "VirenerusBot", rootPassword));
 			} catch(Exception e) {

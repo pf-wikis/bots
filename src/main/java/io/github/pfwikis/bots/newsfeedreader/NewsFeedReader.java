@@ -6,6 +6,7 @@ import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 
 import com.apptasticsoftware.rssreader.Item;
@@ -47,6 +48,7 @@ public class NewsFeedReader extends SimpleBot {
 		try {
 			RssReader rssReader = new RssReader();
 			var items = rssReader.read(url)
+					.filter(i->filterByWiki(i))
 					.limit(3)
 					.map(this::renderEntry)
 					.toList();
@@ -61,6 +63,37 @@ public class NewsFeedReader extends SimpleBot {
 			run.addException(e);
 			return "";
 		}
+	}
+	
+	private final static String[] PF_TAGS = {
+		"<a href=\"https://paizo.com/community/blog/tags/pathfinder\">Pathfinder</a>",
+		"<a href=\"https://paizo.com/community/blog/tags/pathfinderRoleplayingGame\">Pathfinder Roleplaying Game</a>"
+	};
+	
+	private final static String[] SF_TAGS = {
+		"<a href=\"https://paizo.com/community/blog/tags/starfinder\">Starfinder</a>",
+		"<a href=\"https://paizo.com/community/blog/tags/starfinderRoleplayingGame\">Starfinder Roleplaying Game</a>"
+	};
+
+	private boolean filterByWiki(Item entry) {
+		if(run.isStarfinder()) {
+			if(
+				StringUtils.containsAny(entry.getDescription().get(), PF_TAGS)
+				&& !StringUtils.containsAny(entry.getDescription().get(), SF_TAGS)
+			) {
+				return false;
+			}
+		}
+		else {
+			if(
+				StringUtils.containsAny(entry.getDescription().get(), SF_TAGS)
+				&& !StringUtils.containsAny(entry.getDescription().get(), PF_TAGS)
+			) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 
 	private String renderEntry(Item item) {
@@ -120,7 +153,10 @@ public class NewsFeedReader extends SimpleBot {
 
 	@Override
 	protected String getDescription() {
-		return "This bot is parsing the Paizo news feeds and creating the page [[Widget:News feeds]] from them.";
+		return """
+		This bot is parsing the Paizo news feeds and creating the page [[Widget:News feeds]] from them.
+		It skips entries that are tagged only for %s.
+		""".formatted(run.isStarfinder()?"Pathfinder":"Starfinder");
 	}
 
 }

@@ -61,7 +61,9 @@ public class WikiAPI {
 	public void editIfChange(String page, String content, String reason) {
 		var oldText = wiki.getPageText(page);
 		if(!content.equals(oldText)) {
-			wiki.edit(page, content, reason);
+			if(!wiki.edit(page, content, reason)) {
+				throw new RuntimeException("Failed to edit page "+page);
+			}
 		}
 	}
 

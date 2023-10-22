@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 
 import io.github.pfwikis.bots.common.WikiAPI;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Setter @Getter
@@ -21,7 +22,9 @@ public abstract class Run {
 	}
 	
 	@Getter @Setter
+	@RequiredArgsConstructor
 	public static class SingleRun extends Run {
+		private final boolean starfinder;
 		private WikiAPI wiki;
 		private WikiAPI masterWiki;
 		
