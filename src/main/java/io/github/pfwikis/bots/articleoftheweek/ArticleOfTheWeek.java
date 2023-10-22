@@ -137,8 +137,10 @@ public class ArticleOfTheWeek extends SimpleBot {
 		}
 		
 		//no red links
-		if(cand.parsed.links().stream().anyMatch(l->!l.exists())) {
-			log.info("Excluded {}\tbecause it has red links", cand.title);
+		int links = cand.parsed.links().size();
+		long nonRedLinks = cand.parsed.links().stream().filter(l->l.exists()).count();
+		if(((double)nonRedLinks)/links < .95) {
+			log.info("Excluded {}\tbecause it has too many red links", cand.title);
 			return false;
 		}
 		return true;
@@ -222,7 +224,7 @@ public class ArticleOfTheWeek extends SimpleBot {
 			* the article needs to have a minimum length
 			* the article needs to be in the MAIN namespace
 			* the aricle must not be in [[:Category:Real-world articles]]
-			* the article contains no red links
+			* the article contains less than 5% red links
 			* from the remaining articles pick the one with the most additions
 			If no article is found the current article of the week is left in place.
 			""";
