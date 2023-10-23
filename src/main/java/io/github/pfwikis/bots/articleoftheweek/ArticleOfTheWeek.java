@@ -190,7 +190,16 @@ public class ArticleOfTheWeek extends SimpleBot {
 		
 		public void calculateChangeSize(SingleRun run) {
 			log.info("Loading past text for {}", title);
-			beforeEditsParsed = run.getWiki().getParsed(changes.stream().mapToLong(RecentChange::getOld_revid).min().getAsLong());
+			
+			var oldestChange = changes.stream().min(Comparator.comparing(RecentChange::getOld_revid)).get();
+			
+			
+			//page was moved
+			if(oldestChange.getNewlen()-oldestChange.getOldlen() == 0) {
+				changeSize = 0;
+				return;
+			}
+			beforeEditsParsed = run.getWiki().getParsed(oldestChange.getOld_revid());
 			
 			//new page
 			if(beforeEditsParsed == null) {

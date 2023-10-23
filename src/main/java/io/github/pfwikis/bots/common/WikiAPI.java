@@ -50,6 +50,7 @@ public class WikiAPI {
 			"rcnamespace", "0",
 			"rclimit", "5000",
 			"rcshow", "!minor|!bot",
+			"rctype", "edit",
 			"rcprop", "title|timestamp|ids|user|sizes"
 		).recentchanges());
 	}
