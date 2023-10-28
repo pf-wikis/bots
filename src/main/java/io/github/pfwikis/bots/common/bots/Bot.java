@@ -1,6 +1,5 @@
 package io.github.pfwikis.bots.common.bots;
 
-import java.io.IOException;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,7 +26,7 @@ public abstract class Bot<RUN extends Run> {
 	
 	protected RUN run;
 
-	public abstract void run() throws IOException;
+	public abstract void run() throws Exception;
 
 	public synchronized void start() {
 		
@@ -38,14 +37,14 @@ public abstract class Bot<RUN extends Run> {
 			this.run = currentRun;
 			try {
 				run();
-			} catch (IOException e) {
+			} catch (Exception e) {
 				run.addException(e);
 			}
 			
 			
 			//create bot report
 			try {
-				var report = """
+				var userPage = """
 				{{Bot|Virenerus}}
 				
 				%s
@@ -59,14 +58,19 @@ public abstract class Bot<RUN extends Run> {
 				! Bot Name !! Last run !! Status !! notes
 				{{User:%s/Status}}
 				|}
+				
+				
+				%s
 				""".formatted(
 					getDescription(),
 					"https://github.com/pf-wikis/bots/tree/main/src/main/java/"+this.getClass().getName().replace(".", "/")+".java",
-					botName);
+					botName,
+					run.hasReport()?("==Report==\n{{User:"+botName+"/Report}}"):""
+				);
 				
-				run.withMaster(wiki->wiki.editIfChange("User:"+botName, report, "Update "+botName+" description"));
+				run.withMaster(wiki->wiki.editIfChange("User:"+botName, userPage, "Update "+botName+" description"));
 				
-				var reportStatus = """
+				var status = """
 				|-
 				| [[User:%s|]] || %s || %s || %s
 				""".formatted(
@@ -82,7 +86,11 @@ public abstract class Bot<RUN extends Run> {
 					)
 				);
 				
-				run.withMaster(wiki->wiki.editIfChange("User:"+botName+"/Status", reportStatus, "Update "+botName+" status"));
+				run.withMaster(wiki->wiki.editIfChange("User:"+botName+"/Status", status, "Update "+botName+" status"));
+				
+				if(run.hasReport()) {
+					run.withMaster(wiki->wiki.editIfChange("User:"+botName+"/Report", run.getReport().toString(), "Update "+botName+" report"));
+				}
 			} catch(Exception e) {
 				log.error("Failed to create bot report for {}", botName, e);
 				System.exit(-1);

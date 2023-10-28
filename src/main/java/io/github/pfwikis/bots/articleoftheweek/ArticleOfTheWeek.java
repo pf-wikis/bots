@@ -59,16 +59,29 @@ public class ArticleOfTheWeek extends SimpleBot {
 			""".formatted(article.getTitle(), render(article), this.getBotName());
 		
 		run.getWiki().editIfChange("Template:Article of the Week", pageContent, "Automatic article of the week pick.");
+		
+		addBadge(article);
+	}
+
+	private void addBadge(Candidate article) {
+		var wikiText = run.getWiki().getPageText(article.getTitle());
+		
+		if(!wikiText.toLowerCase().matches(".*\\| *featured *[\\}\\|].*")) {
+			log.info("Did not find badge");
+			var newText = wikiText.replaceAll("(\\{\\{\\s*Badges\\s*\\|)", "$1featured|");
+			if(newText.equals(wikiText)) {
+				newText = "{{Badges|featured}}"+newText;
+			}
+			run.getWiki().editIfChange(article.getTitle(), newText, "Add featured badge.");
+		}
 	}
 
 	private String render(Candidate article) {
 		return
 		"""
 		<div class="article-of-the-week">
-			<div class="article-of-the-week-image">
-					[[File:%s|200px|link=%s]]
-			</div>
 			<div class="article-of-the-week-content">
+				[[File:%s|200px|left|link=%s]]
 				<div class="article-of-the-week-text">{{#widget:Article of the Week}}</div>
 				<div class="article-of-the-week-more">[[%s|read more]]</div>
 			</div>
@@ -113,8 +126,13 @@ public class ArticleOfTheWeek extends SimpleBot {
 		
 		if(candidates.size() == 0)
 			return null;
-		else
+		else {
+			run.report("Chose [["+candidates.get(0).getTitle()+"|]]. Candidates were:\n");
+			candidates.forEach(c-> {
+				run.report("* [["+c.getTitle()+"|]] with an effective change size of "+c.getChangeSize());
+			});
 			return candidates.get(0);
+		}
 	}
 	
 	private boolean isValidPick(Candidate cand) {

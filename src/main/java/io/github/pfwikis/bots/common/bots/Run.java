@@ -15,10 +15,16 @@ public abstract class Run {
 	
 	private OffsetDateTime timestamp = OffsetDateTime.now();
 	private List<Exception> exceptions = new ArrayList<>();
+	private StringBuilder report = new StringBuilder();
 	
 	public abstract void withMaster(Consumer<WikiAPI> task);
-	public void addException(Exception e) {
+	public synchronized void addException(Exception e) {
 		exceptions.add(e);
+	}
+	
+	public synchronized Run report(Object toAppend) {
+		report.append(toAppend);
+		return this;
 	}
 	
 	@Getter @Setter
@@ -52,6 +58,10 @@ public abstract class Run {
 		public WikiAPI getSfWiki() {
 			return sfRun.getWiki();
 		}
+	}
+
+	public synchronized boolean hasReport() {
+		return report != null && !report.isEmpty();
 	}
 
 	
