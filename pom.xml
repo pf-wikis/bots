@@ -72,7 +72,7 @@
 		<dependency>
 			<groupId>com.google.apis</groupId>
 			<artifactId>google-api-services-drive</artifactId>
-			<version>v3-rev20211107-1.32.1</version>
+			<version>v3-rev20230822-2.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.concurrent-trees</groupId>
