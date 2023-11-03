@@ -28,7 +28,7 @@ public class PageSyncer extends DualBot {
 	public void run() throws IOException {
 		var sfToken = run.getSfWiki().requestToken("csrf");
 		
-		var toSyncPages = run.getPfWiki().getPagesInCategory("Category:Synced to starfinderwiki", "8|10|102|274|828");
+		var toSyncPages = run.getPfWiki().getPagesInCategory("Category:Synced to starfinderwiki", "8|10|102|106|274|828");
 		
         List<String> titles = toSyncPages.stream()
             .map(Page::getTitle)
