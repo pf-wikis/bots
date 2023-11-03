@@ -123,13 +123,14 @@ public class ArticleOfTheWeek extends SimpleBot {
 		candidates.removeIf(c->!isValidPick(c));
 		candidates.forEach(c->c.calculateChangeSize(run));
 		candidates.sort(Comparator.comparing(Candidate::getChangeSize).reversed());
+candidates.removeIf(c->c.getChangeSize()==0);
 		
 		if(candidates.size() == 0)
 			return null;
 		else {
 			run.report("Chose [["+candidates.get(0).getTitle()+"|]]. Candidates were:\n");
 			candidates.forEach(c-> {
-				run.report("* [["+c.getTitle()+"|]] with an effective change size of "+c.getChangeSize());
+				run.report("* [["+c.getTitle()+"|]] with an effective change size of "+c.getChangeSize()+"\n");
 			});
 			return candidates.get(0);
 		}
