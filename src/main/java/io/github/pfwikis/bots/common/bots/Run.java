@@ -14,13 +14,9 @@ import lombok.Setter;
 public abstract class Run {
 	
 	private OffsetDateTime timestamp = OffsetDateTime.now();
-	private List<Exception> exceptions = new ArrayList<>();
 	private StringBuilder report = new StringBuilder();
 	
 	public abstract void withMaster(Consumer<WikiAPI> task);
-	public synchronized void addException(Exception e) {
-		exceptions.add(e);
-	}
 	
 	public synchronized Run report(Object toAppend) {
 		report.append(toAppend);

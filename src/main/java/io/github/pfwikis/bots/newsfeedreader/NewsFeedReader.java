@@ -60,7 +60,7 @@ public class NewsFeedReader extends SimpleBot {
 			</div>
 			""".formatted(title, String.join("", items));
 		} catch(Exception e) {
-			run.addException(e);
+			addException(e);
 			return "";
 		}
 	}
@@ -111,7 +111,7 @@ public class NewsFeedReader extends SimpleBot {
 				renderPreview(item.getDescription().get())
 			);
 		} catch(Exception e) {
-			run.addException(e);
+			addException(e);
 			return "";
 		}
 	}
@@ -133,7 +133,7 @@ public class NewsFeedReader extends SimpleBot {
 				.limit(100)
 				.collect(Collectors.joining(" "));
 		} catch(Exception e) {
-			run.addException(e);
+			addException(e);
 			return "";
 		}
 	}

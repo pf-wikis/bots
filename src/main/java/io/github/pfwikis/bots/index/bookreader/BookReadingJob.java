@@ -18,7 +18,6 @@ import org.apache.pdfbox.text.TextPosition;
 import com.google.api.services.drive.model.File;
 import com.google.common.primitives.Floats;
 
-import io.github.pfwikis.bots.common.bots.Run.SingleRun;
 import io.github.pfwikis.bots.index.common.GDrive;
 import io.github.pfwikis.bots.index.common.IJackson;
 import io.github.pfwikis.bots.utils.StringHelper;
@@ -29,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class BookReadingJob implements Runnable {
 
-	private final SingleRun run;
+	private final BookReader bot;
 	private final File book;
 	private final File yaml;
 
@@ -39,13 +38,13 @@ public class BookReadingJob implements Runnable {
 			if(yaml != null) {
 				if(yaml.getModifiedTime().getValue() > book.getModifiedTime().getValue()) {
 					log.info("{} index already up to date", book.getName());
-					return;
+					//return;
 				}
 			}
 			
 			var index = readBook();
 			
-			var bytes = IJackson.JACKSON.writeValueAsBytes(index);
+			var bytes = IJackson.YAML.writeValueAsBytes(index);
 			if(yaml != null) {
 				GDrive.INSTANCE.updateFile(yaml.getId(), book.getName()+".yaml", "application/yaml", bytes);
 			}
@@ -54,7 +53,7 @@ public class BookReadingJob implements Runnable {
 			}
 		} catch(Exception e) {
 			log.error("Failed to read book {}", book.getName(), e);
-			run.addException(e);
+			bot.addException(e);
 		}
 	}
 
@@ -71,6 +70,7 @@ public class BookReadingJob implements Runnable {
 			index.setPageTexts(extractTexts(doc));
 			removeLongestCommon(index);
 			index.setPageOffset(findPageOffset(index));
+			removePageNumbers(index);
 			index.setBookmarks(extractBookmarks(doc));
 			calculateBookmarkEnds(index.getBookmarks(), index.getPageTexts().size());
 			removeUnwantedPages(index);
@@ -149,11 +149,11 @@ public class BookReadingJob implements Runnable {
 	}
 
 	private static final Pattern ALL_WHITESPACE = Pattern.compile("\\p{IsWhiteSpace}+");
-	private static final Pattern PUNCTUATION = Pattern.compile("[\\p{Punct}\\p{Cntrl}]+");
+	private static final Pattern PUNCTUATION = Pattern.compile("[\\p{Punct}\\p{Cntrl}]");
 	private static final Pattern NON_SIMPLE = Pattern.compile(" *[^\\p{Alnum} ]+ *");
 	private List<String> extractTexts(PDDocument doc) throws IOException {
 		List<String> pageTexts = new ArrayList<>();
-		var stripper = new PDFTextStripper() {
+		var stripper = new BetterTextStripper() {
 			protected void writeString(String text, List<TextPosition> textPositions) throws IOException {
 				var first = textPositions.get(0);
 				var last = textPositions.get(textPositions.size()-1);
@@ -183,7 +183,6 @@ public class BookReadingJob implements Runnable {
 
 	private String normalize(String text) {
 		text = StringUtils.stripAccents(text);
-		text = text.toLowerCase();
 		text = PUNCTUATION.matcher(text).replaceAll(" ");
 		text = ALL_WHITESPACE.matcher(text).replaceAll(" ");
 		text = NON_SIMPLE.matcher(text).replaceAll("-");
@@ -210,6 +209,13 @@ public class BookReadingJob implements Runnable {
 			return 0;
 		else
 			return bestOffset;
+	}
+	
+	private void removePageNumbers(BookIndex index) {
+		for(int i=0;i<index.getPageTexts().size();i++) {
+			var res = index.getPageTexts().get(i).replaceAll("(?<![\\w\\d])"+(i+index.getPageOffset())+" +", "");
+ 			index.getPageTexts().set(i, res);
+		}
 	}
 	
 	private void removeLongestCommon(BookIndex index) {

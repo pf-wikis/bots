@@ -27,6 +27,8 @@ import io.github.pfwikis.bots.common.model.QueryResponse;
 import io.github.pfwikis.bots.common.model.QueryTokens;
 import io.github.pfwikis.bots.common.model.RecentChanges;
 import io.github.pfwikis.bots.common.model.RecentChanges.RecentChange;
+import io.github.pfwikis.bots.common.model.SemanticAsk;
+import io.github.pfwikis.bots.common.model.SemanticAsk.Result;
 import okhttp3.HttpUrl;
 
 public class WikiAPI {
@@ -58,13 +60,17 @@ public class WikiAPI {
 	public ArrayList<Revision> getRevisions(String title, Duration timeRange) {
 		return wiki.getRevisions(title, 0, false, Instant.now().minus(timeRange).truncatedTo(ChronoUnit.SECONDS), null);
 	}
+	
+	public void edit(String page, String content, String reason) {
+		if(!wiki.edit(page, content, reason)) {
+			throw new RuntimeException("Failed to edit page "+page);
+		}
+	}
 
 	public void editIfChange(String page, String content, String reason) {
 		var oldText = wiki.getPageText(page);
 		if(!content.equals(oldText)) {
-			if(!wiki.edit(page, content, reason)) {
-				throw new RuntimeException("Failed to edit page "+page);
-			}
+			edit(page, content, reason);
 		}
 	}
 
@@ -132,8 +138,16 @@ public class WikiAPI {
 		.findAndRegisterModules()
 		.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 	private <T> T query(Class<T> type, String... params) {
-		return this.<QueryResponse<T>>get(JACKSON.getTypeFactory().constructParametricType(QueryResponse.class, type), "query", params)
+		var query = this.<QueryResponse<T>>get(JACKSON.getTypeFactory().constructParametricType(QueryResponse.class, type), "query", params)
 				.query();
+		if(query != null) {
+			return query;
+		}
+		try {
+			return type.getConstructor().newInstance();
+		} catch(Exception e) {
+			throw new IllegalStateException("No no-argument constructor for "+type);
+		}
 	}
 	
 	private <T> T get(JavaType type, String action, String... params) {
@@ -169,6 +183,15 @@ public class WikiAPI {
 	public ParseResponse.Content getParsed(long oldid) {
 		return get(ParseResponse.class, "parse", "oldid", Long.toString(oldid)).parse();
 	}
+	
+	public List<Page> getPagesInCategory(String category) {
+		return query(PageQuery.class,
+			"generator", "categorymembers",
+			"gcmtitle", category,
+			"gcmprop", "ids",
+			"gcmlimit", "1000"
+		).getPages();
+	}
 
 	public List<Page> getPagesInCategory(String category, String namespace) {
 		return query(PageQuery.class,
@@ -190,5 +213,35 @@ public class WikiAPI {
 				"utf8", "1",
 				"formatversion", "2"
 		)));
+	}
+
+	public void setContentModel(String title, String model) throws IOException {
+		String token = requestToken("csrf");
+		
+		var resp = wiki.basicPOST(
+			"changecontentmodel", new HashMap<>(Map.of(
+			"format", "json",
+			"utf8", "1",
+			"formatversion", "2",
+			"title", title,
+			"model", model,
+			"token", token,
+			"summary", "Change contentmodel to JSON"
+		)));
+		var json = resp.body().string();
+		if(json.contains("\"error\"")) {
+			throw new IllegalStateException("Could not set contentmodel of "+title+". Response was:\n"+json);
+		}
+	}
+
+	public ArrayList<Result> semanticAsk(String query) {
+		var results = new ArrayList<SemanticAsk.Result>();
+		var response = get(SemanticAsk.class, "ask", "query", query+"|limit=1000");
+		results.addAll(response.getQuery().getResults().values());
+		while(response.getQueryContinueOffset() != null) {
+			response = get(SemanticAsk.class, "ask", "query", query+"|limit=1000|offset="+response.getQueryContinueOffset());
+			results.addAll(response.getQuery().getResults().values());
+		}
+		return results;
 	}
 }

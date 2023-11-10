@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.StringUtils;
 
 import com.beust.jcommander.Parameters;
+import com.google.common.util.concurrent.MoreExecutors;
 
 import io.github.pfwikis.bots.common.Style;
 import io.github.pfwikis.bots.common.bots.Run.SingleRun;
@@ -21,46 +22,53 @@ import lombok.extern.slf4j.Slf4j;
 @Parameters(commandDescription = "Read book pdf and generate yml wordlist")
 public class BookReader extends SimpleBot {
 
+	private boolean localMode = false;
+	
 	public BookReader() {
 		super("book-reader", "Bot Book Reader");
 	}
 
 	public static void main(String[] args) throws Exception {
 		var br = new BookReader();
+		br.localMode = true;
 		br.run=new SingleRun(false);
-		br.run();
-		for(var e:br.run.getExceptions()) {
+		br.beforeRuns();
+		for(var e:br.getExceptions()) {
 			e.printStackTrace();
 		}
 	}
 	
+	private StringBuilder report = new StringBuilder();
+	
 	@Override
-	public void run() throws Exception {
+	public void beforeRuns() throws Exception {
 		var books = GDrive.INSTANCE.listFiles("mimeType='application/pdf'");
 		var yamls = GDrive.INSTANCE.listFiles("fileExtension='yaml'");
-		var pool = Executors.newVirtualThreadPerTaskExecutor();
+		var pool = localMode
+				?MoreExecutors.newDirectExecutorService()
+				:Executors.newVirtualThreadPerTaskExecutor();
 		
 		
 		Collections.sort(books, Comparator.comparing(b->b.getName()));
-		run.report("I have read:");
+		report.append("I have read:");
 
 		for(var book : books) {
-			run
-				.report("\n* [[")
-				.report(StringUtils.removeEnd(book.getName(), ".pdf").replace('_', ' '))
-				.report("|]] on ")
-				.report(Style.DATE_FORMAT.format(Instant.ofEpochMilli(book.getModifiedTime().getValue()).atOffset(ZoneOffset.UTC)));
+			report
+				.append("\n* [[")
+				.append(StringUtils.removeEnd(book.getName(), ".pdf").replace('_', ' '))
+				.append("|]] on ")
+				.append(Style.DATE_FORMAT.format(Instant.ofEpochMilli(book.getModifiedTime().getValue()).atOffset(ZoneOffset.UTC)));
 
 			var matchingYamls = yamls.stream().filter(y->y.getName().equals(book.getName()+".yaml")).toList();
 			yamls.removeAll(matchingYamls);
 			if(matchingYamls.size() == 0) {
-				pool.execute(new BookReadingJob(run, book, null));
+				pool.execute(new BookReadingJob(this, book, null));
 			}
 			else if(matchingYamls.size() == 1) {
-				pool.execute(new BookReadingJob(run, book, matchingYamls.get(0)));
+				pool.execute(new BookReadingJob(this, book, matchingYamls.get(0)));
 			}
 			else {
-				run.addException(new RuntimeException("Multiple matching yamls for book "+book));
+				addException(new RuntimeException("Multiple matching yamls for book "+book));
 			}
 		}
 		
@@ -72,6 +80,11 @@ public class BookReader extends SimpleBot {
 		
 		pool.shutdown();
 		pool.awaitTermination(1, TimeUnit.DAYS);
+	}
+	
+	@Override
+	public void run() throws Exception {
+		run.report(report);
 	}
 
 
