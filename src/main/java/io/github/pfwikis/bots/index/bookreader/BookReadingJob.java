@@ -19,7 +19,7 @@ import com.google.api.services.drive.model.File;
 import com.google.common.primitives.Floats;
 
 import io.github.pfwikis.bots.index.common.GDrive;
-import io.github.pfwikis.bots.index.common.IJackson;
+import io.github.pfwikis.bots.utils.Jackson;
 import io.github.pfwikis.bots.utils.StringHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +44,7 @@ public class BookReadingJob implements Runnable {
 			
 			var index = readBook();
 			
-			var bytes = IJackson.YAML.writeValueAsBytes(index);
+			var bytes = Jackson.YAML.writeValueAsBytes(index);
 			if(yaml != null) {
 				GDrive.INSTANCE.updateFile(yaml.getId(), book.getName()+".yaml", "application/yaml", bytes);
 			}

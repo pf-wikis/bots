@@ -9,13 +9,13 @@ import com.google.api.services.drive.model.File;
 
 import io.github.pfwikis.bots.index.bookreader.BookIndex;
 import io.github.pfwikis.bots.index.common.GDrive;
-import io.github.pfwikis.bots.index.common.IJackson;
+import io.github.pfwikis.bots.utils.Jackson;
 
 public class Tokenizer {
 
 	public static TokenizedBook tokenize(File yaml) throws IOException {
 		var bytes = GDrive.INSTANCE.downloadFile(yaml.getId());
-		BookIndex index = IJackson.YAML.readValue(bytes, BookIndex.class);
+		BookIndex index = Jackson.YAML.readValue(bytes, BookIndex.class);
 		
 		var result = new TokenizedBook(index);
 		for(int i=0;i<index.getPageTexts().size();i++) {

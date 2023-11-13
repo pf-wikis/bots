@@ -1,4 +1,4 @@
-package io.github.pfwikis.bots.index.common;
+package io.github.pfwikis.bots.utils;
 
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.DumperOptions.ScalarStyle;
@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 
-public class IJackson {
+public class Jackson {
 
 	public static final ObjectMapper JSON;
 	public static final ObjectMapper YAML;

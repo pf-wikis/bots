@@ -7,7 +7,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import io.github.pfwikis.bots.common.WikiAPI;
 import io.github.pfwikis.bots.common.bots.Run.SingleRun;
-import io.github.pfwikis.bots.index.common.IJackson;
+import io.github.pfwikis.bots.utils.Jackson;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -50,7 +50,7 @@ public abstract class SimpleBot extends Bot<SingleRun> {
 		if(rawConfig.isEmpty()) {
 			try {
 				T result = type.getConstructor().newInstance();
-				rawConfig = IJackson.JSON.writeValueAsString(result);
+				rawConfig = Jackson.JSON.writeValueAsString(result);
 				run.getWiki().editIfChange(
 						configPage,
 						rawConfig,
@@ -65,7 +65,7 @@ public abstract class SimpleBot extends Bot<SingleRun> {
 		}
 		try {
 			run.report("Using config at [["+configPage+"|]]\n\n");
-			return IJackson.JSON.readValue(rawConfig, type);
+			return Jackson.JSON.readValue(rawConfig, type);
 		} catch (JsonProcessingException e) {
 			throw new IllegalStateException("Could not load "+type, e);
 		}
@@ -74,7 +74,7 @@ public abstract class SimpleBot extends Bot<SingleRun> {
 	protected <T> void saveConfig(T config, String reason) {
 		var configPage = "User:"+botName+"/Config";
 		try {
-			var newConfig = IJackson.JSON.writeValueAsString(config);
+			var newConfig = Jackson.JSON.writeValueAsString(config);
 			if(newConfig.equals(config)) return;
 			
 			run.getWiki().editIfChange(configPage, newConfig, reason);

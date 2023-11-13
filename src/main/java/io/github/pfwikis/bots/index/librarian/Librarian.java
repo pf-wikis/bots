@@ -11,7 +11,7 @@ import com.beust.jcommander.Parameters;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.index.bookreader.BookIndex;
 import io.github.pfwikis.bots.index.common.GDrive;
-import io.github.pfwikis.bots.index.common.IJackson;
+import io.github.pfwikis.bots.utils.Jackson;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
