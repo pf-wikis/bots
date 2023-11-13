@@ -184,7 +184,7 @@ public class UsageReporter extends SimpleBot {
 	private String domain(String label) {
 		var parts = StringUtils.split(label, '.');
 		if(parts.length<3) return label;
-		if("github".equals(parts[parts.length-1]) && parts.length >= 3)
+		if("github".equals(parts[parts.length-2]) && parts.length >= 3)
 			return String.join(".", ArrayUtils.subarray(parts, parts.length-3, parts.length));
 		else
 			return String.join(".", ArrayUtils.subarray(parts, parts.length-2, parts.length));
