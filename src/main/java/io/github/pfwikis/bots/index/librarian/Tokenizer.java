@@ -1,7 +1,6 @@
 package io.github.pfwikis.bots.index.librarian;
 
 import java.io.IOException;
-import java.util.Comparator;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -13,7 +12,7 @@ import io.github.pfwikis.bots.utils.Jackson;
 
 public class Tokenizer {
 
-	public static TokenizedBook tokenize(File yaml) throws IOException {
+	public static TokenizedBook tokenize(LibrarianConfig config, File yaml) throws IOException {
 		var bytes = GDrive.INSTANCE.downloadFile(yaml.getId());
 		BookIndex index = Jackson.YAML.readValue(bytes, BookIndex.class);
 		
@@ -31,12 +30,7 @@ public class Tokenizer {
 				result.addWord(word, pageNumber);
 			}
 		}
-		
-		result.getTokens().entrySet()
-			.stream()
-			.sorted(Comparator.comparing(e->e.getValue().getOccurences().size()))
-			.forEach(e->System.out.println(e.getKey()+" x"+e.getValue().getOccurences().size()));
-		
+
 		return result;
 	}
 

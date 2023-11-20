@@ -1,17 +1,13 @@
 package io.github.pfwikis.bots.index.librarian;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Objects;
 
 import com.beust.jcommander.Parameters;
 
 import io.github.pfwikis.bots.common.bots.SimpleBot;
-import io.github.pfwikis.bots.index.bookreader.BookIndex;
 import io.github.pfwikis.bots.index.common.GDrive;
-import io.github.pfwikis.bots.utils.Jackson;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -35,7 +31,7 @@ public class Librarian extends SimpleBot {
 		var books = new ArrayList<TokenizedBook>();
 		for(var yaml:yamls) {
 			try {
-				books.add(Tokenizer.tokenize(yaml));
+				books.add(Tokenizer.tokenize(config, yaml));
 			} catch(Exception e) {
 				log.error("Failed to tokenize "+yaml.getName());
 				addException(e);

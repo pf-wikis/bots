@@ -66,8 +66,10 @@ public abstract class Bot<RUN extends Run> {
 				try {
 					var userPage = """
 					{{Bot|Virenerus}}
-					
+					==Description==
 					%s
+					
+					==Status==
 					
 					This bot is a sub bot of [[User:VirenerusBot|]].
 					

@@ -45,7 +45,11 @@ public abstract class SimpleBot extends Bot<SingleRun> {
 	}
 	
 	protected <T> T loadConfig(Class<T> type) {
-		var configPage = "User:"+botName+"/Config";
+		return loadConfig(type, "Config");
+	}
+	
+	protected <T> T loadConfig(Class<T> type, String name) {
+		var configPage = "User:"+botName+"/"+name;
 		rawConfig = run.getWiki().getPageText(configPage);
 		if(rawConfig.isEmpty()) {
 			try {
@@ -72,7 +76,11 @@ public abstract class SimpleBot extends Bot<SingleRun> {
 	}
 	
 	protected <T> void saveConfig(T config, String reason) {
-		var configPage = "User:"+botName+"/Config";
+		saveConfig(config, "Config", reason);
+	}
+	
+	protected <T> void saveConfig(T config, String name, String reason) {
+		var configPage = "User:"+botName+"/"+name;
 		try {
 			var newConfig = Jackson.JSON.writeValueAsString(config);
 			if(newConfig.equals(config)) return;

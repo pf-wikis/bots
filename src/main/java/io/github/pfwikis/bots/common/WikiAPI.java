@@ -1,6 +1,7 @@
 package io.github.pfwikis.bots.common;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -19,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.fastily.jwiki.core.Wiki;
 import io.github.fastily.jwiki.dwrap.Revision;
+import io.github.pfwikis.bots.common.model.ImageUsageQuery;
 import io.github.pfwikis.bots.common.model.Page;
 import io.github.pfwikis.bots.common.model.PageQuery;
 import io.github.pfwikis.bots.common.model.ParseResponse;
@@ -44,6 +46,10 @@ public class WikiAPI {
 	            .build();
 	}
 	
+	public boolean upload(Path p, String title, String desc, String summary) {
+		return wiki.upload(p, title, desc, summary);
+	}
+
 	public List<RecentChange> getRecentChanges(Duration timeRange) {
 		return Arrays.asList(query(
 			RecentChanges.class,
@@ -192,6 +198,17 @@ public class WikiAPI {
 			"gcmlimit", "1000"
 		).getPages();
 	}
+	
+	public List<Page> getImageUsage(String page) {
+		return query(ImageUsageQuery.class, 
+			"list", "imageusage",
+			"iutitle", page
+		).getImageusage();
+	}
+	
+	public boolean delete(String page, String reason) {
+		return wiki.delete(page, reason);
+	}
 
 	public List<Page> getPagesInCategory(String category, String namespace) {
 		return query(PageQuery.class,
@@ -243,5 +260,9 @@ public class WikiAPI {
 			results.addAll(response.getQuery().getResults().values());
 		}
 		return results;
+	}
+
+	public void rename(String title, String newTitle, boolean leaveRedirect, String reaseon) {
+		wiki.move(title, newTitle, true, true, !leaveRedirect, reaseon);
 	}
 }

@@ -1,9 +1,9 @@
 package io.github.pfwikis.bots.replacer;
 
 import java.io.IOException;
-import java.util.Map;
 
 import com.beust.jcommander.Parameters;
+import com.beust.jcommander.internal.Maps;
 
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import lombok.extern.slf4j.Slf4j;
@@ -27,12 +27,26 @@ public class Replacer extends SimpleBot {
 			return;
 		
 		
-		var todo = Map.of(
-			"Images of half-orcs", "Images of dromaars",
-			"Images of half-elves", "Images of aiuvarins"
+		var todo = Maps.newHashMap(
+			"Positive Energy Plane", "Creation's Forge",
+			"Positive Energy Plane/Inhabitants", "Creation's Forge/Inhabitants",
+			"Positive Energy Plane/Locations", "Creation's Forge/Locations",
+			"Positive Energy Plane/Nations", "Creation's Forge/Nations",
+			"Positive Energy Plane/Settlements", "Creation's Forge/Settlements",
+			"Negative Energy Plane", "Void",
+			"Negative Energy Plane/Inhabitants", "Void/Inhabitants",
+			"Negative Energy Plane/Locations", "Void/Locations",
+			"Negative Energy Plane/Settlements", "Void/Settlements",
+			"Shadow Plane", "Netherworld",
+			"Shadow Plane/Inhabitants", "Netherworld/Inhabitants",
+			"Shadow Plane/Locations", "Netherworld/Locations",
+			"Shadow Plane/Nations", "Netherworld/Nations",
+			"Shadow Plane/Organizations", "Netherworld/Organizations",
+			"Shadow Plane/Settlements", "Netherworld/Settlements",
+			"Material Plane", "Universe"
 		);
-		/*
-		rename categories
+
+		//rename categories
 		for(var e : todo.entrySet()) {
 			for(var p:run.getWiki().getPagesInCategory("Category:"+e.getKey())) {
 				var text = run.getWiki().getPageText(p.getTitle());
@@ -45,8 +59,14 @@ public class Replacer extends SimpleBot {
 				}
 			}
 		}
-		*/
+		for(var e : todo.entrySet()) {
+			if(run.getWiki().pageExists("Category:"+e.getKey()))
+				run.getWiki().rename("Category:"+e.getKey(), "Category:"+e.getValue(), false, "Renamed category "+e.getKey()+" to "+e.getValue());
+		}
 		
+		
+		/*
+		//search and replace
 		for(var e : todo.entrySet()) {
 			for(var p:run.getWiki().getPagesInCategory("Category:"+e.getKey())) {
 				if(!p.getTitle().startsWith("File:")) continue;
@@ -61,7 +81,7 @@ public class Replacer extends SimpleBot {
 					log.warn("No luck on {}", p.getTitle());
 				}
 			}
-		}
+		}*/
 	}
 
 }

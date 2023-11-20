@@ -166,6 +166,7 @@ public class UsageReporter extends SimpleBot {
 				))
 				.entrySet()
 				.stream()
+				.filter(e->e.getValue()>=7)
 				.sorted(Comparator.comparing(e->-e.getValue()))
 				.toList();
 			
