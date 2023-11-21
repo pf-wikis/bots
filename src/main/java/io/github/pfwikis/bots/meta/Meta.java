@@ -1,5 +1,7 @@
 package io.github.pfwikis.bots.meta;
 
+import java.util.stream.Collectors;
+
 import com.beust.jcommander.Parameters;
 
 import io.github.classgraph.ClassGraph;
@@ -12,6 +14,11 @@ public class Meta extends SimpleBot {
 
 	public Meta() {
 		super("meta", "VirenerusBot");
+	}
+	
+	@Override
+	protected String getBotPassword() {
+		return rootPassword;
 	}
 	
 	@Override
@@ -33,7 +40,8 @@ public class Meta extends SimpleBot {
 				}
 			})
 			.map(b->"{{User:"+b.getBotName()+"/Status}}")
-			.toList();
+			.sorted()
+			.collect(Collectors.joining("\n"));
 				
 		return """
 		This bot is owned by [[User:Virenerus]]. It is a manager bot that is responsible for managing multiple thematic sub bots, you might know.

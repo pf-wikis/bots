@@ -34,7 +34,7 @@ public abstract class SimpleBot extends Bot<SingleRun> {
 			checkAccount(run);
 			
 			try {
-				run.setWiki(new WikiAPI(starfinder, botName, rootPassword+botName));
+				run.setWiki(new WikiAPI(starfinder, botName, getBotPassword()));
 			} catch(Exception e) {
 				log.error("Failed to log in as {}", botName, e);
 				System.exit(-1);
@@ -44,6 +44,10 @@ public abstract class SimpleBot extends Bot<SingleRun> {
 		return runs;
 	}
 	
+	protected String getBotPassword() {
+		return rootPassword+botName;
+	}
+
 	protected <T> T loadConfig(Class<T> type) {
 		return loadConfig(type, "Config");
 	}
