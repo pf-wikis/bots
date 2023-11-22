@@ -19,4 +19,4 @@ jobs:
     - name: Build with Maven
       run: mvn -B package
     - name: Article of the Week
-      run: java -jar target/bots-0.0.0.jar article-of-the-week --password ${{ secrets.ROOT_BOT_PW }}
+      run: java -jar target/bots-0.0.0.jar article-of-the-week --password ${{ secrets.ROOT_BOT_PW }} --discordToken ${{ secrets.DISCORD_TOKEN }}
