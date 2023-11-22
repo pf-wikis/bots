@@ -10,7 +10,7 @@ import io.github.pfwikis.bots.common.model.Page;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Parameters(commandDescription = "Syncs some pages from SF wiki to PF wiki")
+@Parameters
 public class PageSyncer extends DualBot {
 
 	public PageSyncer() {

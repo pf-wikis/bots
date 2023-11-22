@@ -16,7 +16,7 @@ import com.beust.jcommander.Parameters;
 import io.github.pfwikis.bots.common.Style;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 
-@Parameters(commandDescription = "Reading paizo feeds and updating PathfinderWiki:News feeds")
+@Parameters
 public class NewsFeedReader extends SimpleBot {
 
 	public NewsFeedReader() {
@@ -60,7 +60,7 @@ public class NewsFeedReader extends SimpleBot {
 			</div>
 			""".formatted(title, String.join("", items));
 		} catch(Exception e) {
-			addException(e);
+			reportException(e);
 			return "";
 		}
 	}
@@ -111,7 +111,7 @@ public class NewsFeedReader extends SimpleBot {
 				renderPreview(item.getDescription().get())
 			);
 		} catch(Exception e) {
-			addException(e);
+			reportException(e);
 			return "";
 		}
 	}
@@ -133,7 +133,7 @@ public class NewsFeedReader extends SimpleBot {
 				.limit(100)
 				.collect(Collectors.joining(" "));
 		} catch(Exception e) {
-			addException(e);
+			reportException(e);
 			return "";
 		}
 	}

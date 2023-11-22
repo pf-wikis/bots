@@ -9,7 +9,7 @@ import io.github.pfwikis.bots.Runner;
 import io.github.pfwikis.bots.common.bots.Bot;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 
-@Parameters(commandDescription = "Metabot that updates the main bots description.")
+@Parameters
 public class Meta extends SimpleBot {
 
 	public Meta() {
@@ -49,7 +49,7 @@ public class Meta extends SimpleBot {
 		==Sub bots==
 		{| class="wikitable" style="margin:auto"
 		|-
-		! Bot Name !! Last run !! Status !! notes
+		! Bot Name !! Last run !! Status
 		%s
 		|}
 		""".formatted(bots);

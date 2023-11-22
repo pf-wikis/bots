@@ -21,7 +21,7 @@ import io.github.pfwikis.bots.utils.MWTable;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Parameters(commandDescription = "Creates usage reports")
+@Parameters
 public class UsageReporter extends SimpleBot {
 	
 	private static final String WEEK_RANGE = LocalDate.now().minusDays(8)+","+LocalDate.now().minusDays(1);

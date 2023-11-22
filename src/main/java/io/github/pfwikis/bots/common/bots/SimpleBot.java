@@ -65,14 +65,14 @@ public abstract class SimpleBot extends Bot<SingleRun> {
 						"Create default config."
 				);
 				run.getWiki().setContentModel(configPage, "json");
-				run.report("Created default config at [["+configPage+"|]]\n\n");
+				log.info("Created default config at [["+configPage+"|]]\n\n");
 				return result;
 			} catch(Exception e) {
 				throw new IllegalStateException("Could not create "+type, e);
 			}
 		}
 		try {
-			run.report("Using config at [["+configPage+"|]]\n\n");
+			log.info("Using config at [["+configPage+"|]]\n\n");
 			return Jackson.JSON.readValue(rawConfig, type);
 		} catch (JsonProcessingException e) {
 			throw new IllegalStateException("Could not load "+type, e);
@@ -90,7 +90,7 @@ public abstract class SimpleBot extends Bot<SingleRun> {
 			if(newConfig.equals(config)) return;
 			
 			run.getWiki().editIfChange(configPage, newConfig, reason);
-			run.report("Wrote config to [["+configPage+"|]]\n\n");
+			log.info("Wrote config to [["+configPage+"|]]\n\n");
 		} catch (JsonProcessingException e) {
 			throw new IllegalStateException("Could not serialize "+config.getClass(), e);
 		}

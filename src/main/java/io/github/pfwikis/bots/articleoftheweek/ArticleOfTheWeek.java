@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Parameters(commandDescription = "Find the article with the most additions of the last week")
+@Parameters
 public class ArticleOfTheWeek extends SimpleBot {
 
 	public ArticleOfTheWeek() {
@@ -123,15 +123,24 @@ public class ArticleOfTheWeek extends SimpleBot {
 		candidates.removeIf(c->!isValidPick(c));
 		candidates.forEach(c->c.calculateChangeSize(run));
 		candidates.sort(Comparator.comparing(Candidate::getChangeSize).reversed());
-candidates.removeIf(c->c.getChangeSize()==0);
+		candidates.removeIf(c->c.getChangeSize()==0);
 		
-		if(candidates.size() == 0)
+		if(candidates.size() == 0) {
+			discord.report("There was no candidate matching my requirements.");
 			return null;
+		}
 		else {
-			run.report("Chose [["+candidates.get(0).getTitle()+"|]]. Candidates were:\n");
+			var sb = new StringBuilder()
+				.append("Chose ")
+				.append(discord.wikiLink(candidates.get(0).getTitle(), "/wiki/"+candidates.get(0).getTitle().replace(' ', '_')))
+				.append("\nCandidates were:\n");
 			candidates.forEach(c-> {
-				run.report("* [["+c.getTitle()+"|]] with an effective change size of "+c.getChangeSize()+"\n");
+				sb
+					.append("* ")
+					.append(discord.wikiLink(c.getTitle(), "/wiki/"+c.getTitle().replace(' ', '_')))
+					.append(" with an effective change size of "+c.getChangeSize()+"\n");
 			});
+			discord.report(sb.toString());
 			return candidates.get(0);
 		}
 	}

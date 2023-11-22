@@ -1,7 +1,5 @@
 package io.github.pfwikis.bots;
 
-import java.lang.reflect.InvocationTargetException;
-
 import com.beust.jcommander.JCommander;
 
 import io.github.classgraph.ClassGraph;
@@ -9,7 +7,7 @@ import io.github.pfwikis.bots.common.bots.Bot;
 
 public class Runner {
 
-	public static void main(String[] args) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+	public static void main(String[] args) throws Exception {
 		var commands = JCommander.newBuilder();
 		var scan = new ClassGraph()
 			.acceptPackages(Runner.class.getPackageName())

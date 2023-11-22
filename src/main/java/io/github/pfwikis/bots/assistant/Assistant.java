@@ -15,7 +15,7 @@ import com.beust.jcommander.Parameters;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.common.model.Page;
 
-@Parameters(commandDescription = "A bot that executes tasks that are manually added to its jobs.")
+@Parameters
 public class Assistant extends SimpleBot {
 
 	public Assistant() {
@@ -50,7 +50,7 @@ public class Assistant extends SimpleBot {
 				i--;
 				saveConfig(tasks, "Tasks", "Executed tasks");
 			} catch(Exception e) {
-				addException(e);
+				reportException(e);
 			}
 		}
 	}

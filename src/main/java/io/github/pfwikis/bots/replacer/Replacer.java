@@ -9,7 +9,7 @@ import io.github.pfwikis.bots.common.bots.SimpleBot;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Parameters(commandDescription = "For manual bulk operations")
+@Parameters
 public class Replacer extends SimpleBot {
 
 	public Replacer() {

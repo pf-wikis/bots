@@ -13,29 +13,18 @@ import com.beust.jcommander.Parameters;
 import com.google.common.util.concurrent.MoreExecutors;
 
 import io.github.pfwikis.bots.common.Style;
-import io.github.pfwikis.bots.common.bots.Run.SingleRun;
-import io.github.pfwikis.bots.index.common.GDrive;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
+import io.github.pfwikis.bots.index.common.GDrive;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Parameters(commandDescription = "Read book pdf and generate yml wordlist")
+@Parameters
 public class BookReader extends SimpleBot {
 
 	private boolean localMode = false;
 	
 	public BookReader() {
 		super("book-reader", "Bot Book Reader");
-	}
-
-	public static void main(String[] args) throws Exception {
-		var br = new BookReader();
-		br.localMode = true;
-		br.run=new SingleRun(false);
-		br.beforeRuns();
-		for(var e:br.getExceptions()) {
-			e.printStackTrace();
-		}
 	}
 	
 	private StringBuilder report = new StringBuilder();
@@ -68,7 +57,7 @@ public class BookReader extends SimpleBot {
 				pool.execute(new BookReadingJob(this, book, matchingYamls.get(0)));
 			}
 			else {
-				addException(new RuntimeException("Multiple matching yamls for book "+book));
+				reportException(new RuntimeException("Multiple matching yamls for book "+book));
 			}
 		}
 		
@@ -84,7 +73,7 @@ public class BookReader extends SimpleBot {
 	
 	@Override
 	public void run() throws Exception {
-		run.report(report);
+		discord.report(report.toString());
 	}
 
 

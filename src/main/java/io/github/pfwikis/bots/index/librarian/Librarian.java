@@ -11,7 +11,7 @@ import io.github.pfwikis.bots.index.common.GDrive;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Parameters(commandDescription = "Creates indices")
+@Parameters
 public class Librarian extends SimpleBot {
 
 	public Librarian() {
@@ -34,7 +34,7 @@ public class Librarian extends SimpleBot {
 				books.add(Tokenizer.tokenize(config, yaml));
 			} catch(Exception e) {
 				log.error("Failed to tokenize "+yaml.getName());
-				addException(e);
+				reportException(e);
 			}
 		}
 		System.out.println();

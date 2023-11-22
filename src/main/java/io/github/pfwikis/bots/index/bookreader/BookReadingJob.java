@@ -12,7 +12,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
-import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.pdfbox.text.TextPosition;
 
 import com.google.api.services.drive.model.File;
@@ -53,7 +52,7 @@ public class BookReadingJob implements Runnable {
 			}
 		} catch(Exception e) {
 			log.error("Failed to read book {}", book.getName(), e);
-			bot.addException(e);
+			bot.reportException(e);
 		}
 	}
 

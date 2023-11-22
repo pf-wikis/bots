@@ -1,10 +1,9 @@
 package io.github.pfwikis.bots.common.bots;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 
+import io.github.pfwikis.bots.common.Discord;
 import io.github.pfwikis.bots.common.WikiAPI;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -13,15 +12,10 @@ import lombok.Setter;
 @Setter @Getter
 public abstract class Run {
 	
+	private Discord discord;
 	private OffsetDateTime timestamp = OffsetDateTime.now();
-	private StringBuilder report = new StringBuilder();
 	
 	public abstract void withMaster(Consumer<WikiAPI> task);
-	
-	public synchronized Run report(Object toAppend) {
-		report.append(toAppend);
-		return this;
-	}
 	
 	@Getter @Setter
 	@RequiredArgsConstructor
@@ -55,10 +49,4 @@ public abstract class Run {
 			return sfRun.getWiki();
 		}
 	}
-
-	public synchronized boolean hasReport() {
-		return report != null && !report.isEmpty();
-	}
-
-	
 }

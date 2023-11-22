@@ -1,14 +1,11 @@
 package io.github.pfwikis.bots.common.bots;
 
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import com.beust.jcommander.Parameter;
 
+import io.github.pfwikis.bots.common.Discord;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -24,106 +21,101 @@ public abstract class Bot<RUN extends Run> {
 
 	@Parameter(names = "--password")
 	protected String rootPassword;
+	@Parameter(names = "--discordToken")
+	protected String discordToken;
+	@Parameter(names = "--localMode")
+	protected boolean localMode;
 	
 	protected RUN run;
-	private List<Exception> exceptions = new ArrayList<>();
+	protected Discord discord;
+	private boolean hadError = false;
 
 	public abstract void run() throws Exception;
 	
 	public void beforeRuns() throws Exception {}
 	
-	public synchronized void addException(Exception e) {
-		exceptions.add(e);
+	public synchronized void reportException(Exception e) {
+		hadError = true;
+		log.error("Reported exception ",e);
+		if(!localMode)
+			discord.reportException(e);
 	}
 
-	public synchronized void start() {
-		List<Exception> initExceptions = null;
+	public synchronized void start() throws Exception {
+		discord = new Discord(this);
+		try {
+			executeBeforeRuns();
+			
+			var runs = createRuns();
+			var beforeRunsError = hadError;
+			
+			for(var currentRun : runs) {
+				this.run = currentRun;
+				this.discord.setRun(run);
+				this.run.setDiscord(discord);
+				
+				try {
+					run();
+					createBotReport();
+				} catch (Exception e) {
+					reportException(e);
+				} finally {
+					hadError = beforeRunsError;
+				}
+			}
+		} finally {
+			discord.close();
+		}
+	}
+
+	private void executeBeforeRuns() {
 		try {
 			beforeRuns();
 		} catch (Exception e) {
-			addException(e);
-			initExceptions = exceptions;
-			exceptions = new ArrayList<>();
+			reportException(e);
 		}
-		
-		var runs = createRuns();
-		
-		
-		for(var currentRun : runs) {
-			this.run = currentRun;
+	}
+	
+	private void createBotReport() {
+		//create bot report
+		try {
+			var userPage = """
+			{{Bot|Virenerus}}
+			==Description==
+			%s
 			
-			try {
-				if(initExceptions != null)
-					exceptions.addAll(initExceptions);
-				try {
-					run();
-				} catch (Exception e) {
-					addException(e);
-				}
-				
-				
-				//create bot report
-				try {
-					var userPage = """
-					{{Bot|Virenerus}}
-					==Description==
-					%s
-					
-					==Status==
-					
-					This bot is a sub bot of [[User:VirenerusBot|]].
-					
-					The code for this bot can be found [%s here].
-					
-					{| class="wikitable" style="margin:auto"
-					|-
-					! Bot Name !! Last run !! Status !! notes
-					{{User:%s/Status}}
-					|}
-					
-					
-					%s
-					""".formatted(
-						getDescription(),
-						"https://github.com/pf-wikis/bots/tree/main/src/main/java/"+this.getClass().getName().replace(".", "/")+".java",
-						botName,
-						run.hasReport()?("==Report==\n{{User:"+botName+"/Report}}"):""
-					);
-					
-					run.withMaster(wiki->wiki.editIfChange("User:"+botName, userPage, "Update "+botName+" description"));
-					
-					var status = """
-					|-
-					| [[User:%s|]] || %s || %s || %s
-					""".formatted(
-						botName,
-						run.getTimestamp().truncatedTo(ChronoUnit.SECONDS).toInstant().toString(),
-						exceptions.isEmpty()?"<span style=\"color:ForestGreen\">OK</span>":"<span style=\"color:Crimson\">ERROR</span>",
-						exceptions.isEmpty()?"":(
-							exceptions.stream()
-								.map(ExceptionUtils::getStackTrace)
-								.map(v->"<pre><nowiki>"+v+"</nowiki></pre>")
-								.collect(Collectors.joining())
-							+"[[Category:Pages with errors]]"
-						)
-					);
-					
-					run.withMaster(wiki->wiki.editIfChange("User:"+botName+"/Status", status, "Update "+botName+" status"));
-					
-					if(run.hasReport()) {
-						run.withMaster(wiki->wiki.editIfChange("User:"+botName+"/Report", run.getReport().toString(), "Update "+botName+" report"));
-					}
-				} catch(Exception e) {
-					log.error("Failed to create bot report for {}", botName, e);
-					System.exit(-1);
-				} finally {
-					for(var e:exceptions) {
-						log.error("Run threw exception", e);
-					}
-				}
-			} finally {
-				exceptions.clear();
-			}
+			==Status==
+			
+			This bot is a sub bot of [[User:VirenerusBot|]].
+			
+			The code for this bot can be found [%s here].
+			
+			{| class="wikitable" style="margin:auto"
+			|-
+			! Bot Name !! Last run !! Status
+			{{User:%s/Status}}
+			|}
+			""".formatted(
+				getDescription(),
+				"https://github.com/pf-wikis/bots/tree/main/src/main/java/"+this.getClass().getName().replace(".", "/")+".java",
+				botName
+			);
+			
+			run.withMaster(wiki->wiki.editIfChange("User:"+botName, userPage, "Update "+botName+" description"));
+			
+			var status = """
+			|-
+			| [[User:%s|]] || %s || %s
+			""".formatted(
+				botName,
+				run.getTimestamp().truncatedTo(ChronoUnit.SECONDS).toInstant().toString(),
+				!hadError?"<span style=\"color:ForestGreen\">OK</span>":"<span style=\"color:Crimson\">ERROR</span>[[Category:Pages with errors]]"
+			);
+			
+			run.withMaster(wiki->wiki.editIfChange("User:"+botName+"/Status", status, "Update "+botName+" status"));
+		} catch(Exception e) {
+			log.error("Failed to create bot report for {}", botName, e);
+			System.exit(-1);
 		}
 	}
 
