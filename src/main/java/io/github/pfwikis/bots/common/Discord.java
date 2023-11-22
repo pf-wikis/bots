@@ -12,14 +12,17 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.utils.MarkdownUtil;
+import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 
 @Slf4j
 public class Discord implements Closeable {
 	
 	private static long CHANNEL_BOT_ACTIVITY = 1176658356551811105L;
+	private static long CHANNEL_ADMINS = 886300705281941514L;
 	
 	private JDA jda;
 	@Setter
@@ -32,11 +35,13 @@ public class Discord implements Closeable {
 		log.info("To add this bot to a server: {}", jda.getInviteUrl(Permission.MESSAGE_EXT_EMOJI, Permission.MESSAGE_SEND));
 		jda.awaitReady();
 		jda.getPresence().setActivity(Activity.customStatus("Running "+bot.getBotName()+(bot.isLocalMode()?" from a personal machine":"")));
+		jda.getPresence().setStatus(OnlineStatus.ONLINE);
 	}
 
 	@Override
 	public void close() throws IOException {
 		jda.getPresence().setActivity(null);
+		jda.getPresence().setStatus(OnlineStatus.OFFLINE);
 		jda.shutdown();
 	}
 	
@@ -85,6 +90,17 @@ public class Discord implements Closeable {
 			reportException(e);
 		}
 	}
-
 	
+	public void reportToAdmins(String msg) {
+		try {
+			jda.getTextChannelById(CHANNEL_ADMINS)
+				.sendMessage(new MessageCreateBuilder()
+					.setContent(messageHeader().append(msg).toString())
+					.build()
+				)
+				.queue();
+		} catch(Exception e) {
+			reportException(e);
+		}
+	}
 }
