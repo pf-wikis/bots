@@ -20,3 +20,5 @@ jobs:
       run: mvn -B package
     - name: Article of the Week
       run: java -jar target/bots-0.0.0.jar article-of-the-week --password ${{ secrets.ROOT_BOT_PW }} --discordToken ${{ secrets.DISCORD_TOKEN }}
+    - name: Activity Checker
+      run: java -jar target/bots-0.0.0.jar activity-checker --password ${{ secrets.ROOT_BOT_PW }} --discordToken ${{ secrets.DISCORD_TOKEN }}

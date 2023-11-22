@@ -1,22 +1,18 @@
 package io.github.pfwikis.bots;
 
+import java.util.List;
+
 import com.beust.jcommander.JCommander;
 
 import io.github.classgraph.ClassGraph;
 import io.github.pfwikis.bots.common.bots.Bot;
+import lombok.Getter;
 
 public class Runner {
 
 	public static void main(String[] args) throws Exception {
 		var commands = JCommander.newBuilder();
-		var scan = new ClassGraph()
-			.acceptPackages(Runner.class.getPackageName())
-			.enableClassInfo()
-			.scan();
-		for(var botClass : scan.getSubclasses(Bot.class)) {
-			if(botClass.isAbstract()) continue;
-			
-			var bot = botClass.loadClass(Bot.class).getConstructor().newInstance();
+		for(var bot : Runner.getAllBots()) {
 			commands.addCommand(bot.getId(), bot);
 		}
 		
@@ -32,4 +28,23 @@ public class Runner {
 			.getObjects().get(0);
 		bot.start();
 	}
+
+	@Getter(lazy = true)
+	private final static List<Bot<?>> allBots = new ClassGraph()
+			.acceptPackages(Runner.class.getPackageName())
+			.enableClassInfo()
+			.scan()
+			.getSubclasses(Bot.class)
+			.stream()
+			.filter(bc->!bc.isAbstract())
+			.<Bot<?>>map(bc-> {
+				try {
+					return bc.loadClass(Bot.class)
+						.getConstructor()
+						.newInstance();
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+			})
+			.toList();
 }

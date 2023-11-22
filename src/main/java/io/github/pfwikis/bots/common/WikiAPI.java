@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,10 +17,13 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.fastily.jwiki.core.Wiki;
 import io.github.fastily.jwiki.dwrap.Revision;
+import io.github.pfwikis.bots.common.model.AllusersQuery;
+import io.github.pfwikis.bots.common.model.AllusersQuery.WUser;
 import io.github.pfwikis.bots.common.model.ImageUsageQuery;
 import io.github.pfwikis.bots.common.model.Page;
 import io.github.pfwikis.bots.common.model.PageQuery;
@@ -31,6 +35,7 @@ import io.github.pfwikis.bots.common.model.RecentChanges;
 import io.github.pfwikis.bots.common.model.RecentChanges.RecentChange;
 import io.github.pfwikis.bots.common.model.SemanticAsk;
 import io.github.pfwikis.bots.common.model.SemanticAsk.Result;
+import io.github.pfwikis.bots.common.model.LogEventsQuery;
 import okhttp3.HttpUrl;
 
 public class WikiAPI {
@@ -204,6 +209,23 @@ public class WikiAPI {
 			"list", "imageusage",
 			"iutitle", page
 		).getImageusage();
+	}
+	
+	public List<WUser> getAdmins() {
+		return query(AllusersQuery.class, 
+			"list", "allusers",
+			"augroup", "sysop",
+			"aulimit", "1000"
+		).getAllusers();
+	}
+	
+	public List<JsonNode> getLogEvents(ZonedDateTime end, String user) {
+		return query(LogEventsQuery.class, 
+			"list", "logevents",
+			"lelimit", "1",
+			"leend", end.toInstant().truncatedTo(ChronoUnit.SECONDS).toString(),
+			"leuser", user
+		).getLogevents();
 	}
 	
 	public boolean delete(String page, String reason) {

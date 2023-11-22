@@ -40,7 +40,7 @@ public class Discord implements Closeable {
 
 	@Override
 	public void close() throws IOException {
-		jda.getPresence().setActivity(null);
+		jda.getPresence().setActivity(Activity.customStatus("sleeping"));
 		jda.getPresence().setStatus(OnlineStatus.OFFLINE);
 		jda.shutdown();
 	}

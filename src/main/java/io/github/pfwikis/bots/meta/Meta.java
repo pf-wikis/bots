@@ -4,9 +4,7 @@ import java.util.stream.Collectors;
 
 import com.beust.jcommander.Parameters;
 
-import io.github.classgraph.ClassGraph;
 import io.github.pfwikis.bots.Runner;
-import io.github.pfwikis.bots.common.bots.Bot;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 
 @Parameters
@@ -23,22 +21,8 @@ public class Meta extends SimpleBot {
 	
 	@Override
 	protected String getDescription() {
-		var scan = new ClassGraph()
-			.acceptPackages(Runner.class.getPackageName())
-			.enableClassInfo()
-			.scan();
-		var bots = scan.getSubclasses(Bot.class)
+		var bots = Runner.getAllBots()
 			.stream()
-			.filter(bc->!bc.isAbstract())
-			.map(bc-> {
-				try {
-					return bc.loadClass(Bot.class)
-						.getConstructor()
-						.newInstance();
-				} catch (Exception e) {
-					throw new RuntimeException(e);
-				}
-			})
 			.map(b->"{{User:"+b.getBotName()+"/Status}}")
 			.sorted()
 			.collect(Collectors.joining("\n"));
