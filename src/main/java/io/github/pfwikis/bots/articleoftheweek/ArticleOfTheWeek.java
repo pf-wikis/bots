@@ -132,12 +132,12 @@ public class ArticleOfTheWeek extends SimpleBot {
 		else {
 			var sb = new StringBuilder()
 				.append("Chose ")
-				.append(discord.wikiLink(candidates.get(0).getTitle(), "/wiki/"+candidates.get(0).getTitle().replace(' ', '_')))
+				.append(discord.wikiLink(candidates.get(0).getTitle(), "/wiki/"+candidates.get(0).getTitle()))
 				.append("\nCandidates were:\n");
 			candidates.forEach(c-> {
 				sb
 					.append("* ")
-					.append(discord.wikiLink(c.getTitle(), "/wiki/"+c.getTitle().replace(' ', '_')))
+					.append(discord.wikiLink(c.getTitle(), "/wiki/"+c.getTitle()))
 					.append(" with an effective change size of "+c.getChangeSize()+"\n");
 			});
 			discord.report(sb.toString());

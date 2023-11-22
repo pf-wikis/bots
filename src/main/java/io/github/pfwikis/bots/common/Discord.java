@@ -51,12 +51,12 @@ public class Discord implements Closeable {
 			//append Icon
 			.append(isPathfinder()?"<:pf:1176801824620154951> ":"<:sf:1176801894086221824> ")
 			//append link to bot
-			.append(wikiLink(bot.getBotName(), "/wiki/User:"+bot.getBotName().replace(' ', '_')))
+			.append(wikiLink(bot.getBotName(), "/wiki/User:"+bot.getBotName()))
 			.append(": ");
 	}
 	
 	public String wikiLink(String linkText, String wikiRelativeURL) {
-		return MarkdownUtil.maskedLink(linkText, "https://"+(isPathfinder()?"path":"star")+"finderwiki.com"+wikiRelativeURL);
+		return MarkdownUtil.maskedLink(linkText, "https://"+(isPathfinder()?"path":"star")+"finderwiki.com"+wikiRelativeURL.replace(' ', '_'));
 	}
 
 	public void reportException(Exception e) {
