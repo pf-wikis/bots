@@ -174,7 +174,7 @@ public class UsageReporter extends SimpleBot {
 		var txt = "This shows how important every category is for page views. It does "
 				+ "incorporate category hierarchies. That means a pageview of [[Dwarf]] "
 				+ "would count as a [[:Category:Dwarf]] and a [[:Category:Races]] view. "
-				+ "A single page view can count as multiple visits of the same category, which"
+				+ "A single page view can count as multiple visits of the same category, which "
 				+ "is why this value is only given as an appeal score.\n"
 				+ MWTable.makeTable(
 				sorted,
