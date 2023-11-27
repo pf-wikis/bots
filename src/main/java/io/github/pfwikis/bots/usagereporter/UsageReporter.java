@@ -14,6 +14,7 @@ import org.apache.http.client.utils.URIBuilder;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
+import com.google.common.collect.Multiset.Entry;
 
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.utils.Jackson;
@@ -46,8 +47,9 @@ public class UsageReporter extends SimpleBot {
 
 	@Override
 	public void run() throws Exception {
-		referrer();
 		topCategories();
+		topResolvedCategories();
+		referrer();
 		topPages();
 		topSearches();
 		outlinks();
@@ -58,6 +60,7 @@ public class UsageReporter extends SimpleBot {
 			+"* [["+reportPage()+"/Top Pages|Top Pages]]\n"
 			+"* [["+reportPage()+"/Top Search Term|Top Search Term]]\n"
 			+"* [["+reportPage()+"/Top Categories|Top Categories]]\n"
+			+"* [["+reportPage()+"/Top Appealing Categories|Top Appealing Categories]]\n"
 			+"* [["+reportPage()+"/Outlinks|Outlinks]]\n"
 			+"* [["+reportPage()+"/Referrers|Referrers]]\n",
 			"Update top pages data"
@@ -112,7 +115,10 @@ public class UsageReporter extends SimpleBot {
 				.sorted(Comparator.comparing(e->-e.getValue()))
 				.toList();
 		
-		txt += "\n"+MWTable.makeTable(
+		txt += "This shows from which pages people come into the Wiki. So if they google someting and then"
+				+ "click on a wikilink this counts as <code>Search Engine</code> refferal. This information often blocked"
+				+ "in modern browsers, so the counts here can not be seen as total counts, but as a representative group.\n"
+				+ MWTable.makeTable(
 				summed,
 				List.of(
 						"Referrer",
@@ -121,7 +127,7 @@ public class UsageReporter extends SimpleBot {
 				r->"<code><nowiki>"+r.getKey()+"</nowiki></code>",
 				r->"%.1f".formatted(r.getValue()/7d)
 		);
-		run.getWiki().edit(reportPage()+"/Referrers", txt, "Update reporting pages data");
+		run.getWiki().edit(reportPage()+"/Referrers", txt+"[[Category:Bot created pages]]", "Update reporting pages data");
 	}
 	
 	private void topCategories() throws Exception {
@@ -139,7 +145,10 @@ public class UsageReporter extends SimpleBot {
 		);
 		results.removeIf(r->"Others".equals(r.getLabel()));
 		
-		var txt = MWTable.makeTable(
+		var txt = "This shows the percentage of page views in a category. It does not "
+				+ "incorporate category hierarchies yet. That means a pageview of [[Dwarf]] "
+				+ "would count for [[:Category:Dwarf]], but not [[:Category:Races]].\n"
+				+ MWTable.makeTable(
 				results,
 				List.of(
 						"Category",
@@ -148,7 +157,35 @@ public class UsageReporter extends SimpleBot {
 				r->"[[:Category:"+r.getLabel().replace('_', ' ')+"]]",
 				r->"%.1f%%".formatted(100*((double)r.getVisits())/all.getVisits())
 		);
-		run.getWiki().edit(reportPage()+"/Top Categories", txt, "Update reporting pages data");
+		run.getWiki().edit(reportPage()+"/Top Categories", txt+"[[Category:Bot created pages]]", "Update reporting pages data");
+	}
+	
+	private void topResolvedCategories() throws Exception {
+		var results = matomos(MatomoEvent.class,
+			"method", "Events.getNameFromActionId",
+			"period", "range",
+			"date", WEEK_RANGE,
+			"idSubtable", "1"
+		);
+		results.removeIf(r->"Others".equals(r.getLabel()));
+		var resolved = CategoryResolver.resolve(run.getWiki(), results);
+		var sorted = resolved.entrySet().stream().sorted(Comparator.<Entry<String>, Integer>comparing(Entry::getCount).reversed()).toList();
+		
+		var txt = "This shows how important every category is for page views. It does "
+				+ "incorporate category hierarchies. That means a pageview of [[Dwarf]] "
+				+ "would count as a [[:Category:Dwarf]] and a [[:Category:Races]] view. "
+				+ "A single page view can count as multiple visits of the same category, which"
+				+ "is why this value is only given as an appeal score.\n"
+				+ MWTable.makeTable(
+				sorted,
+				List.of(
+						"Category",
+						"Appeal"
+				),
+				r->"[[:"+r.getElement()+"|"+StringUtils.removeStart(r.getElement(), "Category:")+"]]",
+				r->"%d".formatted(100*r.getCount()/sorted.get(0).getCount())
+		);
+		run.getWiki().edit(reportPage()+"/Top Appealing Categories", txt+"[[Category:Bot created pages]]", "Update reporting pages data");
 	}
 
 	private void outlinks() throws Exception {
@@ -170,7 +207,8 @@ public class UsageReporter extends SimpleBot {
 				.sorted(Comparator.comparing(e->-e.getValue()))
 				.toList();
 			
-			var txt = MWTable.makeTable(
+			var txt = "This shows websites people go to from the pathfinderwiki through a link on the wiki.\n"
+					+ MWTable.makeTable(
 					summed,
 					List.of(
 						"Domain",
@@ -179,7 +217,7 @@ public class UsageReporter extends SimpleBot {
 					r->"<code>"+r.getKey()+"</code>",
 					r->"%.1f".formatted(r.getValue()/7d)
 			);
-			run.getWiki().edit(reportPage()+"/Outlinks", txt, "Update reporting pages data");
+			run.getWiki().edit(reportPage()+"/Outlinks", txt+"[[Category:Bot created pages]]", "Update reporting pages data");
 	}
 
 	private String domain(String label) {
@@ -200,7 +238,8 @@ public class UsageReporter extends SimpleBot {
 		);
 		results.removeIf(r->"Others".equals(r.getLabel()));
 		
-		var txt = MWTable.makeTable(
+		var txt = "This shows the most visited pages, how many distinct people visited them, and how long they stayed on average.\n"
+				+MWTable.makeTable(
 				results,
 				List.of(
 						"Page",
@@ -212,7 +251,7 @@ public class UsageReporter extends SimpleBot {
 				r->"data-sort-value=\""+r.getAverageSecondsOnPage()+"\"|"
 					+Duration.ofSeconds(r.getAverageSecondsOnPage()).toString().substring(2).replaceAll("(\\d[HMS])(?!$)", "$1 ").toLowerCase()
 		);
-		run.getWiki().edit(reportPage()+"/Top Pages", txt, "Update reporting pages data");
+		run.getWiki().edit(reportPage()+"/Top Pages", txt+"[[Category:Bot created pages]]", "Update reporting pages data");
 	}
 	
 	private void topSearches() throws Exception {
@@ -225,7 +264,8 @@ public class UsageReporter extends SimpleBot {
 		results.removeIf(r->r.getVisits() < 3);
 		
 		
-		var txt = MWTable.makeTable(
+		var txt = "This shows the most searched for terms on the wiki.\n"
+				+ MWTable.makeTable(
 				results,
 				List.of(
 						"Search",
@@ -237,7 +277,7 @@ public class UsageReporter extends SimpleBot {
 				r->"data-sort-value=\""+r.getAverageSecondsOnPage()+"\"|"
 					+Duration.ofSeconds(r.getAverageSecondsOnPage()).toString().substring(2).replaceAll("(\\d[HMS])(?!$)", "$1 ").toLowerCase()
 		);
-		run.getWiki().edit(reportPage()+"/Top Search Term", txt, "Update reporting pages data");
+		run.getWiki().edit(reportPage()+"/Top Search Term", txt+"[[Category:Bot created pages]]", "Update reporting pages data");
 	}
 
 	private <T> T matomo(Class<T> type, String... args) throws Exception {
@@ -256,7 +296,7 @@ public class UsageReporter extends SimpleBot {
 			throw new RuntimeException("Failed to parse matomo answer");
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private <T> List<T> matomos(Class<T> type, String... args) throws Exception {
 		T[] results = matomo((Class<T[]>)type.arrayType(), args);

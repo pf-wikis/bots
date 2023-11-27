@@ -8,6 +8,7 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -240,6 +241,17 @@ public class WikiAPI {
 			"gcmnamespace", namespace,
 			"gcmlimit", "1000"
 		).getPages();
+	}
+	
+	public List<Page> getCategories(String page) {
+		var result = query(PageQuery.class,
+				"prop", "categories",
+				"titles", page
+			).getPages().get(0).getCategories();
+		if(result == null) {
+			return Collections.emptyList();
+		}
+		return Arrays.asList(result);
 	}
 
 	public void protect(String title, String protections, String reason, String token) {
