@@ -21,7 +21,7 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package
-    - name: Activity Checker
+    - name: Run assistant
       env:
         ISSUE_TEMPLATE: ${{ steps.issue-parser.outputs.jsonString }}
       run: java -jar target/bots-0.0.0.jar assistant --password ${{ secrets.ROOT_BOT_PW }} --discordToken ${{ secrets.DISCORD_TOKEN }}

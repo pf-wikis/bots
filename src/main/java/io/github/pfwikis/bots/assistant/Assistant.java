@@ -102,5 +102,8 @@ public class Assistant extends SimpleBot {
 			run.getWiki().delete(oldFile, "Replaced with "+name);
 			discord.report("I replaced "+discord.wikiLink(oldFile, "/wiki/"+oldFile)+" with "+discord.wikiLink(name, "/wiki/"+name));
 		}
+		else {
+			throw new IllegalStateException("Unknown task");
+		}
 	}
 }
