@@ -8,4 +8,5 @@ public class Task {
     private TaskType task;
     private String image;
     private String replaceWith;
+    private String wiki;
 }

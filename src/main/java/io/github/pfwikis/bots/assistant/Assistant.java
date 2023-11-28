@@ -7,13 +7,13 @@ import java.util.Objects;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.beust.jcommander.Parameters;
 
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.common.model.Page;
+import io.github.pfwikis.bots.utils.Jackson;
 
 @Parameters
 public class Assistant extends SimpleBot {
@@ -25,33 +25,26 @@ public class Assistant extends SimpleBot {
 	@Override
 	protected String getDescription() {
 		return """
-		This bot executes the tasks given to it via the [[User:Bot Assistant/Tasks|tasks]] page. It understands the following tasks:
+		This bot executes the tasks given to it via the [https://github.com/pf-wikis/bots/issues/new/choose tasks page].
+		It is meant to start automized tasks with manually given parameters.
+		The tasks it understands are:
 		
 		===replaceImage===
 		This task is used to replace images with better version, that have a different extension.
 		This job uploads a new image with the same name as the given old image, but a new extension. It copies the description
 		from the original file. It then replaces every usage of the original file with the new file and then deletes the original
 		image.
-		====Parameters====
-		* '''task:''' replaceImage
-		* '''image:''' wiki image name
-		* '''replaceWith:''' full URL of an image to use instead
 		""";
 	}
 
 	@Override
 	public void run() throws Exception {
-		var tasks = loadConfig(Task[].class, "Tasks");
-		for(int i=0;i<tasks.length;i++) {
-			try {
-				var task = tasks[i];
+		//check if task is in environment variable
+		String env = System.getenv("ISSUE_TEMPLATE");
+		if(!StringUtils.isBlank(env)) {
+			var task = Jackson.JSON.readValue(env, Task.class);
+			if((run.isStarfinder()?"Starfinderwiki":"Pathfinderwiki").equals(task.getWiki()))
 				execute(task);
-				tasks = ArrayUtils.remove(tasks, i);
-				i--;
-				saveConfig(tasks, "Tasks", "Executed tasks");
-			} catch(Exception e) {
-				reportException(e);
-			}
 		}
 	}
 

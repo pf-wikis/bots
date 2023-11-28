@@ -9,6 +9,7 @@ public class BookIndex {
 	private String name;
 	private String bookId;
 	private String bookModifiedTime;
+	private boolean chapterBased;
 	private int pageOffset;
 	private List<Bookmark> bookmarks;
 	private List<String> removedTexts;

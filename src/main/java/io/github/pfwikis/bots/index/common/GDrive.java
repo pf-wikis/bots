@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
@@ -23,6 +24,9 @@ import com.google.api.services.drive.model.FileList;
 public enum GDrive {
 
 	INSTANCE;
+	
+	public static final String DIR_INDICES = "1Xr46iDgzbquIeQxVVV3OsnSPBHywxAWC";
+	public static final String DIR_MAPPED = "1UyjNBQamnXVNNbFPM4BKPVfbgX11h_3T";
 
 	private Drive service;
 	
@@ -58,7 +62,6 @@ public enum GDrive {
 			files.addAll(result.getFiles());
 			pageToken = result.getNextPageToken();
 		} while (pageToken != null);
-
 		return files;
 	}
 	
@@ -78,12 +81,26 @@ public enum GDrive {
 			.execute();
 	}
 	
-	public synchronized void createFile(String fileName, String mimeType, byte[] bytes) throws IOException {
+	public synchronized void createFile(String directory, String fileName, String mimeType, byte[] bytes) throws IOException {
 		File f = new File();
 		f.setName(fileName);
-		f.setParents(List.of("1Xr46iDgzbquIeQxVVV3OsnSPBHywxAWC"));
+		f.setParents(List.of(directory));
 		service.files().create(f, new ByteArrayContent(mimeType, bytes))
 			.execute();
+	}
+	
+	public synchronized void createOrUpdateFile(String directory, String fileName, String mimeType, byte[] bytes) throws IOException {
+		try {
+			var candidates = listFiles("name="+str(fileName)+" AND "+str(directory)+" in parents");
+			if(!candidates.isEmpty()) {
+				updateFile(candidates.get(0).getId(), fileName, mimeType, bytes);
+				return;
+			}	
+		} catch(GoogleJsonResponseException e) {
+			if(e.getStatusCode() != 404)
+				throw e;
+		}
+		createFile(directory, fileName, mimeType, bytes);
 	}
 	
 	public synchronized void deleteFile(String id) throws IOException {
@@ -101,5 +118,9 @@ public enum GDrive {
 				));
 	    return credential;
 
+	}
+	
+	public static String str(String input)  {
+		return "'"+input.replace("\\", "\\\\").replace("'", "\\'")+"'";
 	}
 }

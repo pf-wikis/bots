@@ -18,8 +18,12 @@ public class TokenizedBook {
 	private final Map<String, Token> tokens = new HashMap<>();
 
 	public void addWord(String word, int pageNumber) {
+		addWord(word, pageNumber, 1);
+	}
+	
+	public void addWord(String word, int pageNumber, int numberOfOccurences) {
 		var token = tokens.computeIfAbsent(word, k->new Token(k));
-		token.occurences.add(pageNumber);
+		var old = token.occurences.add(pageNumber, numberOfOccurences);
 	}
 	
 	@Data

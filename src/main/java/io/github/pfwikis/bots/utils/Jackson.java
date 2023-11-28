@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
+import com.fasterxml.jackson.datatype.guava.GuavaModule;
 
 public class Jackson {
 
@@ -25,7 +26,8 @@ public class Jackson {
 			.build()
 			.enable(YAMLGenerator.Feature.MINIMIZE_QUOTES)
 		)
-		.setDefaultPropertyInclusion(Include.NON_EMPTY);
+		.setDefaultPropertyInclusion(Include.NON_EMPTY)
+		.registerModule(new GuavaModule());
 		
 		JSON = new ObjectMapper()
 			.setDefaultPropertyInclusion(Include.NON_EMPTY)

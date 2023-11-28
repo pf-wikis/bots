@@ -1,18 +1,13 @@
 package io.github.pfwikis.bots.index.bookreader;
 
-import java.time.Instant;
-import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.beust.jcommander.Parameters;
 import com.google.common.util.concurrent.MoreExecutors;
 
-import io.github.pfwikis.bots.common.Style;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.index.common.GDrive;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +27,7 @@ public class BookReader extends SimpleBot {
 	@Override
 	public void beforeRuns() throws Exception {
 		var books = GDrive.INSTANCE.listFiles("mimeType='application/pdf'");
+		books.addAll(GDrive.INSTANCE.listFiles("mimeType='application/epub+zip'"));
 		var yamls = GDrive.INSTANCE.listFiles("fileExtension='yaml'");
 		var pool = localMode
 				?MoreExecutors.newDirectExecutorService()
@@ -39,22 +35,15 @@ public class BookReader extends SimpleBot {
 		
 		
 		Collections.sort(books, Comparator.comparing(b->b.getName()));
-		report.append("I have read:");
 
 		for(var book : books) {
-			report
-				.append("\n* [[")
-				.append(StringUtils.removeEnd(book.getName(), ".pdf").replace('_', ' '))
-				.append("|]] on ")
-				.append(Style.DATE_FORMAT.format(Instant.ofEpochMilli(book.getModifiedTime().getValue()).atOffset(ZoneOffset.UTC)));
-
 			var matchingYamls = yamls.stream().filter(y->y.getName().equals(book.getName()+".yaml")).toList();
 			yamls.removeAll(matchingYamls);
 			if(matchingYamls.size() == 0) {
-				pool.execute(new BookReadingJob(this, book, null));
+				pool.execute(new BookReadingJob(this, book, null, discord));
 			}
 			else if(matchingYamls.size() == 1) {
-				pool.execute(new BookReadingJob(this, book, matchingYamls.get(0)));
+				pool.execute(new BookReadingJob(this, book, matchingYamls.get(0), discord));
 			}
 			else {
 				reportException(new RuntimeException("Multiple matching yamls for book "+book));
@@ -73,7 +62,6 @@ public class BookReader extends SimpleBot {
 	
 	@Override
 	public void run() throws Exception {
-		discord.report(report.toString());
 	}
 
 
