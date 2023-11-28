@@ -1,0 +1,27 @@
+name: Replace Image
+description: Replaces a wiki image with the one from the given URL.
+title: "[Image Replacement]: "
+labels: ["task"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This also replaces all uses of the image in the wiki. Both images
+        need to have different extensions. If you want to replace an image
+        with the same extension use the wiki directly.
+  - type: input
+    id: image
+    attributes:
+      label: Image
+      description: The wiki image to replace.
+      placeholder: e.g. File:In the Footsteps of Horror.jpg
+    validations:
+      required: true
+  - type: input
+    id: replaceWith
+    attributes:
+      label: A full URL to the image that should replace the wiki image.
+      description: The image that should be on the wiki instead,
+      placeholder: e.g. https://mypage/image.webp
+    validations:
+      required: true
