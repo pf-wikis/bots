@@ -33,12 +33,20 @@ public abstract class Bot<RUN extends Run> {
 	public abstract void run() throws Exception;
 	
 	public void beforeRuns() throws Exception {}
+	public void afterRuns() throws Exception {}
 	
 	public synchronized void reportException(Exception e) {
 		hadError = true;
 		log.error("Reported exception ",e);
 		if(!localMode)
 			discord.reportException(e);
+	}
+	
+	public synchronized void reportException(String msg) {
+		hadError = true;
+		log.error("Reported exception: {}", msg);
+		if(!localMode)
+			discord.reportException(msg);
 	}
 
 	public synchronized void start() throws Exception {
@@ -63,6 +71,8 @@ public abstract class Bot<RUN extends Run> {
 					hadError = beforeRunsError;
 				}
 			}
+			
+			executeAfterRuns();
 		} finally {
 			discord.close();
 		}
@@ -71,6 +81,14 @@ public abstract class Bot<RUN extends Run> {
 	private void executeBeforeRuns() {
 		try {
 			beforeRuns();
+		} catch (Exception e) {
+			reportException(e);
+		}
+	}
+	
+	private void executeAfterRuns() {
+		try {
+			afterRuns();
 		} catch (Exception e) {
 			reportException(e);
 		}

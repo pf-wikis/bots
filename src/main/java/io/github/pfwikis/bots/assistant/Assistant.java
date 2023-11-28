@@ -14,9 +14,13 @@ import com.beust.jcommander.Parameters;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.common.model.Page;
 import io.github.pfwikis.bots.utils.Jackson;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Parameters
 public class Assistant extends SimpleBot {
+	
+	private boolean taskDone = false;
 
 	public Assistant() {
 		super("assistant", "Bot Assistant");
@@ -41,10 +45,20 @@ public class Assistant extends SimpleBot {
 	public void run() throws Exception {
 		//check if task is in environment variable
 		String env = System.getenv("ISSUE_TEMPLATE");
+		log.info("Got task from issue: {}", env);
 		if(!StringUtils.isBlank(env)) {
 			var task = Jackson.JSON.readValue(env, Task.class);
-			if((run.isStarfinder()?"Starfinderwiki":"Pathfinderwiki").equals(task.getWiki()))
+			if((run.isStarfinder()?"Starfinderwiki":"Pathfinderwiki").equals(task.getWiki())) {
 				execute(task);
+				taskDone = true;
+			}
+		}
+	}
+	
+	@Override
+	public void afterRuns() throws Exception {
+		if(!taskDone) {
+			reportException("Failed to run a task after being called.");
 		}
 	}
 

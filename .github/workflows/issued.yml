@@ -26,6 +26,6 @@ jobs:
         ISSUE_TEMPLATE: ${{ steps.issue-parser.outputs.jsonString }}
       run: java -jar target/bots-0.0.0.jar assistant --password ${{ secrets.ROOT_BOT_PW }} --discordToken ${{ secrets.DISCORD_TOKEN }}
     - name: Close Issue
-      run: gh issue close --comment "Issue Done" "${{ github.event.issue.issue_number }}"
+      run: gh issue close --comment "Issue Done" "${{ github.event.issue.number }}"
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

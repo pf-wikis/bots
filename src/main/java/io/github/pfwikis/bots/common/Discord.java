@@ -65,12 +65,16 @@ public class Discord implements Closeable {
 	}
 
 	public void reportException(Exception e) {
+		report(ExceptionUtils.getStackTrace(e));
+	}
+	
+	public void reportException(String txt) {
 		try {
 			var msg = messageHeader()
 				.append("**Error**\n")
 				//append error
 				.append("```java\n")
-				.append(ExceptionUtils.getStackTrace(e))
+				.append(txt)
 				.append("\n```");
 			
 			jda.getTextChannelById(CHANNEL_BOT_ACTIVITY)
