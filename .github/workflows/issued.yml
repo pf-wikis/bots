@@ -1,0 +1,31 @@
+name: Run tasks based on issues
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  bots:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: stefanbuck/github-issue-parser@v3
+      id: issue-parser
+      with:
+        template-path: .github/ISSUE_TEMPLATE/Replace Image.yaml
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: maven
+    - name: Build with Maven
+      run: mvn -B package
+    - name: Activity Checker
+      env:
+        ISSUE_TEMPLATE: ${{ steps.issue-parser.outputs.jsonString }}
+      run: java -jar target/bots-0.0.0.jar assistant --password ${{ secrets.ROOT_BOT_PW }} --discordToken ${{ secrets.DISCORD_TOKEN }}
+    - name: Close Issue
+      run: gh issue close --comment "Issue Done" "${{ github.event.issue.issue_number }}"
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
