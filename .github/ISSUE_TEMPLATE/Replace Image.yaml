@@ -9,6 +9,17 @@ body:
         This also replaces all uses of the image in the wiki. Both images
         need to have different extensions. If you want to replace an image
         with the same extension use the wiki directly.
+  - type: dropdown
+    id: wiki
+    attributes:
+      label: Wiki
+      multiple: false
+      options:
+        - Pathfinderwiki
+        - Starfinderwiki
+      default: 0
+    validations:
+      required: true
   - type: input
     id: image
     attributes:
