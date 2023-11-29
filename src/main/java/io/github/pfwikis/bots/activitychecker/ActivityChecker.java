@@ -40,7 +40,7 @@ public class ActivityChecker extends SimpleBot {
 		if(oldAdmins.size() > 1) {
 			var list = oldAdmins.stream().map(u->discord.wikiLink(u.getName(), "/wiki/User:"+u.getName())).collect(Collectors.joining(", "));
 			discord.reportToAdmins("<@171724557248364544> the admins "+list
-			+" have been inactive for more than 30 days and should lose their privileges.");
+			+" have been inactive for more than 6 months and should lose their privileges.");
 		}
 		else if(oldAdmins.size() == 1) {
 			var u = oldAdmins.get(0);
