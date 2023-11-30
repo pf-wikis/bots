@@ -15,6 +15,7 @@ import com.beust.jcommander.Parameters;
 
 import io.github.pfwikis.bots.common.Style;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
+import io.github.pfwikis.bots.utils.Retry;
 
 @Parameters
 public class NewsFeedReader extends SimpleBot {
@@ -47,11 +48,15 @@ public class NewsFeedReader extends SimpleBot {
 	private String collectFeed(String title, String url) {
 		try {
 			RssReader rssReader = new RssReader();
-			var items = rssReader.read(url)
+			var items = Retry.times(
+				()->rssReader.read(url)
 					.filter(i->filterByWiki(i))
 					.limit(3)
 					.map(this::renderEntry)
-					.toList();
+					.toList(),
+				5,
+				30
+			);
 			
 			return """
 			<div class="content-box">
