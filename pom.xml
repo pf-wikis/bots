@@ -68,7 +68,7 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-guava</artifactId>
-			<version>2.15.3</version>
+			<version>2.16.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
@@ -78,7 +78,7 @@
 		<dependency>
 			<groupId>com.google.apis</groupId>
 			<artifactId>google-api-services-drive</artifactId>
-			<version>v3-rev20230822-2.0.0</version>
+			<version>v3-rev20231120-2.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.concurrent-trees</groupId>
@@ -88,12 +88,12 @@
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.15.0</version>
+			<version>2.15.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.pdfbox</groupId>
 			<artifactId>pdfbox</artifactId>
-			<version>3.0.0</version>
+			<version>3.0.1</version>
 			<exclusions>
 				<exclusion>
 					<groupId>commons-logging</groupId>
