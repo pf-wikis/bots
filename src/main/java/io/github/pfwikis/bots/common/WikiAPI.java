@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.github.fastily.jwiki.core.Wiki;
 import io.github.fastily.jwiki.dwrap.Revision;
@@ -148,6 +149,7 @@ public class WikiAPI {
 	
 	private static final ObjectMapper JACKSON = new ObjectMapper()
 		.findAndRegisterModules()
+		.registerModule(new JavaTimeModule())
 		.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 	private <T> T query(Class<T> type, String... params) {
 		var query = this.<QueryResponse<T>>get(JACKSON.getTypeFactory().constructParametricType(QueryResponse.class, type), "query", params)

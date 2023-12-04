@@ -31,6 +31,7 @@ public class Jackson {
 		
 		JSON = new ObjectMapper()
 			.setDefaultPropertyInclusion(Include.NON_EMPTY)
-			.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+			.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+			.findAndRegisterModules();
 	}
 }
