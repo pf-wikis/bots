@@ -2,6 +2,7 @@ package io.github.pfwikis.bots.articleoftheweek;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -125,24 +126,29 @@ public class ArticleOfTheWeek extends SimpleBot {
 		candidates.sort(Comparator.comparing(Candidate::getChangeSize).reversed());
 		candidates.removeIf(c->c.getChangeSize()==0);
 		
-		if(candidates.size() == 0) {
+		var beforeRed = new ArrayList<>(candidates);
+		candidates.removeIf(c->hasTooManyRedLinks(c));
+		
+		if(beforeRed.isEmpty()) {
 			discord.report("There was no candidate matching my requirements.");
 			return null;
 		}
-		else {
-			var sb = new StringBuilder()
-				.append("Chose ")
-				.append(discord.wikiLink(candidates.get(0).getTitle(), "/wiki/"+candidates.get(0).getTitle()))
-				.append("\nCandidates were:\n");
-			candidates.forEach(c-> {
-				sb
-					.append("* ")
-					.append(discord.wikiLink(c.getTitle(), "/wiki/"+c.getTitle()))
-					.append(" with an effective change size of "+c.getChangeSize()+"\n");
-			});
-			discord.report(sb.toString());
-			return candidates.get(0);
+		if(candidates.isEmpty()) {
+			discord.report("I have to ignoring the red link criterium to find candidates.");
+			candidates = beforeRed;
 		}
+		var sb = new StringBuilder()
+			.append("Chose ")
+			.append(discord.wikiLink(candidates.get(0).getTitle(), "/wiki/"+candidates.get(0).getTitle()))
+			.append("\nCandidates were:\n");
+		candidates.forEach(c-> {
+			sb
+				.append("* ")
+				.append(discord.wikiLink(c.getTitle(), "/wiki/"+c.getTitle()))
+				.append(" with an effective change size of "+c.getChangeSize()+"\n");
+		});
+		discord.report(sb.toString());
+		return candidates.get(0);
 	}
 	
 	private boolean isValidPick(Candidate cand) {
@@ -164,14 +170,18 @@ public class ArticleOfTheWeek extends SimpleBot {
 			return false;
 		}
 		
+		return true;
+	}
+	
+	private boolean hasTooManyRedLinks(Candidate cand) {
 		//no red links
 		int links = cand.parsed.links().size();
 		long nonRedLinks = cand.parsed.links().stream().filter(l->l.exists()).count();
 		if(((double)nonRedLinks)/links < .95) {
 			log.info("Excluded {}\tbecause it has too many red links", cand.title);
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	
@@ -261,9 +271,10 @@ public class ArticleOfTheWeek extends SimpleBot {
 			* the article needs to have a minimum length
 			* the article needs to be in the MAIN namespace
 			* the aricle must not be in [[:Category:Real-world articles]]
-			* the article contains less than 5% red links
 			* from the remaining articles pick the one with the most additions
-			If no article is found the current article of the week is left in place.
+			* the article contains less than 5% red links
+			If no article is found this way, a second round is launched. In this round the red links criterium is ignored. If
+			there is still no match, the current article is kept.
 			""";
 	}
 
