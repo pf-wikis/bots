@@ -101,12 +101,12 @@ public class ArticleOfTheWeek extends SimpleBot {
 	}
 
 	private String cutText(Document html) {
-		var raw = html.body().children().toString();
+		var raw = html.body().html();
 		
 		//cut off sections
 		raw = raw.replaceAll("(?s)<h\\d.*", "");
 		html = Jsoup.parseBodyFragment(raw);
-		return html.body().children().toString();
+		return html.body().html();
 	}
 
 	private Candidate findArticle() {
@@ -161,6 +161,12 @@ public class ArticleOfTheWeek extends SimpleBot {
 		//not real world
 		if(cand.parsed.categories().stream().anyMatch(c->"Real-world_articles".equals(c.category()))) {
 			log.info("Excluded {}\tbecause it is a real-world article", cand.title);
+			return false;
+		}
+		
+		//not on ignore list
+		if(cand.parsed.categories().stream().anyMatch(c->"Should not be featured".equals(c.category()))) {
+			log.info("Excluded {}\tbecause it 'Should not be featured'", cand.title);
 			return false;
 		}
 		
@@ -270,7 +276,8 @@ public class ArticleOfTheWeek extends SimpleBot {
 			* the article has to have a PageImage
 			* the article needs to have a minimum length
 			* the article needs to be in the MAIN namespace
-			* the aricle must not be in [[:Category:Real-world articles]]
+			* the article must not be in [[:Category:Real-world articles]]
+			* the article must not be in [[:Category:Should not be featured]]
 			* from the remaining articles pick the one with the most additions
 			* the article contains less than 5% red links
 			If no article is found this way, a second round is launched. In this round the red links criterium is ignored. If
