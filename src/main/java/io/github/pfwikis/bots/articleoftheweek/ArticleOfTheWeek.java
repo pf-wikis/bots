@@ -5,6 +5,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -18,6 +19,7 @@ import io.github.pfwikis.bots.common.bots.Run.SingleRun;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.common.model.ParseResponse.Content;
 import io.github.pfwikis.bots.common.model.RecentChanges.RecentChange;
+import io.github.pfwikis.bots.common.model.SemanticAsk.Result;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -119,9 +121,11 @@ public class ArticleOfTheWeek extends SimpleBot {
 			.map(e-> new Candidate(e.getKey(), e.getValue()))
 			.toList());
 		
+		var shouldNotFeatureArticles = run.getWiki().semanticAsk("[[Category:Should not be featured]][[:+]]").stream().map(Result::getFulltext).collect(Collectors.toSet());
+		
 		
 		candidates.removeIf(c->!c.loadHTML(run));
-		candidates.removeIf(c->!isValidPick(c));
+		candidates.removeIf(c->!isValidPick(c, shouldNotFeatureArticles));
 		candidates.forEach(c->c.calculateChangeSize(run));
 		candidates.sort(Comparator.comparing(Candidate::getChangeSize).reversed());
 		candidates.removeIf(c->c.getChangeSize()==0);
@@ -151,7 +155,7 @@ public class ArticleOfTheWeek extends SimpleBot {
 		return candidates.get(0);
 	}
 	
-	private boolean isValidPick(Candidate cand) {
+	private boolean isValidPick(Candidate cand, Set<String> shouldNotFeatureArticles) {
 		//requires image
 		if(StringUtils.isBlank(cand.parsed.properties().getPage_image_free())) {
 			log.info("Excluded {}\tbecause it has no image", cand.title);
@@ -165,7 +169,7 @@ public class ArticleOfTheWeek extends SimpleBot {
 		}
 		
 		//not on ignore list
-		if(cand.parsed.categories().stream().anyMatch(c->"Should not be featured".equals(c.category()))) {
+		if(shouldNotFeatureArticles.contains(cand.title)) {
 			log.info("Excluded {}\tbecause it 'Should not be featured'", cand.title);
 			return false;
 		}
