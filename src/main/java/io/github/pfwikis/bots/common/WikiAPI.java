@@ -24,6 +24,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.github.fastily.jwiki.core.Wiki;
 import io.github.fastily.jwiki.dwrap.Revision;
+import io.github.pfwikis.bots.common.model.AllpagesQuery;
 import io.github.pfwikis.bots.common.model.AllusersQuery;
 import io.github.pfwikis.bots.common.model.AllusersQuery.WUser;
 import io.github.pfwikis.bots.common.model.ImageUsageQuery;
@@ -272,6 +273,14 @@ public class WikiAPI {
 			"gcmnamespace", namespace,
 			"gcmlimit", "5000"
 		).getPages();
+	}
+	
+	public List<Page> getPagesInNamespace(String namespace) {
+		return query(AllpagesQuery.class,
+			"list", "allpages",
+			"apnamespace", Integer.toString(wiki.getNS(namespace).v),
+			"aplimit", "5000"
+		).getAllpages();
 	}
 	
 	public List<Page> getCategories(String page) {

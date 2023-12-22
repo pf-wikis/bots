@@ -51,8 +51,8 @@ public abstract class Run {
 		
 		@Override
 		public void withMaster(Consumer<WikiAPI> task) {
-			task.accept(pfRun.masterWiki);
-			task.accept(sfRun.masterWiki);
+			pfRun.withMaster(task);
+			sfRun.withMaster(task);
 		}
 
 		public WikiAPI getPfWiki() {
