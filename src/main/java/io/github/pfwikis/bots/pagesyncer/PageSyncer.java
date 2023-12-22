@@ -43,13 +43,18 @@ public class PageSyncer extends DualBot {
             if(run.getPfWiki().pageExists(doc)) {
                 sync(doc, sfToken);
             }
+            
+            String style = "Style:"+page.substring(page.indexOf(":")+1);
+            if(run.getPfWiki().pageExists(style)) {
+                sync(style, sfToken);
+            }
         }
     }
 
     private void sync(String page, String token) throws IOException {
         var targetTxt = run.getPfWiki().getPageText(page);
         var sfText = run.getSfWiki().getPageText(page);
-        if(!page.startsWith("Module:") || page.endsWith("/doc")) {
+        if((!page.startsWith("Module:") || page.endsWith("/doc")) && !page.startsWith("Style:")) {
             targetTxt = "<noinclude><div class=\"banner\">"
                 + "This page is automatically synced from [https://pathfinderwiki.com/wiki/{{FULLPAGENAMEE}} this] pathfinderwiki page. "
                 + "Do not edit it here.</div></noinclude>"
