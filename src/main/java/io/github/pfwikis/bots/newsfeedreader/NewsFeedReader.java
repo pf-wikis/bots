@@ -41,7 +41,7 @@ public class NewsFeedReader extends SimpleBot {
 			</noinclude>
 			""";
 		
-		run.getWiki().editIfChange("Widget:News feeds", pageContent, "Automatic news feeds update");
+		run.getWiki().editIfChange("Template:News feeds", pageContent, "Automatic news feeds update");
 		
 	}
 	
@@ -159,7 +159,7 @@ public class NewsFeedReader extends SimpleBot {
 	@Override
 	protected String getDescription() {
 		return """
-		This bot is parsing the Paizo news feeds and creating the page [[Widget:News feeds]] from them.
+		This bot is parsing the Paizo news feeds and creating the page [[Template:News feeds]] from them.
 		It skips entries that are tagged only for %s.
 		""".formatted(run.isStarfinder()?"Pathfinder":"Starfinder");
 	}
