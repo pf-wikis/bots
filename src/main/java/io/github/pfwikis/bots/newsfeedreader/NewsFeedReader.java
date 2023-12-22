@@ -59,7 +59,7 @@ public class NewsFeedReader extends SimpleBot {
 			);
 			
 			return """
-			<div class="content-box">
+			<div class="content-box news-feeds">
 				<div class="title">%s</div>
 				<div class="content">%s</div>
 			</div>
