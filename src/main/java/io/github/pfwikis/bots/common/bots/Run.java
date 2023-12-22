@@ -8,7 +8,9 @@ import io.github.pfwikis.bots.common.WikiAPI;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Setter @Getter
 public abstract class Run {
 	
@@ -17,15 +19,27 @@ public abstract class Run {
 	
 	public abstract void withMaster(Consumer<WikiAPI> task);
 	
-	@Getter @Setter
 	@RequiredArgsConstructor
 	public static class SingleRun extends Run {
+		@Getter
 		private final boolean starfinder;
+		private final String masterAccount;
+		private final String masterPassword;
+		@Getter @Setter
 		private WikiAPI wiki;
 		private WikiAPI masterWiki;
 		
 		@Override
-		public void withMaster(Consumer<WikiAPI> task) {
+		public synchronized void withMaster(Consumer<WikiAPI> task) {
+			if(masterWiki == null) {
+				try {
+					masterWiki = new WikiAPI(starfinder, masterAccount, masterPassword);
+				} catch(Exception e) {
+					log.error("Failed to log in as {}", masterAccount, e);
+					System.exit(-1);
+				}
+				
+			}
 			task.accept(masterWiki);
 		}
 	}

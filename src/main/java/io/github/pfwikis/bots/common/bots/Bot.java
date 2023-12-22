@@ -139,19 +139,5 @@ public abstract class Bot<RUN extends Run> {
 
 	protected abstract List<RUN> createRuns();
 
-	protected void checkAccount(Run run) {
-		run.withMaster(wiki->{
-			try {
-				if(!wiki.accountExists(botName)) {
-					wiki.createAccount(botName, rootPassword+botName);
-					wiki.addRight(botName, "bot|sysop|techadmin", "never");
-				}
-			} catch(Exception e) {
-				log.error("Failed to check account {}", botName, e);
-				System.exit(-1);
-			}
-		});
-	}
-
 	protected abstract String getDescription();
 }

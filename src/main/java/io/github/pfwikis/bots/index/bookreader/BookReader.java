@@ -1,5 +1,8 @@
 package io.github.pfwikis.bots.index.bookreader;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.concurrent.Executors;
@@ -22,12 +25,13 @@ public class BookReader extends SimpleBot {
 		super("book-reader", "Bot Book Reader");
 	}
 	
-	private StringBuilder report = new StringBuilder();
-	
 	@Override
 	public void beforeRuns() throws Exception {
-		var books = GDrive.INSTANCE.listFiles("mimeType='application/pdf'");
-		books.addAll(GDrive.INSTANCE.listFiles("mimeType='application/epub+zip'"));
+		var books = Files.walk(Path.of("files"))
+			.map(Path::toFile)
+			.filter(File::isFile)
+			.filter(f->!f.getName().endsWith(".yaml"))
+			.toList();
 		var yamls = GDrive.INSTANCE.listFiles("fileExtension='yaml'");
 		var pool = localMode
 				?MoreExecutors.newDirectExecutorService()
@@ -40,10 +44,10 @@ public class BookReader extends SimpleBot {
 			var matchingYamls = yamls.stream().filter(y->y.getName().equals(book.getName()+".yaml")).toList();
 			yamls.removeAll(matchingYamls);
 			if(matchingYamls.size() == 0) {
-				pool.execute(new BookReadingJob(this, book, null, discord));
+				//TODO pool.execute(new BookReadingJob(this, book, null, discord));
 			}
 			else if(matchingYamls.size() == 1) {
-				pool.execute(new BookReadingJob(this, book, matchingYamls.get(0), discord));
+				//TODO pool.execute(new BookReadingJob(this, book, matchingYamls.get(0), discord));
 			}
 			else {
 				reportException(new RuntimeException("Multiple matching yamls for book "+book));

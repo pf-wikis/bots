@@ -46,11 +46,13 @@ public class WikiAPI {
 
 	public WikiAPI(boolean starfinder, String name, String password) {
 		String url = starfinder?"https://starfinderwiki.com":"https://pathfinderwiki.com";
-		wiki = new Wiki.Builder()
+		var b = new Wiki.Builder()
 	            .withDomain(url)
-	            .withApiEndpoint(HttpUrl.get(url+"/w/api.php"))
-	            .withLogin(name, password)
-	            .build();
+	            .withApiEndpoint(HttpUrl.get(url+"/w/api.php"));
+		if(name != null) {
+			b = b.withLogin(name, password);
+		}
+		wiki = b.build();
 	}
 	
 	public boolean upload(Path p, String title, String desc, String summary) {
@@ -152,7 +154,16 @@ public class WikiAPI {
 		.registerModule(new JavaTimeModule())
 		.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 	private <T> T query(Class<T> type, String... params) {
-		var query = this.<QueryResponse<T>>get(JACKSON.getTypeFactory().constructParametricType(QueryResponse.class, type), "query", params)
+		var resp = this.<QueryResponse<T>>get(
+			JACKSON.getTypeFactory()
+				.constructParametricType(QueryResponse.class, type),
+			"query",
+			params
+		);
+		if(!resp.batchcomplete()) {
+			throw new IllegalStateException("continue now supported but required");
+		}
+		var query = resp
 				.query();
 		if(query != null) {
 			return query;
@@ -191,11 +202,21 @@ public class WikiAPI {
 	}
 
 	public ParseResponse.Content getParsed(String title) {
-		return get(ParseResponse.class, "parse", "page", title).parse();
+		return get(ParseResponse.class, "parse",
+			"page", title,
+			"disablelimitreport", "true",
+			"disableeditsection", "true",
+			"disabletoc", "true"
+		).parse();
 	}
 	
 	public ParseResponse.Content getParsed(long oldid) {
-		return get(ParseResponse.class, "parse", "oldid", Long.toString(oldid)).parse();
+		return get(ParseResponse.class, "parse",
+			"oldid", Long.toString(oldid),
+			"disablelimitreport", "true",
+			"disableeditsection", "true",
+			"disabletoc", "true"
+		).parse();
 	}
 	
 	public List<Page> getPagesInCategory(String category) {
@@ -203,8 +224,16 @@ public class WikiAPI {
 			"generator", "categorymembers",
 			"gcmtitle", category,
 			"gcmprop", "ids",
-			"gcmlimit", "1000"
+			"gcmlimit", "5000"
 		).getPages();
+	}
+	
+	public List<Page> getPagesTranscluding(String template) {
+		return Arrays.asList(query(PageQuery.class,
+			"prop", "transcludedin",
+			"titles", template,
+			"tilimit", "5000"
+		).getPages().get(0).getTranscludedin());
 	}
 	
 	public List<Page> getImageUsage(String page) {
@@ -218,7 +247,7 @@ public class WikiAPI {
 		return query(AllusersQuery.class, 
 			"list", "allusers",
 			"augroup", "sysop",
-			"aulimit", "1000"
+			"aulimit", "5000"
 		).getAllusers();
 	}
 	
@@ -241,7 +270,7 @@ public class WikiAPI {
 			"gcmtitle", category,
 			"gcmprop", "ids",
 			"gcmnamespace", namespace,
-			"gcmlimit", "1000"
+			"gcmlimit", "5000"
 		).getPages();
 	}
 	

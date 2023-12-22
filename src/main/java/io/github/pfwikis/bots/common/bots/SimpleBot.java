@@ -23,21 +23,30 @@ public abstract class SimpleBot extends Bot<SingleRun> {
 	protected List<SingleRun> createRuns() {
 		var runs = new ArrayList<SingleRun>(2);
 		for(boolean starfinder : new boolean[] {false, true}) {
-			var run = new SingleRun(starfinder);
-			try {
-				run.setMasterWiki(new WikiAPI(starfinder, "VirenerusBot", rootPassword));
-			} catch(Exception e) {
-				log.error("Failed to log in as {}", botName, e);
-				System.exit(-1);
-			}
+			var run = new SingleRun(starfinder, "VirenerusBot", rootPassword);
 			
-			checkAccount(run);
-			
+			//try if login just works, otherwise try to create the account
 			try {
 				run.setWiki(new WikiAPI(starfinder, botName, getBotPassword()));
-			} catch(Exception e) {
-				log.error("Failed to log in as {}", botName, e);
-				System.exit(-1);
+			} catch(Exception ignore) {
+				run.withMaster(wiki->{
+					try {
+						if(!wiki.accountExists(botName)) {
+							wiki.createAccount(botName, rootPassword+botName);
+							wiki.addRight(botName, "bot|sysop|techadmin", "never");
+						}
+					} catch(Exception e) {
+						log.error("Failed to check account {}", botName, e);
+						System.exit(-1);
+					}
+				});
+				
+				try {
+					run.setWiki(new WikiAPI(starfinder, botName, getBotPassword()));
+				} catch(Exception e) {
+					log.error("Failed to log in as {}", botName, e);
+					System.exit(-1);
+				}
 			}
 			runs.add(run);
 		}

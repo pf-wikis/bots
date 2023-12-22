@@ -1,9 +1,18 @@
 package io.github.pfwikis.bots.common.model;
 
+import java.io.IOException;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JacksonException;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
+import io.github.pfwikis.bots.utils.Jackson;
 import lombok.Data;
 
 @Data
@@ -23,5 +32,31 @@ public class SemanticAsk {
 		private String fulltext;
         private String fullurl;
         private int namespace;
+        @JsonDeserialize(using = PrintoutsDeserializer.class)
+        private Printouts printouts;
+	}
+	
+	@Data
+	public static class Printouts {
+		@JsonProperty("Website")
+		private String[] website;
+
+	}
+	
+	public static class PrintoutsDeserializer extends StdDeserializer<Printouts> {
+
+		protected PrintoutsDeserializer() {
+			super(Jackson.JSON.getTypeFactory().constructSimpleType(Printouts.class, new JavaType[0]));
+		}
+
+		@Override
+		public Printouts deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
+			if(p.currentToken() == JsonToken.START_ARRAY) {
+				p.nextToken();
+				return new Printouts();
+			}
+			return (Printouts)ctxt.findRootValueDeserializer(this.getValueType()).deserialize(p, ctxt);
+		}
+		
 	}
 }

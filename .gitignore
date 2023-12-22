@@ -3,4 +3,4 @@
 .classpath
 .project
 service-account.json
-downloads
+files/*

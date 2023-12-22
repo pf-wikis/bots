@@ -28,21 +28,34 @@ public class Discord implements Closeable {
 	@Setter
 	private Run run;
 	private Bot<?> bot;
+	private boolean init = false;
 
-	public Discord(Bot<?> bot) throws InterruptedException {
+	public Discord(Bot<?> bot) {
 		this.bot = bot;
-		jda = JDABuilder.createDefault(bot.getDiscordToken()).build();
-		log.info("To add this bot to a server: {}", jda.getInviteUrl(Permission.MESSAGE_EXT_EMOJI, Permission.MESSAGE_SEND));
-		jda.awaitReady();
-		jda.getPresence().setActivity(Activity.customStatus("Running "+bot.getBotName()+(bot.isLocalMode()?" from a personal machine":"")));
-		jda.getPresence().setStatus(OnlineStatus.ONLINE);
+	}
+	
+	public synchronized void init() {
+		if(!init) {
+			try {
+				jda = JDABuilder.createDefault(bot.getDiscordToken()).build();
+				log.info("To add this bot to a server: {}", jda.getInviteUrl(Permission.MESSAGE_EXT_EMOJI, Permission.MESSAGE_SEND));
+				jda.awaitReady();
+				jda.getPresence().setActivity(Activity.customStatus("Running "+bot.getBotName()+(bot.isLocalMode()?" from a personal machine":"")));
+				jda.getPresence().setStatus(OnlineStatus.ONLINE);
+				init = true;
+			} catch(Exception e) {
+				log.error("Failed to init discord", e);
+			}
+		}
 	}
 
 	@Override
-	public void close() throws IOException {
-		jda.getPresence().setActivity(Activity.customStatus("sleeping"));
-		jda.getPresence().setStatus(OnlineStatus.OFFLINE);
-		jda.shutdown();
+	public synchronized void close() throws IOException {
+		if(init) {
+			jda.getPresence().setActivity(Activity.customStatus("sleeping"));
+			jda.getPresence().setStatus(OnlineStatus.OFFLINE);
+			jda.shutdown();
+		}
 	}
 	
 	private boolean isPathfinder() {
@@ -77,6 +90,7 @@ public class Discord implements Closeable {
 				.append(txt)
 				.append("\n```");
 			
+			init();
 			jda.getTextChannelById(CHANNEL_BOT_ACTIVITY)
 				.sendMessage(msg.toString())
 				.queue();
@@ -87,6 +101,7 @@ public class Discord implements Closeable {
 
 	public void report(String msg) {
 		try {
+			init();
 			jda.getTextChannelById(CHANNEL_BOT_ACTIVITY)
 				.sendMessage(messageHeader().append(msg).toString())
 				.queue();
@@ -97,6 +112,7 @@ public class Discord implements Closeable {
 	
 	public void reportToAdmins(String msg) {
 		try {
+			init();
 			jda.getTextChannelById(CHANNEL_ADMINS)
 				.sendMessage(new MessageCreateBuilder()
 					.setContent(messageHeader().append(msg).toString())

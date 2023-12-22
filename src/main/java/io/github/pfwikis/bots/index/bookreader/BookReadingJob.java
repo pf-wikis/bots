@@ -10,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.api.services.drive.model.File;
 
-import io.github.pfwikis.bots.common.Discord;
 import io.github.pfwikis.bots.index.common.GDrive;
 import io.github.pfwikis.bots.utils.Jackson;
 import io.github.pfwikis.bots.utils.StringHelper;
@@ -24,7 +23,6 @@ public class BookReadingJob implements Runnable {
 	private final BookReader bot;
 	private final File book;
 	private final File yaml;
-	private final Discord discord;
 
 	@Override
 	public void run() {
@@ -46,8 +44,6 @@ public class BookReadingJob implements Runnable {
 			else {
 				GDrive.INSTANCE.createFile(GDrive.DIR_INDICES, name+".yaml", "application/yaml", bytes);
 			}
-			
-			discord.report("I just read "+discord.wikiLink(name, "/wiki/"+name));
 		} catch(Exception e) {
 			log.error("Failed to read book {}", book.getName(), e);
 			bot.reportException(e);

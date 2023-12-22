@@ -23,6 +23,9 @@ public class Replacer extends SimpleBot {
 
 	@Override
 	public void run() throws IOException {
+		//new SemanticDataIniHelper(run).start();
+		return;
+		/*
 		if(run.isStarfinder())
 			return;
 		
@@ -64,8 +67,6 @@ public class Replacer extends SimpleBot {
 				run.getWiki().rename("Category:"+e.getKey(), "Category:"+e.getValue(), false, "Renamed category "+e.getKey()+" to "+e.getValue());
 		}
 		
-		
-		/*
 		//search and replace
 		for(var e : todo.entrySet()) {
 			for(var p:run.getWiki().getPagesInCategory("Category:"+e.getKey())) {

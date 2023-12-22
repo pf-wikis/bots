@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public class Jackson {
 
@@ -27,11 +28,13 @@ public class Jackson {
 			.enable(YAMLGenerator.Feature.MINIMIZE_QUOTES)
 		)
 		.setDefaultPropertyInclusion(Include.NON_EMPTY)
-		.registerModule(new GuavaModule());
+		.registerModule(new GuavaModule())
+		.registerModule(new JavaTimeModule());
 		
 		JSON = new ObjectMapper()
 			.setDefaultPropertyInclusion(Include.NON_EMPTY)
 			.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+			.registerModule(new JavaTimeModule())
 			.findAndRegisterModules();
 	}
 }
