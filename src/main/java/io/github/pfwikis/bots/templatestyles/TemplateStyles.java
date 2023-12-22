@@ -32,6 +32,7 @@ public class TemplateStyles extends SimpleBot {
 			var className = StringUtils.removeStart(style.getTitle(), "Style:")
 					.toLowerCase()
 					.replaceAll("[^a-z0-9]", "-");
+			if(Character.isDigit(className.charAt(0))) className = "template-"+className;
 			var txt = run.getWiki().getPageText(style.getTitle());
 			var result = CONSTANTS.get(run.isStarfinder())+"\n."+className+"{"+txt+"}";
 			
@@ -61,6 +62,7 @@ public class TemplateStyles extends SimpleBot {
 				.append(style.getTitle())
 				.append("*/\n")
 				.append(content);
+			log.info("Added {} to styles", style.getTitle());
 		}
 		
 		var result = new File("outputs/"+(run.isStarfinder()?"sf":"pf")+"/templatestyles.css");
