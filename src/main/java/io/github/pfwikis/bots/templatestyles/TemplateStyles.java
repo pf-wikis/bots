@@ -103,6 +103,14 @@ public class TemplateStyles extends SimpleBot {
 	        }
 	    }
 	}
+	
+	.clearfix() {
+	    &::after {
+	        clear: both;
+	        content: '';
+	        display: block;
+	    }
+	}
 	""";
 	
 	private static final Map<Boolean,String> CONSTANTS = Map.of(
