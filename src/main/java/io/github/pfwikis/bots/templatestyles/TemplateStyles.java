@@ -47,7 +47,7 @@ public class TemplateStyles extends SimpleBot {
 					.inheritIO()
 					.start().waitFor();
 				if(status != 0) {
-					log.error("Failed to compile less from {} with status {}", style.getTitle(), status);
+					reportException("Failed to compile less from https://%sfinderwiki.com/wiki/%s with status %s".formatted(run.isStarfinder()?"star":"path", style.getTitle(), status));
 					continue;
 				}
 			} catch (InterruptedException e) {
