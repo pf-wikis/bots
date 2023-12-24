@@ -22,24 +22,6 @@ jobs:
       run: java -jar target/bots-0.0.0.jar news-feed-reader --password ${{ secrets.ROOT_BOT_PW }} --discordToken ${{ secrets.DISCORD_TOKEN }}
     - name: Page Syncer
       run: java -jar target/bots-0.0.0.jar page-syncer --password ${{ secrets.ROOT_BOT_PW }} --discordToken ${{ secrets.DISCORD_TOKEN }}
-    - name: Install node
-      uses: actions/setup-node@v4
-      with:
-        node-version: current
-    - name: Template Styles
-      run: |
-        npm install less -g
-        java -jar target/bots-0.0.0.jar template-styles --password ${{ secrets.ROOT_BOT_PW }} --discordToken ${{ secrets.DISCORD_TOKEN }}
-    - name: Copy styles to server
-      uses: appleboy/scp-action@v0.1.4
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.SSH_USER }}
-        password: ${{ secrets.SSH_PASSWORD }}
-        source: "outputs/*"
-        target: /wikis/volumes/bots
-        strip_components: 1
-        overwrite: true
 
     # Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
