@@ -3,7 +3,6 @@ package io.github.pfwikis.bots.replacer;
 import java.io.IOException;
 
 import com.beust.jcommander.Parameters;
-import com.beust.jcommander.internal.Maps;
 
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import lombok.extern.slf4j.Slf4j;
@@ -23,13 +22,24 @@ public class Replacer extends SimpleBot {
 
 	@Override
 	public void run() throws IOException {
-		//new SemanticDataIniHelper(run).start();
-		return;
-		/*
-		if(run.isStarfinder())
+		new SemanticDataIniHelper(run).start();
+
+		/*if(run.isStarfinder())
 			return;
 		
+		var images = run.getWiki().getPagesInCategory("Category:Images of holy symbols");
+		for(var p:images) {
+			var text = run.getWiki().getPageText(p.getTitle());
+			var newText = text.replaceAll("\\| *keyword(\\d+) *= *holy symbols *\n", "| keyword$1 = religious symbols\n");
+			if(!newText.equals(text)) {
+				run.getWiki().edit(p.getTitle(), newText, "Renamed 'holy symbols' keyword to 'religious symbols'");
+			}
+			else {
+				log.warn("No luck on {}", p.getTitle());
+			}
+		}*/
 		
+		/*
 		var todo = Maps.newHashMap(
 			"Positive Energy Plane", "Creation's Forge",
 			"Positive Energy Plane/Inhabitants", "Creation's Forge/Inhabitants",

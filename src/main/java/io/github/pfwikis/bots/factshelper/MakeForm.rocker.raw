@@ -1,0 +1,30 @@
+@import static io.github.pfwikis.bots.factshelper.PropertyType.* 
+
+@args(FormDefinition form)
+<noinclude>
+{{WIP}}
+{{Bot created|Bot Facts Helper}}[[Category:Synced to starfinderwiki]]
+This is the "@form.getName()" form.
+To create a page with this form, see [[:Category:Facts about @form.getPluralName()]]
+
+</noinclude><includeonly>
+{{WIP}}
+{{{for template|Facts/@form.getName()}}}
+<div class="facts-form">
+@for(prop:form.getRProperties()) {
+<div class="facts-form-key @if(prop.getType() == BOOLEAN){inline}">@prop.getName()</div>
+<div class="facts-form-value">
+<div class="facts-form-input">{{{field
+|@prop.getName()
+}}}</div>@if(prop.getNote()!=null){
+<div class="facts-form-note">@prop.getNote()</div>
+}
+</div>
+}
+</div>
+{{{end template}}}
+
+'''Free text:'''
+
+{{{standard input|free text|rows=10}}}
+</includeonly>

@@ -78,7 +78,7 @@ public class Discord implements Closeable {
 	}
 
 	public void reportException(Exception e) {
-		report(ExceptionUtils.getStackTrace(e));
+		reportException(ExceptionUtils.getStackTrace(e));
 	}
 	
 	public void reportException(String txt) {

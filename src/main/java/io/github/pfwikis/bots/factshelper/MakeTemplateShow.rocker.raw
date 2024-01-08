@@ -1,0 +1,42 @@
+@args(FormDefinition formDef)
+
+<includeonly>{{#show: Facts:{{{page|}}}
+@for(prop:formDef.getRProperties()) {
+ |?@prop.getName()=@prop.getName()@?prop.getFactDisplayFormat()
+}
+ |userparam=Facts:{{{page|{{FULLPAGENAME}}}}}
+ |link=none
+ |format=plainlist
+ |template={{{template|}}}
+ |named args=yes
+ |valuesep=;
+ |searchlabel=
+ |default={{{default|}}}
+}}</includeonly><noinclude>
+{{Bot created|Bot Facts Helper}}
+This template allows you to call another template with all the fact properties of a page.
+It then provides all the properties as named parameters and the page it was called on as.
+<code><nowiki>{{{#userparam}}}</nowiki></code>.
+
+<templatedata>
+{
+	"params": {
+		"template": {
+			"description": "The template that should be called with the facts.",
+			"type": "wiki-template-name",
+			"suggested": true
+		},
+		"default": {
+			"description": "what to show if there are no results matching the query",
+			"type": "string"
+		},
+		"page": {
+			"description": "the page that the facts come from without the 'Facts:' namespace",
+			"type": "wiki-page-name",
+			"required": true
+		}
+	}
+}
+</templatedata>
+
+</noinclude>

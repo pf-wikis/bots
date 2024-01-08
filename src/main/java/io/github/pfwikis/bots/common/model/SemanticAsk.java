@@ -1,6 +1,7 @@
 package io.github.pfwikis.bots.common.model;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,6 +13,8 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
+import io.github.pfwikis.bots.factshelper.FactType;
+import io.github.pfwikis.bots.factshelper.PropertyType;
 import io.github.pfwikis.bots.utils.Jackson;
 import lombok.Data;
 
@@ -24,7 +27,7 @@ public class SemanticAsk {
 	
 	@Data
 	public static class Query {
-		private Map<String, Result> results;
+		private List<Map<String, Result>> results;
 	}
 	
 	@Data
@@ -40,7 +43,14 @@ public class SemanticAsk {
 	public static class Printouts {
 		@JsonProperty("Website")
 		private String[] website;
-
+		@JsonProperty("Has type")
+		private PropertyType[] hasType;
+		@JsonProperty("Has fact type")
+		private FactType[] hasFactType;
+		@JsonProperty("Has fact display format")
+		private String[] hasFactDisplayFormat;
+		@JsonProperty("Has fact note")
+		private String[] hasFactNote;
 	}
 	
 	public static class PrintoutsDeserializer extends StdDeserializer<Printouts> {

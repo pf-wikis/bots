@@ -1,0 +1,33 @@
+@args(FormDefinition formDef)
+<noinclude>
+{{Bot created|Bot Facts Helper}}
+{{#template_params:
+@for((i,prop):formDef.getRProperties()) {
+@if(!i.first()){|}@prop.getName() (property=@prop.getName())
+}
+}}
+[[Category:Synced to starfinderwiki]][[Category:Facts templates]]
+</noinclude><includeonly>
+<div class="facts-display>
+@for(prop:formDef.getRProperties()) {
+@DisplayTemplateField.template(prop.getName(), prop.getName()) -> {
+@prop.getFactType().displayFactCode(prop.getName())@prop.getFactType().storeFactCode(prop.getName())
+}
+}
+</div>
+
+<h3>Automatic properties</h3>
+<div class="facts-display>
+@DisplayTemplateField.template("Fact type", null) -> {[[Fact type::Template:Facts/@formDef.getName()]]}
+@* Add a release year if if there is a release date *@
+@if(formDef.getProperties().contains("Release date")) {
+@DisplayTemplateField.template("Release year", "Release date") -> {
+[[Release year::{{#show:{{FULLPAGENAME}}|?Release date#-F[Y]=|sort=Release date|order=ASC|limit=1|mainlabel=-|searchlabel=}}]]
+}}
+@DisplayTemplateField.template("Gallery page", null) -> {
+[[Gallery page::{{#if:{{{Gallery|}}}|Category:Artwork from {{{Gallery}}}|Category:Artwork from {{PAGENAME}}}}]]
+}
+</div>
+
+[[Category:Facts about @formDef.getPluralName()]]
+</includeonly>

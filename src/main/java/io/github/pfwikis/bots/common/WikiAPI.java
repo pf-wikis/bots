@@ -211,6 +211,16 @@ public class WikiAPI {
 		).parse();
 	}
 	
+	public ParseResponse.Content parseText(String text) {
+		return get(ParseResponse.class, "parse",
+			"text", text,
+			"contentmodel", "wikitext",
+			"disablelimitreport", "true",
+			"disableeditsection", "true",
+			"disabletoc", "true"
+		).parse();
+	}
+	
 	public ParseResponse.Content getParsed(long oldid) {
 		return get(ParseResponse.class, "parse",
 			"oldid", Long.toString(oldid),
@@ -230,11 +240,13 @@ public class WikiAPI {
 	}
 	
 	public List<Page> getPagesTranscluding(String template) {
-		return Arrays.asList(query(PageQuery.class,
-			"prop", "transcludedin",
-			"titles", template,
-			"tilimit", "5000"
-		).getPages().get(0).getTranscludedin());
+		var pages = query(PageQuery.class,
+				"prop", "transcludedin",
+				"titles", template,
+				"tilimit", "5000"
+			).getPages().get(0).getTranscludedin();
+		if(pages == null) return Collections.emptyList();
+		return Arrays.asList(pages);
 	}
 	
 	public List<Page> getImageUsage(String page) {
@@ -327,11 +339,11 @@ public class WikiAPI {
 
 	public ArrayList<Result> semanticAsk(String query) {
 		var results = new ArrayList<SemanticAsk.Result>();
-		var response = get(SemanticAsk.class, "ask", "query", query+"|limit=1000");
-		results.addAll(response.getQuery().getResults().values());
+		var response = get(SemanticAsk.class, "ask", "api_version", "3", "query", query+"|limit=1000");
+		response.getQuery().getResults().stream().flatMap(e->e.values().stream()).forEach(results::add);
 		while(response.getQueryContinueOffset() != null) {
-			response = get(SemanticAsk.class, "ask", "query", query+"|limit=1000|offset="+response.getQueryContinueOffset());
-			results.addAll(response.getQuery().getResults().values());
+			response = get(SemanticAsk.class, "ask", "api_version", "3", "query", query+"|limit=1000|offset="+response.getQueryContinueOffset());
+			response.getQuery().getResults().stream().flatMap(e->e.values().stream()).forEach(results::add);
 		}
 		return results;
 	}

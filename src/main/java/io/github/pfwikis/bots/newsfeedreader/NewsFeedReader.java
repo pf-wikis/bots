@@ -27,19 +27,10 @@ public class NewsFeedReader extends SimpleBot {
 	@Override
 	public void run() throws IOException {
 		String pageContent = 
-			"""
-			<noinclude>
-				This page was automatically created by the bot [[User:%s|]].<br><br>
-			</noinclude>
-			""".formatted(this.getBotName())
+			"<noinclude>{{Bot created|%s}}</noinclude>".formatted(this.getBotName())
 			+collectFeed("Paizo blog", "https://paizo.com/community/blog&xml=atom")
 			//TODO maybe use https://paizo.com/community/blog/tags/pathfinder&xml=atom
-			+collectFeed("Paizo news", "https://paizo.com/paizo/press&xml=atom")
-			+"""
-			<noinclude>
-				[[Category:Bot created pages]]
-			</noinclude>
-			""";
+			+collectFeed("Paizo news", "https://paizo.com/paizo/press&xml=atom");
 		
 		run.getWiki().editIfChange("Template:News feeds", pageContent, "Automatic news feeds update");
 		

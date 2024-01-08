@@ -67,6 +67,10 @@ public class UsageReporter extends SimpleBot {
 		);
 	}
 	
+	private String bot(){
+		return "<noinclude>{{Bot created|%s}}</noinclude>".formatted(getBotName());
+	}
+	
 	private void referrer() throws Exception {
 		var referrers = matomo(Referrers.class,
 			"method", "Referrers.get",
@@ -127,7 +131,7 @@ public class UsageReporter extends SimpleBot {
 				r->"<code><nowiki>"+r.getKey()+"</nowiki></code>",
 				r->"%.1f".formatted(r.getValue()/7d)
 		);
-		run.getWiki().edit(reportPage()+"/Referrers", txt+"[[Category:Bot created pages]]", "Update reporting pages data");
+		run.getWiki().edit(reportPage()+"/Referrers", bot()+txt, "Update reporting pages data");
 	}
 	
 	private void topCategories() throws Exception {
@@ -157,7 +161,7 @@ public class UsageReporter extends SimpleBot {
 				r->"[[:Category:"+r.getLabel().replace('_', ' ')+"]]",
 				r->"%.1f%%".formatted(100*((double)r.getVisits())/all.getVisits())
 		);
-		run.getWiki().edit(reportPage()+"/Top Categories", txt+"[[Category:Bot created pages]]", "Update reporting pages data");
+		run.getWiki().edit(reportPage()+"/Top Categories", bot()+txt, "Update reporting pages data");
 	}
 	
 	private void topResolvedCategories() throws Exception {
@@ -185,7 +189,7 @@ public class UsageReporter extends SimpleBot {
 				r->"[[:"+r.getElement()+"|"+StringUtils.removeStart(r.getElement(), "Category:")+"]]",
 				r->"%d".formatted(100*r.getCount()/sorted.get(0).getCount())
 		);
-		run.getWiki().edit(reportPage()+"/Top Appealing Categories", txt+"[[Category:Bot created pages]]", "Update reporting pages data");
+		run.getWiki().edit(reportPage()+"/Top Appealing Categories", bot()+txt, "Update reporting pages data");
 	}
 
 	private void outlinks() throws Exception {
@@ -217,7 +221,7 @@ public class UsageReporter extends SimpleBot {
 					r->"<code>"+r.getKey()+"</code>",
 					r->"%.1f".formatted(r.getValue()/7d)
 			);
-			run.getWiki().edit(reportPage()+"/Outlinks", txt+"[[Category:Bot created pages]]", "Update reporting pages data");
+			run.getWiki().edit(reportPage()+"/Outlinks", bot()+txt, "Update reporting pages data");
 	}
 
 	private String domain(String label) {
@@ -251,7 +255,7 @@ public class UsageReporter extends SimpleBot {
 				r->"data-sort-value=\""+r.getAverageSecondsOnPage()+"\"|"
 					+Duration.ofSeconds(r.getAverageSecondsOnPage()).toString().substring(2).replaceAll("(\\d[HMS])(?!$)", "$1 ").toLowerCase()
 		);
-		run.getWiki().edit(reportPage()+"/Top Pages", txt+"[[Category:Bot created pages]]", "Update reporting pages data");
+		run.getWiki().edit(reportPage()+"/Top Pages", bot()+txt, "Update reporting pages data");
 	}
 	
 	private void topSearches() throws Exception {
@@ -277,7 +281,7 @@ public class UsageReporter extends SimpleBot {
 				r->"data-sort-value=\""+r.getAverageSecondsOnPage()+"\"|"
 					+Duration.ofSeconds(r.getAverageSecondsOnPage()).toString().substring(2).replaceAll("(\\d[HMS])(?!$)", "$1 ").toLowerCase()
 		);
-		run.getWiki().edit(reportPage()+"/Top Search Term", txt+"[[Category:Bot created pages]]", "Update reporting pages data");
+		run.getWiki().edit(reportPage()+"/Top Search Term", bot()+txt, "Update reporting pages data");
 	}
 
 	private <T> T matomo(Class<T> type, String... args) throws Exception {

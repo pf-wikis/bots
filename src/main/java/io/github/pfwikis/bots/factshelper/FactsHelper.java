@@ -1,13 +1,17 @@
 package io.github.pfwikis.bots.factshelper;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Jsoup;
 
 import com.beust.jcommander.Parameters;
+import com.fizzed.rocker.RockerModel;
 
 import io.github.pfwikis.bots.common.bots.SimpleBot;
+import io.github.pfwikis.bots.common.model.SemanticAsk.Result;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -20,122 +24,72 @@ public class FactsHelper extends SimpleBot {
 
 	@Override
 	public void run() throws IOException {
-		var properties = run.getWiki().semanticAsk("[[Property:+]][[Has type::+]]")
-				.stream()
-				.map(p->StringUtils.removeStart(p.getFulltext(), "Property:"))
-				.sorted()
-				.toList();
-		var allProperties = properties.stream()
-				.map(p->toSMWProp(p))
-				.collect(Collectors.joining());
-		var token = run.getWiki().requestToken("csrf");
+		if(run.isStarfinder()) return;
 		
-		for(var page:run.getWiki().getPagesInCategory("Category:Facts templates")) {
-			var text = """
-				<includeonly>{{%s
-				 |userparam=Facts:{{{page|{{FULLPAGENAME}}}}}
-				 |link=none
-				 |format=plainlist
-				 |template={{{template|}}}
-				 |named args=yes
-				 |valuesep=;
-				 |searchlabel=
-				 |default={{{default|}}}
-				}}</includeonly><noinclude>
-				<div class="banner">
-                This page is automatically created by [[User:Bot Facts Helper]].
-                Do not edit it manually. Ask for a change of the bot in the discord instead.
-                </div>
-				This template allows you to call another template with all the fact properties of a page.
-				It then provides all the properties as named parameters and the page it was called on as.
-				<code><nowiki>{{{#userparam}}}</nowiki></code>.
-				
-				<templatedata>
-				{
-					"params": {
-						"template": {
-							"description": "The template that should be called with the facts.",
-							"type": "wiki-template-name",
-							"suggested": true
-						}
-						,"default": {
-							"description": "what to show if there are no results matching the query",
-							"type": "string"
-						}%s
-					}
-				}
-				</templatedata>
-				
-				</noinclude>""";
-
-			run.getWiki().editIfChange(
-				page.getTitle()+"/Show",
-				text.formatted(
-					"#show: Facts:{{{page|}}}\n" + allProperties,
-					"""
-					,"page": {
-						"description": "the page that the facts come from without the 'Facts:' namespace",
-						"type": "wiki-page-name",
-						"required": true
-					}
-					"""
-				),
-				"Update show template"
-			);
-			run.getWiki().protect(page.getTitle(), "edit=sysop|move=sysop", "Automatically created page", token);
-			
-			run.getWiki().editIfChange(
-				page.getTitle()+"/Ask",
-				text.formatted(
-					"""
-					#ask: [[Fact type::%s]]{{{query|}}}\n
-					 |limit=1000
-					 |introtemplate={{{introtemplate|}}}
-					 |outrotemplate={{{outrotemplate|}}}
-					 |sort={{{sort|}}}
-					 |order=asc
-					""".formatted(page.getTitle()) + allProperties,
-					"""
-					,"query": {
-						"description": "The semantic wiki query to select pages with. Filtering for the right Fact type is already done.",
-						"type": "string",
-						"suggested": true
-					}
-					,"introtemplate": {
-						"description": "The template called before the first queried entity.",
-						"type": "wiki-template-name"
-					}
-					,"outrotemplate": {
-						"description": "The template called after the first queried entity.",
-						"type": "wiki-template-name"
-					}
-					,"sort": {
-						"description": "the property, or properties, to sort the results by",
-						"type": "string"
-					}
-					"""
-				),
-				"Update ask template"
-			);
+		var formDefs = this.loadConfig(FormDefinition[].class);
+		var props = run.getWiki().semanticAsk("[[Has type::+]]|?Has type|?Has fact type|?Has fact display format")
+			.stream()
+			.map(this::createDefinition)
+			.collect(Collectors.toMap(d->d.getName(), d->d));
+		
+		for(var formDef:formDefs) {
+			try {
+				formDef.setRProperties(formDef.getProperties().stream()
+					.map(n->
+						Optional.ofNullable(props.get(n))
+						.orElseThrow(()->new RuntimeException("Could not find definition for Property:"+n))
+					)
+					.toList());
+				make("Template:Facts/"+formDef.getName(), MakeTemplate.template(formDef));
+				make("Template:Facts/"+formDef.getName()+"/Input", MakeTemplateInput.template(formDef));
+				make("Template:Facts/"+formDef.getName()+"/Ask", MakeTemplateAsk.template(formDef));
+				make("Template:Facts/"+formDef.getName()+"/Show", MakeTemplateShow.template(formDef));
+				make("Form:"+formDef.getName(), MakeForm.template(formDef));
+				make("Category:Facts about "+formDef.getPluralName(), MakeCategory.template(formDef));
+			} catch(Exception e) {
+				this.reportException(new RuntimeException("Failed to create facts utilities for "+formDef.getName(), e));
+			}
 		}
+	}
+	
+	private void make(String page, RockerModel template) {
+		var txt = template
+				.render().toString();
+		run.getWiki().editIfChange(page, txt, "Automatic regeneration of template");
+	}
+	
+	private PropertyDefinition createDefinition(Result rawProp) {
+		var res = new PropertyDefinition(
+			rawProp.getFulltext().substring(9),
+			rawProp.getPrintouts().getHasType()[0],
+			assumeNoneOrOne(rawProp.getPrintouts().getHasFactType()),
+			assumeNoneOrOne(rawProp.getPrintouts().getHasFactDisplayFormat()),
+			assumeNoneOrOne(rawProp.getPrintouts().getHasFactNote())
+		);
+		return res;
+	}
+	
+	private <T> T assumeNoneOrOne(T[] values) {
+		if(values == null || values.length == 0)
+			return null;
+		if(values.length == 1)
+			return values[0];
+		else
+			throw new IllegalStateException("More than one value unexpectedly");
 	}
 
 	@Override
 	protected String getDescription() {
 		return
 			"""
-			This bot automatically creates the Show and Ask helper templates to each template in
-			[[:Category:Facts_templates]].
+			This bot automatically creates the following for each for defined in [[User:Bot Facts Helper/Config|here]]:
+			* '''Template:Facts/...:''' to specify facts of the given kind.
+			* '''Template:Facts/.../Input:''' a template showing an input to easily create a new entity
+			* '''Template:Facts/.../Ask:''' to easily call a template for each entity of the type.
+			* '''Template:Facts/.../Show:''' to easily call a template with the properties of a single entity the type.
+			* '''Form:...:''' a form to edit entities of this type automatically.
+			* '''Category:Facts about ...:''' the category that organizes the facts.
 			""";
 	}
 		
-	private String toSMWProp(String prop) {
-		prop = prop.strip();
-		var style = switch(prop) {
-			case "Release date" -> "#LOCL";
-			default -> "";
-		};
-		return " |?"+prop+style+"="+prop+"\n";
-	}
-
 }

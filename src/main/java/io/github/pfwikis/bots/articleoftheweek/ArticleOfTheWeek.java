@@ -41,25 +41,21 @@ public class ArticleOfTheWeek extends SimpleBot {
 		
 		String pageContent = 
 			"""
-			<includeonly>%s</includeonly><noinclude>
-			This page was automatically created by the bot [[User:%s|]]. See its page for the criteria used.<br><br>
+			<noinclude>
+			{{Bot created|%s}}
 			{{#widget:Article of the Week}}
-			[[Category:Bot created pages]]
-			</noinclude>
-			""".formatted(cutText(article.html), this.getBotName());
+			</noinclude><includeonly>%s</includeonly>
+			""".formatted(this.getBotName(), cutText(article.html));
 		
 		run.getWiki().editIfChange("Widget:Article of the Week", pageContent, "Automatic article of the week pick.");
 		
 		pageContent = 
 			"""
+			<noinclude>{{Bot created|%s}}</noinclude>
 			{{Content box
 			|title=This week's featured article: [[%s]]
-			|content=%s}}<noinclude>
-			This page was automatically created by the bot [[User:%s|]]. See its page for the criteria used.<br><br>
-			
-			[[Category:Bot created pages]]
-			</noinclude>
-			""".formatted(article.getTitle(), render(article), this.getBotName());
+			|content=%s}}
+			""".formatted(this.getBotName(), article.getTitle(), render(article));
 		
 		run.getWiki().editIfChange("Template:Article of the Week", pageContent, "Automatic article of the week pick.");
 		

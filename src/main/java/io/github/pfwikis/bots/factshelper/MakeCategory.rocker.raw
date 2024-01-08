@@ -1,0 +1,6 @@
+@args(FormDefinition formDef)
+{{#default_form:@formDef.getName()}}
+
+{{Facts/@formDef.getName()/Input}}
+[[Category:Facts|@formDef.getPluralName()]]
+[[Category:Synced to starfinderwiki]]
