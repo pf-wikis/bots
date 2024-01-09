@@ -51,6 +51,8 @@ public class SemanticAsk {
 		private String[] hasFactDisplayFormat;
 		@JsonProperty("Has fact note")
 		private String[] hasFactNote;
+		@JsonProperty("Suggest values from")
+		private String[] suggestValuesFrom;
 	}
 	
 	public static class PrintoutsDeserializer extends StdDeserializer<Printouts> {

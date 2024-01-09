@@ -15,4 +15,5 @@ public class PropertyDefinition {
 	private final FactType factType;
 	private final String factDisplayFormat;
 	private final String note;
+	private final String suggestValuesFrom;
 }

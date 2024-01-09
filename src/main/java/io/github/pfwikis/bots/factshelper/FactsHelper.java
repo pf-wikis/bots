@@ -3,9 +3,6 @@ package io.github.pfwikis.bots.factshelper;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.jsoup.Jsoup;
 
 import com.beust.jcommander.Parameters;
 import com.fizzed.rocker.RockerModel;
@@ -27,7 +24,12 @@ public class FactsHelper extends SimpleBot {
 		if(run.isStarfinder()) return;
 		
 		var formDefs = this.loadConfig(FormDefinition[].class);
-		var props = run.getWiki().semanticAsk("[[Has type::+]]|?Has type|?Has fact type|?Has fact display format")
+		var props = run.getWiki().semanticAsk("[[Has type::+]]"
+				+ "|?Has type"
+				+ "|?Has fact type"
+				+ "|?Has fact display format"
+				+ "|?Suggest values from"
+			)
 			.stream()
 			.map(this::createDefinition)
 			.collect(Collectors.toMap(d->d.getName(), d->d));
@@ -64,7 +66,8 @@ public class FactsHelper extends SimpleBot {
 			rawProp.getPrintouts().getHasType()[0],
 			assumeNoneOrOne(rawProp.getPrintouts().getHasFactType()),
 			assumeNoneOrOne(rawProp.getPrintouts().getHasFactDisplayFormat()),
-			assumeNoneOrOne(rawProp.getPrintouts().getHasFactNote())
+			assumeNoneOrOne(rawProp.getPrintouts().getHasFactNote()),
+			assumeNoneOrOne(rawProp.getPrintouts().getSuggestValuesFrom())
 		);
 		return res;
 	}
