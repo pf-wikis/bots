@@ -20,7 +20,7 @@ To create a page with this form, see [[:Category:Facts about @form.getPluralName
 |@prop.getName()
 @if(prop.getFactType() == IMAGE) {|input type=combobox|values from namespace=File}
 else if(prop.getFactType() == PAGE_LIST) {|list|input type=tokens|delimiter=;@*|values from category=Artists*@}
-else {|input type=combobox}
+else if(prop.getType() == TEXT || prop.getType() == PAGE) {|input type=combobox}
 @if(startsWith(prop.getSuggestValuesFrom(), "Category:")) {|values from category=@prop.getSuggestValuesFrom().substring(9)}
 else if(startsWith(prop.getSuggestValuesFrom(), "Namespace:")) {|values from namepsace=@prop.getSuggestValuesFrom().substring(10)}
 }}}</div>@if(prop.getNote()!=null){
