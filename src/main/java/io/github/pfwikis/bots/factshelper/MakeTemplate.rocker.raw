@@ -19,7 +19,7 @@
 }
 <div class="facts-display>
 @for(prop:form.getRProperties()) {
-@DisplayTemplateField.template(prop.getName(), prop.getName()) -> {
+@DisplayTemplateField.template(prop.getName(), prop.getFactType().displayFactCode(prop.getName())) -> {
 @prop.getFactType().displayFactCode(prop.getName())@prop.getFactType().storeFactCode(prop.getName())@prop.getFactType().formSpecial(prop.getName())
 }
 }
@@ -30,7 +30,7 @@
 @DisplayTemplateField.template("Fact type", null) -> {[[Fact type::Template:Facts/@form.getName()]]}
 @* Add a release year if if there is a release date *@
 @if(form.getProperties().contains("Release date")) {
-@DisplayTemplateField.template("Release year", "Release date") -> {
+@DisplayTemplateField.template("Release year", "{{{Release date|}}}") -> {
 [[Release year::{{#show:{{FULLPAGENAME}}|?Release date#-F[Y]=|sort=Release date|order=ASC|limit=1|mainlabel=-|searchlabel=}}]]
 }}
 else if(form.getSubForms().stream().anyMatch(s->s.getProperties().contains("Release date"))){

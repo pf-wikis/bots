@@ -49,7 +49,13 @@ public enum FactType {
 		public String subFormSpecial(String propName) {
 			return "{{#set:|Author={{{$1|}}}|+sep=;}}".replace("$1", propName);
 		}
-	};
+	},
+	REPRESENTED_BY_PAGE(
+			"Represented by page",
+			"{{#if:{{{$1|}}}|[[{{{$1}}}]]|{{#ifexist:{{ROOTPAGENAME}}|''default value:'' [[{{ROOTPAGENAME}}]]}}}}",
+			"{{#if:{{{$1|}}}|{{#set:$1={{{$1}}}}}|{{#ifexist:{{ROOTPAGENAME}}|{{#set:$1={{ROOTPAGENAME}}}}}}}}",
+			"{{#if:{{{$1|}}}|{{#set:$1={{{$1}}}}}|{{#ifexist:{{ROOTPAGENAME}}|{{#set:$1={{ROOTPAGENAME}}}}}}}}"
+	);
 	
 	private final static Map<String, FactType> MAP = Arrays.stream(FactType.values()).collect(Collectors.toMap(f->f.id, f->f));
 	

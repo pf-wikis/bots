@@ -22,7 +22,7 @@ Only show the properties on the /Sections subpage
 }}
 <div class="facts-display>
 @for(prop:form.getRProperties()) {
-@DisplayTemplateField.template(prop.getName(), prop.getName()) -> {
+@DisplayTemplateField.template(prop.getName(), prop.getFactType().displayFactCode(prop.getName())) -> {
 @prop.getFactType().displayFactCode(prop.getName())
 }
 }
