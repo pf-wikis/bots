@@ -4,7 +4,7 @@
 @for(prop:form.getRProperties()) {
  |?@prop.getName()=@prop.getName()@?prop.getFactDisplayFormat()
 }
- |limit=1000
+ |limit={{{limit|1000}}}
  |introtemplate={{{introtemplate|}}}
  |outrotemplate={{{outrotemplate|}}}
  |sort={{{sort|}}}
@@ -51,6 +51,11 @@ It then provides all the properties as named parameters and the page it was call
 		"sort": {
 			"description": "the property, or properties, to sort the results by",
 			"type": "string"
+		},
+		"limit": {
+			"description": "how many results to show at most",
+			"type": "number",
+			"default": "1000"
 		}
 	}
 }
