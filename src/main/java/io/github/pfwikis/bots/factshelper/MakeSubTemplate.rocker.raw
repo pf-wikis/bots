@@ -41,6 +41,6 @@ Only store the properties if this template is transcluded into a root page.
 }}<!--
 
 Copy some fields to parent
--->@for(prop:form.getRProperties()) {@prop.getFactType().subFormSpecial(prop.getName())}
+-->@for(prop:form.getRProperties()) {@prop.getFactType().subFormAtEnd(prop)}
 }}
 </includeonly>

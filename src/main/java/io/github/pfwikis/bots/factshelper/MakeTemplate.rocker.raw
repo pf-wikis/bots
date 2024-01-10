@@ -20,7 +20,7 @@
 <div class="facts-display facts-display-@form.toCSSName()">
 @for(prop:form.getRProperties()) {
 @DisplayTemplateField.template(prop.getName(), prop.getFactType().displayFactCode(prop.getName())) -> {
-@prop.getFactType().displayFactCode(prop.getName())@prop.getFactType().storeFactCode(prop.getName())@prop.getFactType().formSpecial(prop.getName())
+@prop.getFactType().displayFactCode(prop.getName())@prop.getFactType().storeFactCode(prop.getName())@prop.getFactType().formAfterSet(prop)
 }
 }
 </div>
@@ -39,7 +39,8 @@ else if(form.getSubForms().stream().anyMatch(s->s.getProperties().contains("Rele
 [[Release year::{{#ask:[[-Has subobject::{{FULLPAGENAME}}]][[Fact type::Template:Facts/@form.getName()/@sub.getName()]][[Release date::+]]|?Release date#-F[Y]=|sort=Release date|order=ASC|limit=1|mainlabel=-|searchlabel=}}]]
 }
 @DisplayTemplateField.template("Release date", null) -> {
-[[Release date::{{#ask:[[-Has subobject::{{FULLPAGENAME}}]][[Fact type::Template:Facts/@form.getName()/@sub.getName()]][[Release date::+]]|?Release date=|sort=Release date|order=ASC|limit=1|mainlabel=-|searchlabel=}}]]
+[[Release date::{{#ask:[[-Has subobject::{{FULLPAGENAME}}]][[Fact type::Template:Facts/@form.getName()/@sub.getName()]][[Release date::+]]|?Release date#ISO-P=|sort=Release date|order=ASC|limit=1|mainlabel=-|searchlabel=}}]]
+[[Release date precision::{{#ask:[[-Has subobject::{{FULLPAGENAME}}]][[Fact type::Template:Facts/@form.getName()/@sub.getName()]][[Release date::+]]|?Release date precision=|sort=Release date|order=ASC|limit=1|mainlabel=-|searchlabel=}}]]
 }
 }}
 @DisplayTemplateField.template("Gallery page", null) -> {

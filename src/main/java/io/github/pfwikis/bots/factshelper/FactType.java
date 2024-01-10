@@ -18,6 +18,17 @@ public enum FactType {
 			"{{#set:$1={{{$1|}}}}}",
 			"|$1={{{$1|}}}"
 	),
+	DATE(
+			"Date",
+			"{{{$1|}}} ''(precsion "+datePrecision()+")''",
+			"{{#set:$1={{{$1|}}}}}",
+			"|$1={{{$1|}}}|$1 precision="+datePrecision()
+	) {
+		@Override
+		public String formAfterSet(PropertyDefinition prop) {
+			return ("{{#set:$1 precision="+datePrecision()+"}}").replace("$1", prop.getName());
+		}
+	},
 	PAGE_LIST(
 			"Page list",
 			"{{#arraymap:{{{$1|}}}|;|~|[[~]]}}",
@@ -38,16 +49,16 @@ public enum FactType {
 	) {
 		
 		@Override
-		public String formSpecial(String propName) {
-			if(!"Author".equals(propName)) {
-				return "{{#set:Author={{{$1|}}}|+sep=;}}".replace("$1", propName);
+		public String formAfterSet(PropertyDefinition prop) {
+			if(!"Author".equals(prop.getName())) {
+				return "{{#set:Author={{{$1|}}}|+sep=;}}".replace("$1", prop.getName());
 			}
 			return "";
 		}
 		
 		@Override
-		public String subFormSpecial(String propName) {
-			return "{{#set:|Author={{{$1|}}}|+sep=;}}".replace("$1", propName);
+		public String subFormAtEnd(PropertyDefinition prop) {
+			return "{{#set:|Author={{{$1|}}}|+sep=;}}".replace("$1", prop.getName());
 		}
 	},
 	REPRESENTED_BY_PAGE(
@@ -81,15 +92,24 @@ public enum FactType {
 		return storeFactCode.replace("$1", propName);
 	}
 	
-	public String formSpecial(String propName) {
+	public String subFormAtEnd(PropertyDefinition prop) {
 		return "";
 	}
 	
-	public String subFormSpecial(String propName) {
+	public String formAfterSet(PropertyDefinition prop) {
 		return "";
 	}
 	
 	public String storeSubFactCode(String propName) {
 		return storeSubFactCode.replace("$1", propName);
+	}
+	
+	private final static String datePrecision() { 
+		return
+			"{{#rmatch:{{{$1|}}}|^\\d{4}-\\d{1,2}-\\d{1,2}$|date|"
+				+ "{{#rmatch:{{{$1|}}}|^\\d{4}-\\d{1,2}$|month|"
+					+ "{{#rmatch:{{{$1|}}}|^\\d{4}$|year|unknown}}"
+				+ "}}"
+			+ "}}";
 	}
 }
