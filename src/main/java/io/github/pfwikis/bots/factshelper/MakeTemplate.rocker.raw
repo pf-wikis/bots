@@ -1,33 +1,62 @@
-@args(FormDefinition formDef)
+@args(FormDefinition form)
 <noinclude>
 {{Bot created|Bot Facts Helper}}
 {{#template_params:
-@for((i,prop):formDef.getRProperties()) {
+@for((i,prop):form.getRProperties()) {
 @if(!i.first()){|}@prop.getName() (property=@prop.getName())
 }
 }}
 [[Category:Synced to starfinderwiki]][[Category:Facts templates]]
 </noinclude><includeonly>
+@if(!form.getSubForms().isEmpty()) {
+<div class="facts-display-header">
+  <div class="facts-display-header-item">[[Facts:{{ROOTPAGENAME}}|General @form.getName() Facts]]</div>
+  @for(sub:form.getSubForms()) {
+  <div class="facts-display-header-item">{{#ifeq:{{PAGENAME}}|{{ROOTPAGENAME}}/@sub.getPluralName()|@sub.getPluralName()|{{#formredlink:target=Facts:{{ROOTPAGENAME}}/@sub.getPluralName()|form=@form.getName()/@sub.getName()|link text=Create @sub.getPluralName()|existing page link text=@sub.getPluralName()}}}}</div>
+  }
+</div>
+
+}
 <div class="facts-display>
-@for(prop:formDef.getRProperties()) {
+@for(prop:form.getRProperties()) {
 @DisplayTemplateField.template(prop.getName(), prop.getName()) -> {
-@prop.getFactType().displayFactCode(prop.getName())@prop.getFactType().storeFactCode(prop.getName())
+@prop.getFactType().displayFactCode(prop.getName())@prop.getFactType().storeFactCode(prop.getName())@prop.getFactType().formSpecial(prop.getName())
 }
 }
 </div>
 
 <h3>Automatic properties</h3>
 <div class="facts-display>
-@DisplayTemplateField.template("Fact type", null) -> {[[Fact type::Template:Facts/@formDef.getName()]]}
+@DisplayTemplateField.template("Fact type", null) -> {[[Fact type::Template:Facts/@form.getName()]]}
 @* Add a release year if if there is a release date *@
-@if(formDef.getProperties().contains("Release date")) {
+@if(form.getProperties().contains("Release date")) {
 @DisplayTemplateField.template("Release year", "Release date") -> {
 [[Release year::{{#show:{{FULLPAGENAME}}|?Release date#-F[Y]=|sort=Release date|order=ASC|limit=1|mainlabel=-|searchlabel=}}]]
+}}
+else if(form.getSubForms().stream().anyMatch(s->s.getProperties().contains("Release date"))){
+@with(sub=form.getSubForms().stream().filter(s->s.getProperties().contains("Release date")).findAny().get()) {
+@DisplayTemplateField.template("Release year", null) -> {
+[[Release year::{{#ask:[[-Has subobject::{{FULLPAGENAME}}]][[Fact type::Template:Facts/@form.getName()/@sub.getName()]][[Release date::+]]|?Release date#-F[Y]=|sort=Release date|order=ASC|limit=1|mainlabel=-|searchlabel=}}]]
+}
+@DisplayTemplateField.template("Release date", null) -> {
+[[Release date::{{#ask:[[-Has subobject::{{FULLPAGENAME}}]][[Fact type::Template:Facts/@form.getName()/@sub.getName()]][[Release date::+]]|?Release date=|sort=Release date|order=ASC|limit=1|mainlabel=-|searchlabel=}}]]
+}
 }}
 @DisplayTemplateField.template("Gallery page", null) -> {
 [[Gallery page::{{#if:{{{Gallery|}}}|Category:Artwork from {{{Gallery}}}|Category:Artwork from {{PAGENAME}}}}]]
 }
 </div>
+<div class="facts-subforms"><!--
 
-[[Category:Facts about @formDef.getPluralName()]]
+These can be ignored.
+-->@for(sub:form.getSubForms()) {
+<--!The counter just reset the counter before listing the subelements so their order can be preserved.
+-->{{#counter: @sub.getName()-counter|set=0}}
+{{#counter: @sub.getName()-sort-counter|set=0}}
+<--!This link can not go into a #ifexists, otherwise new entries are not propagated correctly.
+-->{{{{FULLPAGENAME}}/@sub.getPluralName()}}
+}
+</div>
+
+[[Category:Facts about @form.getPluralName()]]
 </includeonly>

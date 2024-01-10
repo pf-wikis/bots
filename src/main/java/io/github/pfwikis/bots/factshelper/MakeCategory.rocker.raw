@@ -1,6 +1,6 @@
-@args(FormDefinition formDef)
-{{#default_form:@formDef.getName()}}
+@args(String name, String pluralName, FormDefinition formDef)
+{{#default_form:@name}}
 
-{{Facts/@formDef.getName()/Input}}
-[[Category:Facts|@formDef.getPluralName()]]
+@if(!name.contains("/")){{{Facts/@name/Input}}}
+[[Category:Facts|@pluralName]]
 [[Category:Synced to starfinderwiki]]

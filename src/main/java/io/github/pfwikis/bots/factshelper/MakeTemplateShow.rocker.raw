@@ -1,7 +1,7 @@
-@args(FormDefinition formDef)
+@args(String name, FormDefinition form)
 
 <includeonly>{{#show: Facts:{{{page|}}}
-@for(prop:formDef.getRProperties()) {
+@for(prop:form.getRProperties()) {
  |?@prop.getName()=@prop.getName()@?prop.getFactDisplayFormat()
 }
  |userparam=Facts:{{{page|{{FULLPAGENAME}}}}}

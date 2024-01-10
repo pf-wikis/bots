@@ -53,6 +53,8 @@ public class SemanticAsk {
 		private String[] hasFactNote;
 		@JsonProperty("Suggest values from")
 		private String[] suggestValuesFrom;
+		@JsonProperty("Copy to parent")
+		private boolean[] copyToParent;
 	}
 	
 	public static class PrintoutsDeserializer extends StdDeserializer<Printouts> {

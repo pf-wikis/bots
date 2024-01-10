@@ -1,5 +1,6 @@
 package io.github.pfwikis.bots.factshelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -15,4 +16,5 @@ public class FormDefinition {
 	private List<String> properties;
 	@JsonIgnore
 	private List<PropertyDefinition> rProperties;
+	private List<FormDefinition> subForms = new ArrayList<>();
 }

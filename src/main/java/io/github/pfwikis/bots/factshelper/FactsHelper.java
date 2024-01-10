@@ -1,6 +1,7 @@
 package io.github.pfwikis.bots.factshelper;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -35,25 +36,58 @@ public class FactsHelper extends SimpleBot {
 			.collect(Collectors.toMap(d->d.getName(), d->d));
 		
 		for(var formDef:formDefs) {
-			try {
-				formDef.setRProperties(formDef.getProperties().stream()
-					.map(n->
-						Optional.ofNullable(props.get(n))
-						.orElseThrow(()->new RuntimeException("Could not find definition for Property:"+n))
-					)
-					.toList());
-				make("Template:Facts/"+formDef.getName(), MakeTemplate.template(formDef));
-				make("Template:Facts/"+formDef.getName()+"/Input", MakeTemplateInput.template(formDef));
-				make("Template:Facts/"+formDef.getName()+"/Ask", MakeTemplateAsk.template(formDef));
-				make("Template:Facts/"+formDef.getName()+"/Show", MakeTemplateShow.template(formDef));
-				make("Form:"+formDef.getName(), MakeForm.template(formDef));
-				make("Category:Facts about "+formDef.getPluralName(), MakeCategory.template(formDef));
-			} catch(Exception e) {
-				this.reportException(new RuntimeException("Failed to create facts utilities for "+formDef.getName(), e));
-			}
+			handleForm(props, formDef);
 		}
 	}
 	
+	private void handleForm(Map<String, PropertyDefinition> props, FormDefinition form) {
+		try {
+			mapFacts(props, form);
+			make("Template:Facts/"+form.getName(), MakeTemplate.template(form));
+			make("Template:Facts/"+form.getName()+"/Input", MakeTemplateInput.template(form));
+			make("Template:Facts/"+form.getName()+"/Ask", MakeTemplateAsk.template(form.getName(), form));
+			make("Template:Facts/"+form.getName()+"/Show", MakeTemplateShow.template(form.getName(), form));
+			make("Form:"+form.getName(), MakeForm.template(form.getName(), form.getPluralName(), form));
+			make("Category:Facts about "+form.getPluralName(), MakeCategory.template(form.getName(), form.getPluralName(), form));
+			
+			for(var subForm:form.getSubForms()) {
+				handleSubForm(props, form, subForm);
+			}
+		} catch(Exception e) {
+			this.reportException(new RuntimeException("Failed to create facts utilities for "+form.getName(), e));
+		}
+	}
+	
+	private void mapFacts(Map<String, PropertyDefinition> props, FormDefinition form) {
+		form.setRProperties(form.getProperties().stream()
+			.map(n->
+				Optional.ofNullable(props.get(n))
+				.orElseThrow(()->new RuntimeException("Could not find definition for Property:"+n))
+			)
+			.toList());
+		
+		for(var p:form.getRProperties()) {
+			if(p.getFactType() == null) {
+				throw new IllegalStateException("Fact type is null for "+p.getName());
+			}
+		}
+	}
+
+	private void handleSubForm(Map<String, PropertyDefinition> props, FormDefinition parent, FormDefinition form) {
+		try {
+			mapFacts(props, form);
+			var slashName = parent.getName()+"/"+form.getName();
+			var spaceName = parent.getName()+" "+form.getPluralName();
+			make("Template:Facts/"+slashName, MakeSubTemplate.template(parent, form));
+			make("Template:Facts/"+slashName+"/Ask", MakeTemplateAsk.template(slashName, form));
+			make("Template:Facts/"+slashName+"/Show", MakeTemplateShow.template(slashName, form));
+			make("Form:"+slashName, MakeForm.template(slashName, spaceName, form));
+			make("Category:Facts about "+spaceName, MakeCategory.template(slashName, spaceName, form));
+		} catch(Exception e) {
+			this.reportException(new RuntimeException("Failed to create facts utilities for "+form.getName(), e));
+		}
+	}
+
 	private void make(String page, RockerModel template) {
 		var txt = template
 				.render().toString();

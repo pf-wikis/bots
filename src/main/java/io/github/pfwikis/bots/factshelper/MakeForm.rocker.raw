@@ -2,16 +2,14 @@
 @import static io.github.pfwikis.bots.factshelper.FactType.*
 @import static org.apache.commons.lang3.StringUtils.startsWith
 
-@args(FormDefinition form)
+@args(String name, String pluralName, FormDefinition form)
 <noinclude>
-{{WIP}}
 {{Bot created|Bot Facts Helper}}[[Category:Synced to starfinderwiki]]
-This is the "@form.getName()" form.
-To create a page with this form, see [[:Category:Facts about @form.getPluralName()]]
+This is the ''@name'' form.
+To create a page with this form, see [[:Category:Facts about @pluralName]]
 
 </noinclude><includeonly>
-{{WIP}}
-{{{for template|Facts/@form.getName()}}}
+{{{for template|Facts/@name}}}
 <div class="facts-form">
 @for(prop:form.getRProperties()) {
 <div class="facts-form-key @if(prop.getType() == BOOLEAN){inline}">@prop.getName()</div>
@@ -19,7 +17,7 @@ To create a page with this form, see [[:Category:Facts about @form.getPluralName
 <div class="facts-form-input">{{{field
 |@prop.getName()
 @if(prop.getFactType() == IMAGE) {|input type=combobox|values from namespace=File}
-else if(prop.getFactType() == PAGE_LIST) {|list|input type=tokens|delimiter=;@*|values from category=Artists*@}
+else if(prop.getFactType() == PAGE_LIST || prop.getFactType() == AUTHOR) {|list|input type=tokens|delimiter=;@*|values from category=Artists*@}
 else if(prop.getType() == TEXT || prop.getType() == PAGE) {|input type=combobox}
 @if(startsWith(prop.getSuggestValuesFrom(), "Category:")) {|values from category=@prop.getSuggestValuesFrom().substring(9)}
 else if(startsWith(prop.getSuggestValuesFrom(), "Namespace:")) {|values from namepsace=@prop.getSuggestValuesFrom().substring(10)}
