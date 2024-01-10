@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fizzed.rocker.RockerContent;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -17,4 +18,8 @@ public class FormDefinition {
 	@JsonIgnore
 	private List<PropertyDefinition> rProperties;
 	private List<FormDefinition> subForms = new ArrayList<>();
+	
+	public String toCSSName() {
+		return name.toLowerCase().replaceAll("[^a-z0-9]+", "-");
+	}
 }

@@ -20,7 +20,7 @@ Only show the properties on the /Sections subpage
   }
 </div>
 }}
-<div class="facts-display>
+<div class="facts-display facts-display-@parent.toCSSName()-@form.toCSSName()">
 @for(prop:form.getRProperties()) {
 @DisplayTemplateField.template(prop.getName(), prop.getFactType().displayFactCode(prop.getName())) -> {
 @prop.getFactType().displayFactCode(prop.getName())
