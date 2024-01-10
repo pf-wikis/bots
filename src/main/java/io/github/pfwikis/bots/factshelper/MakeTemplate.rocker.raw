@@ -17,7 +17,7 @@
 </div>
 
 }
-<div class="facts-display facts-display-@parent.toCSSName()-@form.toCSSName()">
+<div class="facts-display facts-display-@form.toCSSName()">
 @for(prop:form.getRProperties()) {
 @DisplayTemplateField.template(prop.getName(), prop.getFactType().displayFactCode(prop.getName())) -> {
 @prop.getFactType().displayFactCode(prop.getName())@prop.getFactType().storeFactCode(prop.getName())@prop.getFactType().formSpecial(prop.getName())
@@ -26,7 +26,7 @@
 </div>
 
 <h3>Automatic properties</h3>
-<div class="facts-display facts-display-@parent.toCSSName()-@form.toCSSName()">
+<div class="facts-display facts-display-@form.toCSSName()">
 @DisplayTemplateField.template("Fact type", null) -> {[[Fact type::Template:Facts/@form.getName()]]}
 @* Add a release year if if there is a release date *@
 @if(form.getProperties().contains("Release date")) {
