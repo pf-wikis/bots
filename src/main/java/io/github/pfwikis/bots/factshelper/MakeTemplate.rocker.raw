@@ -50,9 +50,9 @@ else if(form.getSubForms().stream().anyMatch(s->s.getProperties().contains("Rele
 
 These can be ignored.
 -->@for(sub:form.getSubForms()) {
-<--!The counter just reset the counter before listing the subelements so their order can be preserved.
+<!--The counter just reset the counter before listing the subelements so their order can be preserved.
 -->{{#counter: @sub.getName()-counter|set=0}}
-<--!This link can not go into a #ifexists, otherwise new entries are not propagated correctly.
+<!--This link can not go into a #ifexists, otherwise new entries are not propagated correctly.
 -->{{{{FULLPAGENAME}}/@sub.getPluralName()}}
 }
 </div>

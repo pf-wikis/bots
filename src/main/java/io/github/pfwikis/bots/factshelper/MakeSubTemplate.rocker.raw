@@ -37,7 +37,7 @@ Only store the properties if this template is transcluded into a root page.
 {{#subobject:
 |Fact type=Template:Facts/@parent.getName()/@form.getName()
 @for(prop:form.getRProperties()) {@prop.getFactType().storeSubFactCode(prop.getName())}
-|@@sortkey={{#counter: @form.getName()-counter | padlength=3 }}
+|@@sortkey={{#counter: @form.getName()-counter | pad length=3 }}
 }}<!--
 
 Copy some fields to parent
