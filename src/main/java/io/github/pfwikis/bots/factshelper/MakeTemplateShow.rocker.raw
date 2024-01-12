@@ -2,7 +2,10 @@
 
 <includeonly>{{#show: Facts:{{{page|}}}
 @for(prop:form.getRProperties()) {
- |?@prop.getName()=@prop.getName()@?prop.getFactDisplayFormat()
+ |?@prop.getName()@?prop.getFactDisplayFormat()=@prop.getName()
+}
+@if(form.getProperties().contains("Gallery")) {
+ |?Gallery page=Gallery page
 }
  |userparam=Facts:{{{page|{{FULLPAGENAME}}}}}
  |link=none

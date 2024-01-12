@@ -1,0 +1,50 @@
+@import static io.github.pfwikis.bots.factshelper.PropertyType.* 
+@import static io.github.pfwikis.bots.factshelper.FactType.*
+@import static org.apache.commons.lang3.StringUtils.startsWith
+
+@args(FormDefinition form)
+<noinclude>
+{{Bot created|Bot Facts Helper}}
+[[Category:Synced to starfinderwiki]]
+</noinclude><div class="infobox @form.toCSSName()">
+	<div class="name">{{#if:{{{Full title|}}}|{{{Full title}}}|{{{Name}}}}}</div>
+	{{#ifexist:{{{Image}}}|<div class="image">[[{{{Image}}}|250px|Cover Image]]</div>}}
+	{{#if:{{{Website|}}}|
+		<div class="website">
+			{{#if:{{{Pubcode|}}}|[{{{Website}}} {{{Pubcode}}}]|[{{{Website}}} Publisher's product page]}}
+		</div>
+	}}
+	<div class="type">({{#if:{{{@form.getName() type|}}}|{{{@form.getName() type}}}|@form.getName()}})</div>
+	<div class="table">
+	@for(prop:form.getRProperties()) {
+		{{#if:{{{@prop.getName()|}}}|<div class="key">@prop.getName()</div><div>{{{@prop.getName()}}}</div>}}
+	}
+<!--
+
+
+
+Query the releases for this book and render the release block
+-->{{Facts/Book/Release/Ask
+ |query=[[-Has subobject::{{{#userparam}}}]]
+ |template=Infobox/Book/Release
+ |introtemplate=Infobox/Book/Release/Intro
+ |outrotemplate=Infobox/Book/Release/Outro
+ |sort=Release date,Release type
+}}<!--
+End of releases block
+
+
+-->
+		{{#if:{{{Gallery page|}}}|<div class="full-width works-by">[[:{{{Gallery page|}}}|Artwork from this book]]</div>}}
+
+        <!--maybe show the other authors and artists in an expandable div?-->
+	</div>
+</div><!--
+
+
+Categories based on the properties. Might be different in the wikis.
+-->{{Infobox/Book/Categories
+@for(prop:form.getRProperties()) {
+|@prop.getName() = {{{@prop.getName()|}}}
+}
+}}

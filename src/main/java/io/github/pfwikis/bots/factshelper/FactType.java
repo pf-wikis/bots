@@ -20,7 +20,7 @@ public enum FactType {
 	),
 	DATE(
 			"Date",
-			"{{{$1|}}} ''(precsion "+datePrecision()+")''",
+			"{{#if:{{{$1|}}}|{{{$1|}}} ''(precision of "+datePrecision()+")''}}",
 			"{{#set:$1={{{$1|}}}}}",
 			"|$1={{{$1|}}}|$1 precision="+datePrecision()
 	) {

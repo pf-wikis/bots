@@ -22,7 +22,23 @@ public class Replacer extends SimpleBot {
 
 	@Override
 	public void run() throws IOException {
-		new SemanticDataIniHelper(run).start();
+		//new SemanticDataIniHelper(run).start();
+		for(var p:run.getWiki().getPagesTranscluding("Template:Infobox/Accessory")) {
+			if(p.getTitle().contains(":")) continue;
+			var txt = run.getWiki().getPageText(p.getTitle());
+			var nTxt = txt.replace("Infobox/Accessory", "Infobox|Accessory");
+			if(!txt.equals(nTxt)) {
+				run.getWiki().edit(p.getTitle(), nTxt, "Change style of calling semantic infobox");
+			}
+		}
+		for(var p:run.getWiki().getPagesTranscluding("Template:Infobox/Book")) {
+			if(p.getTitle().contains(":")) continue;
+			var txt = run.getWiki().getPageText(p.getTitle());
+			var nTxt = txt.replace("Infobox/Book", "Infobox|Book");
+			if(!txt.equals(nTxt)) {
+				run.getWiki().edit(p.getTitle(), nTxt, "Change style of calling semantic infobox");
+			}
+		}
 
 		/*if(run.isStarfinder())
 			return;

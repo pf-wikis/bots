@@ -2,7 +2,10 @@
 
 <includeonly>{{#ask: [[Fact type::Template:Facts/@name]]{{{query|}}}
 @for(prop:form.getRProperties()) {
- |?@prop.getName()=@prop.getName()@?prop.getFactDisplayFormat()
+ |?@prop.getName()@?prop.getFactDisplayFormat()=@prop.getName()
+}
+@if(form.getProperties().contains("Gallery")) {
+ |?Gallery page=Gallery page
 }
  |limit={{{limit|1000}}}
  |introtemplate={{{introtemplate|}}}
