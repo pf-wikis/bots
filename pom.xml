@@ -141,7 +141,7 @@
 							<goal>generate</goal>
 						</goals>
 						<configuration>
-							<!--<suffixRegex>.*\\.rocker$</suffixRegex>-->	
+							<!--<suffixRegex>.*\\.rocker$</suffixRegex>-->
 							<markAsGenerated>true</markAsGenerated>
 							<javaVersion>${maven.compiler.target}</javaVersion>
 							<discardLogicWhitespace>true</discardLogicWhitespace>

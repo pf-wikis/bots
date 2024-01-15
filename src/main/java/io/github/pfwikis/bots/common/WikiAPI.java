@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -24,23 +26,17 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.github.fastily.jwiki.core.Wiki;
 import io.github.fastily.jwiki.dwrap.Revision;
-import io.github.pfwikis.bots.common.model.AllpagesQuery;
-import io.github.pfwikis.bots.common.model.AllusersQuery;
 import io.github.pfwikis.bots.common.model.AllusersQuery.WUser;
-import io.github.pfwikis.bots.common.model.ImageUsageQuery;
 import io.github.pfwikis.bots.common.model.Page;
-import io.github.pfwikis.bots.common.model.PageQuery;
 import io.github.pfwikis.bots.common.model.ParseResponse;
-import io.github.pfwikis.bots.common.model.QueryListUsers;
 import io.github.pfwikis.bots.common.model.QueryResponse;
-import io.github.pfwikis.bots.common.model.QueryTokens;
-import io.github.pfwikis.bots.common.model.RecentChanges;
 import io.github.pfwikis.bots.common.model.RecentChanges.RecentChange;
 import io.github.pfwikis.bots.common.model.SemanticAsk;
 import io.github.pfwikis.bots.common.model.SemanticAsk.Result;
-import io.github.pfwikis.bots.common.model.LogEventsQuery;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.HttpUrl;
 
+@Slf4j
 public class WikiAPI {
 
 	private Wiki wiki;
@@ -62,8 +58,7 @@ public class WikiAPI {
 
 	public List<RecentChange> getRecentChanges(Duration timeRange) {
 		return Arrays.asList(query(
-			RecentChanges.class,
-			"list", "recentchanges",
+			Query.LIST_RECENT_CHANGES,
 			"rcend", Instant.now().minus(timeRange).truncatedTo(ChronoUnit.SECONDS).toString(),
 			"rcnamespace", "0",
 			"rclimit", "5000",
@@ -89,11 +84,22 @@ public class WikiAPI {
 			edit(page, content, reason);
 		}
 	}
+	
+	public Set<String> getAllSubPages(String namespace, String page) {
+		return query(
+				Query.LIST_ALL_PAGES,
+				"apprefix", page+"/",
+				"apnamespace", Integer.toString(wiki.getNS(namespace).v),
+				"aplimit", "5000"
+			).getAllpages()
+			.stream()
+			.map(p->p.getTitle())
+			.collect(Collectors.toSet());
+	}
 
 	public boolean accountExists(String botName) throws IOException {
 		var resp = query(
-			QueryListUsers.class,
-			"list", "users",
+			Query.LIST_USERS,
 			"ususers", botName
 		);
 		
@@ -144,8 +150,8 @@ public class WikiAPI {
 	}
 
 	public String requestToken(String token) {
-		return Objects.requireNonNull(query(QueryTokens.class,
-			"meta", "tokens",
+		return Objects.requireNonNull(query(
+			Query.META_TOKENS,
 			"type", token
 		).tokens().get(token+"token"));
 	}
@@ -154,25 +160,34 @@ public class WikiAPI {
 		.findAndRegisterModules()
 		.registerModule(new JavaTimeModule())
 		.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-	private <T> T query(Class<T> type, String... params) {
-		var resp = this.<QueryResponse<T>>get(
-			JACKSON.getTypeFactory()
-				.constructParametricType(QueryResponse.class, type),
-			"query",
+	private <T> T query(Query<T> q, String... params) {
+		var realParams = ArrayUtils.addAll(
+			new String[] {q.getWhat(), q.getWhich()},
 			params
 		);
-		if(!resp.batchcomplete()) {
-			throw new IllegalStateException("continue now supported but required");
+		var resp = this.<QueryResponse<T>>get(
+			JACKSON.getTypeFactory()
+				.constructParametricType(QueryResponse.class, q.getResponseType()),
+			"query",
+			realParams
+		);
+		if(resp.getErrors() != null && !resp.getErrors().isEmpty()) {
+			throw new RuntimeException(q+" call with "+Arrays.toString(params)+" failed:\n"+resp.getErrors());
 		}
-		var query = resp
-				.query();
+		if(resp.getWarnings() != null && !resp.getWarnings().isEmpty()) {
+			log.warn("{} call with {} failed:\n{}", q, Arrays.toString(params), resp.getErrors());
+		}
+		if(!resp.isBatchcomplete()) {
+			throw new IllegalStateException("continue not supported, but required");
+		}
+		var query = resp.getQuery();
 		if(query != null) {
 			return query;
 		}
 		try {
-			return type.getConstructor().newInstance();
+			return q.getResponseType().getConstructor().newInstance();
 		} catch(Exception e) {
-			throw new IllegalStateException("No no-argument constructor for "+type);
+			throw new IllegalStateException("No no-argument constructor for "+q.getResponseType());
 		}
 	}
 	
@@ -231,8 +246,8 @@ public class WikiAPI {
 	}
 	
 	public List<Page> getPagesInCategory(String category) {
-		return query(PageQuery.class,
-			"generator", "categorymembers",
+		return query(
+			Query.GENERATOR_CATEGORY_MEMBERS,
 			"gcmtitle", category,
 			"gcmprop", "ids",
 			"gcmlimit", "5000"
@@ -240,33 +255,33 @@ public class WikiAPI {
 	}
 	
 	public List<Page> getPagesTranscluding(String template) {
-		var pages = query(PageQuery.class,
-				"prop", "transcludedin",
-				"titles", template,
-				"tilimit", "5000"
-			).getPages().get(0).getTranscludedin();
+		var pages = query(
+			Query.PROP_TRANSCLUDED_IN,
+			"titles", template,
+			"tilimit", "5000"
+		).getPages().get(0).getTranscludedin();
 		if(pages == null) return Collections.emptyList();
 		return Arrays.asList(pages);
 	}
 	
 	public List<Page> getImageUsage(String page) {
-		return query(ImageUsageQuery.class, 
-			"list", "imageusage",
+		return query(
+			Query.LIST_IMAGE_USAGE,
 			"iutitle", page
 		).getImageusage();
 	}
 	
 	public List<WUser> getAdmins() {
-		return query(AllusersQuery.class, 
-			"list", "allusers",
+		return query(
+			Query.LIST_ALL_USERS,
 			"augroup", "sysop",
 			"aulimit", "5000"
 		).getAllusers();
 	}
 	
 	public List<JsonNode> getLogEvents(ZonedDateTime end, String user) {
-		return query(LogEventsQuery.class, 
-			"list", "logevents",
+		return query(
+			Query.LIST_LOG_EVENTS,
 			"lelimit", "1",
 			"leend", end.toInstant().truncatedTo(ChronoUnit.SECONDS).toString(),
 			"leuser", user
@@ -278,8 +293,8 @@ public class WikiAPI {
 	}
 
 	public List<Page> getPagesInCategory(String category, String namespace) {
-		return query(PageQuery.class,
-			"generator", "categorymembers",
+		return query(
+			Query.GENERATOR_CATEGORY_MEMBERS,
 			"gcmtitle", category,
 			"gcmprop", "ids",
 			"gcmnamespace", namespace,
@@ -288,16 +303,16 @@ public class WikiAPI {
 	}
 	
 	public List<Page> getPagesInNamespace(String namespace) {
-		return query(AllpagesQuery.class,
-			"list", "allpages",
+		return query(
+			Query.LIST_ALL_PAGES,
 			"apnamespace", Integer.toString(wiki.getNS(namespace).v),
 			"aplimit", "5000"
 		).getAllpages();
 	}
 	
 	public List<Page> getCategories(String page) {
-		var result = query(PageQuery.class,
-				"prop", "categories",
+		var result = query(
+				Query.PROP_CATEGORIES,
 				"titles", page
 			).getPages().get(0).getCategories();
 		if(result == null) {

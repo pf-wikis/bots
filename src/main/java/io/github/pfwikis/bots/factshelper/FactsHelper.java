@@ -44,7 +44,7 @@ public class FactsHelper extends SimpleBot {
 		try {
 			mapFacts(props, form);
 			if("Book".equals(form.getName()))
-				make("Template:Infobox/"+form.getName()+"2", MakeInfobox.template(form));
+				make("Template:Infobox/"+form.getName()+"2", MakeInfobox.template(form, run.getWiki().getAllSubPages("Template", "Infobox/"+form.getName())));
 			make("Template:Facts/"+form.getName(), MakeTemplate.template(form));
 			make("Template:Facts/"+form.getName()+"/Input", MakeTemplateInput.template(form));
 			make("Template:Facts/"+form.getName()+"/Ask", MakeTemplateAsk.template(form.getName(), form));

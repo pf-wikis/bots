@@ -34,7 +34,12 @@ public enum FactType {
 			"{{#arraymap:{{{$1|}}}|;|~|[[~]]}}",
 			"{{#set:$1={{{$1|}}}|+sep=;}}",
 			"|$1={{{$1|}}}|+sep=;"
-	),
+	) {
+		@Override
+		public String infoboxCode(String propName) {
+			return "{{#arraymap:{{{$1|}}}|;|~|[[~]]|,\\s|and}}".replace("$1", propName);
+		}
+	},
 	IMAGE(
 			"Image",
 			"[[File:{{{$1|}}}|250px|{{{Name|}}}]]",
@@ -85,6 +90,10 @@ public enum FactType {
 	}
 
 	public String displayFactCode(String propName) {
+		return displayFactCode.replace("$1", propName);
+	}
+	
+	public String infoboxCode(String propName) {
 		return displayFactCode.replace("$1", propName);
 	}
 

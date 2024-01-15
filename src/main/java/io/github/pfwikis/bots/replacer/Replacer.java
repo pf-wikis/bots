@@ -23,7 +23,7 @@ public class Replacer extends SimpleBot {
 	@Override
 	public void run() throws IOException {
 		//new SemanticDataIniHelper(run).start();
-		for(var p:run.getWiki().getPagesTranscluding("Template:Infobox/Accessory")) {
+		/*for(var p:run.getWiki().getPagesTranscluding("Template:Infobox/Accessory")) {
 			if(p.getTitle().contains(":")) continue;
 			var txt = run.getWiki().getPageText(p.getTitle());
 			var nTxt = txt.replace("Infobox/Accessory", "Infobox|Accessory");
@@ -38,22 +38,24 @@ public class Replacer extends SimpleBot {
 			if(!txt.equals(nTxt)) {
 				run.getWiki().edit(p.getTitle(), nTxt, "Change style of calling semantic infobox");
 			}
-		}
+		}*/
 
 		/*if(run.isStarfinder())
-			return;
+			return;*/
 		
-		var images = run.getWiki().getPagesInCategory("Category:Images of holy symbols");
-		for(var p:images) {
-			var text = run.getWiki().getPageText(p.getTitle());
-			var newText = text.replaceAll("\\| *keyword(\\d+) *= *holy symbols *\n", "| keyword$1 = religious symbols\n");
-			if(!newText.equals(text)) {
-				run.getWiki().edit(p.getTitle(), newText, "Renamed 'holy symbols' keyword to 'religious symbols'");
+		for(var cat:new String[] { "Category:Abyss/Settlements‎", "Category:Abyss/Locations", "Category:Abyss/Geography"}) {
+			var pages = run.getWiki().getPagesInCategory(cat);
+			for(var p:pages) {
+				var text = run.getWiki().getPageText(p.getTitle());
+				var newText = text.replaceAll("Category:Abyss/", "Category:Outer Rifts/");
+				if(!newText.equals(text)) {
+					run.getWiki().edit(p.getTitle(), newText, "Recategorized from Abyss to Outer Rifts according to Remaster");
+				}
+				else {
+					log.warn("No luck on {}", p.getTitle());
+				}
 			}
-			else {
-				log.warn("No luck on {}", p.getTitle());
-			}
-		}*/
+		}
 		
 		/*
 		var todo = Maps.newHashMap(
