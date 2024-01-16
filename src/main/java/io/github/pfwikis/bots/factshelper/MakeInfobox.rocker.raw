@@ -3,7 +3,7 @@
 @import static org.apache.commons.lang3.StringUtils.startsWith
 @import java.util.Set
 
-@args(FormDefinition form, Set<String> subPages)
+@args(FormDefinition.Resolved form, Set<String> subPages)
 <noinclude>
 {{Bot created|Bot Facts Helper}}
 [[Category:Synced to starfinderwiki]]
@@ -17,7 +17,7 @@
 	}}
 	<div class="type">({{#if:{{{@form.getName() type|}}}|{{{@form.getName() type}}}|@form.getName()}})</div>
 	<div class="table">
-		@for(prop:form.getRProperties()) {
+		@for(prop:form.getProperties()) {
 			{{#if:{{{@prop.getName()|}}}|<div class="key">@prop.getName()</div><div>@prop.getFactType().infoboxCode(prop.getName())</div>}}
 		}@*
 
@@ -41,6 +41,6 @@
 Categories based on the properties. Might be different between the wikis.
 *@@if(subPages.contains("Template:Infobox/"+form.getName()+"/Categories")) {
 	{{Infobox/@form.getName()/Categories
-		@for(prop:form.getRProperties()) {|@prop.getName() = {{{@prop.getName()|}}}}
+		@for(prop:form.getProperties()) {|@prop.getName() = {{{@prop.getName()|}}}}
 	}}
 }

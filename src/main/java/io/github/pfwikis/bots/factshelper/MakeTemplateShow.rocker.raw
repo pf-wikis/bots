@@ -1,10 +1,10 @@
-@args(String name, FormDefinition form)
+@args(String name, FormDefinition.Resolved form)
 
 <includeonly>{{#show: Facts:{{{page|}}}
-@for(prop:form.getRProperties()) {
+@for(prop:form.getProperties()) {
  |?@prop.getName()@?prop.getFactDisplayFormat()=@prop.getName()
 }
-@if(form.getProperties().contains("Gallery")) {
+@if(form.containsProperty("Gallery")) {
  |?Gallery page=Gallery page
 }
  |userparam=Facts:{{{page|{{FULLPAGENAME}}}}}

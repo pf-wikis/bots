@@ -1,4 +1,4 @@
-@args(FormDefinition formDef)
+@args(FormDefinition.Resolved formDef)
 <noinclude>{{Bot created|Bot Facts Helper}}[[Category:Synced to starfinderwiki]]</noinclude>
 You can edit or create facts about a new @formDef.getName() by entering its name here:
 {{#forminput:form=@formDef.getName()

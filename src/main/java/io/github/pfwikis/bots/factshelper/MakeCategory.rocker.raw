@@ -1,4 +1,4 @@
-@args(String name, String pluralName, FormDefinition formDef)
+@args(String name, String pluralName, FormDefinition.Resolved formDef)
 {{#default_form:@name}}
 
 @if(!name.contains("/")){{{Facts/@name/Input}}}

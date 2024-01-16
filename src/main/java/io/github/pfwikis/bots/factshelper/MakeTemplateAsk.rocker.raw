@@ -1,10 +1,10 @@
-@args(String name, FormDefinition form)
+@args(String name, FormDefinition.Resolved form)
 
 <includeonly>{{#ask: [[Fact type::Template:Facts/@name]]{{{query|}}}
-@for(prop:form.getRProperties()) {
+@for(prop:form.getProperties()) {
  |?@prop.getName()@?prop.getFactDisplayFormat()=@prop.getName()
 }
-@if(form.getProperties().contains("Gallery")) {
+@if(form.containsProperty("Gallery")) {
  |?Gallery page=Gallery page
 }
  |limit={{{limit|1000}}}

@@ -1,8 +1,8 @@
-@args(FormDefinition form)
+@args(FormDefinition.Resolved form)
 <noinclude>
 {{Bot created|Bot Facts Helper}}
 {{#template_params:
-	@for((i,prop):form.getRProperties()) {
+	@for((i,prop):form.getProperties()) {
 		@if(!i.first()){|}@prop.getName() (property=@prop.getName())
 	}
 }}
@@ -17,7 +17,7 @@
 	</div>
 }
 <div class="facts-display facts-display-@form.toCSSName()">
-	@for(prop:form.getRProperties()) {
+	@for(prop:form.getProperties()) {
 		@DisplayTemplateField.template(prop.getName(), prop.getFactType().displayFactCode(prop.getName())) -> {
 			@prop.getFactType().displayFactCode(prop.getName())@prop.getFactType().storeFactCode(prop.getName())@prop.getFactType().formAfterSet(prop)
 		}
@@ -28,13 +28,13 @@
 <div class="facts-display facts-display-@form.toCSSName()">
 	@DisplayTemplateField.template("Fact type", null) -> {[[Fact type::Template:Facts/@form.getName()]]}
 	@* Add a release year if if there is a release date *@
-	@if(form.getProperties().contains("Release date")) {
+	@if(form.containsProperty("Release date")) {
 		@DisplayTemplateField.template("Release year", "{{{Release date|}}}") -> {
 			[[Release year::{{#show:{{FULLPAGENAME}}|?Release date#-F[Y]=|sort=Release date|order=ASC|limit=1|mainlabel=-|searchlabel=}}]]
 		}
 	}
-	else if(form.getSubForms().stream().anyMatch(s->s.getProperties().contains("Release date"))){
-		@with(sub=form.getSubForms().stream().filter(s->s.getProperties().contains("Release date")).findAny().get()) {
+	else if(form.getSubForms().stream().anyMatch(s->s.containsProperty("Release date"))){
+		@with(sub=form.getSubForms().stream().filter(s->s.containsProperty("Release date")).findAny().get()) {
 			@DisplayTemplateField.template("Release year", null) -> {
 				[[Release year::{{#ask:[[-Has subobject::{{FULLPAGENAME}}]][[Fact type::Template:Facts/@form.getName()/@sub.getName()]][[Release date::+]]|?Release date#-F[Y]=|sort=Release date|order=ASC|limit=1|mainlabel=-|searchlabel=}}]]
 			}
@@ -44,7 +44,7 @@
 			}
 		}
 	}
-	@if(form.getProperties().contains("Gallery")) {
+	@if(form.containsProperty("Gallery")) {
 		@DisplayTemplateField.template("Gallery page", null) -> {
 			[[Gallery page::{{#if:{{{Gallery|}}}|Category:Artwork from {{{Gallery}}}|Category:Artwork from {{PAGENAME}}}}]]
 		}

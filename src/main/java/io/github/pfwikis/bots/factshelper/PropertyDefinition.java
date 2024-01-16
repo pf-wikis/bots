@@ -16,4 +16,5 @@ public class PropertyDefinition {
 	private final String factDisplayFormat;
 	private final String note;
 	private final String suggestValuesFrom;
+	private final String infoboxLabel;
 }

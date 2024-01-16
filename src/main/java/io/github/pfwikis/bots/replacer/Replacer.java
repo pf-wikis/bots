@@ -42,8 +42,7 @@ public class Replacer extends SimpleBot {
 
 		/*if(run.isStarfinder())
 			return;*/
-		
-		for(var cat:new String[] { "Category:Abyss/Settlements‎", "Category:Abyss/Locations", "Category:Abyss/Geography"}) {
+		for(var cat:new String[] { "Category:Abyss/Inhabitants"}) {
 			var pages = run.getWiki().getPagesInCategory(cat);
 			for(var p:pages) {
 				var text = run.getWiki().getPageText(p.getTitle());

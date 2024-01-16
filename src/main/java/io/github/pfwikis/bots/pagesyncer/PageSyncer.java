@@ -1,7 +1,9 @@
 package io.github.pfwikis.bots.pagesyncer;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.beust.jcommander.Parameters;
 
@@ -35,19 +37,32 @@ public class PageSyncer extends DualBot {
             .map(t->t.endsWith("/doc")?t.substring(0,t.length()-4):t)
             .distinct()
             .toList();
+        
+        Set<String> synced = new HashSet<>();
 
         for(var page : titles) {
             sync(page, sfToken);
+            synced.add(page);
 
             String doc = page+"/doc";
             if(run.getPfWiki().pageExists(doc)) {
                 sync(doc, sfToken);
+                synced.add(doc);
             }
             
             String style = "Style:"+page.substring(page.indexOf(":")+1);
             if(run.getPfWiki().pageExists(style)) {
                 sync(style, sfToken);
+                synced.add(style);
             }
+        }
+        
+        //delete pages from sf that no longer exist in pf
+        var pages = run.getSfWiki().getPagesInCategory("Category:Synced to starfinderwiki");
+        for(var page : pages) {
+        	if(!synced.contains(page.getTitle())) {
+        		run.getSfWiki().delete(page.getTitle(), "Synced page was deleted in source");
+        	}
         }
     }
 

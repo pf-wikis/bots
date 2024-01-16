@@ -1,8 +1,8 @@
-@args(FormDefinition parent, FormDefinition form)
+@args(FormDefinition.Resolved parent, FormDefinition.Resolved form)
 <noinclude>
 {{Bot created|Bot Facts Helper}}
 {{#template_params:
-@for((i,prop):form.getRProperties()) {
+@for((i,prop):form.getProperties()) {
 @if(!i.first()){|}@prop.getName() (property=@prop.getName())
 }
 }}
@@ -21,7 +21,7 @@ Only show the properties on the /Sections subpage
 </div>
 }}
 <div class="facts-display facts-display-@parent.toCSSName()-@form.toCSSName()">
-@for(prop:form.getRProperties()) {
+@for(prop:form.getProperties()) {
 @DisplayTemplateField.template(prop.getName(), prop.getFactType().displayFactCode(prop.getName())) -> {
 @prop.getFactType().displayFactCode(prop.getName())
 }
@@ -36,11 +36,11 @@ Only store the properties if this template is transcluded into a root page.
 -->{{#ifeq:{{ROOTPAGENAME}}|{{PAGENAME}}|
 {{#subobject:
 |Fact type=Template:Facts/@parent.getName()/@form.getName()
-@for(prop:form.getRProperties()) {@prop.getFactType().storeSubFactCode(prop.getName())}
+@for(prop:form.getProperties()) {@prop.getFactType().storeSubFactCode(prop.getName())}
 |@@sortkey={{#counter: @form.getName()-counter | pad length=3 }}
 }}<!--
 
 Copy some fields to parent
--->@for(prop:form.getRProperties()) {@prop.getFactType().subFormAtEnd(prop)}
+-->@for(prop:form.getProperties()) {@prop.getFactType().subFormAtEnd(prop)}
 }}
 </includeonly>

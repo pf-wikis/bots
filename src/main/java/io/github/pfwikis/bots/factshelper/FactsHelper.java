@@ -1,4 +1,5 @@
-package io.github.pfwikis.bots.factshelper;
+package io.github.pfwikis.bots
+.factshelper;
 
 import java.io.IOException;
 import java.util.Map;
@@ -10,6 +11,7 @@ import com.fizzed.rocker.RockerModel;
 
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.common.model.SemanticAsk.Result;
+import io.github.pfwikis.bots.factshelper.FormDefinition.Resolved;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -30,6 +32,7 @@ public class FactsHelper extends SimpleBot {
 				+ "|?Has fact type"
 				+ "|?Has fact display format"
 				+ "|?Suggest values from"
+				+ "|?Has infobox label"
 			)
 			.stream()
 			.map(this::createDefinition)
@@ -42,51 +45,35 @@ public class FactsHelper extends SimpleBot {
 	
 	private void handleForm(Map<String, PropertyDefinition> props, FormDefinition form) {
 		try {
-			mapFacts(props, form);
+			var rForm = form.resolve(props);
 			if("Book".equals(form.getName()))
-				make("Template:Infobox/"+form.getName()+"2", MakeInfobox.template(form, run.getWiki().getAllSubPages("Template", "Infobox/"+form.getName())));
-			make("Template:Facts/"+form.getName(), MakeTemplate.template(form));
-			make("Template:Facts/"+form.getName()+"/Input", MakeTemplateInput.template(form));
-			make("Template:Facts/"+form.getName()+"/Ask", MakeTemplateAsk.template(form.getName(), form));
-			make("Template:Facts/"+form.getName()+"/Show", MakeTemplateShow.template(form.getName(), form));
-			make("Form:"+form.getName(), MakeForm.template(form.getName(), form.getPluralName(), form));
-			make("Category:Facts about "+form.getPluralName(), MakeCategory.template(form.getName(), form.getPluralName(), form));
+				make("Template:Infobox/"+form.getName()+"2", MakeInfobox.template(rForm, run.getWiki().getAllSubPages("Template", "Infobox/"+form.getName())));
+			make("Template:Facts/"+form.getName(), MakeTemplate.template(rForm));
+			make("Template:Facts/"+form.getName()+"/Input", MakeTemplateInput.template(rForm));
+			make("Template:Facts/"+form.getName()+"/Ask", MakeTemplateAsk.template(form.getName(), rForm));
+			make("Template:Facts/"+form.getName()+"/Show", MakeTemplateShow.template(form.getName(), rForm));
+			make("Form:"+form.getName(), MakeForm.template(form.getName(), form.getPluralName(), rForm));
+			make("Category:Facts about "+form.getPluralName(), MakeCategory.template(form.getName(), form.getPluralName(), rForm));
 			
-			for(var subForm:form.getSubForms()) {
-				handleSubForm(props, form, subForm);
+			for(var subForm:rForm.getSubForms()) {
+				handleSubForm(rForm, subForm);
 			}
 		} catch(Exception e) {
 			this.reportException(new RuntimeException("Failed to create facts utilities for "+form.getName(), e));
 		}
 	}
 	
-	private void mapFacts(Map<String, PropertyDefinition> props, FormDefinition form) {
-		form.setRProperties(form.getProperties().stream()
-			.map(n->
-				Optional.ofNullable(props.get(n))
-				.orElseThrow(()->new RuntimeException("Could not find definition for Property:"+n))
-			)
-			.toList());
-		
-		for(var p:form.getRProperties()) {
-			if(p.getFactType() == null) {
-				throw new IllegalStateException("Fact type is null for "+p.getName());
-			}
-		}
-	}
-
-	private void handleSubForm(Map<String, PropertyDefinition> props, FormDefinition parent, FormDefinition form) {
+	private void handleSubForm(FormDefinition.Resolved parent, FormDefinition.Resolved subForm) {
 		try {
-			mapFacts(props, form);
-			var slashName = parent.getName()+"/"+form.getName();
-			var spaceName = parent.getName()+" "+form.getPluralName();
-			make("Template:Facts/"+slashName, MakeSubTemplate.template(parent, form));
-			make("Template:Facts/"+slashName+"/Ask", MakeTemplateAsk.template(slashName, form));
-			make("Template:Facts/"+slashName+"/Show", MakeTemplateShow.template(slashName, form));
-			make("Form:"+slashName, MakeForm.template(slashName, spaceName, form));
-			make("Category:Facts about "+spaceName, MakeCategory.template(slashName, spaceName, form));
+			var slashName = parent.getName()+"/"+subForm.getName();
+			var spaceName = parent.getName()+" "+subForm.getPluralName();
+			make("Template:Facts/"+slashName, MakeSubTemplate.template(parent, subForm));
+			make("Template:Facts/"+slashName+"/Ask", MakeTemplateAsk.template(slashName, subForm));
+			make("Template:Facts/"+slashName+"/Show", MakeTemplateShow.template(slashName, subForm));
+			make("Form:"+slashName, MakeForm.template(slashName, spaceName, subForm));
+			make("Category:Facts about "+spaceName, MakeCategory.template(slashName, spaceName, subForm));
 		} catch(Exception e) {
-			this.reportException(new RuntimeException("Failed to create facts utilities for "+form.getName(), e));
+			this.reportException(new RuntimeException("Failed to create facts utilities for "+subForm.getName(), e));
 		}
 	}
 
@@ -103,7 +90,8 @@ public class FactsHelper extends SimpleBot {
 			assumeNoneOrOne(rawProp.getPrintouts().getHasFactType()),
 			assumeNoneOrOne(rawProp.getPrintouts().getHasFactDisplayFormat()),
 			assumeNoneOrOne(rawProp.getPrintouts().getHasFactNote()),
-			assumeNoneOrOne(rawProp.getPrintouts().getSuggestValuesFrom())
+			assumeNoneOrOne(rawProp.getPrintouts().getSuggestValuesFrom()),
+			assumeNoneOrOne(rawProp.getPrintouts().getHasInfoboxLabel())
 		);
 		return res;
 	}
@@ -122,6 +110,7 @@ public class FactsHelper extends SimpleBot {
 		return
 			"""
 			This bot automatically creates the following for each for defined in [[User:Bot Facts Helper/Config|here]]:
+			* '''Template:Infobox/...:''' the infobox for these facts (if specified in config)
 			* '''Template:Facts/...:''' to specify facts of the given kind.
 			* '''Template:Facts/.../Input:''' a template showing an input to easily create a new entity
 			* '''Template:Facts/.../Ask:''' to easily call a template for each entity of the type.

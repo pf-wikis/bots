@@ -55,6 +55,8 @@ public class SemanticAsk {
 		private String[] suggestValuesFrom;
 		@JsonProperty("Copy to parent")
 		private boolean[] copyToParent;
+		@JsonProperty("Has infobox label")
+		private String[] hasInfoboxLabel;
 	}
 	
 	public static class PrintoutsDeserializer extends StdDeserializer<Printouts> {

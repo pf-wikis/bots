@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import io.github.fastily.jwiki.core.NS;
 import io.github.fastily.jwiki.core.Wiki;
 import io.github.fastily.jwiki.dwrap.Revision;
 import io.github.pfwikis.bots.common.model.AllusersQuery.WUser;
@@ -365,5 +366,9 @@ public class WikiAPI {
 
 	public void rename(String title, String newTitle, boolean leaveRedirect, String reaseon) {
 		wiki.move(title, newTitle, true, true, !leaveRedirect, reaseon);
+	}
+
+	public List<String> search(String query, NS... namespaces) {
+		return wiki.search(query, -1, namespaces);
 	}
 }
