@@ -80,7 +80,7 @@ public class FactsHelper extends SimpleBot {
 	private void make(String page, RockerModel template) {
 		var txt = template
 				.render().toString();
-		run.getWiki().editIfChange(page, txt, "Automatic regeneration of template");
+		run.getWiki().editIfChange(page, txt.trim(), "Automatic regeneration of template");
 	}
 	
 	private PropertyDefinition createDefinition(Result rawProp) {

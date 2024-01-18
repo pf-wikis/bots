@@ -17,4 +17,20 @@ public class PropertyDefinition {
 	private final String note;
 	private final String suggestValuesFrom;
 	private final String infoboxLabel;
+	
+	public Generated withGenerateCode(String code) {
+		return new Generated(name, type, factType, factDisplayFormat, note, suggestValuesFrom, infoboxLabel, code);
+	}
+	
+	
+	@Getter
+	public static class Generated extends PropertyDefinition {
+		public Generated(String name, PropertyType type, FactType factType, String factDisplayFormat, String note,
+				String suggestValuesFrom, String infoboxLabel, String generateCode) {
+			super(name, type, factType, factDisplayFormat, note, suggestValuesFrom, infoboxLabel);
+			this.generateCode = generateCode;
+		}
+
+		private final String generateCode;
+	}
 }

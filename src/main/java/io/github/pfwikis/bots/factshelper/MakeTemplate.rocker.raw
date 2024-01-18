@@ -26,29 +26,9 @@
 
 <h3>Automatic properties</h3>
 <div class="facts-display facts-display-@form.toCSSName()">
-	@DisplayTemplateField.template("Fact type", null) -> {[[Fact type::Template:Facts/@form.getName()]]}
-	@* Add a release year if if there is a release date *@
-	@if(form.containsProperty("Release date")) {
-		@DisplayTemplateField.template("Release year", "{{{Release date|}}}") -> {
-			[[Release year::{{#show:{{FULLPAGENAME}}|?Release date#-F[Y]=|sort=Release date|order=ASC|limit=1|mainlabel=-|searchlabel=}}]]
-		}
-	}
-	else if(form.getSubForms().stream().anyMatch(s->s.containsProperty("Release date"))){
-		@with(sub=form.getSubForms().stream().filter(s->s.containsProperty("Release date")).findAny().get()) {
-			@DisplayTemplateField.template("Release year", null) -> {
-				[[Release year::{{#ask:[[-Has subobject::{{FULLPAGENAME}}]][[Fact type::Template:Facts/@form.getName()/@sub.getName()]][[Release date::+]]|?Release date#-F[Y]=|sort=Release date|order=ASC|limit=1|mainlabel=-|searchlabel=}}]]
-			}
-			@DisplayTemplateField.template("Release date", null) -> {
-				[[Release date::{{#ask:[[-Has subobject::{{FULLPAGENAME}}]][[Fact type::Template:Facts/@form.getName()/@sub.getName()]][[Release date::+]]|?Release date#ISO-P=|sort=Release date|order=ASC|limit=1|mainlabel=-|searchlabel=}}]]
-				[[Release date precision::{{#ask:[[-Has subobject::{{FULLPAGENAME}}]][[Fact type::Template:Facts/@form.getName()/@sub.getName()]][[Release date::+]]|?Release date precision=|sort=Release date|order=ASC|limit=1|mainlabel=-|searchlabel=}}]]
-			}
-		}
-	}
-	@if(form.containsProperty("Gallery")) {
-		@DisplayTemplateField.template("Gallery page", null) -> {
-			[[Gallery page::{{#if:{{{Gallery|}}}|Category:Artwork from {{{Gallery}}}|Category:Artwork from {{PAGENAME}}}}]]
-		}
-	}
+@for(prop:form.getGeneratedProperties()) {
+	@DisplayTemplateField.template(prop.getName(), null) -> {[[@prop.getName()::@prop.getGenerateCode()]]}
+}
 </div>
 <div class="facts-subforms"><!--
 	These can be ignored.

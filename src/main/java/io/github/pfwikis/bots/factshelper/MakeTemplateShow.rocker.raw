@@ -4,8 +4,8 @@
 @for(prop:form.getProperties()) {
  |?@prop.getName()@?prop.getFactDisplayFormat()=@prop.getName()
 }
-@if(form.containsProperty("Gallery")) {
- |?Gallery page=Gallery page
+@for(prop:form.getGeneratedProperties()) {
+ |?@prop.getName()@?prop.getFactDisplayFormat()=@prop.getName()
 }
  |userparam=Facts:{{{page|{{FULLPAGENAME}}}}}
  |link=none
