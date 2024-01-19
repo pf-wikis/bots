@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Value;
@@ -16,9 +14,9 @@ import lombok.Value;
 public class FormDefinition {
 	private String name;
 	private String pluralName;
-	private List<String> properties;
+	private List<String> properties = new ArrayList<>();
 	private List<FormDefinition> subForms = new ArrayList<>();
-	private List<String> infoboxProperties;
+	private List<String> infoboxProperties = new ArrayList<>();
 	
 	@Value
 	public static class Resolved {
@@ -45,7 +43,7 @@ public class FormDefinition {
 			pluralName,
 			resolve(properties, props),
 			subForms.stream().map(f->f.resolve(props)).toList(),
-			resolve(properties, props),
+			resolve(infoboxProperties, props),
 			generated(props)
 		);
 	}

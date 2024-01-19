@@ -15,9 +15,9 @@
 			{{#if:{{{Pubcode|}}}|[{{{Website}}} {{{Pubcode}}}]|[{{{Website}}} Publisher's product page]}}
 		</div>
 	}}
-	<div class="type">({{#if:{{{@form.getName() type|}}}|{{{@form.getName() type}}}|@form.getName()}})</div>
+	<div class="type">@form.getName() {{#if:{{{@form.getName() type|}}}| - {{{@form.getName() type}}}|}}</div>
 	<div class="table">
-		@for(prop:form.getProperties()) {
+		@for(prop:form.getInfoboxProperties()) {
 			{{#if:{{{@prop.getName()|}}}|<div class="key">@prop.getName()</div><div>@prop.getFactType().infoboxCode(prop.getName())</div>}}
 		}@*
 

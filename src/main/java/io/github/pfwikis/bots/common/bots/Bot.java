@@ -104,7 +104,7 @@ public abstract class Bot<RUN extends Run> {
 			
 			==Status==
 			
-			This bot is a sub bot of [[User:VirenerusBot|]].
+			This bot is a sub bot of [[User:VirenerusBot|VirenerusBot]].
 			
 			The code for this bot can be found [%s here].
 			
@@ -123,9 +123,9 @@ public abstract class Bot<RUN extends Run> {
 			
 			var status = """
 			|-
-			| [[User:%s|]] || %s || %s
+			| [[User:%s|%s]] || %s || %s
 			""".formatted(
-				botName,
+				botName, botName,
 				run.getTimestamp().truncatedTo(ChronoUnit.SECONDS).toInstant().toString(),
 				!hadError?"<span style=\"color:ForestGreen\">OK</span>":"<span style=\"color:Crimson\">ERROR</span>[[Category:Pages with errors]]"
 			);

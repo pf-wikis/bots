@@ -72,7 +72,7 @@ public class WikiAPI {
 	public ArrayList<Revision> getRevisions(String title, Duration timeRange) {
 		return wiki.getRevisions(title, 0, false, Instant.now().minus(timeRange).truncatedTo(ChronoUnit.SECONDS), null);
 	}
-	
+
 	public void edit(String page, String content, String reason) {
 		if(!wiki.edit(page, content, reason)) {
 			throw new RuntimeException("Failed to edit page "+page);
@@ -80,12 +80,13 @@ public class WikiAPI {
 	}
 
 	public void editIfChange(String page, String content, String reason) {
+		content = content.trim();
 		var oldText = wiki.getPageText(page);
 		if(!content.equals(oldText)) {
 			edit(page, content, reason);
 		}
 	}
-	
+
 	public Set<String> getAllSubPages(String namespace, String page) {
 		return query(
 				Query.LIST_ALL_PAGES,
@@ -103,7 +104,7 @@ public class WikiAPI {
 			Query.LIST_USERS,
 			"ususers", botName
 		);
-		
+
 		return !Boolean.TRUE.equals(resp.users()[0].missing());
 	}
 
