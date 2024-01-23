@@ -39,7 +39,7 @@ public class SemanticDataIniHelper {
 		start("Deck");
 	}
 
-	private record TemplateDef(String template, Multiset<String> fields) {
+	public record TemplateDef(String template, Multiset<String> fields) {
 		public String toString() {
 			return template;
 		}
@@ -94,7 +94,7 @@ public class SemanticDataIniHelper {
 		}
 		
 	}
-
+	
 	private List<String> search(TemplateDef template, PseudoParser pp) {
 		if(pp.goTo("\\{\\{\\s*"+template+"\\s*\\|\\s*") == null)
 			return Collections.emptyList();

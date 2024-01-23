@@ -8,7 +8,9 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 public enum FactType {
 
@@ -24,6 +26,12 @@ public enum FactType {
 			"{{#set:$1={{{$1|}}}}}",
 			"|$1={{{$1|}}}|$1 precision="+datePrecision()
 	) {
+		
+		@Override
+		public String infoboxCode(String propName) {
+			return "{{{$1|}}}".replace("$1", propName);
+		}
+		
 		@Override
 		public String formAfterSet(PropertyDefinition prop) {
 			return ("{{#set:$1 precision="+datePrecision()+"}}").replace("$1", prop.getName());
@@ -39,6 +47,27 @@ public enum FactType {
 		public String infoboxCode(String propName) {
 			return "{{#arraymap:{{{$1|}}}|;|~|[[~]]|,\\s|and}}".replace("$1", propName);
 		}
+		
+		@Override
+		public String infoboxLabel(PropertyDefinition prop) {
+			return switch(prop.getName()) {
+				//plural s
+				case "Publisher",
+					"Narrator",
+					"Primary author",
+					"Author"
+					-> super.infoboxLabel(prop)+"{{#if:{{#pos:{{{%s|}}}|;}}|s}}".formatted(prop.getName());
+				//plural same as singular
+				case "Series",
+					"Follows",
+					"Precedes"
+					-> super.infoboxLabel(prop);
+				default -> {
+					log.warn("Unknown pluralization for property '{}'", prop.getName());
+					yield super.infoboxLabel(prop);
+				}
+			};
+		}
 	},
 	IMAGE(
 			"Image",
@@ -52,6 +81,16 @@ public enum FactType {
 			"{{#set:$1={{{$1|}}}|+sep=;}}",
 			"|$1={{{$1|}}}|+sep=;"
 	) {
+		
+		@Override
+		public String infoboxCode(String propName) {
+			return PAGE_LIST.infoboxCode(propName);
+		}
+		
+		@Override
+		public String infoboxLabel(PropertyDefinition prop) {
+			return PAGE_LIST.infoboxLabel(prop);
+		}
 		
 		@Override
 		public String formAfterSet(PropertyDefinition prop) {
@@ -120,5 +159,12 @@ public enum FactType {
 					+ "{{#rmatch:{{{$1|}}}|^\\d{4}$|year|unknown}}"
 				+ "}}"
 			+ "}}";
+	}
+
+	public String infoboxLabel(PropertyDefinition prop) {
+		if(prop.getInfoboxLabel()!=null) {
+			return prop.getInfoboxLabel();
+		}
+		return prop.getName();
 	}
 }

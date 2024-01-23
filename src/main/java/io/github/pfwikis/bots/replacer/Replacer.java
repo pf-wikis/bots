@@ -22,7 +22,7 @@ public class Replacer extends SimpleBot {
 
 	@Override
 	public void run() throws IOException {
-		//new SemanticDataIniHelper(run).start();
+		new SemanticDataIniHelperReplacer(run).start();
 		/*for(var p:run.getWiki().getPagesTranscluding("Template:Infobox/Accessory")) {
 			if(p.getTitle().contains(":")) continue;
 			var txt = run.getWiki().getPageText(p.getTitle());
@@ -42,19 +42,22 @@ public class Replacer extends SimpleBot {
 
 		/*if(run.isStarfinder())
 			return;*/
-		for(var cat:new String[] { "Category:Abyss/Inhabitants"}) {
-			var pages = run.getWiki().getPagesInCategory(cat);
-			for(var p:pages) {
-				var text = run.getWiki().getPageText(p.getTitle());
-				var newText = text.replaceAll("Category:Abyss/", "Category:Outer Rifts/");
-				if(!newText.equals(text)) {
-					run.getWiki().edit(p.getTitle(), newText, "Recategorized from Abyss to Outer Rifts according to Remaster");
-				}
-				else {
-					log.warn("No luck on {}", p.getTitle());
-				}
+		/*var pages = run.getWiki().getPagesInNamespace("Property");
+		for(var p:pages) {
+			var text = run.getWiki().getPageText(p.getTitle());
+			if(text.contains("{{Property")) continue;
+			var newText = text.replaceAll(
+					"\\* *\\[\\[(.*?)::(.*?)\\]\\]",
+					"|$1=$2"
+				).replaceFirst("^\\|", "{{Property\n|")
+				.replaceAll("\\[\\[Category:", "}}\n[[Category:");
+			if(!newText.equals(text)) {
+				run.getWiki().edit(p.getTitle(), newText, "Use new Property template");
 			}
-		}
+			else {
+				log.warn("No luck on {}", p.getTitle());
+			}
+		}*/
 		
 		/*
 		var todo = Maps.newHashMap(

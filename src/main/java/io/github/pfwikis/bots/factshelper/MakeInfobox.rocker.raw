@@ -11,14 +11,18 @@
 	<div class="name">{{#if:{{{Full title|}}}|{{{Full title}}}|{{{Name}}}}}</div>
 	{{#ifexist:{{{Image}}}|<div class="image">[[{{{Image}}}|250px|Cover Image]]</div>}}
 	{{#if:{{{Website|}}}|
-		<div class="website">
-			{{#if:{{{Pubcode|}}}|[{{{Website}}} {{{Pubcode}}}]|[{{{Website}}} Publisher's product page]}}
+		<div class="website">{{#if:{{{Pubcode|}}}
+			|[{{{Website}}} {{{Pubcode}}}]
+			|[{{{Website}}} Publisher's product page]}}
 		</div>
 	}}
 	<div class="type">@form.getName() {{#if:{{{@form.getName() type|}}}| - {{{@form.getName() type}}}|}}</div>
 	<div class="table">
 		@for(prop:form.getInfoboxProperties()) {
-			{{#if:{{{@prop.getName()|}}}|<div class="key">@prop.getName()</div><div>@prop.getFactType().infoboxCode(prop.getName())</div>}}
+			{{#if:{{{@prop.getName()|}}}|
+				<div class="key">@prop.getFactType().infoboxLabel(prop)</div>
+				<div>@prop.getFactType().infoboxCode(prop.getName())</div>
+			}}
 		}@*
 
 
@@ -38,9 +42,15 @@
 </div>@*
 
 
-Categories based on the properties. Might be different between the wikis.
+Categories based on the properties.
+*@@if(form.containsProperty("Errata")) {
+{{#if:{{{Errata|}}}|[[Category:Products with errata]]}}
+}@*
+
+Might be different between the wikis.
 *@@if(subPages.contains("Template:Infobox/"+form.getName()+"/Categories")) {
 	{{Infobox/@form.getName()/Categories
 		@for(prop:form.getProperties()) {|@prop.getName() = {{{@prop.getName()|}}}}
+		@for(prop:form.getGeneratedProperties()) {|@prop.getName() = {{{@prop.getName()|}}}}
 	}}
 }
