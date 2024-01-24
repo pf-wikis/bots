@@ -78,9 +78,9 @@ public class FactsHelper extends SimpleBot {
 	}
 
 	private void make(String page, RockerModel template) {
-		var txt = template
-				.render().toString();
-		run.getWiki().editIfChange(page, txt.trim(), "Automatic regeneration of template");
+		var txt = template.render().toString();
+		var trimmed = txt.strip().replace("\t", "").replaceAll("\\s*\n\\s*", "");
+		run.getWiki().editIfChange(page, trimmed, "Automatic regeneration of template");
 	}
 	
 	private PropertyDefinition createDefinition(Result rawProp) {

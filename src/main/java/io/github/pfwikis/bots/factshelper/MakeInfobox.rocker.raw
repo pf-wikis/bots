@@ -23,11 +23,11 @@
 				<div class="key">@prop.getFactType().infoboxLabel(prop)</div>
 				<div>@prop.getFactType().infoboxCode(prop.getName())</div>
 			}}
-		}@*
+		}
 
 
-		Query the releases for this book and render the release block
-		*@@if(subPages.contains("Template:Infobox/"+form.getName()+"/Release")) {
+		@*Query the releases for this book and render the release block*@
+		@if(subPages.contains("Template:Infobox/"+form.getName()+"/Release")) {
 			{{Facts/@form.getName()/Release/Ask
 			 |query=[[-Has subobject::{{{#userparam}}}]]
 			 |template=Infobox/@form.getName()/Release
@@ -39,16 +39,28 @@
 		{{#if:{{{Gallery page|}}}|<div class="full-width works-by">[[:{{{Gallery page|}}}|Artwork from this book]]</div>}}
 
 	</div>
-</div>@*
+</div>
 
 
-Categories based on the properties.
-*@@if(form.containsProperty("Errata")) {
-{{#if:{{{Errata|}}}|[[Category:Products with errata]]}}
-}@*
+@*Categories based on the properties.*@
+@if(form.containsProperty("Errata")) {
+	{{#if:{{{Errata|}}}|[[Category:Products with errata]]}}
+}
+@if(form.containsProperty("Web enhancement")) {
+	{{#if:{{{Web enhancement|}}}|[[Category:Products with web enhancements]]}}
+}
+@if(form.containsProperty("Author")) {
+	{{#if: {{{Author|}}}|{{#arraymap:{{{Author|}}}|;|x|[[Category:Works by {{#getdisplaytitle:x}}]]|}}}}
+}
+@if(form.containsProperty("Artist")) {
+	{{#if: {{{Artist|}}}|{{#arraymap:{{{Artist|}}}|;|x|[[Category:Artwork by {{#getdisplaytitle:x}}]]|}}}}
+}
+@if(form.containsProperty("Narrator")) {
+	{{#if: {{{Narrator|}}}|{{#arraymap:{{{Narrator|}}}|;|x|[[Category:Works starring {{#getdisplaytitle:x}}]]|}}}}
+}
 
-Might be different between the wikis.
-*@@if(subPages.contains("Template:Infobox/"+form.getName()+"/Categories")) {
+@*Might be different between the wikis.*@
+@if(subPages.contains("Template:Infobox/"+form.getName()+"/Categories")) {
 	{{Infobox/@form.getName()/Categories
 		@for(prop:form.getProperties()) {|@prop.getName() = {{{@prop.getName()|}}}}
 		@for(prop:form.getGeneratedProperties()) {|@prop.getName() = {{{@prop.getName()|}}}}
