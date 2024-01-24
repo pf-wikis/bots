@@ -71,7 +71,7 @@ public enum FactType {
 	},
 	IMAGE(
 			"Image",
-			"[[File:{{{$1|}}}|250px|{{{Name|}}}]]",
+			"{{#if:{{{$1|}}}|[[File:{{{$1|}}}|250px|{{{Name|}}}]]}}",
 			"{{#set:Image=File:{{{$1|}}}}}",
 			"|$1=File:{{{$1|}}}"
 	),
