@@ -55,6 +55,12 @@
 @if(form.containsProperty("Artist")) {
 	{{#if: {{{Artist|}}}|{{#arraymap:{{{Artist|}}}|;|x|[[Category:Artwork by {{#getdisplaytitle:x}}]]|}}}}
 }
+@if(form.containsProperty("Director")) {
+	{{#if: {{{Director|}}}|{{#arraymap:{{{Director|}}}|;|x|[[Category:Works by {{#getdisplaytitle:x}}]]|}}}}
+}
+@if(form.containsProperty("Performer")) {
+	{{#if: {{{Performer|}}}|{{#arraymap:{{{Performer|}}}|;|x|[[Category:Works starring {{#getdisplaytitle:x}}]]|}}}}
+}
 @if(form.containsProperty("Narrator")) {
 	{{#if: {{{Narrator|}}}|{{#arraymap:{{{Narrator|}}}|;|x|[[Category:Works starring {{#getdisplaytitle:x}}]]|}}}}
 }
