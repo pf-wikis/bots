@@ -22,15 +22,15 @@ public class Replacer extends SimpleBot {
 
 	@Override
 	public void run() throws IOException {
-		//new SemanticDataIniHelperReplacer(run).start();
-		for(var p:run.getWiki().getPagesTranscluding("Template:Tlx")) {
+		new SemanticDataIniHelperReplacer(run).start();
+		/*for(var p:run.getWiki().getPagesTranscluding("Template:Tlx")) {
 			var txt = run.getWiki().getPageText(p.getTitle());
 			var nTxt = txt.replaceAll("(?i)\\{\\{ *tlx *\\|", "{{tl|");
 			if(!txt.equals(nTxt)) {
 				run.getWiki().edit(p.getTitle(), nTxt, "Replace tlx with tl template");
 			}
 		}
-		/*
+		
 		for(var p:run.getWiki().getPagesTranscluding("Template:Infobox/Book")) {
 			if(p.getTitle().contains(":")) continue;
 			var txt = run.getWiki().getPageText(p.getTitle());

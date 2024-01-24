@@ -21,11 +21,11 @@ public class SemanticDataIniHelperReplacer {
 	private Page page;
 
 	public void start() {
-		start("Map");
-		/*start("Miniatures");
+		//start("Map");
+		start("Miniatures");
 		start("Audio");
 		start("Video game");
-		start("Deck");*/
+		start("Deck");
 	}
 
 	private void start(String template) {

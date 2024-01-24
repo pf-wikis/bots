@@ -7,7 +7,9 @@
 <noinclude>
 {{Bot created|Bot Facts Helper}}
 [[Category:Synced to starfinderwiki]]
-</noinclude><div class="infobox @form.toCSSName()">
+</noinclude>
+<includeonly>
+<div class="infobox @form.toCSSName()">
 	<div class="name">{{#if:{{{Full title|}}}|{{{Full title}}}|{{{Name}}}}}</div>
 	{{#ifexist:{{{Image}}}|<div class="image">[[{{{Image}}}|250px|Cover Image]]</div>}}
 	{{#if:{{{Website|}}}|
@@ -72,3 +74,4 @@
 		@for(prop:form.getGeneratedProperties()) {|@prop.getName() = {{{@prop.getName()|}}}}
 	}}
 }
+</includeonly>
