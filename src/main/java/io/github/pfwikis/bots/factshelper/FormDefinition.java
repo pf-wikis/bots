@@ -66,6 +66,10 @@ public class FormDefinition {
 		if(properties.contains("Gallery")) {
 			result.add(props.get("Gallery page").withGenerateCode("{{#if:{{{Gallery|}}}|Category:Artwork from {{{Gallery}}}|Category:Artwork from {{PAGENAME}}}}"));
 		}
+		//serialized year
+		if(properties.contains("Serialized")) {
+			result.add(props.get("Serialized year").withGenerateCode("{{#rmatch:{{{Serialized|}}}|.*?([0-9]{4}).*|${1}|empty}}"));
+		}
 		
 		return result;
 	}
