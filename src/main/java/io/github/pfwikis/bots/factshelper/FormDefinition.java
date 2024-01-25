@@ -53,9 +53,9 @@ public class FormDefinition {
 		//add special autoproperties
 		result.add(props.get("Fact type").withGenerateCode("Template:Facts/"+name));
 		//Add a release year if if there is a release date
-		String releaseYearDefault = "";
+		String releaseYearDefault = "|default=unknown";
 		if(properties.contains("Serialized")) {
-			releaseYearDefault = "|default={{#rmatch:{{{Serialized|}}}|.*?([0-9]{4}).*|${1}|}}";
+			releaseYearDefault = "|default={{#rmatch:{{{Serialized|}}}|.*?([0-9]{4}).*|${1}|unknown}}";
 		}
 		if(properties.contains("Release date")) {
 			result.add(props.get("Release year").withGenerateCode("{{#show:{{FULLPAGENAME}}|?Release date#-F[Y]=|sort=Release date|order=ASC|limit=1|mainlabel=-|searchlabel="+releaseYearDefault+"}}"));
