@@ -154,11 +154,13 @@ public enum FactType {
 	
 	private final static String datePrecision() { 
 		return
-			"{{#rmatch:{{{$1|}}}|^\\d{4}-\\d{1,2}-\\d{1,2}$|date|"
-				+ "{{#rmatch:{{{$1|}}}|^\\d{4}-\\d{1,2}$|month|"
-					+ "{{#rmatch:{{{$1|}}}|^\\d{4}$|year|unknown}}"
+			"{{#if:{{{$1|}}}|"
+				+"{{#rmatch:{{{$1|}}}|^\\d{4}-\\d{1,2}-\\d{1,2}$|date|"
+					+ "{{#rmatch:{{{$1|}}}|^\\d{4}-\\d{1,2}$|month|"
+						+ "{{#rmatch:{{{$1|}}}|^\\d{4}$|year|unknown}}"
+					+ "}}"
 				+ "}}"
-			+ "}}";
+			+ "|empty}}";
 	}
 
 	public String infoboxLabel(PropertyDefinition prop) {
