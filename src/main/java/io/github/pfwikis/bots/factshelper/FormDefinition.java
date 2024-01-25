@@ -60,7 +60,7 @@ public class FormDefinition {
 			var sub=subForms.stream().filter(s->s.getProperties().contains("Release date")).findAny().get();
 			result.add(props.get("Release year").withGenerateCode("{{#ask:[[-Has subobject::{{FULLPAGENAME}}]][[Fact type::Template:Facts/"+name+"/"+sub.name+"]][[Release date::+]]|?Release date#-F[Y]=|sort=Release date|order=ASC|limit=1|mainlabel=-|searchlabel=}}"));
 			result.add(props.get("Release date").withGenerateCode("{{#ask:[[-Has subobject::{{FULLPAGENAME}}]][[Fact type::Template:Facts/"+name+"/"+sub.name+"]][[Release date::+]]|?Release date#ISO-P=|sort=Release date|order=ASC|limit=1|mainlabel=-|searchlabel=}}"));
-			result.add(props.get("Release date precision").withGenerateCode("{{#ask:[[-Has subobject::{{FULLPAGENAME}}]][[Fact type::Template:Facts/"+name+"/"+sub.name+"]][[Release date::+]]|?Release date precision=|sort=Release date|order=ASC|limit=1|mainlabel=-|searchlabel=}}"));
+			result.add(props.get("Release date precision").withGenerateCode("{{#ask:[[-Has subobject::{{FULLPAGENAME}}]][[Fact type::Template:Facts/"+name+"/"+sub.name+"]][[Release date::+]]|?Release date precision=|sort=Release date|order=ASC|limit=1|mainlabel=-|searchlabel=|default=empty}}"));
 		}
 		//add gallery page
 		if(properties.contains("Gallery")) {
