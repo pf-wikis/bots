@@ -11,7 +11,7 @@
 <includeonly>
 <div class="infobox @form.toCSSName()">
 	<div class="name">{{#if:{{{Full title|}}}|{{{Full title}}}|{{{Name}}}}}</div>
-	{{#ifexist:{{{Image}}}|<div class="image">[[{{{Image}}}|250px|Cover Image]]</div>}}
+	{{#ifexist:{{{Image}}}|<div class="image">[[{{{Image}}}|250px|Cover Image|class=not-lazy]]</div>}}
 	{{#if:{{{Website|}}}|
 		<div class="website">{{#if:{{{Pubcode|}}}
 			|[{{{Website}}} {{{Pubcode}}}]
