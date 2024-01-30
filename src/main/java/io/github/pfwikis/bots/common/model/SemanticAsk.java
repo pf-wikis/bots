@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import io.github.pfwikis.bots.factshelper.FactType;
 import io.github.pfwikis.bots.factshelper.PropertyType;
 import io.github.pfwikis.bots.utils.Jackson;
+import io.github.pfwikis.bots.utils.MWJsonHelper;
 import lombok.Data;
 
 @Data
@@ -61,6 +62,13 @@ public class SemanticAsk {
 		private String[] name;
 		@JsonProperty("Represented by page")
 		private Result[] representedByPage;
+		@JsonProperty("On page")
+		private Integer[] onPage;
+		@JsonProperty("Author")
+		private String[] authors;
+		@JsonProperty("Is subsection")
+		@JsonDeserialize(contentConverter = MWJsonHelper.BooleanConverter.class)
+		private Boolean[] isSubsection;
 	}
 	
 	public static class PrintoutsDeserializer extends StdDeserializer<Printouts> {

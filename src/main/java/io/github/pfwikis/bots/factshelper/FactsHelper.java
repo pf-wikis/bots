@@ -3,16 +3,15 @@ package io.github.pfwikis.bots
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.beust.jcommander.Parameters;
-import com.fizzed.rocker.RockerModel;
 
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.common.model.SemanticAsk.Result;
-import io.github.pfwikis.bots.factshelper.FormDefinition.Resolved;
 import lombok.extern.slf4j.Slf4j;
+import static io.github.pfwikis.bots.utils.MWJsonHelper.*;
+import static io.github.pfwikis.bots.utils.RockerHelper.*;
 
 @Slf4j
 @Parameters
@@ -47,13 +46,13 @@ public class FactsHelper extends SimpleBot {
 		try {
 			var rForm = form.resolve(props);
 			if(!form.getInfoboxProperties().isEmpty())
-				make("Template:Infobox/"+form.getName(), MakeInfobox.template(rForm, run.getWiki().getAllSubPages("Template", "Infobox/"+form.getName())));
-			make("Template:Facts/"+form.getName(), MakeTemplate.template(rForm));
-			make("Template:Facts/"+form.getName()+"/Input", MakeTemplateInput.template(rForm));
-			make("Template:Facts/"+form.getName()+"/Ask", MakeTemplateAsk.template(form.getName(), rForm));
-			make("Template:Facts/"+form.getName()+"/Show", MakeTemplateShow.template(form.getName(), rForm));
-			make("Form:"+form.getName(), MakeForm.template(form.getName(), form.getPluralName(), rForm, false));
-			make("Category:Facts about "+form.getPluralName(), MakeCategory.template(form.getName(), form.getPluralName(), rForm));
+				make(run.getWiki(), "Template:Infobox/"+form.getName(), MakeInfobox.template(rForm, run.getWiki().getAllSubPages("Template", "Infobox/"+form.getName())));
+			make(run.getWiki(), "Template:Facts/"+form.getName(), MakeTemplate.template(rForm));
+			make(run.getWiki(), "Template:Facts/"+form.getName()+"/Input", MakeTemplateInput.template(rForm));
+			make(run.getWiki(), "Template:Facts/"+form.getName()+"/Ask", MakeTemplateAsk.template(form.getName(), rForm));
+			make(run.getWiki(), "Template:Facts/"+form.getName()+"/Show", MakeTemplateShow.template(form.getName(), rForm));
+			make(run.getWiki(), "Form:"+form.getName(), MakeForm.template(form.getName(), form.getPluralName(), rForm, false));
+			make(run.getWiki(), "Category:Facts about "+form.getPluralName(), MakeCategory.template(form.getName(), form.getPluralName(), rForm));
 			
 			for(var subForm:rForm.getSubForms()) {
 				handleSubForm(rForm, subForm);
@@ -67,22 +66,16 @@ public class FactsHelper extends SimpleBot {
 		try {
 			var slashName = parent.getName()+"/"+subForm.getName();
 			var spaceName = parent.getName()+" "+subForm.getPluralName();
-			make("Template:Facts/"+slashName, MakeSubTemplate.template(parent, subForm));
-			make("Template:Facts/"+slashName+"/Ask", MakeTemplateAsk.template(slashName, subForm));
-			make("Template:Facts/"+slashName+"/Show", MakeTemplateShow.template(slashName, subForm));
-			make("Form:"+slashName, MakeForm.template(slashName, spaceName, subForm, true));
-			make("Category:Facts about "+spaceName, MakeCategory.template(slashName, spaceName, subForm));
+			make(run.getWiki(), "Template:Facts/"+slashName, MakeSubTemplate.template(parent, subForm));
+			make(run.getWiki(), "Template:Facts/"+slashName+"/Ask", MakeTemplateAsk.template(slashName, subForm));
+			make(run.getWiki(), "Template:Facts/"+slashName+"/Show", MakeTemplateShow.template(slashName, subForm));
+			make(run.getWiki(), "Form:"+slashName, MakeForm.template(slashName, spaceName, subForm, true));
+			make(run.getWiki(), "Category:Facts about "+spaceName, MakeCategory.template(slashName, spaceName, subForm));
 		} catch(Exception e) {
 			this.reportException(new RuntimeException("Failed to create facts utilities for "+subForm.getName(), e));
 		}
 	}
 
-	private void make(String page, RockerModel template) {
-		var txt = template.render().toString();
-		var trimmed = txt.strip().replace("\t", "").replaceAll("\\s*\n\\s*", "");
-		run.getWiki().editIfChange(page, trimmed, "Automatic regeneration of template");
-	}
-	
 	private PropertyDefinition createDefinition(Result rawProp) {
 		var res = new PropertyDefinition(
 			rawProp.getFulltext().substring(9),
@@ -96,15 +89,6 @@ public class FactsHelper extends SimpleBot {
 		return res;
 	}
 	
-	private <T> T assumeNoneOrOne(T[] values) {
-		if(values == null || values.length == 0)
-			return null;
-		if(values.length == 1)
-			return values[0];
-		else
-			throw new IllegalStateException("More than one value unexpectedly");
-	}
-
 	@Override
 	protected String getDescription() {
 		return
