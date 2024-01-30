@@ -2,29 +2,33 @@
 @import static io.github.pfwikis.bots.factshelper.FactType.*
 @import static org.apache.commons.lang3.StringUtils.startsWith
 
-@args(String name, String pluralName, FormDefinition.Resolved form)
+@args(String name, String pluralName, FormDefinition.Resolved form, boolean isSubform)
 <noinclude>
 {{Bot created|Bot Facts Helper}}[[Category:Synced to starfinderwiki]]
-This is the ''@name'' form.
-To create a page with this form, see [[:Category:Facts about @pluralName]]
+This is the ''@name'' form. To create a page with this form, see [[:Category:Facts about @pluralName]]
 
 </noinclude><includeonly>
-{{{for template|Facts/@name}}}
+{{{for template|Facts/@name@if(isSubform){|multiple|add button text=Add @form.getName().toLowerCase()}}}}
 <div class="facts-form">
 @for(prop:form.getProperties()) {
-<div class="facts-form-key @if(prop.getType() == BOOLEAN){inline}">@prop.getName()</div>
-<div class="facts-form-value">
-<div class="facts-form-input">{{{field
-|@prop.getName()
-@if(prop.getFactType() == IMAGE) {|input type=combobox|values from namespace=File}
-else if(prop.getFactType() == PAGE_LIST || prop.getFactType() == AUTHOR) {|list|input type=tokens|delimiter=;@*|values from category=Artists*@}
-else if(prop.getType() == TEXT || prop.getType() == PAGE) {|input type=combobox}
-@if(startsWith(prop.getSuggestValuesFrom(), "Category:")) {|values from category=@prop.getSuggestValuesFrom().substring(9)}
-else if(startsWith(prop.getSuggestValuesFrom(), "Namespace:")) {|values from namepsace=@prop.getSuggestValuesFrom().substring(10)}
-}}}</div>@if(prop.getNote()!=null){
-<div class="facts-form-note">@prop.getNote()</div>
-}
-</div>
+	<div class="facts-form-key @if(prop.getType() == BOOLEAN){inline}">@prop.getName()</div>
+	<div class="facts-form-value">
+		<div class="facts-form-input">
+			{{{field|@prop.getName()
+				@if(prop.getFactType() == IMAGE) {|input type=combobox|values from namespace=File}
+				else if(prop.getFactType() == PAGE_LIST || prop.getFactType() == AUTHOR) {|list|input type=tokens|delimiter=;@*|values from category=Artists*@}
+				else if(prop.getType() == TEXT || prop.getType() == PAGE) {|input type=combobox}
+				else if(prop.getType() == BOOLEAN) {|input type=checkbox}
+				else if(prop.getType() == NUMBER) {|input type=regexp|regexp=/^[0-9]*$/}
+				@if(startsWith(prop.getSuggestValuesFrom(), "Category:")) {|values from category=@prop.getSuggestValuesFrom().substring(9)}
+				else if(startsWith(prop.getSuggestValuesFrom(), "Namespace:")) {|values from namespace=@prop.getSuggestValuesFrom().substring(10)}
+				else if(startsWith(prop.getSuggestValuesFrom(), "Property:")) {|values from property=@prop.getSuggestValuesFrom().substring(9)}
+			}}}
+		</div>
+		@if(prop.getNote()!=null){
+			<div class="facts-form-note">@prop.getNote()</div>
+		}
+	</div>
 }
 </div>
 {{{end template}}}

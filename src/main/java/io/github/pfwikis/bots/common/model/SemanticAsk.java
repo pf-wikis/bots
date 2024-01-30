@@ -57,6 +57,10 @@ public class SemanticAsk {
 		private boolean[] copyToParent;
 		@JsonProperty("Has infobox label")
 		private String[] hasInfoboxLabel;
+		@JsonProperty("Name")
+		private String[] name;
+		@JsonProperty("Represented by page")
+		private Result[] representedByPage;
 	}
 	
 	public static class PrintoutsDeserializer extends StdDeserializer<Printouts> {

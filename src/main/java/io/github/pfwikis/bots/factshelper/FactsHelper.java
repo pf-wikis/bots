@@ -52,7 +52,7 @@ public class FactsHelper extends SimpleBot {
 			make("Template:Facts/"+form.getName()+"/Input", MakeTemplateInput.template(rForm));
 			make("Template:Facts/"+form.getName()+"/Ask", MakeTemplateAsk.template(form.getName(), rForm));
 			make("Template:Facts/"+form.getName()+"/Show", MakeTemplateShow.template(form.getName(), rForm));
-			make("Form:"+form.getName(), MakeForm.template(form.getName(), form.getPluralName(), rForm));
+			make("Form:"+form.getName(), MakeForm.template(form.getName(), form.getPluralName(), rForm, false));
 			make("Category:Facts about "+form.getPluralName(), MakeCategory.template(form.getName(), form.getPluralName(), rForm));
 			
 			for(var subForm:rForm.getSubForms()) {
@@ -70,7 +70,7 @@ public class FactsHelper extends SimpleBot {
 			make("Template:Facts/"+slashName, MakeSubTemplate.template(parent, subForm));
 			make("Template:Facts/"+slashName+"/Ask", MakeTemplateAsk.template(slashName, subForm));
 			make("Template:Facts/"+slashName+"/Show", MakeTemplateShow.template(slashName, subForm));
-			make("Form:"+slashName, MakeForm.template(slashName, spaceName, subForm));
+			make("Form:"+slashName, MakeForm.template(slashName, spaceName, subForm, true));
 			make("Category:Facts about "+spaceName, MakeCategory.template(slashName, spaceName, subForm));
 		} catch(Exception e) {
 			this.reportException(new RuntimeException("Failed to create facts utilities for "+subForm.getName(), e));

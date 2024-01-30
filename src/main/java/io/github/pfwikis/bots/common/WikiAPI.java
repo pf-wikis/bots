@@ -372,4 +372,8 @@ public class WikiAPI {
 	public List<String> search(String query, NS... namespaces) {
 		return wiki.search(query, -1, namespaces);
 	}
+
+	public void move(String page, String newTitle, boolean redirect, String reason) {
+		wiki.move(page, newTitle, true, true, !redirect, reason);
+	}
 }
