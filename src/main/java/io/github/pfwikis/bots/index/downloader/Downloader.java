@@ -45,6 +45,7 @@ public class Downloader {
 			.cookie("sessionId", token)
 			.url(url)
 			.maxBodySize(0)
+			.timeout(500000)
 			.get();
 	}
 	
@@ -65,7 +66,7 @@ public class Downloader {
 		var books = wiki.semanticAsk("[[Fact type::Template:Facts/Book]]|?Website");
 		for(var book:books) {
 			log.info("Checking {}", book.getFulltext());
-			if(book.getPrintouts() == null || book.getPrintouts().getWebsite().length == 0) continue;
+			if(book.getPrintouts() == null || book.getPrintouts().getWebsite() == null) continue;
 			if(SKIP_LIST.contains(book.getFulltext())) continue;
 			
 			var article = StringUtils.removeStart(book.getFulltext(), "Facts:");
@@ -88,7 +89,7 @@ public class Downloader {
 	private DownloadInfo checkDownloadPage(Result book, String article, File tmpDir) throws IOException {
 		DownloadInfo info = new DownloadInfo(article);
 		
-		String url = book.getPrintouts().getWebsite()[0];
+		String url = book.getPrintouts().getWebsite();
 		if(!url.startsWith("https://paizo.com/products/")) return info.withNoFileReason("not paizo url: "+url);
 		
 		var doc = jsoup(url);

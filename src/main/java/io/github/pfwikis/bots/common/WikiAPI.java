@@ -161,6 +161,7 @@ public class WikiAPI {
 	private static final ObjectMapper JACKSON = new ObjectMapper()
 		.findAndRegisterModules()
 		.registerModule(new JavaTimeModule())
+		.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
 		.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 	private <T> T query(Query<T> q, String... params) {
 		var realParams = ArrayUtils.addAll(
@@ -180,7 +181,8 @@ public class WikiAPI {
 			log.warn("{} call with {} failed:\n{}", q, Arrays.toString(params), resp.getErrors());
 		}
 		if(!resp.isBatchcomplete()) {
-			throw new IllegalStateException("continue not supported, but required");
+			var remainingPages = query(q, q.nextPageParams(params, resp));
+			return q.mergeResults(resp.getQuery(), remainingPages);
 		}
 		var query = resp.getQuery();
 		if(query != null) {

@@ -1,6 +1,9 @@
 package io.github.pfwikis.bots.replacer;
 
 import java.io.IOException;
+import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.beust.jcommander.Parameters;
 
@@ -22,7 +25,24 @@ public class Replacer extends SimpleBot {
 
 	@Override
 	public void run() throws IOException {
-		new SemanticDataIniHelperReplacer(run).start();
+		var pages = run.getWiki().getPagesTranscluding("Template:Cite book");
+		for(var p:pages) {
+			if(p.getTitle().contains(":")) continue;
+
+			var txt = run.getWiki().getPageText(p.getTitle());
+			var nTxt = txt
+				.replaceAll("<ref *> *\\{\\{ *Cite book/([^\\|\\}]+?)\\}\\} *</ref>", "{{Ref|$1}}")
+				.replaceAll("<ref *> *\\{\\{ *Cite book/([^\\|\\}]+?) *\\| *(\\d+) *\\}\\} *</ref>", "{{Ref|$1|$2}}")
+				.replaceAll("<ref *> *\\{\\{ *Cite book/([^\\|\\}]+?) *\\| *(\\d+)\\D(\\d+) *\\}\\} *</ref>", "{{Ref|$1|$2|$3}}");
+			
+			if(!nTxt.equals(txt)) {
+				run.getWiki().edit(
+					p.getTitle(),
+					nTxt,
+					"Replace references without name or location with new template.");
+			}
+		}
+		
 		/*for(var p:run.getWiki().getPagesTranscluding("Template:Tlx")) {
 			var txt = run.getWiki().getPageText(p.getTitle());
 			var nTxt = txt.replaceAll("(?i)\\{\\{ *tlx *\\|", "{{tl|");
@@ -30,7 +50,7 @@ public class Replacer extends SimpleBot {
 				run.getWiki().edit(p.getTitle(), nTxt, "Replace tlx with tl template");
 			}
 		}
-		
+		/*
 		for(var p:run.getWiki().getPagesTranscluding("Template:Infobox/Book")) {
 			if(p.getTitle().contains(":")) continue;
 			var txt = run.getWiki().getPageText(p.getTitle());

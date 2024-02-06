@@ -1,17 +1,23 @@
 package io.github.pfwikis.bots.common.model;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.NullNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TreeTraversingParser;
+import com.google.common.collect.Lists;
 
 import io.github.pfwikis.bots.factshelper.FactType;
 import io.github.pfwikis.bots.factshelper.PropertyType;
@@ -43,32 +49,40 @@ public class SemanticAsk {
 	@Data
 	public static class Printouts {
 		@JsonProperty("Website")
-		private String[] website;
+		private String website;
 		@JsonProperty("Has type")
-		private PropertyType[] hasType;
+		private PropertyType hasType;
 		@JsonProperty("Has fact type")
-		private FactType[] hasFactType;
+		private FactType hasFactType;
 		@JsonProperty("Has fact display format")
-		private String[] hasFactDisplayFormat;
+		private String hasFactDisplayFormat;
 		@JsonProperty("Has fact note")
-		private String[] hasFactNote;
+		private String hasFactNote;
 		@JsonProperty("Suggest values from")
-		private String[] suggestValuesFrom;
-		@JsonProperty("Copy to parent")
-		private boolean[] copyToParent;
+		private String suggestValuesFrom;
 		@JsonProperty("Has infobox label")
-		private String[] hasInfoboxLabel;
+		private String hasInfoboxLabel;
 		@JsonProperty("Name")
-		private String[] name;
+		private String name;
 		@JsonProperty("Represented by page")
-		private Result[] representedByPage;
+		private Result representedByPage;
+		@JsonProperty("Release year")
+		private String releaseYear;
 		@JsonProperty("On page")
-		private Integer[] onPage;
+		private String onPage;
 		@JsonProperty("Author")
-		private String[] authors;
+		private List<Result> authors = Collections.emptyList();
+		@JsonProperty("Primary author")
+		private List<Result> primaryAuthors = Collections.emptyList();
+		@JsonProperty("Full title")
+		private String fullTitle;
+		@JsonProperty("Isbn")
+		private String isbn;
+		@JsonProperty("Publisher")
+		private List<Result> publisher = Collections.emptyList();
 		@JsonProperty("Is subsection")
-		@JsonDeserialize(contentConverter = MWJsonHelper.BooleanConverter.class)
-		private Boolean[] isSubsection;
+		@JsonDeserialize(converter = MWJsonHelper.BooleanConverter.class)
+		private Boolean isSubsection;
 	}
 	
 	public static class PrintoutsDeserializer extends StdDeserializer<Printouts> {
@@ -79,11 +93,24 @@ public class SemanticAsk {
 
 		@Override
 		public Printouts deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
-			if(p.currentToken() == JsonToken.START_ARRAY) {
-				p.nextToken();
+			JsonNode node = p.readValueAsTree();
+			if(node.isArray() && node.size() == 0)
 				return new Printouts();
-			}
-			return (Printouts)ctxt.findRootValueDeserializer(this.getValueType()).deserialize(p, ctxt);
+			var n = (ObjectNode) node;
+			var fields = Lists.newArrayList(n.fieldNames());
+			fields.forEach(f->{
+				var v = n.get(f);
+				if(v.isArray()) {
+					var arr = (ArrayNode)v;
+					if(arr.isEmpty())
+						n.remove(f);
+					else if(arr.size()==1)
+						n.replace(f, arr.get(0));
+				}
+			});
+			var subParser = new TreeTraversingParser(node);
+			subParser.nextToken();
+			return (Printouts)ctxt.findRootValueDeserializer(this.getValueType()).deserialize(subParser, ctxt);
 		}
 		
 	}

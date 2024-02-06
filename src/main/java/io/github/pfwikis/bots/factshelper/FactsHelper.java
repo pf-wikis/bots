@@ -30,6 +30,7 @@ public class FactsHelper extends SimpleBot {
 				+ "|?Has type"
 				+ "|?Has fact type"
 				+ "|?Has fact display format"
+				+ "|?Has fact note"
 				+ "|?Suggest values from"
 				+ "|?Has infobox label"
 			)
@@ -79,12 +80,12 @@ public class FactsHelper extends SimpleBot {
 	private PropertyDefinition createDefinition(Result rawProp) {
 		var res = new PropertyDefinition(
 			rawProp.getFulltext().substring(9),
-			rawProp.getPrintouts().getHasType()[0],
-			assumeNoneOrOne(rawProp.getPrintouts().getHasFactType()),
-			assumeNoneOrOne(rawProp.getPrintouts().getHasFactDisplayFormat()),
-			assumeNoneOrOne(rawProp.getPrintouts().getHasFactNote()),
-			assumeNoneOrOne(rawProp.getPrintouts().getSuggestValuesFrom()),
-			assumeNoneOrOne(rawProp.getPrintouts().getHasInfoboxLabel())
+			rawProp.getPrintouts().getHasType(),
+			rawProp.getPrintouts().getHasFactType(),
+			rawProp.getPrintouts().getHasFactDisplayFormat(),
+			rawProp.getPrintouts().getHasFactNote(),
+			rawProp.getPrintouts().getSuggestValuesFrom(),
+			rawProp.getPrintouts().getHasInfoboxLabel()
 		);
 		return res;
 	}
