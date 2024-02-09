@@ -1,25 +1,25 @@
 @args(String name, FormDefinition.Resolved form)
 
 <includeonly>{{#ask: [[Fact type::Template:Facts/@name]]{{{query|}}}
-@for(prop:form.getProperties()) {
- |?@prop.getName()@?prop.getFactDisplayFormat()=@prop.getName()
-}
-@for(prop:form.getGeneratedProperties()) {
- |?@prop.getName()@?prop.getFactDisplayFormat()=@prop.getName()
-}
- |limit={{{limit|1000}}}
- |introtemplate={{{introtemplate|}}}
- |outrotemplate={{{outrotemplate|}}}
- |sort={{{sort|}}}
- |order=asc
- |userparam=Facts:{{{page|{{FULLPAGENAME}}}}}
- |link=none
- |format=plainlist
- |template={{{template|}}}
- |named args=yes
- |valuesep=;
- |searchlabel=
- |default={{{default|}}}
+	@for(prop:form.getProperties()) {
+		|?@prop.getName()@?prop.getFactDisplayFormat()=@prop.getName()
+	}
+	@for(prop:form.getGeneratedProperties()) {
+		|?@prop.getName()@?prop.getFactDisplayFormat()=@prop.getName()
+	}
+	|limit={{{limit|1000}}}
+	|introtemplate={{{introtemplate|}}}
+	|outrotemplate={{{outrotemplate|}}}
+	|sort={{{sort|}}}
+	|order=asc
+	|userparam=Facts:{{{page|{{FULLPAGENAME}}}}}
+	|link=none
+	|format=plainlist
+	|template={{{template|}}}
+	|named	args=yes
+	|valuesep=;
+	|searchlabel=
+	|default={{{default|}}}
 }}</includeonly><noinclude>
 {{Bot created|Bot Facts Helper}}
 This template allows you to call another template with all the fact properties of a page.

@@ -1,6 +1,7 @@
 package io.github.pfwikis.bots.citetemplates;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import com.google.common.primitives.Ints;
 import io.github.pfwikis.bots.citetemplates.BookDef.SectionDef;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.common.model.SemanticAsk.Result;
+import io.github.pfwikis.bots.utils.MWJsonHelper;
 import io.github.pfwikis.bots.utils.RockerHelper;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,7 +27,9 @@ public class CiteTemplates extends SimpleBot {
 
 	@Override
 	public void run() throws IOException {
-		var books = run.getWiki().semanticAsk("[[Fact type::Template:Facts/Book]]|?Name|?Represented by page|?Release year|?Primary author|?Author|?Full title|?Isbn|?Publisher");
+		var books = run.getWiki().semanticAsk("[[Fact type::"
+				+"Template:Facts/Book||Template:Facts/Map"
+				+"]]|?Name|?Represented by page|?Release year|?Primary author|?Author|?Full title|?Isbn|?Publisher");
 		for(var book : books) {
 			try {
 				var name = book.getPrintouts().getName();
@@ -62,6 +66,7 @@ public class CiteTemplates extends SimpleBot {
 						var prev = bookDef.getSections().get(i-1);
 						var sect = bookDef.getSections().remove(i);
 						sect.setParent(prev);
+						prev.setSubSections(new ArrayList<>(prev.getSubSections()));
 						prev.getSubSections().add(sect);
 						i--;
 					}
@@ -79,8 +84,8 @@ public class CiteTemplates extends SimpleBot {
 	private void calcPageRanges(List<SectionDef> sections, Integer max) {
 		if(sections.isEmpty()) return;
 		for(int i=0;i<sections.size()-1;i++) {
-			var page = Ints.tryParse(sections.get(i+1).getPage());
-			var myPage = Ints.tryParse(sections.get(i).getPage());
+			var page = MWJsonHelper.tryParseInt(sections.get(i+1).getPage());
+			var myPage = MWJsonHelper.tryParseInt(sections.get(i).getPage());
 			if(page != null && myPage != null)
 				sections.get(i).setEndPage(Math.max(page-1, myPage));
 		}
@@ -94,7 +99,7 @@ public class CiteTemplates extends SimpleBot {
 	protected String getDescription() {
 		return
 			"""
-			This bot creates {{tl|Cite book}} templates for all books with a facts page.
+			This bot creates {{tl|Cite}} templates for all books with a facts page.
 			""";
 	}
 		

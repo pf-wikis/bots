@@ -61,6 +61,12 @@ public class PageSyncer extends DualBot {
         var pages = run.getSfWiki().getPagesInCategory("Category:Synced to starfinderwiki");
         for(var page : pages) {
         	if(!synced.contains(page.getTitle())) {
+        		var txt = run.getSfWiki().getPageText(page.getTitle());
+        		if(!txt.contains("{{Deletion|")) {
+        			run.getSfWiki().edit(page.getTitle(), "<noinclude>{{Deletion|This page was originally synced from the pathfinderwiki"
+        				+ ", where it no longer exists or is no longer synced. It should be deleted or removed from the category.}}</noinclude>"+txt,
+        				"Synced page no longer found in source");
+        		}
         		run.getSfWiki().delete(page.getTitle(), "Synced page was deleted in source");
         	}
         }

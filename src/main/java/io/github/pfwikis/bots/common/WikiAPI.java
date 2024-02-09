@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -263,9 +264,14 @@ public class WikiAPI {
 			Query.PROP_TRANSCLUDED_IN,
 			"titles", template,
 			"tilimit", "5000"
-		).getPages().get(0).getTranscludedin();
-		if(pages == null) return Collections.emptyList();
-		return Arrays.asList(pages);
+		).getPages()
+			.stream()
+			.flatMap(p->p.getTranscludedin()==null
+				?Stream.empty()
+				:Arrays.stream(p.getTranscludedin())
+			)
+			.toList();
+		return pages;
 	}
 	
 	public List<Page> getImageUsage(String page) {
@@ -377,5 +383,17 @@ public class WikiAPI {
 
 	public void move(String page, String newTitle, boolean redirect, String reason) {
 		wiki.move(page, newTitle, true, true, !redirect, reason);
+	}
+
+	public ArrayList<String> getWantedTemplates() {
+		return wiki.querySpecialPage("Wantedtemplates", -1);
+	}
+
+	public String resolveRedirects(String page) {
+		return wiki.resolveRedirect(page);
+	}
+
+	public void undelete(String page, String reason) {
+		wiki.undelete(page, reason);
 	}
 }

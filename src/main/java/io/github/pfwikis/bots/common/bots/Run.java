@@ -1,7 +1,10 @@
 package io.github.pfwikis.bots.common.bots;
 
 import java.time.OffsetDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import io.github.pfwikis.bots.common.Discord;
 import io.github.pfwikis.bots.common.WikiAPI;
@@ -25,6 +28,7 @@ public abstract class Run {
 		private final boolean starfinder;
 		private final String masterAccount;
 		private final String masterPassword;
+		private final Map<String, Map<String, Object>> caches = new HashMap<>();
 		@Getter @Setter
 		private WikiAPI wiki;
 		private WikiAPI masterWiki;
@@ -41,6 +45,16 @@ public abstract class Run {
 				
 			}
 			task.accept(masterWiki);
+		}
+
+		public <T> T cache(String cacheId, String key, Function<String, T> calc) {
+			var cache = caches.computeIfAbsent(cacheId, a->new HashMap<>());
+			T value = (T)cache.get(key);
+			if(value == null) {
+				value = calc.apply(key);
+				cache.put(key, value);
+			}
+			return value;
 		}
 	}
 	

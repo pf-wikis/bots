@@ -12,6 +12,7 @@ import com.google.common.collect.Range;
 import com.google.common.collect.TreeRangeMap;
 import com.google.common.primitives.Ints;
 
+import io.github.pfwikis.bots.utils.MWJsonHelper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -51,8 +52,8 @@ public class BookDef implements BookPart {
 		var ranges = TreeRangeMap.<Integer, String>create();
 		for(var sect:sections) {
 			var sectValue = makeValue.apply(sect);
-			var page = Ints.tryParse(sect.getPage());
-			if(sectValue.equals(bookValue) || page == null) continue;
+			var page = MWJsonHelper.tryParseInt(sect.getPage());
+			if(sectValue == null || sectValue.equals(bookValue) || page == null) continue;
 			if(sect.getEndPage() != null)
 				ranges.put(Range.closed(page, sect.getEndPage()).canonical(DiscreteDomain.integers()), sectValue);
 			else
@@ -63,8 +64,8 @@ public class BookDef implements BookPart {
 			var sectValue = makeValue.apply(sect);
 			for(var subSect:sect.getSubSections()) {
 				var subSectValue = makeValue.apply(subSect);
-				var page = Ints.tryParse(subSect.getPage());
-				if(subSectValue.equals(bookValue) || subSectValue.equals(sectValue) || page == null) continue;
+				var page = MWJsonHelper.tryParseInt(subSect.getPage());
+				if(subSectValue == null || subSectValue.equals(bookValue) || subSectValue.equals(sectValue) || page == null) continue;
 				if(subSect.getEndPage() != null)
 					ranges.put(Range.closed(page, subSect.getEndPage()).canonical(DiscreteDomain.integers()), subSectValue);
 				else
@@ -109,12 +110,12 @@ public class BookDef implements BookPart {
 		var bookValue = makeValue.apply(this);
 		var res = new HashMap<String, String>();
 		for(var sect : sections) {
-			if(sect.getPage()!=null && Ints.tryParse(sect.getPage())==null && !bookValue.equals(makeValue.apply(sect))) {
+			if(sect.getPage()!=null && MWJsonHelper.tryParseInt(sect.getPage())==null && !bookValue.equals(makeValue.apply(sect))) {
 				res.put(sect.getPage(), makeValue.apply(sect));
 			}
 			
 			for(var subSect : sect.getSubSections()) {
-				if(subSect.getPage()!=null && Ints.tryParse(subSect.getPage())==null && !bookValue.equals(makeValue.apply(subSect))) {
+				if(subSect.getPage()!=null && MWJsonHelper.tryParseInt(subSect.getPage())==null && !bookValue.equals(makeValue.apply(subSect))) {
 					res.put(subSect.getPage(), makeValue.apply(subSect));
 				}
 			}

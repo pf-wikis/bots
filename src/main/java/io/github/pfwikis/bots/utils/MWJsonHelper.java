@@ -1,6 +1,7 @@
 package io.github.pfwikis.bots.utils;
 
 import com.fasterxml.jackson.databind.util.StdConverter;
+import com.google.common.primitives.Ints;
 
 public class MWJsonHelper {
 	public static <T> T assumeNoneOrOne(T[] values) {
@@ -10,6 +11,11 @@ public class MWJsonHelper {
 			return values[0];
 		else
 			throw new IllegalStateException("More than one value unexpectedly");
+	}
+	
+	public static Integer tryParseInt(String value) {
+		if(value == null || value.isEmpty()) return null;
+		return Ints.tryParse(value);
 	}
 
 	public static class BooleanConverter extends StdConverter<String, Boolean> {

@@ -12,19 +12,23 @@
 	<span class="title">[[@book.getPage()|@book.getName()]]</span>
 }
 @pages => {
-	{{#if:{{{1|}}}|
-		<span class="location" title="location: typically a book page">
-		, @*space before important*@
-		{{#rmatch:{{{1}}}|^\d+$|
-			{{#if:{{{2|}}}|
-				{{{1}}}&ndash;{{{2}}}
+	{{#if:{{{show as|}}}|
+		<span class="location" title="location: typically a book page">, {{{show as}}}</span>
+	|
+		{{#if:{{{1|}}}|
+			<span class="location" title="location: typically a book page">
+			, @*space before important*@
+			{{#rmatch:{{{1}}}|^\d+$|
+				{{#if:{{{2|}}}|
+					{{{1}}}&ndash;{{{2}}}
+				|
+					{{{1}}}
+				}}
 			|
 				{{{1}}}
 			}}
-		|
-			{{{1}}}
+			</span>
 		}}
-		</span>
 	}}
 }
 @publisher => {
@@ -142,6 +146,11 @@ You probably want to use {{tl|Ref|@book.getFactsPage()}} instead.
 			"description": "If parameter 1 is a page and you want to reference a range of pages, this should be set to the last page of the range.",
 			"example": "6",
 			"type": "number"
+		},
+		"show as": {
+			"description": "If set, shows this instead of the location derived from parameters 1 and 2.",
+			"example": "65''ff''",
+			"type": "string"
 		}
 	},
 	"description": "Creates a citation text for use in <ref></ref> tags."
@@ -155,8 +164,10 @@ You probably want to use {{tl|Ref|@book.getFactsPage()}} instead.
 {{Cite/@book.getFactsPage()}}<br><br>
 
 <h3>With arbitrary location</h3>
-<syntaxhighlight lang="wikitext">{{Cite/@book.getFactsPage()|anything goes}}</syntaxhighlight>
-{{Cite/@book.getFactsPage()|anything goes}}<br><br>
+<syntaxhighlight lang="wikitext">{{Cite/@book.getFactsPage()|any location}}</syntaxhighlight>
+{{Cite/@book.getFactsPage()|any location}}<br><br>
+<syntaxhighlight lang="wikitext">{{Cite/@book.getFactsPage()|15|show as=shown location}}</syntaxhighlight>
+{{Cite/@book.getFactsPage()|15|show as=shown location}}<br><br>
 
 <h3>With page, page range, or a specific location</h3>
 @for(s:book.getSections()) {
