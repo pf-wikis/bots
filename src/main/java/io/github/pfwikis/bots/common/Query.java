@@ -30,7 +30,17 @@ public class Query<T> {
 		AllpagesQuery.class,
 		"list",
 		"allpages"
-	);
+	) {
+		@Override
+		protected String getContinueValue(QueryResponse<AllpagesQuery> resp) {
+			return resp.getContinueInfo().getApcontinue();
+		}
+		
+		public AllpagesQuery mergeResults(AllpagesQuery a, AllpagesQuery b) {
+			a.getAllpages().addAll(b.getAllpages());
+			return a;
+		};
+	};
 
 	public static final Query<QueryListUsers> LIST_USERS = new Query<>(
 		QueryListUsers.class,
@@ -56,17 +66,8 @@ public class Query<T> {
 		"transcludedin"
 	) {
 		@Override
-		public String[] nextPageParams(String[] params, QueryResponse<PageQuery> resp) {
-			var i = ArrayUtils.indexOf(params, "ticontinue");
-			if(i == -1) {
-				return ArrayUtils.addAll(
-					params,
-					new String[]{"ticontinue", resp.getContinueInfo().getTicontinue()}
-				);
-			}
-			var result = Arrays.copyOf(params, params.length);
-			result[i+1] = resp.getContinueInfo().getTicontinue();
-			return result;
+		protected String getContinueValue(QueryResponse<PageQuery> resp) {
+			return resp.getContinueInfo().getTicontinue();
 		}
 		
 		public PageQuery mergeResults(PageQuery a, PageQuery b) {
@@ -109,6 +110,20 @@ public class Query<T> {
 	}
 
 	public String[] nextPageParams(String[] params, QueryResponse<T> resp) {
+		var i = ArrayUtils.indexOf(params, "apcontinue");
+		if(i == -1) {
+			return ArrayUtils.addAll(
+				params,
+				new String[]{"apcontinue", getContinueValue(resp)}
+			);
+		}
+		var result = Arrays.copyOf(params, params.length);
+		result[i+1] = getContinueValue(resp);
+		return result;
+		
+	}
+
+	protected String getContinueValue(QueryResponse<T> resp) {
 		throw new IllegalStateException("continue not supported, but required");
 	}
 

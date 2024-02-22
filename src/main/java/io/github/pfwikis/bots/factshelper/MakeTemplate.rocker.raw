@@ -10,9 +10,9 @@
 </noinclude><includeonly>
 @if(!form.getSubForms().isEmpty()) {
 	<div class="facts-display-header">
-		<div class="facts-display-header-item">[[Facts:{{ROOTPAGENAME}}|General @form.getName() Facts]]</div>
+		<div class="facts-display-header-item">General @form.getName() Facts</div>
 		@for(sub:form.getSubForms()) {
-			<div class="facts-display-header-item">{{#ifeq:{{PAGENAME}}|{{ROOTPAGENAME}}/@sub.getPluralName()|@sub.getPluralName()|{{#formredlink:target=Facts:{{ROOTPAGENAME}}/@sub.getPluralName()|form=@form.getName()/@sub.getName()|link text=Create @sub.getPluralName()|existing page link text=@sub.getPluralName()}}}}</div>
+			<div class="facts-display-header-item">{{#formredlink:target=Facts:{{PAGENAME}}/@sub.getPluralName()|form=@form.getName()/@sub.getName()|link text=Create @sub.getPluralName()|existing page link text=@sub.getPluralName()}}</div>
 		}
 	</div>
 }

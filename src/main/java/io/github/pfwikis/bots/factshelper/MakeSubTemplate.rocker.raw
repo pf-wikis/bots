@@ -14,9 +14,9 @@ Only show the properties on the /Sections subpage
 -->{{#ifeq:{{SUBPAGENAME}}|@form.getPluralName()|
 {{#ifeq:{{#counter: i}}|1
 |<div class="facts-display-header">
-  <div class="facts-display-header-item">[[Facts:{{ROOTPAGENAME}}|General @parent.getName() Facts]]</div>
+  <div class="facts-display-header-item">[[Facts:{{BASEPAGENAME}}|General @parent.getName() Facts]]</div>
   @for(sub:parent.getSubForms()) {
-  <div class="facts-display-header-item">{{#ifeq:{{PAGENAME}}|{{ROOTPAGENAME}}/@sub.getPluralName()|@sub.getPluralName()|{{#formredlink:target=Facts:{{ROOTPAGENAME}}/@sub.getPluralName()|form=@parent.getName()/@sub.getName()|link text=Create @sub.getPluralName()|existing page link text=@sub.getPluralName()}}}}</div>
+  <div class="facts-display-header-item">{{#ifeq:{{PAGENAME}}|{{BASEPAGENAME}}/@sub.getPluralName()|@sub.getPluralName()|{{#formredlink:target=Facts:{{BASEPAGENAME}}/@sub.getPluralName()|form=@parent.getName()/@sub.getName()|link text=Create @sub.getPluralName()|existing page link text=@sub.getPluralName()}}}}</div>
   }
 </div>
 }}
@@ -33,7 +33,7 @@ Only show the properties on the /Sections subpage
 
 
 Only store the properties if this template is transcluded into a root page.
--->{{#ifeq:{{ROOTPAGENAME}}|{{PAGENAME}}|
+-->{{#ifeq:{{SUBPAGENAME}}|@form.getPluralName()||
 {{#subobject:
 |Fact type=Template:Facts/@parent.getName()/@form.getName()
 @for(prop:form.getProperties()) {@prop.getFactType().storeSubFactCode(prop.getName())}

@@ -181,7 +181,7 @@ public class WikiAPI {
 		if(resp.getWarnings() != null && !resp.getWarnings().isEmpty()) {
 			log.warn("{} call with {} failed:\n{}", q, Arrays.toString(params), resp.getErrors());
 		}
-		if(!resp.isBatchcomplete()) {
+		if(resp.getContinueInfo() != null) {
 			var remainingPages = query(q, q.nextPageParams(params, resp));
 			return q.mergeResults(resp.getQuery(), remainingPages);
 		}

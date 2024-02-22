@@ -30,6 +30,7 @@ public class QueryResponse<T> {
 	@Getter @Setter
 	public static class Continue {
 		private String ticontinue;
+		private String apcontinue;
 		@JsonProperty("continue")
 		private String cont;
 	}
