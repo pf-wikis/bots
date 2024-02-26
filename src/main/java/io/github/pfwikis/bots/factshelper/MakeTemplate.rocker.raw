@@ -7,7 +7,17 @@
 	}
 }}
 [[Category:Synced to starfinderwiki]][[Category:Facts templates]]
-</noinclude><includeonly>
+</noinclude><includeonly><div class="facts">
+{{#ifexist:Template:Cite/{{PAGENAME}}|
+	<div class="citethis">
+		You can cite this entity by using {{tl|Ref|{{PAGENAME}}}} or {{tl|Cite/{{PAGENAME}}}}.
+	</div>
+}}
+@*<div class="facts-display-subpages">
+	<ul>{{#arraymap:{{#rreplace:{{SUBPAGES:{{{1}}}|sep=~}}|(([^~]+~){{{{limit|20}}}}).*|$1}}|~|%|<li>[[%|{{SUBPAGENAME:%}}]]</li>|}}</ul>
+	{{#ifexpr:{{NUMBEROFSUBPAGES:{{{1}}}}}>{{{limit|20}}}|[{{fullurl:Special:PrefixIndex|stripprefix=1&prefix={{urlencode:{{{1}}}/}}}} all {{NUMBEROFSUBPAGES:{{{1}}}}} subpages]}}
+</div>*@
+
 @if(!form.getSubForms().isEmpty()) {
 	<div class="facts-display-header">
 		<div class="facts-display-header-item">General @form.getName() Facts</div>
@@ -40,5 +50,6 @@
 	}
 </div>
 
+</div>
 [[Category:Facts about @form.getPluralName()]]
 </includeonly>
