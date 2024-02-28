@@ -83,6 +83,9 @@ public class SemanticAsk {
 		@JsonProperty("Is subsection")
 		@JsonDeserialize(converter = MWJsonHelper.BooleanConverter.class)
 		private Boolean isSubsection;
+		@JsonProperty("Disable autocomplete")
+		@JsonDeserialize(converter = MWJsonHelper.BooleanConverter.class)
+		private Boolean disableAutocomplete;
 	}
 	
 	public static class PrintoutsDeserializer extends StdDeserializer<Printouts> {

@@ -33,6 +33,7 @@ public class FactsHelper extends SimpleBot {
 				+ "|?Has fact note"
 				+ "|?Suggest values from"
 				+ "|?Has infobox label"
+				+ "|?Disable autocomplete"
 			)
 			.stream()
 			.map(this::createDefinition)
@@ -85,7 +86,8 @@ public class FactsHelper extends SimpleBot {
 			rawProp.getPrintouts().getHasFactDisplayFormat(),
 			rawProp.getPrintouts().getHasFactNote(),
 			rawProp.getPrintouts().getSuggestValuesFrom(),
-			rawProp.getPrintouts().getHasInfoboxLabel()
+			rawProp.getPrintouts().getHasInfoboxLabel(),
+			Boolean.TRUE.equals(rawProp.getPrintouts().getDisableAutocomplete())
 		);
 		return res;
 	}

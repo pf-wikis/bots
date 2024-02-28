@@ -17,6 +17,7 @@ public class PropertyDefinition {
 	private final String note;
 	private final String suggestValuesFrom;
 	private final String infoboxLabel;
+	private final boolean autocompleteDisabled;
 	
 	public Generated withGenerateCode(String code) {
 		return new Generated(name, type, factType, factDisplayFormat, note, suggestValuesFrom, infoboxLabel, code);
