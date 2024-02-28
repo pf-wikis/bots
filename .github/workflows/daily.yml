@@ -20,6 +20,8 @@ jobs:
       run: mvn -B package
     - name: Meta
       run: java -jar target/bots-0.0.0.jar meta --password ${{ secrets.ROOT_BOT_PW }} --discordToken ${{ secrets.DISCORD_TOKEN }}
+    - name: Meta
+      run: java -jar target/bots-0.0.0.jar facts-helper --password ${{ secrets.ROOT_BOT_PW }} --discordToken ${{ secrets.DISCORD_TOKEN }}
     - name: Usage Reporter
       run: java -jar target/bots-0.0.0.jar usage-reporter --password ${{ secrets.ROOT_BOT_PW }} --matomoToken ${{ secrets.MATOMO_TOKEN}} --discordToken ${{ secrets.DISCORD_TOKEN }}
     # Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
