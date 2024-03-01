@@ -26,16 +26,12 @@ public class Query<T> {
 		"recentchanges"
 	);
 
-	public static final Query<AllpagesQuery> LIST_ALL_PAGES = new Query<>(
+	public static final Query<AllpagesQuery> LIST_ALL_PAGES = new Query.WithContinue<>(
 		AllpagesQuery.class,
 		"list",
-		"allpages"
+		"allpages",
+		"apcontinue"
 	) {
-		@Override
-		protected String getContinueValue(QueryResponse<AllpagesQuery> resp) {
-			return resp.getContinueInfo().getApcontinue();
-		}
-		
 		public AllpagesQuery mergeResults(AllpagesQuery a, AllpagesQuery b) {
 			a.getAllpages().addAll(b.getAllpages());
 			return a;
@@ -60,16 +56,12 @@ public class Query<T> {
 		"categorymembers"
 	);
 	
-	public static final Query<PageQuery> PROP_TRANSCLUDED_IN = new Query<>(
+	public static final Query<PageQuery> PROP_TRANSCLUDED_IN = new Query.WithContinue<>(
 		PageQuery.class,
 		"prop",
-		"transcludedin"
+		"transcludedin",
+		"ticontinue"
 	) {
-		@Override
-		protected String getContinueValue(QueryResponse<PageQuery> resp) {
-			return resp.getContinueInfo().getTicontinue();
-		}
-		
 		public PageQuery mergeResults(PageQuery a, PageQuery b) {
 			a.getPages().addAll(b.getPages());
 			return a;
@@ -82,11 +74,18 @@ public class Query<T> {
 		"categories"
 	);
 	
-	public static final Query<LogEventsQuery> LIST_LOG_EVENTS = new Query<>(
+	public static final Query<LogEventsQuery> LIST_LOG_EVENTS = new Query.WithContinue<>(
 		LogEventsQuery.class, 
 		"list",
-		"logevents"
-	);
+		"logevents",
+		"lecontinue"
+	) {
+		@Override
+		public LogEventsQuery mergeResults(LogEventsQuery a, LogEventsQuery b) {
+			a.getLogevents().addAll(b.getLogevents());
+			return a;
+		}
+	};
 	
 	public static final Query<ImageUsageQuery> LIST_IMAGE_USAGE = new Query<>(
 		ImageUsageQuery.class, 
@@ -94,11 +93,18 @@ public class Query<T> {
 		"imageusage"
 	);
 	
-	public static final Query<AllusersQuery> LIST_ALL_USERS = new Query<>(
-		AllusersQuery.class, 
-		"list",
-		"allusers"
-	);
+	public static final Query<AllusersQuery> LIST_ALL_USERS = new Query.WithContinue<>(
+			AllusersQuery.class, 
+			"list",
+			"allusers",
+			"aufrom"
+	) {
+		@Override
+		public AllusersQuery mergeResults(AllusersQuery a, AllusersQuery b) {
+			a.getAllusers().addAll(b.getAllusers());
+			return a;
+		}
+	};
 	
 	private final Class<T> responseType;
 	private final String what;
@@ -110,24 +116,37 @@ public class Query<T> {
 	}
 
 	public String[] nextPageParams(String[] params, QueryResponse<T> resp) {
-		var i = ArrayUtils.indexOf(params, "apcontinue");
-		if(i == -1) {
-			return ArrayUtils.addAll(
-				params,
-				new String[]{"apcontinue", getContinueValue(resp)}
-			);
-		}
-		var result = Arrays.copyOf(params, params.length);
-		result[i+1] = getContinueValue(resp);
-		return result;
+		throw new IllegalStateException("continue not supported for "+toString()+", but required");
+	}
+	
+	public T mergeResults(T query, T remainingPages) {
+		throw new IllegalStateException("continue not supported for "+toString()+", but required");
+	}
+
+	private static abstract class WithContinue<T> extends Query<T> {
 		
-	}
+		private final String continueValue;
 
-	protected String getContinueValue(QueryResponse<T> resp) {
-		throw new IllegalStateException("continue not supported, but required");
-	}
-
-	public T mergeResults(T a, T b) {
-		throw new IllegalStateException("continue not supported, but required");
+		public WithContinue(Class<T> responseType, String what, String which, String continueValue) {
+			super(responseType, what, which);
+			this.continueValue = continueValue;
+		}
+		
+		@Override
+		public String[] nextPageParams(String[] params, QueryResponse<T> resp) {
+			var i = ArrayUtils.indexOf(params, continueValue);
+			if(i == -1) {
+				return ArrayUtils.addAll(
+					params,
+					new String[]{continueValue, resp.getContinueInfo().getGenericValue(continueValue)}
+				);
+			}
+			var result = Arrays.copyOf(params, params.length);
+			result[i+1] = resp.getContinueInfo().getGenericValue(continueValue);
+			return result;
+			
+		}
+		
+		public abstract T mergeResults(T a, T b);
 	}
 }

@@ -292,7 +292,7 @@ public class WikiAPI {
 	public List<JsonNode> getLogEvents(ZonedDateTime end, String user) {
 		return query(
 			Query.LIST_LOG_EVENTS,
-			"lelimit", "1",
+			"lelimit", "5000",
 			"leend", end.toInstant().truncatedTo(ChronoUnit.SECONDS).toString(),
 			"leuser", user
 		).getLogevents();
