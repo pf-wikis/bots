@@ -17,17 +17,18 @@ public class PropertyDefinition {
 	private final String note;
 	private final String suggestValuesFrom;
 	private final String infoboxLabel;
+	private final boolean autocompleteDisabled;
 	
 	public Generated withGenerateCode(String code) {
-		return new Generated(name, type, factType, factDisplayFormat, note, suggestValuesFrom, infoboxLabel, code);
+		return new Generated(name, type, factType, factDisplayFormat, note, suggestValuesFrom, infoboxLabel, autocompleteDisabled, code);
 	}
 	
 	
 	@Getter
 	public static class Generated extends PropertyDefinition {
 		public Generated(String name, PropertyType type, FactType factType, String factDisplayFormat, String note,
-				String suggestValuesFrom, String infoboxLabel, String generateCode) {
-			super(name, type, factType, factDisplayFormat, note, suggestValuesFrom, infoboxLabel);
+				String suggestValuesFrom, String infoboxLabel, boolean autocompleteDisabled, String generateCode) {
+			super(name, type, factType, factDisplayFormat, note, suggestValuesFrom, infoboxLabel, autocompleteDisabled);
 			this.generateCode = generateCode;
 		}
 

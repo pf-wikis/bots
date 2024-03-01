@@ -16,8 +16,8 @@ This is the ''@name'' form. To create a page with this form, see [[:Category:Fac
 		<div class="facts-form-input">
 			{{{field|@prop.getName()
 				@if(prop.getFactType() == IMAGE) {|input type=combobox|values from namespace=File}
-				else if(prop.getFactType() == PAGE_LIST || prop.getFactType() == AUTHOR) {|list|input type=tokens|delimiter=;@*|values from category=Artists*@}
-				else if(prop.getType() == TEXT || prop.getType() == PAGE) {|input type=combobox}
+				else if(prop.getFactType() == PAGE_LIST || prop.getFactType() == AUTHOR) {|list|input type=tokens|delimiter=;}
+				else if(prop.getType() == TEXT || prop.getType() == PAGE) {|input type=@if(prop.isAutocompleteDisabled()){text}else{combobox}}
 				else if(prop.getType() == BOOLEAN) {|input type=checkbox}
 				else if(prop.getType() == NUMBER) {|input type=regexp|regexp=/^[0-9]*$/}
 				@if(startsWith(prop.getSuggestValuesFrom(), "Category:")) {|values from category=@prop.getSuggestValuesFrom().substring(9)}
