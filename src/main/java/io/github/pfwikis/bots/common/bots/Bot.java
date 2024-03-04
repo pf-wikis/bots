@@ -126,7 +126,7 @@ public abstract class Bot<RUN extends Run> {
 			| [[User:%s|%s]] || %s || %s
 			""".formatted(
 				botName, botName,
-				run.getTimestamp().truncatedTo(ChronoUnit.SECONDS).toInstant().toString(),
+				run.getTimestamp().toLocalDate().toString(),
 				!hadError?"<span style=\"color:ForestGreen\">OK</span>":"<span style=\"color:Crimson\">ERROR</span>[[Category:Pages with errors]]"
 			);
 			
