@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fizzed.rocker.RockerContent;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -78,8 +79,8 @@ public enum FactType {
 	AUTHOR(
 			"Author",
 			"{{#arraymap:{{{$1|}}}|;|~|[[~|{{#getdisplaytitle:~}}]]}}",
-			"{{#set:$1={{{$1|}}}|+sep=;}}",
-			"|$1={{{$1|}}}|+sep=;"
+			"<span class=\"hidden\">{{#counter: $1-order-counter|set=0}}</span>{{#set:$1={{{$1|}}}|+sep=;}}{{#set:$1 ordered={{#arraymap:{{{$1|}}}|;|~|~;{{#counter: $1-order-counter}}|§}}|+sep=§}}",
+			"|$1={{{$1|}}}|+sep=;|$1 ordered={{#arraymap:{{{$1|}}}|;|~|~;{{#counter: $1-order-counter}}|§}}|+sep=§"
 	) {
 		
 		@Override
@@ -98,6 +99,11 @@ public enum FactType {
 				return "{{#set:Author={{{$1|}}}|+sep=;}}".replace("$1", prop.getName());
 			}
 			return "";
+		}
+		
+		@Override
+		public String formBeforeSubformTransclude(PropertyDefinition prop) {
+			return "{{#counter: $1-order-counter|set=0}}";
 		}
 		
 		@Override
@@ -145,6 +151,10 @@ public enum FactType {
 	}
 	
 	public String formAfterSet(PropertyDefinition prop) {
+		return "";
+	}
+	
+	public String formBeforeSubformTransclude(PropertyDefinition prop) {
 		return "";
 	}
 	
