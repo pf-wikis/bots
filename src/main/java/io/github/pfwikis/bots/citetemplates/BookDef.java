@@ -31,21 +31,12 @@ public class BookDef implements BookPart {
 	@Builder.Default
 	private List<String> authors = new ArrayList<>();
 	@Builder.Default
-	private List<String> primaryAuthors = new ArrayList<>();
-	@Builder.Default
 	private List<SectionDef> sections = new ArrayList<>();
 	@Builder.Default
 	private List<String> publisher = new ArrayList<>();
 	private Integer releaseYear;
 	private String fullTitle;
 	private String isbn;
-	
-	public List<String> getAuthors() {
-		var authors = new ArrayList<>(this.authors);
-		authors.removeAll(primaryAuthors);
-		authors.addAll(0, primaryAuthors);
-		return authors;
-	}
 	
 	private Map<String, List<Range<Integer>>> makeRanges(Function<BookPart, String> makeValue) {
 		var bookValue = makeValue.apply(this);

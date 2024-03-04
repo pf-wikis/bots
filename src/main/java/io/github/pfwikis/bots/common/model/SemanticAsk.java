@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JacksonException;
@@ -14,7 +16,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TreeTraversingParser;
 import com.google.common.collect.Lists;
@@ -74,6 +75,10 @@ public class SemanticAsk {
 		private List<Result> authors = Collections.emptyList();
 		@JsonProperty("Primary author")
 		private List<Result> primaryAuthors = Collections.emptyList();
+		@JsonProperty("Author ordered")
+		private List<Ordered> authorsOrdered = Collections.emptyList();
+		@JsonProperty("Primary author ordered")
+		private List<Ordered> primaryAuthorsOrdered = Collections.emptyList();
 		@JsonProperty("Full title")
 		private String fullTitle;
 		@JsonProperty("Isbn")
@@ -86,6 +91,32 @@ public class SemanticAsk {
 		@JsonProperty("Disable autocomplete")
 		@JsonDeserialize(converter = MWJsonHelper.BooleanConverter.class)
 		private Boolean disableAutocomplete;
+	}
+	
+	@Data
+	public static class Ordered implements Comparable<Ordered> {
+		@JsonProperty("Author")
+		private Labeled<Result> author;
+		@JsonProperty("Primary author")
+		private Labeled<Result> primaryAuthor;
+		@JsonProperty("Order")
+		private Labeled<Integer> order;
+		
+		@Override
+		public int compareTo(Ordered o) {
+			return Objects.compare(order.getValue(), o.order.getValue(), Integer::compare);
+		}
+	}
+	
+	@Data
+	public static class Labeled<T> {
+		private List<T> item;
+		
+		public T getValue() {
+			if(item == null || item.isEmpty())
+				return null;
+			return item.get(0);
+		}
 	}
 	
 	public static class PrintoutsDeserializer extends StdDeserializer<Printouts> {

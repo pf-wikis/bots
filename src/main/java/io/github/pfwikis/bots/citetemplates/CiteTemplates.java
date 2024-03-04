@@ -8,10 +8,12 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import com.beust.jcommander.Parameters;
-import com.google.common.primitives.Ints;
 
 import io.github.pfwikis.bots.citetemplates.BookDef.SectionDef;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
+import io.github.pfwikis.bots.common.model.SemanticAsk.Labeled;
+import io.github.pfwikis.bots.common.model.SemanticAsk.Ordered;
+import io.github.pfwikis.bots.common.model.SemanticAsk.Printouts;
 import io.github.pfwikis.bots.common.model.SemanticAsk.Result;
 import io.github.pfwikis.bots.utils.MWJsonHelper;
 import io.github.pfwikis.bots.utils.RockerHelper;
@@ -29,7 +31,7 @@ public class CiteTemplates extends SimpleBot {
 	public void run() throws IOException {
 		var books = run.getWiki().semanticAsk("[[Fact type::"
 				+"Template:Facts/Book||Template:Facts/Map"
-				+"]]|?Name|?Represented by page|?Release year|?Primary author|?Author|?Full title|?Isbn|?Publisher");
+				+"]]|?Name|?Represented by page|?Release year|?Primary author|?Author ordered|?Primary author ordered|?Author|?Full title|?Isbn|?Publisher");
 		for(var book : books) {
 			try {
 				var name = book.getPrintouts().getName();
@@ -37,8 +39,7 @@ public class CiteTemplates extends SimpleBot {
 					.factsPage(StringUtils.removeStart(book.getFulltext(), "Facts:"))
 					.name(name)
 					.page(book.getPrintouts().getRepresentedByPage().getFulltext())
-					.primaryAuthors(book.getPrintouts().getPrimaryAuthors().stream().map(Result::getFulltext).toList())
-					.authors(book.getPrintouts().getAuthors().stream().map(Result::getFulltext).toList())
+					.authors(sortAuthors(book.getPrintouts()))
 					.releaseYear("unknown".equals(book.getPrintouts().getReleaseYear())
 							?null
 							:Integer.parseInt(book.getPrintouts().getReleaseYear())
@@ -48,14 +49,14 @@ public class CiteTemplates extends SimpleBot {
 					.publisher(book.getPrintouts().getPublisher().stream().map(Result::getFulltext).toList())
 					.build();
 				
-				var rawSections = run.getWiki().semanticAsk("[[Fact type::Template:Facts/Book/Section]][[-Has subobject::"+book.getFulltext()+"]]|?Name|?On page|?Is subsection|?Author");
+				var rawSections = run.getWiki().semanticAsk("[[Fact type::Template:Facts/Book/Section]][[-Has subobject::"+book.getFulltext()+"]]|?Name|?On page|?Is subsection|?Author|?Author ordered");
 				bookDef.getSections().addAll(rawSections.stream()
 					.map(s-> new SectionDef(
 						bookDef,
 						s.getPrintouts().getName(),
 						s.getPrintouts().getOnPage(),
 						null,
-						s.getPrintouts().getAuthors().stream().map(Result::getFulltext).toList(),
+						sortAuthors(s.getPrintouts()),
 						Boolean.TRUE.equals(s.getPrintouts().getIsSubsection()),
 						Collections.emptyList()
 					))
@@ -81,6 +82,39 @@ public class CiteTemplates extends SimpleBot {
 		}
 	}
 	
+	private List<String> sortAuthors(Printouts out) {
+		List<String> result = new ArrayList<>();
+		out.getPrimaryAuthorsOrdered().stream()
+			.sorted()
+			.map(Ordered::getPrimaryAuthor)
+			.map(Labeled::getValue)
+			.filter(i->i!=null)
+			.map(Result::getFulltext)
+			.filter(v->!result.contains(v))
+			.forEachOrdered(result::add);
+		
+		out.getPrimaryAuthors().stream()
+			.map(Result::getFulltext)
+			.filter(v->!result.contains(v))
+			.forEachOrdered(result::add);
+		
+		out.getAuthorsOrdered().stream()
+			.sorted()
+			.map(Ordered::getAuthor)
+			.map(Labeled::getValue)
+			.filter(i->i!=null)
+			.map(Result::getFulltext)
+			.filter(v->!result.contains(v))
+			.forEachOrdered(result::add);
+		
+		out.getAuthors().stream()
+			.map(Result::getFulltext)
+			.filter(v->!result.contains(v))
+			.forEachOrdered(result::add);
+		
+		return result;
+	}
+
 	private void calcPageRanges(List<SectionDef> sections, Integer max) {
 		if(sections.isEmpty()) return;
 		for(int i=0;i<sections.size()-1;i++) {
