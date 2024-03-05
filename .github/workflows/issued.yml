@@ -1,4 +1,4 @@
-name: Run tasks based on issues
+name: based on issues
 
 on:
   issues:
