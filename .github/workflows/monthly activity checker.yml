@@ -1,0 +1,22 @@
+name: monthly activity checker
+
+on:
+  schedule:
+    - cron:  '0 1 1 * *' #every first of the month at 01:00
+  workflow_dispatch:
+
+jobs:
+  bots:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: maven
+    - name: Build with Maven
+      run: mvn -B package
+    - name: Run bot
+      run: java -jar target/bots-0.0.0.jar activity-checker --password ${{ secrets.ROOT_BOT_PW }} --discordToken ${{ secrets.DISCORD_TOKEN }}

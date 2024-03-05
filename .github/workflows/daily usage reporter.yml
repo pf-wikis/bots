@@ -1,8 +1,8 @@
-name: Run weekly bots
+name: daily usage reporter
 
 on:
   schedule:
-    - cron:  '0 0 * * 1' #every monday at 00:00
+    - cron:  '10 0 * * *'
   workflow_dispatch:
 
 jobs:
@@ -18,5 +18,5 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package
-    - name: Article of the Week
-      run: java -jar target/bots-0.0.0.jar article-of-the-week --password ${{ secrets.ROOT_BOT_PW }} --discordToken ${{ secrets.DISCORD_TOKEN }}
+    - name: Run bot
+      run: java -jar target/bots-0.0.0.jar usage-reporter --password ${{ secrets.ROOT_BOT_PW }} --matomoToken ${{ secrets.MATOMO_TOKEN}} --discordToken ${{ secrets.DISCORD_TOKEN }}
