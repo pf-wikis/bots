@@ -38,7 +38,7 @@ public class CiteTemplates extends SimpleBot {
 				var bookDef = BookDef.builder()
 					.factsPage(StringUtils.removeStart(book.getFulltext(), "Facts:"))
 					.name(name)
-					.page(book.getPrintouts().getRepresentedByPage().getFulltext())
+					.representedByPage(book.getPrintouts().getRepresentedByPage()!=null?book.getPrintouts().getRepresentedByPage().getFulltext():null)
 					.authors(sortAuthors(book.getPrintouts()))
 					.releaseYear("unknown".equals(book.getPrintouts().getReleaseYear())
 							?null

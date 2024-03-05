@@ -9,7 +9,7 @@
 	</span>
 }
 @title => {
-	<span class="title">[[@book.getPage()|@book.getName()]]</span>
+	<span class="title">@if(book.getRepresentedByPage()!=null){[[@book.getRepresentedByPage()|@book.getName()]]}else{@book.getName()}</span>
 }
 @pages => {
 	{{#if:{{{show as|}}}|

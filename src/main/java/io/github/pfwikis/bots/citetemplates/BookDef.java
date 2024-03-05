@@ -27,7 +27,7 @@ import lombok.Setter;
 public class BookDef implements BookPart {
 	private String factsPage;
 	private String name;
-	private String page;
+	private String representedByPage;
 	@Builder.Default
 	private List<String> authors = new ArrayList<>();
 	@Builder.Default
