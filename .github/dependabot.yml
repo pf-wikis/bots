@@ -6,7 +6,7 @@
 
 version: 2
 updates:
- - package-ecosystem: "maven" # See documentation for possible values
+  - package-ecosystem: "maven" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
@@ -14,7 +14,7 @@ updates:
       dependencies:
         patterns:
           - "*"
- - package-ecosystem: "devcontainers"
-   directory: "/"
-   schedule:
-     interval: weekly
+  - package-ecosystem: "devcontainers"
+    directory: "/"
+    schedule:
+      interval: weekly
