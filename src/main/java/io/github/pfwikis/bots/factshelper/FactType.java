@@ -40,13 +40,13 @@ public enum FactType {
 	},
 	PAGE_LIST(
 			"Page list",
-			"{{#arraymap:{{{$1|}}}|;|~|[[~|{{#getdisplaytitle:~}}]]}}",
+			"{{#arraymap:{{{$1|}}}|;|~|{{a|~}}}}",
 			"{{#set:$1={{{$1|}}}|+sep=;}}",
 			"|$1={{{$1|}}}|+sep=;"
 	) {
 		@Override
 		public String infoboxCode(String propName) {
-			return "{{#arraymap:{{{$1|}}}|;|~|[[~|{{#getdisplaytitle:~}}]]|,\\s|and}}".replace("$1", propName);
+			return "{{#arraymap:{{{$1|}}}|;|~|{{a|~}}|,\\s|and}}".replace("$1", propName);
 		}
 		
 		@Override
@@ -78,7 +78,7 @@ public enum FactType {
 	),
 	AUTHOR(
 			"Author",
-			"{{#arraymap:{{{$1|}}}|;|~|[[~|{{#getdisplaytitle:~}}]]}}",
+			"{{#arraymap:{{{$1|}}}|;|~|{{a|~}}}}",
 			"<span class=\"hidden\">{{#counter: $1-order-counter|set=0}}</span>{{#set:$1={{{$1|}}}|+sep=;}}{{#set:$1 ordered={{#arraymap:{{{$1|}}}|;|~|~;{{#counter: $1-order-counter}}|§}}|+sep=§}}",
 			"|$1={{{$1|}}}|+sep=;|$1 ordered={{#arraymap:{{{$1|}}}|;|~|~;{{#counter: $1-order-counter}}|§}}|+sep=§"
 	) {

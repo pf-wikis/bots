@@ -20,6 +20,6 @@ public interface BookPart {
 	}
 
 	private static String makeAuthor(String author) {
-		return "[["+author+"|{{#getdisplaytitle:"+author+"}}]]";
+		return "{{a|"+author+"}}";
 	}
 }
