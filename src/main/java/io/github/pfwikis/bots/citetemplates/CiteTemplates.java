@@ -30,7 +30,7 @@ public class CiteTemplates extends SimpleBot {
 	@Override
 	public void run() throws IOException {
 		var books = run.getWiki().semanticAsk("[[Fact type::"
-				+"Template:Facts/Book||Template:Facts/Map"
+				+"Template:Facts/Book||Template:Facts/Map||Template:Facts/Deck"
 				+"]]|?Name|?Represented by page|?Release year|?Primary author|?Author ordered|?Primary author ordered|?Author|?Full title|?Isbn|?Publisher");
 		for(var book : books) {
 			try {
