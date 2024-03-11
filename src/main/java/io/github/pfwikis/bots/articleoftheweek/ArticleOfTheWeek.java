@@ -80,7 +80,7 @@ public class ArticleOfTheWeek extends SimpleBot {
 		"""
 		<div class="article-of-the-week">
 			<div class="article-of-the-week-content">
-				[[File:%s|200px|left|link=%s]]
+				[[File:%s|frameless|upright=0.75|left|link=%s]]
 				<div class="article-of-the-week-text">{{#widget:Article of the Week}}</div>
 				<div class="article-of-the-week-more">[[%s|read more]]</div>
 			</div>
