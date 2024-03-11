@@ -27,6 +27,9 @@ public class Runner {
 		var bot = (Bot<?>)commander.getCommands().get(commander.getParsedCommand())
 			.getObjects().get(0);
 		bot.start();
+		if(bot.isHadError()) {
+			System.exit(-1);
+		}
 	}
 
 	@Getter(lazy = true)
