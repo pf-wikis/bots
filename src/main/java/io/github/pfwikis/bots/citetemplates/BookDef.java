@@ -31,6 +31,8 @@ public class BookDef implements BookPart {
 	@Builder.Default
 	private List<String> authors = new ArrayList<>();
 	@Builder.Default
+	private List<String> artists = new ArrayList<>();
+	@Builder.Default
 	private List<SectionDef> sections = new ArrayList<>();
 	@Builder.Default
 	private List<String> publisher = new ArrayList<>();
@@ -77,6 +79,16 @@ public class BookDef implements BookPart {
 
 	public Map<String, List<Range<Integer>>> makeAuthorPageRanges() {
 		return makeRanges(BookPart::makeAuthors);
+	}
+
+	@Override
+	public String makeAuthors() {
+		var result = formatAuthors(getAuthors());
+		if(result == null)
+			result = formatAuthors(getArtists());
+		if(result == null)
+			return "Unknown author";
+		return result;
 	}
 	
 	public Map<String, List<Range<Integer>>> makeArticlePageRanges() {

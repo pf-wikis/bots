@@ -31,7 +31,7 @@ public class CiteTemplates extends SimpleBot {
 	public void run() throws IOException {
 		var books = run.getWiki().semanticAsk("[[Fact type::"
 				+"Template:Facts/Book||Template:Facts/Map||Template:Facts/Deck||Template:Facts/Video game"
-				+"]]|?Name|?Represented by page|?Release year|?Primary author|?Author ordered|?Primary author ordered|?Author|?Full title|?Isbn|?Publisher");
+				+"]]|?Name|?Represented by page|?Release year|?Primary author|?Author ordered|?Primary author ordered|?Author|?Artist|?Full title|?Isbn|?Publisher");
 		for(var book : books) {
 			try {
 				var name = book.getPrintouts().getName();
@@ -40,6 +40,7 @@ public class CiteTemplates extends SimpleBot {
 					.name(name)
 					.representedByPage(book.getPrintouts().getRepresentedByPage()!=null?book.getPrintouts().getRepresentedByPage().getFulltext():null)
 					.authors(sortAuthors(book.getPrintouts()))
+					.artists(book.getPrintouts().getArtists().stream().map(Result::getFulltext).toList())
 					.releaseYear("unknown".equals(book.getPrintouts().getReleaseYear())
 							?null
 							:Integer.parseInt(book.getPrintouts().getReleaseYear())

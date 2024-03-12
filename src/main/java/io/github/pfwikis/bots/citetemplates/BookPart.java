@@ -7,19 +7,25 @@ public interface BookPart {
 	List<String> getAuthors();
 
 	default String makeAuthors() {
-		var authors = getAuthors();
-		if(authors == null || authors.isEmpty())
+		var result = formatAuthors(getAuthors());
+		if(result == null)
 			return "Unknown author";
-		if(authors.size() == 1) {
-			return makeAuthor(authors.get(0));
-		}
-		if(authors.size() == 2) {
-			return makeAuthor(authors.get(0))+" & "+makeAuthor(authors.get(1));
-		}
-		return makeAuthor(authors.get(0))+", et al";
+		return result;
 	}
 
-	private static String makeAuthor(String author) {
+	default String formatAuthors(List<String> authors) {
+		if(authors == null || authors.isEmpty())
+			return null;
+		if(authors.size() == 1) {
+			return formatAuthor(authors.get(0));
+		}
+		if(authors.size() == 2) {
+			return formatAuthor(authors.get(0))+" & "+formatAuthor(authors.get(1));
+		}
+		return formatAuthor(authors.get(0))+", et al";
+	}
+
+	private static String formatAuthor(String author) {
 		return "{{a|"+author+"}}";
 	}
 }

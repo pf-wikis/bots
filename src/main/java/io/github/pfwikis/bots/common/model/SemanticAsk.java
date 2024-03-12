@@ -71,6 +71,8 @@ public class SemanticAsk {
 		private String releaseYear;
 		@JsonProperty("On page")
 		private String onPage;
+		@JsonProperty("Artist")
+		private List<Result> artists = Collections.emptyList();
 		@JsonProperty("Author")
 		private List<Result> authors = Collections.emptyList();
 		@JsonProperty("Primary author")
