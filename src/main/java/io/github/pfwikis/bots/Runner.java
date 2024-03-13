@@ -17,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 public class Runner {
 
 	public static void main(String[] args) throws Exception {
-		log.info("Launched with: {}", Arrays.stream(args).map(v->"'"+v+"'").collect(Collectors.joining(", ")));
 		var commands = JCommander.newBuilder();
 		commands.addCommand("scheduler", new Scheduler());
 		for(var bot : Runner.getAllBots()) {

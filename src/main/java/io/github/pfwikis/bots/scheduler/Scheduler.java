@@ -1,5 +1,8 @@
 package io.github.pfwikis.bots.scheduler;
 
+import java.net.HttpURLConnection;
+import java.net.URI;
+
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
@@ -18,14 +21,17 @@ public class Scheduler {
 	@Parameter(names = "--matomoToken")
 	protected String matomoToken;
 	@Parameter(names = "--hostPfWiki")
-	protected String hostPfWiki;
+	protected URI hostPfWiki = URI.create("https://pathfinderwiki.com");
 	@Parameter(names = "--hostSfWiki")
-	protected String hostSfWiki;
+	protected URI hostSfWiki = URI.create("https://starfinderwiki.com");
 	@Parameter(names = "--hostMatomo")
-	protected String hostMatomo;
+	protected URI hostMatomo = URI.create("https://matomo.pathfinderwiki.com");
 
 	public void start() throws Exception {
-		log.info("Launched scheduler with:\n\thostPfWiki: {}\n\thostSfWiki: {}\n\thostMatomo: {}", hostPfWiki, hostSfWiki, hostMatomo);
+        var connection = (HttpURLConnection) hostPfWiki.toURL().openConnection();
+        connection.setRequestMethod("HEAD");
+        int code = connection.getResponseCode();
+        log.info("PF Wiki returned " + code);
 		Thread.sleep(1000000);
 	}
 
