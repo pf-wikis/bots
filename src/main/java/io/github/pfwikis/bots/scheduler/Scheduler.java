@@ -28,10 +28,15 @@ public class Scheduler {
 	protected URI hostMatomo = URI.create("https://matomo.pathfinderwiki.com");
 
 	public void start() throws Exception {
-        var connection = (HttpURLConnection) hostPfWiki.toURL().openConnection();
-        connection.setRequestMethod("HEAD");
-        int code = connection.getResponseCode();
-        log.info("PF Wiki returned " + code);
+		try {
+			log.info("Connecting to {}", hostPfWiki);
+	        var connection = (HttpURLConnection) hostPfWiki.toURL().openConnection();
+	        connection.setRequestMethod("HEAD");
+	        int code = connection.getResponseCode();
+	        log.info("PF Wiki returned " + code);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 		Thread.sleep(1000000);
 	}
 
