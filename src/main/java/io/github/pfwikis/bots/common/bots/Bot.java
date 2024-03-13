@@ -49,7 +49,7 @@ public abstract class Bot<RUN extends Run> {
 			discord.reportException(msg);
 	}
 
-	public synchronized void start() throws Exception {
+	public synchronized void startSingleInstance() throws Exception {
 		discord = new Discord(this);
 		try {
 			executeBeforeRuns();
