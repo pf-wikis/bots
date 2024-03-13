@@ -24,3 +24,15 @@ jobs:
       run: mvn -B package
     - name: Update dependency graph
       uses: advanced-security/maven-dependency-submission-action@v3
+    - name: Dispatch wiki deployment
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{ secrets.DISPATCH_PAT }}
+        script: |
+          const result = await github.rest.repos.createDispatchEvent({
+            owner: 'pf-wikis',
+            repo: 'mapping',
+            event_type: 'data_release',
+            client_payload: {}
+          })
+          console.log(result);
