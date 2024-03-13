@@ -1,13 +1,17 @@
 package io.github.pfwikis.bots;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.beust.jcommander.JCommander;
+import com.beust.jcommander.MissingCommandException;
 
 import io.github.classgraph.ClassGraph;
 import io.github.pfwikis.bots.common.bots.Bot;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class Runner {
 
 	public static void main(String[] args) throws Exception {
@@ -17,9 +21,13 @@ public class Runner {
 		}
 		
 		var commander = commands.build();
-		commander.parse(args);
-		
-		if(commander.getParsedCommand() == null) {
+		try {
+			commander.parse(args);
+			if(commander.getParsedCommand() == null) {
+				throw new MissingCommandException("Unknown command: "+Arrays.toString(args));
+			}
+		} catch(MissingCommandException e) {
+			log.error(e.getMessage());
 			commander.usage();
 			System.exit(-1);
 		}
