@@ -112,7 +112,7 @@ public class Librarian extends SimpleBot {
 	}
 
 	@Override
-	protected String getDescription() {
+	public String getDescription() {
 		return
 		"""
 		This bot reads the documents created by [[User:Bot Book Reader]] and creates different indices from them.

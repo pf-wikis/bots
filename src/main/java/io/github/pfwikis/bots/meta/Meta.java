@@ -20,7 +20,7 @@ public class Meta extends SimpleBot {
 	}
 	
 	@Override
-	protected String getDescription() {
+	public String getDescription() {
 		var bots = Runner.getAllBots()
 			.stream()
 			.map(b->"{{User:"+b.getBotName()+"/Status}}")
@@ -40,5 +40,31 @@ public class Meta extends SimpleBot {
 	}
 
 	@Override
-	public void run() throws Exception {}
+	public void run() throws Exception {
+		Runner.getAllBots().forEach(bot-> {
+			var userPage = """
+			{{Bot|Virenerus}}
+			==Description==
+			%s
+			
+			==Status==
+			
+			This bot is a sub bot of [[User:VirenerusBot|VirenerusBot]].
+			
+			The code for this bot can be found [%s here].
+			
+			{| class="wikitable" style="margin:auto"
+			|-
+			! Bot Name !! Last run !! Status
+			{{User:%s/Status}}
+			|}
+			""".formatted(
+				bot.getDescription(),
+				"https://github.com/pf-wikis/bots/tree/main/src/main/java/"+bot.getClass().getName().replace(".", "/")+".java",
+				bot.getBotName()
+			);
+			
+			run.withMaster(wiki->wiki.editIfChange("User:"+bot.getBotName(), userPage, "Update "+bot.getBotName()+" description"));
+		});
+	}
 }

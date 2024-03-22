@@ -54,19 +54,41 @@ public class WikiAPI {
 		wiki = b.build();
 	}
 	
+	public WikiAPI(io.github.pfwikis.bots.common.Wiki wiki, String name, String password) {
+		var b = new Wiki.Builder()
+	            .withDomain(wiki.getUrl())
+	            .withApiEndpoint(HttpUrl.get(wiki.getUrl()+"/w/api.php"));
+		if(name != null) {
+			b = b.withLogin(name, password);
+		}
+		this.wiki = b.build();
+	}
+	
 	public boolean upload(Path p, String title, String desc, String summary) {
 		return wiki.upload(p, title, desc, summary);
 	}
 
-	public List<RecentChange> getRecentChanges(Duration timeRange) {
-		return Arrays.asList(query(
-			Query.LIST_RECENT_CHANGES,
-			"rcend", Instant.now().minus(timeRange).truncatedTo(ChronoUnit.SECONDS).toString(),
-			"rcnamespace", "0",
+	public List<RecentChange> getRecentChanges(Duration timeRange, String namespace, String show) {
+		return getRecentChanges(Instant.now().minus(timeRange), namespace, show);
+	}
+	
+	public List<RecentChange> getRecentChanges(Instant changesSince, String namespace, String show) {
+		var query = new String[] {
+			"rcend", changesSince.truncatedTo(ChronoUnit.SECONDS).toString(),
 			"rclimit", "5000",
-			"rcshow", "!minor|!bot",
 			"rctype", "edit",
 			"rcprop", "title|timestamp|ids|user|sizes"
+		};
+		if(namespace != null) {
+			query = ArrayUtils.addAll(query, "rcnamespace", namespace);
+		}
+		if(show != null) {
+			query = ArrayUtils.addAll(query, "rcshow", show);
+		}
+		
+		return Arrays.asList(query(
+			Query.LIST_RECENT_CHANGES,
+			query
 		).recentchanges());
 	}
 	

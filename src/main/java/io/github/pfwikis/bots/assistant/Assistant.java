@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.beust.jcommander.Parameters;
 
+import io.github.pfwikis.bots.common.Discord;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.common.model.Page;
 import io.github.pfwikis.bots.utils.Jackson;
@@ -27,7 +28,7 @@ public class Assistant extends SimpleBot {
 	}
 	
 	@Override
-	protected String getDescription() {
+	public String getDescription() {
 		return """
 		This bot executes the tasks given to it via the [https://github.com/pf-wikis/bots/issues/new/choose tasks page].
 		It is meant to start automized tasks with manually given parameters.
@@ -48,7 +49,7 @@ public class Assistant extends SimpleBot {
 		log.info("Got task from issue: {}", env);
 		if(!StringUtils.isBlank(env)) {
 			var task = Jackson.JSON.readValue(env, Task.class);
-			if((run.isStarfinder()?"Starfinderwiki":"Pathfinderwiki").equals(task.getWiki())) {
+			if(run.getServer().getWikiNamespace().equalsIgnoreCase(task.getWiki())) {
 				execute(task);
 				taskDone = true;
 			}
@@ -100,7 +101,13 @@ public class Assistant extends SimpleBot {
 				}
 			}
 			run.getWiki().delete(oldFile, "Replaced with "+name);
-			discord.report("I replaced "+discord.wikiLink(oldFile, "/wiki/"+oldFile)+" with "+discord.wikiLink(name, "/wiki/"+name));
+			discord.report(
+				this,
+				"I replaced "
+				+ Discord.wikiLink(run.getServer(), oldFile, "/wiki/"+oldFile)
+				+ " with "
+				+ Discord.wikiLink(run.getServer(), name, "/wiki/"+name)
+			);
 		}
 		else {
 			throw new IllegalStateException("Unknown task");

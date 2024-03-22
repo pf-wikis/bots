@@ -6,41 +6,33 @@ import java.io.IOException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import io.github.pfwikis.bots.common.bots.Bot;
-import io.github.pfwikis.bots.common.bots.Run;
-import io.github.pfwikis.bots.common.bots.Run.SingleRun;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.utils.MarkdownUtil;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 
 @Slf4j
+@RequiredArgsConstructor
 public class Discord implements Closeable {
 	
 	private static long CHANNEL_BOT_ACTIVITY = 1176658356551811105L;
 	private static long CHANNEL_ADMINS = 886300705281941514L;
 	
 	private JDA jda;
-	@Setter
-	private Run run;
-	private Bot<?> bot;
 	private boolean init = false;
-
-	public Discord(Bot<?> bot) {
-		this.bot = bot;
-	}
+	private final String discordToken;
 	
+
 	public synchronized void init() {
 		if(!init) {
 			try {
-				jda = JDABuilder.createDefault(bot.getDiscordToken()).build();
+				jda = JDABuilder.createDefault(discordToken).build();
 				log.info("To add this bot to a server: {}", jda.getInviteUrl(Permission.MESSAGE_EXT_EMOJI, Permission.MESSAGE_SEND));
 				jda.awaitReady();
-				jda.getPresence().setActivity(Activity.customStatus("Running "+bot.getBotName()+(bot.isLocalMode()?" from a personal machine":"")));
 				jda.getPresence().setStatus(OnlineStatus.ONLINE);
 				init = true;
 			} catch(Exception e) {
@@ -52,38 +44,31 @@ public class Discord implements Closeable {
 	@Override
 	public synchronized void close() throws IOException {
 		if(init) {
-			jda.getPresence().setActivity(Activity.customStatus("sleeping"));
 			jda.getPresence().setStatus(OnlineStatus.OFFLINE);
 			jda.shutdown();
 		}
 	}
 	
-	private boolean isPathfinder() {
-		if(run != null && run instanceof SingleRun sr && sr.isStarfinder())
-			return false;
-		return true;
-	}
-	
-	private StringBuilder messageHeader() {
+	private StringBuilder messageHeader(Bot<?> bot) {
 		return new StringBuilder()
 			//append Icon
-			.append(isPathfinder()?"<:pf:1176801824620154951> ":"<:sf:1176801894086221824> ")
+			.append(bot.getWiki()==Wiki.PF?"<:pf:1176801824620154951> ":"<:sf:1176801894086221824> ")
 			//append link to bot
-			.append(wikiLink(bot.getBotName(), "/wiki/User:"+bot.getBotName()))
+			.append(wikiLink(bot.getWiki(), bot.getBotName(), "/wiki/User:"+bot.getBotName()))
 			.append(": ");
 	}
 	
-	public String wikiLink(String linkText, String wikiRelativeURL) {
-		return MarkdownUtil.maskedLink(linkText, "https://"+(isPathfinder()?"path":"star")+"finderwiki.com"+wikiRelativeURL.replace(' ', '_'));
+	public static String wikiLink(Wiki wiki, String linkText, String wikiRelativeURL) {
+		return MarkdownUtil.maskedLink(linkText, wiki.getUrl()+wikiRelativeURL.replace(' ', '_'));
 	}
 
-	public void reportException(Exception e) {
-		reportException(ExceptionUtils.getStackTrace(e));
+	public void reportException(Bot<?> bot, Exception e) {
+		reportException(bot, ExceptionUtils.getStackTrace(e));
 	}
 	
-	public void reportException(String txt) {
+	public void reportException(Bot<?> bot, String txt) {
 		try {
-			var msg = messageHeader()
+			var msg = messageHeader(bot)
 				.append("**Error**\n")
 				//append error
 				.append("```java\n")
@@ -99,28 +84,28 @@ public class Discord implements Closeable {
 		}
 	}
 
-	public void report(String msg) {
+	public void report(Bot<?> bot, String msg) {
 		try {
 			init();
 			jda.getTextChannelById(CHANNEL_BOT_ACTIVITY)
-				.sendMessage(messageHeader().append(msg).toString())
+				.sendMessage(messageHeader(bot).append(msg).toString())
 				.queue();
 		} catch(Exception e) {
-			reportException(e);
+			reportException(bot, e);
 		}
 	}
 	
-	public void reportToAdmins(String msg) {
+	public void reportToAdmins(Bot<?> bot, String msg) {
 		try {
 			init();
 			jda.getTextChannelById(CHANNEL_ADMINS)
 				.sendMessage(new MessageCreateBuilder()
-					.setContent(messageHeader().append(msg).toString())
+					.setContent(messageHeader(bot).append(msg).toString())
 					.build()
 				)
 				.queue();
 		} catch(Exception e) {
-			reportException(e);
+			reportException(bot, e);
 		}
 	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.WikiAPI;
 import io.github.pfwikis.bots.common.bots.Run.SingleRun;
 import io.github.pfwikis.bots.utils.Jackson;
@@ -20,14 +21,19 @@ public abstract class SimpleBot extends Bot<SingleRun> {
 	}
 	
 	@Override
+	public Wiki getWiki() {
+		return run.getServer();
+	}
+	
+	@Override
 	protected List<SingleRun> createRuns() {
 		var runs = new ArrayList<SingleRun>(2);
-		for(boolean starfinder : new boolean[] {false, true}) {
-			var run = new SingleRun(starfinder, "VirenerusBot", rootPassword);
+		for(var server:Wiki.values()) {
+			var run = new SingleRun(server, "VirenerusBot", rootPassword);
 			
 			//try if login just works, otherwise try to create the account
 			try {
-				run.setWiki(new WikiAPI(starfinder, botName, getBotPassword()));
+				run.setWiki(new WikiAPI(server, botName, getBotPassword()));
 			} catch(Exception ignore) {
 				run.withMaster(wiki->{
 					try {
@@ -42,7 +48,7 @@ public abstract class SimpleBot extends Bot<SingleRun> {
 				});
 				
 				try {
-					run.setWiki(new WikiAPI(starfinder, botName, getBotPassword()));
+					run.setWiki(new WikiAPI(server, botName, getBotPassword()));
 				} catch(Exception e) {
 					log.error("Failed to log in as {}", botName, e);
 					System.exit(-1);

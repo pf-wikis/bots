@@ -20,7 +20,7 @@ public class PageSyncer extends DualBot {
 	}
 	
 	@Override
-	protected String getDescription() {
+	public String getDescription() {
 		return "This bot is regularly copying all pages in the"
 				+" [[:Category:Synced to starfinderwiki]] on"
 				+" pathfinderwiki.com to starfinderwiki.com.";

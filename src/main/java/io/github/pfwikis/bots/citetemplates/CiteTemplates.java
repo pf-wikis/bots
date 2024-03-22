@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.beust.jcommander.Parameters;
 
 import io.github.pfwikis.bots.citetemplates.BookDef.SectionDef;
+import io.github.pfwikis.bots.common.bots.Bot.RunOnPage;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.common.model.SemanticAsk.Labeled;
 import io.github.pfwikis.bots.common.model.SemanticAsk.Ordered;
@@ -21,17 +22,34 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Parameters
-public class CiteTemplates extends SimpleBot {
+public class CiteTemplates extends SimpleBot implements RunOnPage {
 
 	public CiteTemplates() {
 		super("cite-templates", "Bot Cite Templates");
 	}
-
+	
 	@Override
-	public void run() throws IOException {
-		var books = run.getWiki().semanticAsk("[[Fact type::"
-				+"Template:Facts/Book||Template:Facts/Map||Template:Facts/Deck||Template:Facts/Video game"
-				+"]]|?Name|?Represented by page|?Release year|?Primary author|?Author ordered|?Primary author ordered|?Author|?Artist|?Full title|?Isbn|?Publisher");
+	public void runOnPage(String page) {
+		//also check superpages
+		if(page != null && page.contains("/")) {
+			runOnPage(page.substring(0,page.lastIndexOf("/")));
+		}
+		var books = run.getWiki().semanticAsk(
+			(page==null?"":("[["+page+"]]"))
+			+ "[[Fact type::"
+				+ "Template:Facts/Book||Template:Facts/Map||Template:Facts/Deck||Template:Facts/Video game"
+			+ "]]"
+			+ "|?Name"
+			+ "|?Represented by page"
+			+ "|?Release year"
+			+ "|?Primary author"
+			+ "|?Author ordered"
+			+ "|?Primary author ordered"
+			+ "|?Author"
+			+ "|?Artist"
+			+ "|?Full title"
+			+ "|?Isbn"
+			+ "|?Publisher");
 		for(var book : books) {
 			try {
 				var name = book.getPrintouts().getName();
@@ -82,6 +100,11 @@ public class CiteTemplates extends SimpleBot {
 			}
 		}
 	}
+
+	@Override
+	public void run() throws IOException {
+		runOnPage(null);
+	}
 	
 	private List<String> sortAuthors(Printouts out) {
 		List<String> result = new ArrayList<>();
@@ -131,7 +154,7 @@ public class CiteTemplates extends SimpleBot {
 	}
 
 	@Override
-	protected String getDescription() {
+	public String getDescription() {
 		return
 			"""
 			This bot creates {{tl|Cite}} templates for all books with a facts page.

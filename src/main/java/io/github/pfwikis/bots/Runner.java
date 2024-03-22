@@ -39,12 +39,13 @@ public class Runner {
 			((Scheduler)commander.getCommands().get(commander.getParsedCommand())
 			.getObjects().get(0)).start();
 		}
-		
-		var bot = (Bot<?>)commander.getCommands().get(commander.getParsedCommand())
-			.getObjects().get(0);
-		bot.startSingleInstance();
-		if(bot.isHadError()) {
-			System.exit(-1);
+		else {
+			var bot = (Bot<?>)commander.getCommands().get(commander.getParsedCommand())
+				.getObjects().get(0);
+			bot.startSingleInstance();
+			if(bot.isHadError()) {
+				System.exit(-1);
+			}
 		}
 	}
 

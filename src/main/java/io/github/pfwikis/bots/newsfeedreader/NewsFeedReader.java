@@ -14,6 +14,7 @@ import com.apptasticsoftware.rssreader.RssReader;
 import com.beust.jcommander.Parameters;
 
 import io.github.pfwikis.bots.common.Style;
+import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.utils.Retry;
 
@@ -72,7 +73,7 @@ public class NewsFeedReader extends SimpleBot {
 	};
 
 	private boolean filterByWiki(Item entry) {
-		if(run.isStarfinder()) {
+		if(run.getServer() == Wiki.SF) {
 			if(
 				StringUtils.containsAny(entry.getDescription().get(), PF_TAGS)
 				&& !StringUtils.containsAny(entry.getDescription().get(), SF_TAGS)
@@ -148,11 +149,11 @@ public class NewsFeedReader extends SimpleBot {
 	}
 
 	@Override
-	protected String getDescription() {
+	public String getDescription() {
 		return """
 		This bot is parsing the Paizo news feeds and creating the page [[Template:News feeds]] from them.
 		It skips entries that are tagged only for %s.
-		""".formatted(run.isStarfinder()?"Pathfinder":"Starfinder");
+		""".formatted(run.getServer().getName());
 	}
 
 }

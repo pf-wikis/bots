@@ -16,6 +16,7 @@ import com.beust.jcommander.Parameters;
 import com.beust.jcommander.internal.Lists;
 
 import io.github.pfwikis.bots.common.bots.Run.SingleRun;
+import io.github.pfwikis.bots.common.Discord;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.common.model.ParseResponse.Content;
 import io.github.pfwikis.bots.common.model.RecentChanges.RecentChange;
@@ -109,7 +110,7 @@ public class ArticleOfTheWeek extends SimpleBot {
 
 	private Candidate findArticle() {
 		Duration timeRange = Duration.ofDays(7);
-		var options = run.getWiki().getRecentChanges(timeRange);
+		var options = run.getWiki().getRecentChanges(timeRange, "0", "!minor|!bot");
 		var candidates = Lists.newArrayList(options.stream()
 			.collect(Collectors.groupingBy(c->c.getTitle()))
 			.entrySet()
@@ -130,24 +131,24 @@ public class ArticleOfTheWeek extends SimpleBot {
 		candidates.removeIf(c->hasTooManyRedLinks(c));
 		
 		if(beforeRed.isEmpty()) {
-			discord.report("There was no candidate matching my requirements.");
+			discord.report(this, "There was no candidate matching my requirements.");
 			return null;
 		}
 		if(candidates.isEmpty()) {
-			discord.report("I have to ignoring the red link criterium to find candidates.");
+			discord.report(this, "I have to ignoring the red link criterium to find candidates.");
 			candidates = beforeRed;
 		}
 		var sb = new StringBuilder()
 			.append("Chose ")
-			.append(discord.wikiLink(candidates.get(0).getTitle(), "/wiki/"+candidates.get(0).getTitle()))
+			.append(Discord.wikiLink(run.getServer(), candidates.get(0).getTitle(), "/wiki/"+candidates.get(0).getTitle()))
 			.append("\nCandidates were:\n");
 		candidates.forEach(c-> {
 			sb
 				.append("* ")
-				.append(discord.wikiLink(c.getTitle(), "/wiki/"+c.getTitle()))
+				.append(Discord.wikiLink(run.getServer(), c.getTitle(), "/wiki/"+c.getTitle()))
 				.append(" with an effective change size of "+c.getChangeSize()+"\n");
 		});
-		discord.report(sb.toString());
+		discord.report(this, sb.toString());
 		return candidates.get(0);
 	}
 	
@@ -268,7 +269,7 @@ public class ArticleOfTheWeek extends SimpleBot {
 	}
 
 	@Override
-	protected String getDescription() {
+	public String getDescription() {
 		return
 			"""
 			This bot is looking through the changes of the last week and

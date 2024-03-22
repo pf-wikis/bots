@@ -35,14 +35,13 @@ public class UsageReporter extends SimpleBot {
 	}
 	
 	@Override
-	protected String getDescription() {
+	public String getDescription() {
 		return "This bot is regularly querying usage information"
 			+ "and creating [["+reportPage()+"|]].";
 	}
 
 	private String reportPage() {
-		return (run.isStarfinder()?"Star":"Path")
-				+ "finderWiki:Usage Report";
+		return run.getServer().getWikiNamespace()+":Usage Report";
 	}
 
 	@Override
@@ -286,7 +285,7 @@ public class UsageReporter extends SimpleBot {
 
 	private <T> T matomo(Class<T> type, String... args) throws Exception {
 		var url = new URIBuilder("https://matomo.pathfinderwiki.com/index.php?module=API")
-				.addParameter("idSite", run.isStarfinder()?"2":"1")
+				.addParameter("idSite", run.getServer().getMatomoId())
 				.addParameter("format", "JSON")
 				.addParameter("token_auth", matomoToken);
 		for(int i=0;i<args.length;i+=2) {

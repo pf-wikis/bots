@@ -3,11 +3,8 @@ package io.github.pfwikis.bots.replacer;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -27,7 +24,7 @@ public class Replacer extends SimpleBot {
 	}
 	
 	@Override
-	protected String getDescription() {
+	public String getDescription() {
 		return "This bot is only started by hand for manual bulk changes to the wiki.";
 	}
 
@@ -40,7 +37,7 @@ public class Replacer extends SimpleBot {
 		//removeOldCiteBooks();
 		
 		for(int i=2005;i<=2026;i++) {
-			var p = (run.isStarfinder()?"Starfinder":"Pathfinder")+" release calendar/"+i;
+			var p = run.getServer().getName()+" release calendar/"+i;
 			if(run.getWiki().pageExists(p))
 				run.getWiki().delete(p, "Remove outdated page");
 		}

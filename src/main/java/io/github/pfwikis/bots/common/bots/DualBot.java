@@ -3,12 +3,18 @@ package io.github.pfwikis.bots.common.bots;
 import java.io.IOException;
 import java.util.List;
 
+import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.bots.Run.DualRun;
 
 public abstract class DualBot extends Bot<DualRun> {
 
 	public DualBot(String id, String botName) {
 		super(id, botName);
+	}
+	
+	@Override
+	public Wiki getWiki() {
+		return Wiki.PF;
 	}
 	
 	@Override
@@ -19,7 +25,7 @@ public abstract class DualBot extends Bot<DualRun> {
 			public void run() throws IOException {}
 			
 			@Override
-			protected String getDescription() {return null;}
+			public String getDescription() {return null;}
 		};
 		sBot.rootPassword = this.rootPassword;
 		var runs = sBot.createRuns();

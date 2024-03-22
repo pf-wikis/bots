@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import io.github.pfwikis.bots.common.Discord;
+import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.WikiAPI;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public abstract class Run {
 	@RequiredArgsConstructor
 	public static class SingleRun extends Run {
 		@Getter
-		private final boolean starfinder;
+		private final Wiki server;
 		private final String masterAccount;
 		private final String masterPassword;
 		private final Map<String, Map<String, Object>> caches = new HashMap<>();
@@ -37,7 +38,7 @@ public abstract class Run {
 		public synchronized void withMaster(Consumer<WikiAPI> task) {
 			if(masterWiki == null) {
 				try {
-					masterWiki = new WikiAPI(starfinder, masterAccount, masterPassword);
+					masterWiki = new WikiAPI(server, masterAccount, masterPassword);
 				} catch(Exception e) {
 					log.error("Failed to log in as {}", masterAccount, e);
 					System.exit(-1);

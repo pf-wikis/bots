@@ -4,12 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.EnumMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.beust.jcommander.Parameters;
 
+import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,7 +34,7 @@ public class TemplateStyles extends SimpleBot {
 					.replaceAll("[^a-z0-9]", "-");
 			if(Character.isDigit(className.charAt(0))) className = "template-"+className;
 			var txt = run.getWiki().getPageText(style.getTitle());
-			var result = CONSTANTS.get(run.isStarfinder())+"\n."+className+"{"+txt+"}";
+			var result = CONSTANTS.get(run.getServer())+"\n."+className+"{"+txt+"}";
 			
 			var in = File.createTempFile("paizowikis-in-", ".less");
 			Files.writeString(in.toPath(), result);
@@ -46,7 +48,7 @@ public class TemplateStyles extends SimpleBot {
 					.inheritIO()
 					.start().waitFor();
 				if(status != 0) {
-					reportException("Failed to compile less from https://%sfinderwiki.com/wiki/%s with status %s".formatted(run.isStarfinder()?"star":"path", style.getTitle(), status));
+					reportException("Failed to compile less from %s/wiki/%s with status %s".formatted(run.getServer().getUrl(), style.getTitle(), status));
 					continue;
 				}
 			} catch (InterruptedException e) {
@@ -63,13 +65,13 @@ public class TemplateStyles extends SimpleBot {
 			log.info("Added {} to styles", style.getTitle());
 		}
 		
-		var result = new File("outputs/"+(run.isStarfinder()?"sf":"pf")+"/templatestyles.css");
+		var result = new File("outputs/"+run.getServer().getCode()+"/templatestyles.css");
 		result.getParentFile().mkdirs();
 		Files.writeString(result.toPath(), fullStyle, StandardCharsets.UTF_8);
 	}
 
 	@Override
-	protected String getDescription() {
+	public String getDescription() {
 		return
 			"""
 			This bot collects less code from the Style namespace and compiles them hourly for use in the wiki. If any style page is invalid it is skipped.
@@ -77,7 +79,7 @@ public class TemplateStyles extends SimpleBot {
 			<syntaxhighlight lang="less">
 			%s
 			</syntaxhighlight>
-			""".formatted(CONSTANTS.get(run.isStarfinder()));
+			""".formatted(CONSTANTS.get(run.getServer()));
 	}
 	
 	private static final String SHARED = """
@@ -111,8 +113,8 @@ public class TemplateStyles extends SimpleBot {
 	}
 	""";
 	
-	private static final Map<Boolean,String> CONSTANTS = Map.of(
-		false, """
+	private static final Map<Wiki,String> CONSTANTS = Map.of(
+		Wiki.PF, """
 		@black: rgb(32, 33, 34);
 		@article-color: #f5f5dc;
 		@article-color-contrast: saturate(@article-color, 25%);
@@ -125,7 +127,7 @@ public class TemplateStyles extends SimpleBot {
 		@subheading-color: #112a61;
 		@link-color: average(#3366cc, @subheading-color);	
 		"""+SHARED,
-		true, """
+		Wiki.SF, """
 		@black: rgb(32, 33, 34);
 		@article-color: #dafafc;
 		@article-color-contrast: saturate(@article-color, 20%);

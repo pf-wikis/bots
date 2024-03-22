@@ -70,7 +70,7 @@ public class BookReader extends SimpleBot {
 
 
 	@Override
-	protected String getDescription() {
+	public String getDescription() {
 		return
 		"""
 		This bot reads the PDFs and transforms them into word lists.

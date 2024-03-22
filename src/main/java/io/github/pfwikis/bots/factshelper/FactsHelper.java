@@ -7,10 +7,10 @@ import java.util.stream.Collectors;
 
 import com.beust.jcommander.Parameters;
 
+import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.common.model.SemanticAsk.Result;
 import lombok.extern.slf4j.Slf4j;
-import static io.github.pfwikis.bots.utils.MWJsonHelper.*;
 import static io.github.pfwikis.bots.utils.RockerHelper.*;
 
 @Slf4j
@@ -23,7 +23,7 @@ public class FactsHelper extends SimpleBot {
 
 	@Override
 	public void run() throws IOException {
-		if(run.isStarfinder()) return;
+		if(run.getServer()==Wiki.SF) return;
 		
 		var formDefs = this.loadConfig(FormDefinition[].class);
 		var props = run.getWiki().semanticAsk("[[Has type::+]]"
@@ -93,7 +93,7 @@ public class FactsHelper extends SimpleBot {
 	}
 	
 	@Override
-	protected String getDescription() {
+	public String getDescription() {
 		return
 			"""
 			This bot automatically creates the following for each for defined in [[User:Bot Facts Helper/Config|here]]:
