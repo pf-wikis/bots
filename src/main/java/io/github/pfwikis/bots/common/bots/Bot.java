@@ -105,6 +105,18 @@ public abstract class Bot<RUN extends Run> {
 		}
 	}
 	
+	public synchronized void startRun(Discord discord) {
+		executeBeforeRuns();
+		this.run.setDiscord(discord);
+		try {
+			run();
+			createBotReport();
+		} catch (Exception e) {
+			reportException(e);
+		}
+		executeAfterRuns();
+	}
+	
 	public void executeBeforeRuns() {
 		try {
 			beforeRuns();

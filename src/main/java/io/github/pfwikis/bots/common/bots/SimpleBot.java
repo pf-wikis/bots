@@ -33,7 +33,7 @@ public abstract class SimpleBot extends Bot<SingleRun> {
 			
 			//try if login just works, otherwise try to create the account
 			try {
-				run.setWiki(new WikiAPI(server, botName, getBotPassword()));
+				run.setWiki(WikiAPI.fromCache(server, botName, getBotPassword()));
 			} catch(Exception ignore) {
 				run.withMaster(wiki->{
 					try {
@@ -48,7 +48,7 @@ public abstract class SimpleBot extends Bot<SingleRun> {
 				});
 				
 				try {
-					run.setWiki(new WikiAPI(server, botName, getBotPassword()));
+					run.setWiki(WikiAPI.fromCache(server, botName, getBotPassword()));
 				} catch(Exception e) {
 					log.error("Failed to log in as {}", botName, e);
 					System.exit(-1);
@@ -59,7 +59,7 @@ public abstract class SimpleBot extends Bot<SingleRun> {
 		return runs;
 	}
 	
-	protected String getBotPassword() {
+	public String getBotPassword() {
 		return rootPassword+botName;
 	}
 

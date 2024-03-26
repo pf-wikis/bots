@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.tuple.Triple;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
@@ -40,21 +41,19 @@ import okhttp3.HttpUrl;
 
 @Slf4j
 public class WikiAPI {
+	
+	public static record Account(io.github.pfwikis.bots.common.Wiki wiki, String name) {}
+	
+	private static Map<Account, WikiAPI> CACHE = Collections.synchronizedMap(new HashMap<>());
+	
+	public static WikiAPI fromCache(io.github.pfwikis.bots.common.Wiki wiki, String name, String password) {
+		var acc = new Account(wiki, name);
+		return CACHE.computeIfAbsent(acc, k->new WikiAPI(wiki, name, password));
+	}
 
 	private Wiki wiki;
 
-	public WikiAPI(boolean starfinder, String name, String password) {
-		String url = starfinder?"https://starfinderwiki.com":"https://pathfinderwiki.com";
-		var b = new Wiki.Builder()
-	            .withDomain(url)
-	            .withApiEndpoint(HttpUrl.get(url+"/w/api.php"));
-		if(name != null) {
-			b = b.withLogin(name, password);
-		}
-		wiki = b.build();
-	}
-	
-	public WikiAPI(io.github.pfwikis.bots.common.Wiki wiki, String name, String password) {
+	private WikiAPI(io.github.pfwikis.bots.common.Wiki wiki, String name, String password) {
 		var b = new Wiki.Builder()
 	            .withDomain(wiki.getUrl())
 	            .withApiEndpoint(HttpUrl.get(wiki.getUrl()+"/w/api.php"));

@@ -6,7 +6,9 @@ import com.beust.jcommander.Parameters;
 
 import io.github.pfwikis.bots.Runner;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Parameters
 public class Meta extends SimpleBot {
 
@@ -15,7 +17,7 @@ public class Meta extends SimpleBot {
 	}
 	
 	@Override
-	protected String getBotPassword() {
+	public String getBotPassword() {
 		return rootPassword;
 	}
 	
@@ -42,6 +44,9 @@ public class Meta extends SimpleBot {
 	@Override
 	public void run() throws Exception {
 		Runner.getAllBots().forEach(bot-> {
+			if(bot instanceof SimpleBot sb)
+				sb.setRun(run);
+			log.info("Updating info for bot {}", bot.getBotName());
 			var userPage = """
 			{{Bot|Virenerus}}
 			==Description==

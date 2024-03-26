@@ -23,6 +23,7 @@ import org.jsoup.nodes.Element;
 
 import com.google.common.util.concurrent.Uninterruptibles;
 
+import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.WikiAPI;
 import io.github.pfwikis.bots.common.model.SemanticAsk.Result;
 import io.github.pfwikis.bots.utils.Jackson;
@@ -50,8 +51,8 @@ public class Downloader {
 	}
 	
 	public static void main(String... args) throws IOException {
-		new Downloader(args[0], new WikiAPI(false, null, null)).start();
-		new Downloader(args[0], new WikiAPI(true, null, null)).start();
+		new Downloader(args[0], WikiAPI.fromCache(Wiki.PF, null, null)).start();
+		new Downloader(args[0], WikiAPI.fromCache(Wiki.SF, null, null)).start();
 	}
 	
 	private static final Set<String> SKIP_LIST = Set.of(

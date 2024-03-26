@@ -13,6 +13,7 @@ import io.github.pfwikis.bots.Runner;
 import io.github.pfwikis.bots.common.Discord;
 import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.WikiAPI;
+import io.github.pfwikis.bots.meta.Meta;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,7 +36,7 @@ public class Scheduler {
 			for(var wiki : Wiki.values()) {
 				wiki.setMasterPassword(rootPassword);
 				try {
-					wiki.setMasterApi(new WikiAPI(wiki, wiki.getMasterAccount(), wiki.getMasterPassword()));
+					wiki.setMasterApi(WikiAPI.fromCache(wiki, wiki.getMasterAccount(), wiki.getMasterPassword()));
 				} catch(Exception e) {
 					log.error("Failed to log in as {}", wiki.getMasterAccount(), e);
 					Uninterruptibles.sleepUninterruptibly(10, TimeUnit.MINUTES);
@@ -51,9 +52,11 @@ public class Scheduler {
 			);
 			
 			for(var wiki : Wiki.values()) {
+				RCWatcher.scheduleOnce(this, wiki, discord, new Meta());
+				
 				scheduler.schedule(
 					new RCWatcher(this, discord, wiki),
-					Schedules.afterInitialDelay(Schedules.fixedDelaySchedule(Duration.ofMinutes(5)), Duration.ZERO)
+					Schedules.afterInitialDelay(Schedules.fixedDelaySchedule(Duration.ofMinutes(2)), Duration.ZERO)
 				);
 			}
 		}

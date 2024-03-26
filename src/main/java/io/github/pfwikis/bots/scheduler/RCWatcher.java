@@ -49,18 +49,28 @@ public class RCWatcher implements Runnable {
 	private void handle(RecentChange change) {
 		log.info("RC in {}", change.getTitle());
 		if(change.getTitle().startsWith("Facts:")) {
-			scheduleOnce(new CiteTemplates(), change.getTitle());
+			scheduleOnceOnPage(p, wiki, discord, new CiteTemplates(), change.getTitle());
 		}
 	}
 	
-	private <T extends SimpleBot&RunOnPage>void scheduleOnce(T bot, String title) {
+	private static void initBot(Scheduler scheduler, Wiki wiki, Discord discord, SimpleBot bot) {
+		bot.setRootPassword(wiki.getMasterPassword());
 		var sr = new SingleRun(wiki, wiki.getMasterAccount(), wiki.getMasterPassword());
-		sr.setWiki(new WikiAPI(wiki, bot.getBotName(), wiki.getMasterPassword()+bot.getBotName()));
+		sr.setWiki(WikiAPI.fromCache(wiki, bot.getBotName(), bot.getBotPassword()));
 		
 		bot.setDiscord(discord);
-		bot.setLocalMode(p.isLocalMode());
+		bot.setLocalMode(scheduler.isLocalMode());
 		bot.setRun(sr);
+	}
+	
+	public static <T extends SimpleBot&RunOnPage> void scheduleOnceOnPage(Scheduler scheduler, Wiki wiki, Discord discord, T bot, String title) {
+		initBot(scheduler, wiki, discord, bot);
 		bot.runSinglePage(title);
+	}
+	
+	public static void scheduleOnce(Scheduler scheduler, Wiki wiki, Discord discord, SimpleBot bot) {
+		initBot(scheduler, wiki, discord, bot);
+		bot.startRun(discord);
 	}
 
 	@Override
