@@ -75,7 +75,7 @@ public class WikiAPI {
 		var query = new String[] {
 			"rcend", changesSince.truncatedTo(ChronoUnit.SECONDS).toString(),
 			"rclimit", "5000",
-			"rctype", "edit",
+			"rctype", "edit|new",
 			"rcprop", "title|timestamp|ids|user|sizes"
 		};
 		if(namespace != null) {
