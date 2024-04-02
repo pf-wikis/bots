@@ -4,32 +4,60 @@
 
 @args(Map<String, List<Range<Integer>>> ranges, RockerContent prefix, RockerContent suffix)
 
-@for((value,ranges):ranges) {
-	@if(value == null || value.isEmpty()) {
-		@*we do not need this range*@
+@content => {
+	@for((value,ranges):ranges) {
+		@if(value == null || value.isEmpty()) {
+			@*we do not need this range*@
+		}
+		else if(ranges.size()==1 && !ranges.get(0).hasLowerBound() && !ranges.get(0).hasUpperBound()) {
+			@*if only one range matching everything*@
+			@value
+		}
+		else if(
+				ranges.size()==1
+				&& ranges.get(0).hasLowerBound()
+				&& ranges.get(0).hasUpperBound()
+				&& ranges.get(0).lowerEndpoint()+1 == ranges.get(0).upperEndpoint()
+		) {
+			@*if only one page*@
+			@{@{#ifeq:
+				{{{1}}}
+			|
+				@ranges.get(0).lowerEndpoint()
+			|
+				@value
+			@}@}
+		}
+		else {
+			@{@{#ifexpr:
+				@for((it,range):ranges) {
+					@if(!it.first()){ or }
+					(
+						@if(range.hasLowerBound()){
+							{{{1}}}>=@range.lowerEndpoint()
+							@if(range.hasUpperBound()){ and }
+						}
+						@if(range.hasUpperBound()){
+							{{{1}}}<@range.upperEndpoint()
+						}
+					)
+				}
+			|
+				@value
+			@}@}
+		}
 	}
-	else if(ranges.size()==1 && !ranges.get(0).hasLowerBound() && !ranges.get(0).hasUpperBound()) {
-		@*if only one range matching everything*@
-		@?prefix@value@?suffix
-	}
-	else if(
-			ranges.size()==1
-			&& ranges.get(0).hasLowerBound()
-			&& ranges.get(0).hasUpperBound()
-			&& ranges.get(0).lowerEndpoint()+1 == ranges.get(0).upperEndpoint()
-	) {
-		@*if only one page*@
-		@{@{#ifeq:
-			{{{1}}}
-		|
-			@ranges.get(0).lowerEndpoint()
-		|
-			@HelperPreSufValue.template(value, prefix, suffix)
-		@}@}
+}
+
+@with(hasValue=RangeHelper.toHasValueRanges(ranges)) {
+	@if(hasValue.encloses(Range.all())) {
+		@?prefix
+		@content
+		@?suffix
 	}
 	else {
-		@{@{#ifexpr:
-			@for((it,range):ranges) {
+		{{#ifexpr:
+			@for((it,range):hasValue.asRanges()) {
 				@if(!it.first()){ or }
 				(
 					@if(range.hasLowerBound()){
@@ -42,7 +70,9 @@
 				)
 			}
 		|
-			@HelperPreSufValue.template(value, prefix, suffix)
-		@}@}
+			@?prefix
+			@content
+			@?suffix
+		}}
 	}
 }
