@@ -46,29 +46,12 @@
 <span class="authors">
 @with(authorRanges = book.makeAuthorPageRanges()) {
 	@with(authorCases = book.makeAuthorSpecialCases()) {
-		@if(authorRanges.isEmpty() && authorCases.isEmpty()) {
+		@if(authorRanges.size()==1 && authorCases.isEmpty()) {
 			@book.makeAuthors()
 		}
 		else {
 			{{#rmatch:{{{1|}}}|^\d+$|
-				@for(option:authorRanges.entrySet()) {
-					@{@{#ifexpr:
-						@for((it,range):option.getValue()) {
-							@if(!it.first()){ or }
-							(
-								{{{1}}}>=@range.lowerEndpoint()
-								@if(range.hasUpperBound()){ and {{{1}}}<@range.upperEndpoint()}
-							)
-						}
-					|
-						@option.getKey()
-					|
-				}
-				@book.makeAuthors()
-				@*close the section ifexprs*@
-				@for(option:authorRanges.entrySet()) {
-					@}@}
-				}
+				@HelperRangeMap.template(authorRanges, null, null)
 			|
 				@if(!authorCases.isEmpty()){
 					@{@{#switch:{{{1|}}}|
@@ -89,25 +72,11 @@
 @***************** article ***************@
 @with(articleRanges = book.makeArticlePageRanges()) {
 	@with(articleCases = book.makeArticleSpecialCases()) {
-		@if(!articleRanges.isEmpty() || !articleCases.isEmpty()) {
+		@if(articleRanges.size()>1 || !articleCases.isEmpty()) {
 			{{#rmatch:{{{1|}}}|^\d+$|
-				@for(option:articleRanges.entrySet()) {
-					@{@{#ifexpr:
-						@for((it,range):option.getValue()) {
-							@if(!it.first()){ or }
-							(
-								{{{1}}}>=@range.lowerEndpoint()
-								@if(range.hasUpperBound()){ and {{{1}}}<@range.upperEndpoint()}
-							)
-						}
-					|
-						<span class="article">“@option.getKey()” in @*important space before*@</span>
-					|
-				}
-				@*close the section ifexprs*@
-				@for(option:articleRanges.entrySet()) {
-					@}@}
-				}
+				@prefix => {<span class="article">“}
+				@suffix => {” in @*important space before*@</span>}
+				@HelperRangeMap.template(articleRanges, prefix, suffix)
 			|
 				@if(!articleCases.isEmpty()){
 					{{#switch:{{{1|}}}

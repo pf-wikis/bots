@@ -1,16 +1,19 @@
 package io.github.pfwikis.bots.citetemplates;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.DiscreteDomain;
 import com.google.common.collect.Range;
 import com.google.common.collect.TreeRangeMap;
-import com.google.common.primitives.Ints;
 
 import io.github.pfwikis.bots.utils.MWJsonHelper;
 import lombok.AllArgsConstructor;
@@ -43,6 +46,7 @@ public class BookDef implements BookPart {
 	private Map<String, List<Range<Integer>>> makeRanges(Function<BookPart, String> makeValue) {
 		var bookValue = makeValue.apply(this);
 		var ranges = TreeRangeMap.<Integer, String>create();
+		ranges.put(Range.<Integer>all(), makeValue.apply(this));
 		for(var sect:sections) {
 			var sectValue = makeValue.apply(sect);
 			var page = MWJsonHelper.tryParseInt(sect.getPage());
@@ -74,8 +78,17 @@ public class BookDef implements BookPart {
 					Collectors.mapping(e->e.getKey(), Collectors.toList())
 				)
 			);
-		return result;
+		//sort just to make the templates easier to read
+		result.values().forEach(e->Collections.sort(e, RANGE_COMP));
+		var sortedResult = new LinkedHashMap<String, List<Range<Integer>>>();
+		result.entrySet()
+			.stream()
+			.sorted(Comparator.<Entry<String, List<Range<Integer>>>,Range<Integer>>comparing(e->e.getValue().get(0), RANGE_COMP))
+			.forEachOrdered(e->sortedResult.put(e.getKey(), e.getValue()));
+		return sortedResult;
 	}
+	
+	private static final Comparator<Range<Integer>> RANGE_COMP = Comparator.<Range<Integer>, Boolean>comparing(Range::hasLowerBound).thenComparing(Range::lowerEndpoint);
 
 	public Map<String, List<Range<Integer>>> makeAuthorPageRanges() {
 		return makeRanges(BookPart::makeAuthors);
