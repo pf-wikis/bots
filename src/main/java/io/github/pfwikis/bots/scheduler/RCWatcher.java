@@ -9,24 +9,27 @@ import java.util.List;
 import io.github.pfwikis.bots.citetemplates.CiteTemplates;
 import io.github.pfwikis.bots.common.Discord;
 import io.github.pfwikis.bots.common.Wiki;
-import io.github.pfwikis.bots.common.WikiAPI;
-import io.github.pfwikis.bots.common.bots.Bot.RunOnPage;
-import io.github.pfwikis.bots.common.bots.Run.SingleRun;
-import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.common.model.RecentChanges.RecentChange;
-import lombok.RequiredArgsConstructor;
+import io.github.pfwikis.bots.factshelper.FactsHelper;
+import io.github.pfwikis.bots.scheduler.Scheduler.Schedulable;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@RequiredArgsConstructor 
-public class RCWatcher implements Runnable {
+public class RCWatcher extends Schedulable {
 	private final Scheduler p;
 	private final Discord discord;
 	private final Wiki wiki;
 	private Instant nextTimestamp;
-
+	
+	public RCWatcher(Scheduler p, Discord discord, Wiki wiki) {
+		super(wiki.name()+"-RCWatcher");
+		this.p = p;
+		this.discord = discord;
+		this.wiki = wiki;
+	}
+	
 	@Override
-	public void run() {
+	public void execute() {
 		Thread.currentThread().setName(this.toString());
 		List<RecentChange> rc;
 		if(nextTimestamp == null) {
@@ -49,30 +52,19 @@ public class RCWatcher implements Runnable {
 	private void handle(RecentChange change) {
 		log.info("RC in {}", change.getTitle());
 		if(change.getTitle().startsWith("Facts:")) {
-			scheduleOnceOnPage(p, wiki, discord, new CiteTemplates(), change.getTitle());
+			p.scheduleOnce(p.scheduleableBotOnPage(wiki, discord, new CiteTemplates(), change.getTitle()));
+		}
+		if(
+			change.getTitle().equals("User:Bot Facts Helper/Config")
+			||
+			change.getTitle().startsWith("Property:")
+		) {
+			p.scheduleOnce(p.scheduleableBot(wiki, discord, new FactsHelper()));
 		}
 	}
 	
-	private static void initBot(Scheduler scheduler, Wiki wiki, Discord discord, SimpleBot bot) {
-		bot.setRootPassword(wiki.getMasterPassword());
-		var sr = new SingleRun(wiki, wiki.getMasterAccount(), wiki.getMasterPassword());
-		sr.setWiki(WikiAPI.fromCache(wiki, bot.getBotName(), bot.getBotPassword()));
-		
-		bot.setDiscord(discord);
-		bot.setLocalMode(scheduler.isLocalMode());
-		bot.setRun(sr);
-	}
 	
-	public static <T extends SimpleBot&RunOnPage> void scheduleOnceOnPage(Scheduler scheduler, Wiki wiki, Discord discord, T bot, String title) {
-		initBot(scheduler, wiki, discord, bot);
-		bot.runSinglePage(title);
-	}
 	
-	public static void scheduleOnce(Scheduler scheduler, Wiki wiki, Discord discord, SimpleBot bot) {
-		initBot(scheduler, wiki, discord, bot);
-		bot.startRun(discord);
-	}
-
 	@Override
 	public String toString() {
 		return "RCWatcher[wiki="+wiki.name()+"]";
