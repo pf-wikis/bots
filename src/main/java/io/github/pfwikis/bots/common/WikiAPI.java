@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.tuple.Triple;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
@@ -41,14 +40,27 @@ import okhttp3.HttpUrl;
 
 @Slf4j
 public class WikiAPI {
-	
+
 	public static record Account(io.github.pfwikis.bots.common.Wiki wiki, String name) {}
+	public static record CacheEntry(WikiAPI api, Instant lastUsed) {}
 	
-	private static Map<Account, WikiAPI> CACHE = Collections.synchronizedMap(new HashMap<>());
+	private static Map<Account, CacheEntry> CACHE = new HashMap<>();
 	
-	public static WikiAPI fromCache(io.github.pfwikis.bots.common.Wiki wiki, String name, String password) {
+	public static synchronized WikiAPI fromCache(io.github.pfwikis.bots.common.Wiki wiki, String name, String password) {
 		var acc = new Account(wiki, name);
-		return CACHE.computeIfAbsent(acc, k->new WikiAPI(wiki, name, password));
+		var result = CACHE.computeIfAbsent(acc, k->new CacheEntry(new WikiAPI(wiki, name, password), Instant.now()));
+		
+		//test result if it might be too old
+		if(Duration.between(result.lastUsed(), Instant.now()).toMinutes()>5) {
+			try {
+				result.api().requestToken("csrf");
+			} catch(Exception e) {
+				log.info("{}-{} login not longer valid, new login", wiki.name(), name);
+				result = new CacheEntry(new WikiAPI(wiki, name, password), result.lastUsed());
+			}
+		}
+		CACHE.put(acc, new CacheEntry(result.api(), Instant.now()));
+		return result.api();
 	}
 
 	private Wiki wiki;
@@ -62,7 +74,7 @@ public class WikiAPI {
 		}
 		this.wiki = b.build();
 	}
-	
+
 	public boolean upload(Path p, String title, String desc, String summary) {
 		return wiki.upload(p, title, desc, summary);
 	}

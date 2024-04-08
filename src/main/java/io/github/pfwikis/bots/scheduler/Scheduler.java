@@ -123,7 +123,12 @@ public class Scheduler {
 	}
 	
 	public void scheduleOnce(Schedulable task) {
-		scheduler.schedule(task.name, task, Schedules.executeOnce(Schedules.fixedDelaySchedule(Duration.ZERO)));
+		try {
+			scheduler.schedule(task.name, task, Schedules.executeOnce(Schedules.fixedDelaySchedule(Duration.ZERO)));
+		} catch(IllegalArgumentException e) {
+			if(!e.getMessage().contains("A job is already scheduled with the name"))
+				throw e;
+		}
 	}
 	
 	public void schedule(Schedulable task, Schedule schedule) {
