@@ -47,6 +47,7 @@ public class WikiAPI {
 	private static Map<Account, CacheEntry> CACHE = new HashMap<>();
 	
 	public static synchronized WikiAPI fromCache(io.github.pfwikis.bots.common.Wiki wiki, String name, String password) {
+		/* caching seems to lead to no longer working API objects
 		var acc = new Account(wiki, name);
 		var result = CACHE.computeIfAbsent(acc, k->new CacheEntry(new WikiAPI(wiki, name, password), Instant.now()));
 		
@@ -61,6 +62,8 @@ public class WikiAPI {
 		}
 		CACHE.put(acc, new CacheEntry(result.api(), Instant.now()));
 		return result.api();
+		*/
+		return new WikiAPI(wiki, name, password);
 	}
 
 	private Wiki wiki;
