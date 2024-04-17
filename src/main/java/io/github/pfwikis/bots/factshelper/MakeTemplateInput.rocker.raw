@@ -6,13 +6,13 @@
 	{{#formredlink:
 		target=Facts:{{{1|}}}
 		|form=@formDef.getName()
-		|link text=Create @formDef.getName()
+		|link text=Create @formDef.getName() Facts
 	}}
 |
 	You can edit or create facts about a new @formDef.getName() by entering its name here:
 	{{#forminput:form=@formDef.getName()
 		|autocomplete on category=Facts about @formDef.getPluralName()
 		|query string=namespace=Facts
-		|button text=Create/Edit @formDef.getName()
+		|button text=Create/Edit @formDef.getName() Facts
 	}}
 }}
