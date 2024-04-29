@@ -16,11 +16,11 @@ This is the ''@name'' form. To create a page with this form, see [[:Category:Fac
 		<div class="facts-form-input">
 			{{{field|@prop.getName()
 				@if(prop.getFactType() == IMAGE) {|input type=combobox|values from namespace=File}
+				else if(prop.getFactType() == MULTILINE_WIKITEXT) {|input type=textarea|autogrow|editor=visualeditor}
 				else if(prop.getFactType() == PAGE_LIST || prop.getFactType() == AUTHOR) {|list|input type=tokens|delimiter=;}
 				else if(prop.getType() == TEXT || prop.getType() == PAGE) {|input type=@if(prop.isAutocompleteDisabled()){text}else{combobox}}
 				else if(prop.getType() == BOOLEAN) {|input type=checkbox}
 				else if(prop.getType() == NUMBER) {|input type=regexp|regexp=/^[0-9]*$/}
-				else if(prop.getType() == MULTILINE_WIKITEXT) {|input type=textarea|autogrow|editor=visualeditor}
 				@if(startsWith(prop.getSuggestValuesFrom(), "Category:")) {|values from category=@prop.getSuggestValuesFrom().substring(9)}
 				else if(startsWith(prop.getSuggestValuesFrom(), "Namespace:")) {|values from namespace=@prop.getSuggestValuesFrom().substring(10)}
 				else if(startsWith(prop.getSuggestValuesFrom(), "Property:")) {|values from property=@prop.getSuggestValuesFrom().substring(9)}
