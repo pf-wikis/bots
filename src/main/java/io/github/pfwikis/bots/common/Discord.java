@@ -2,8 +2,12 @@ package io.github.pfwikis.bots.common;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+
+import com.google.common.util.concurrent.Uninterruptibles;
 
 import io.github.pfwikis.bots.common.bots.Bot;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +16,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.utils.MarkdownUtil;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 
@@ -106,6 +111,34 @@ public class Discord implements Closeable {
 				.queue();
 		} catch(Exception e) {
 			reportException(bot, e);
+		}
+	}
+
+	public void removeTooManyErrors() {
+		init();
+		var channel = jda.getTextChannelById(CHANNEL_BOT_ACTIVITY);
+		var lastMsg = channel.getLatestMessageId();
+		boolean repeat = true;
+		while(repeat) {
+			repeat = false;
+			var lastFew = channel.getHistoryBefore(lastMsg, 100).complete().getRetrievedHistory();
+			var toDelete = new ArrayList<Message>();
+			for(int i=1;i<lastFew.size()-1;i++) {
+				if(
+					lastFew.get(i-1).getContentRaw().contains("**Error**")
+					&& lastFew.get(i+0).getContentRaw().contains("**Error**")
+					&& lastFew.get(i+1).getContentRaw().contains("**Error**")
+				)  {
+					toDelete.add(lastFew.get(i));
+				}
+			}
+			if(!toDelete.isEmpty()) {
+				toDelete.forEach(msg -> {
+					channel.deleteMessageById(msg.getIdLong()).complete();
+					Uninterruptibles.sleepUninterruptibly(5, TimeUnit.SECONDS);
+				});
+				repeat = true;
+			}
 		}
 	}
 }
