@@ -14,6 +14,7 @@ import lombok.Value;
 public class FormDefinition {
 	private String name;
 	private String pluralName;
+	private boolean subobjectForm;
 	private List<String> properties = new ArrayList<>();
 	private List<FormDefinition> subForms = new ArrayList<>();
 	private List<String> infoboxProperties = new ArrayList<>();
