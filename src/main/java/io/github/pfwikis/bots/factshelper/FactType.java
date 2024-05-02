@@ -21,6 +21,12 @@ public enum FactType {
 			"{{#set:$1={{{$1|}}}}}",
 			"|$1={{{$1|}}}"
 	),
+	MULTILINE_WIKITEXT(
+			"Multiline wikitext",
+			"{{{$1|}}}",
+			"{{#set:$1={{{$1|}}}}}",
+			"|$1={{{$1|}}}"
+	),
 	DATE(
 			"Date",
 			"{{#if:{{{$1|}}}|{{{$1|}}} ''(precision of "+datePrecision()+")''}}",
