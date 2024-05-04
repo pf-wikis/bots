@@ -36,5 +36,5 @@ This is the ''@name'' form. To create a page with this form, see [[:Category:Fac
 
 '''Free text:'''
 
-{{{standard input|free text|rows=10}}}
+{{{standard input|free text|autogrow|editor=visualeditor}}}
 </includeonly>

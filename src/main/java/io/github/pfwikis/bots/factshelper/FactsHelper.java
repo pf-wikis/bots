@@ -40,8 +40,7 @@ public class FactsHelper extends SimpleBot {
 			.collect(Collectors.toMap(d->d.getName(), d->d));
 		
 		for(var formDef:formDefs) {
-			if(!formDef.isSubobjectForm())
-				handleForm(props, formDef);
+			handleForm(props, formDef);
 		}
 	}
 	

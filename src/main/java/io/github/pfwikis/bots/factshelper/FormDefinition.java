@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Value;
@@ -14,7 +16,6 @@ import lombok.Value;
 public class FormDefinition {
 	private String name;
 	private String pluralName;
-	private boolean subobjectForm;
 	private List<String> properties = new ArrayList<>();
 	private List<FormDefinition> subForms = new ArrayList<>();
 	private List<String> infoboxProperties = new ArrayList<>();
@@ -77,9 +78,8 @@ public class FormDefinition {
 
 	private static List<PropertyDefinition> resolve(List<String> properties, Map<String, PropertyDefinition> props) {
 		var result = new ArrayList<>(properties.stream()
-			.map(props::get)
-			.map(Optional::ofNullable)
-			.map(p->p.orElseThrow(()->new RuntimeException("Could not find definition for Property:"+p)))
+			.map(p->Pair.of(p, props.get(p)))
+			.map(p->Optional.ofNullable(p.getValue()).orElseThrow(()->new RuntimeException("Could not find definition for Property:"+p.getKey())))
 			.toList());
 		
 		for(var p:result) {
