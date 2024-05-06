@@ -12,6 +12,7 @@ import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.model.RecentChanges.RecentChange;
 import io.github.pfwikis.bots.factshelper.FactsHelper;
 import io.github.pfwikis.bots.scheduler.Scheduler.Schedulable;
+import io.github.pfwikis.bots.templatestyles.TemplateStyles;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -60,6 +61,9 @@ public class RCWatcher extends Schedulable {
 			change.getTitle().startsWith("Property:")
 		) {
 			p.scheduleOnce(p.scheduleableBot(wiki, discord, new FactsHelper()));
+		}
+		if(change.getTitle().startsWith("Style:")) {
+			p.scheduleOnce(p.scheduleableBot(wiki, discord, new TemplateStyles()));
 		}
 	}
 	
