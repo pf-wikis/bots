@@ -2,7 +2,6 @@ package io.github.pfwikis.bots;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.MissingCommandException;

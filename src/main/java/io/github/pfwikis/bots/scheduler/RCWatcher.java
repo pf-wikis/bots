@@ -11,7 +11,6 @@ import io.github.pfwikis.bots.common.Discord;
 import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.model.RecentChanges.RecentChange;
 import io.github.pfwikis.bots.factshelper.FactsHelper;
-import io.github.pfwikis.bots.scheduler.Scheduler.Schedulable;
 import io.github.pfwikis.bots.templatestyles.TemplateStyles;
 import lombok.extern.slf4j.Slf4j;
 

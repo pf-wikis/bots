@@ -1,26 +1,29 @@
 package io.github.pfwikis.bots.scheduler;
 
 import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
+import java.util.concurrent.Executors;
+import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.lang3.time.DurationFormatUtils;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
-import com.coreoz.wisp.SchedulerConfig;
-import com.coreoz.wisp.schedule.Schedule;
-import com.coreoz.wisp.schedule.Schedules;
 import com.google.common.util.concurrent.Uninterruptibles;
 
 import io.github.pfwikis.bots.Runner;
 import io.github.pfwikis.bots.common.Discord;
 import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.WikiAPI;
-import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.common.bots.Bot.RunOnPage;
 import io.github.pfwikis.bots.common.bots.Run.SingleRun;
+import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.meta.Meta;
 import io.github.pfwikis.bots.newsfeedreader.NewsFeedReader;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -36,7 +39,8 @@ public class Scheduler {
 	protected boolean localMode;
 	@Parameter(names = "--matomoToken")
 	protected String matomoToken;
-	private com.coreoz.wisp.Scheduler scheduler;
+	
+	private PriorityBlockingQueue<Task> tasks = new PriorityBlockingQueue<>();
 	
 	public void start() throws Exception {
 		try(var discord = new Discord(discordToken)) {
@@ -53,19 +57,39 @@ public class Scheduler {
 				checkAccounts(wiki);
 			}
 			
-			scheduler = new com.coreoz.wisp.Scheduler(SchedulerConfig.builder()
-				.maxThreads(2)
-				.build()
-			);
-			
 			for(var wiki : Wiki.values()) {
 				scheduleOnce(scheduleableBot(wiki, discord, new Meta()));
-				schedule(scheduleableBot(wiki, discord, new NewsFeedReader()), Schedules.fixedDelaySchedule(Duration.ofHours(1)));
+				schedule(scheduleableBot(wiki, discord, new NewsFeedReader()), Duration.ofHours(1));
 				
 				schedule(
 					new RCWatcher(this, discord, wiki),
-					Schedules.fixedDelaySchedule(Duration.ofMinutes(2))
+					Duration.ofMinutes(2)
 				);
+			}
+			
+			worker();
+		}
+	}
+	
+	private void worker() {
+		var thread = Thread.currentThread();
+		thread.setName("Scheduler Worker");
+		while(true) {
+			var task = Uninterruptibles.takeUninterruptibly(tasks);
+			String name = task.getSchedulable().getName();
+			try {
+				var waitDuration = Duration.between(Instant.now(), task.time).truncatedTo(ChronoUnit.SECONDS);
+				if(waitDuration.isPositive()) {
+					log.info("Sleeping for {}", DurationFormatUtils.formatDurationWords(waitDuration.toMillis(), true,  true));
+					Uninterruptibles.sleepUninterruptibly(waitDuration.toSeconds(), TimeUnit.SECONDS);
+				}
+				log.info("Executing {}", name);
+				thread.setName(name);
+				task.run();
+			} catch(Exception e) {
+				log.error("Failed to execute job {}", name, e);
+			} finally {
+				thread.setName("Scheduler Worker");
 			}
 		}
 	}
@@ -78,24 +102,6 @@ public class Scheduler {
 		bot.setDiscord(discord);
 		bot.setLocalMode(localMode);
 		bot.setRun(sr);
-	}
-	
-	@RequiredArgsConstructor
-	public static abstract class Schedulable implements Runnable {
-		private final String name;
-		
-		public abstract void execute();
-		
-		public void run() {
-			var thread = Thread.currentThread();
-			var oldThreadName = thread.getName();
-			try {
-				thread.setName(name);
-				execute();
-			} finally {
-				thread.setName(oldThreadName);
-			}
-		}
 	}
 	
 	public <T extends SimpleBot&RunOnPage> Schedulable scheduleableBotOnPage(Wiki wiki, Discord discord, T bot, String title) {
@@ -122,17 +128,20 @@ public class Scheduler {
 		};
 	}
 	
-	public void scheduleOnce(Schedulable task) {
-		try {
-			scheduler.schedule(task.name, task, Schedules.executeOnce(Schedules.fixedDelaySchedule(Duration.ZERO)));
-		} catch(IllegalArgumentException e) {
-			if(!e.getMessage().contains("A job is already scheduled with the name"))
-				throw e;
+	public void scheduleOnce(Schedulable schedulable) {
+		if(Arrays.stream(tasks.toArray(Task[]::new)).anyMatch(t->t.getSchedulable().getName().equals(schedulable.getName()))) {
+			log.warn("Already scheduled a task with name '{}'. Skipping.");
+			return;
 		}
+		schedule(new Task(schedulable, Instant.now()));
 	}
 	
-	public void schedule(Schedulable task, Schedule schedule) {
-		scheduler.schedule(task.name, task, schedule);
+	public void schedule(Schedulable schedulable, Duration sleepBetweenRuns) {
+		schedule(new Task.Repeatable(schedulable, Instant.now().plus(sleepBetweenRuns), this, sleepBetweenRuns));
+	}
+	
+	public void schedule(Task task) {
+		tasks.add(task);
 	}
 
 	private void checkAccounts(Wiki wiki) {
