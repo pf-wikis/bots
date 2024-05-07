@@ -41,7 +41,8 @@ public class TemplateStyles extends SimpleBot {
 			var out = File.createTempFile("paizowikis-out-", ".less");
 			try {
 				int status = new ProcessBuilder(
-						"lessc"+(System.getProperty("os.name").contains("Windows")?".cmd":""),
+						"npx"+(System.getProperty("os.name").contains("Windows")?".cmd":""),
+						"lessc",
 						in.getAbsolutePath(),
 						out.getAbsolutePath()
 					)
