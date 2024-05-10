@@ -18,7 +18,7 @@ public abstract class DualBot extends Bot<DualRun> {
 	}
 	
 	@Override
-	protected List<DualRun> createRuns() {
+	public List<DualRun> createRuns() {
 		var run = new DualRun();
 		var sBot = new SimpleBot(id, botName) {
 			@Override

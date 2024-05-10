@@ -4,7 +4,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
-import java.util.concurrent.Executors;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -19,6 +18,7 @@ import io.github.pfwikis.bots.common.Discord;
 import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.WikiAPI;
 import io.github.pfwikis.bots.common.bots.Bot.RunOnPage;
+import io.github.pfwikis.bots.common.bots.DualBot;
 import io.github.pfwikis.bots.common.bots.Run.SingleRun;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.meta.Meta;
@@ -101,7 +101,16 @@ public class Scheduler {
 		
 		bot.setDiscord(discord);
 		bot.setLocalMode(localMode);
-		bot.setRun(sr);
+		if(bot.getRun() == null)
+			bot.setRun(sr);
+	}
+	
+	private void initBot(Discord discord, DualBot bot) {
+		bot.setRootPassword(Wiki.PF.getMasterPassword());
+		bot.setDiscord(discord);
+		bot.setLocalMode(localMode);
+		if(bot.getRun() == null)
+			bot.setRun(bot.createRuns().get(0));
 	}
 	
 	public <T extends SimpleBot&RunOnPage> Schedulable scheduleableBotOnPage(Wiki wiki, Discord discord, T bot, String title) {
@@ -110,6 +119,18 @@ public class Scheduler {
 			public void execute() {
 				synchronized(bot) {
 					initBot(wiki, discord, bot);
+					bot.runSinglePage(title);
+				}
+			}
+		};
+	}
+	
+	public <T extends DualBot&RunOnPage> Schedulable scheduleableBotOnPage(Discord discord, T bot, String title) {
+		return new Schedulable(bot.getId()+" on "+title) {
+			@Override
+			public void execute() {
+				synchronized(bot) {
+					initBot(discord, bot);
 					bot.runSinglePage(title);
 				}
 			}
@@ -130,14 +151,14 @@ public class Scheduler {
 	
 	public void scheduleOnce(Schedulable schedulable) {
 		if(Arrays.stream(tasks.toArray(Task[]::new)).anyMatch(t->t.getSchedulable().getName().equals(schedulable.getName()))) {
-			log.warn("Already scheduled a task with name '{}'. Skipping.");
+			log.warn("Already scheduled a task with name '{}'. Skipping.", schedulable.getName());
 			return;
 		}
 		schedule(new Task(schedulable, Instant.now()));
 	}
 	
 	public void schedule(Schedulable schedulable, Duration sleepBetweenRuns) {
-		schedule(new Task.Repeatable(schedulable, Instant.now().plus(sleepBetweenRuns), this, sleepBetweenRuns));
+		schedule(new Task.Repeatable(schedulable, Instant.now(), this, sleepBetweenRuns));
 	}
 	
 	public void schedule(Task task) {

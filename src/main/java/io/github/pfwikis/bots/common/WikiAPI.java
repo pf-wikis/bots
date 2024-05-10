@@ -325,6 +325,10 @@ public class WikiAPI {
 		).getAllusers();
 	}
 	
+	public int getNamespaceId(String page) {
+		return wiki.whichNS(page).v;
+	}
+	
 	public List<JsonNode> getLogEvents(ZonedDateTime end, String user) {
 		return query(
 			Query.LIST_LOG_EVENTS,
