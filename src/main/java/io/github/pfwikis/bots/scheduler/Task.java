@@ -37,6 +37,7 @@ public class Task implements Comparable<Task> {
 			try {
 				super.run();
 			} finally {
+				schedulable.reset();
 				scheduler.schedule(new Repeatable(
 					schedulable,
 					Instant.now().plus(sleepBetweenRuns),

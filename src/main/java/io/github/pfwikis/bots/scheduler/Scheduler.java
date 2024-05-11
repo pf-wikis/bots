@@ -114,7 +114,7 @@ public class Scheduler {
 	}
 	
 	public <T extends SimpleBot&RunOnPage> Schedulable scheduleableBotOnPage(Wiki wiki, Discord discord, T bot, String title) {
-		return new Schedulable(wiki.name()+"-"+bot.getId()+" on "+title) {
+		return new Schedulable(bot, wiki.name()+"-"+bot.getId()+" on "+title) {
 			@Override
 			public void execute() {
 				synchronized(bot) {
@@ -126,7 +126,7 @@ public class Scheduler {
 	}
 	
 	public <T extends DualBot&RunOnPage> Schedulable scheduleableBotOnPage(Discord discord, T bot, String title) {
-		return new Schedulable(bot.getId()+" on "+title) {
+		return new Schedulable(bot, bot.getId()+" on "+title) {
 			@Override
 			public void execute() {
 				synchronized(bot) {
@@ -138,7 +138,7 @@ public class Scheduler {
 	}
 	
 	public Schedulable scheduleableBot(Wiki wiki, Discord discord, SimpleBot bot) {
-		return new Schedulable(wiki.name()+"-"+bot.getId()) {
+		return new Schedulable(bot, wiki.name()+"-"+bot.getId()) {
 			@Override
 			public void execute() {
 				synchronized(bot) {
