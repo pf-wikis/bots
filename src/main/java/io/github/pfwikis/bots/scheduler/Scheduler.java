@@ -23,6 +23,7 @@ import io.github.pfwikis.bots.common.bots.Run.SingleRun;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.meta.Meta;
 import io.github.pfwikis.bots.newsfeedreader.NewsFeedReader;
+import io.github.pfwikis.bots.scheduler.Schedulable.SchedulableBot;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -113,8 +114,8 @@ public class Scheduler {
 			bot.setRun(bot.createRuns().get(0));
 	}
 	
-	public <T extends SimpleBot&RunOnPage> Schedulable scheduleableBotOnPage(Wiki wiki, Discord discord, T bot, String title) {
-		return new Schedulable(bot, wiki.name()+"-"+bot.getId()+" on "+title) {
+	public <T extends SimpleBot&RunOnPage> SchedulableBot scheduleableBotOnPage(Wiki wiki, Discord discord, T bot, String title) {
+		return new SchedulableBot(bot, wiki.name()+"-"+bot.getId()+" on "+title) {
 			@Override
 			public void execute() {
 				synchronized(bot) {
@@ -125,8 +126,8 @@ public class Scheduler {
 		};
 	}
 	
-	public <T extends DualBot&RunOnPage> Schedulable scheduleableBotOnPage(Discord discord, T bot, String title) {
-		return new Schedulable(bot, bot.getId()+" on "+title) {
+	public <T extends DualBot&RunOnPage> SchedulableBot scheduleableBotOnPage(Discord discord, T bot, String title) {
+		return new SchedulableBot(bot, bot.getId()+" on "+title) {
 			@Override
 			public void execute() {
 				synchronized(bot) {
@@ -137,8 +138,8 @@ public class Scheduler {
 		};
 	}
 	
-	public Schedulable scheduleableBot(Wiki wiki, Discord discord, SimpleBot bot) {
-		return new Schedulable(bot, wiki.name()+"-"+bot.getId()) {
+	public SchedulableBot scheduleableBot(Wiki wiki, Discord discord, SimpleBot bot) {
+		return new SchedulableBot(bot, wiki.name()+"-"+bot.getId()) {
 			@Override
 			public void execute() {
 				synchronized(bot) {

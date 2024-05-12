@@ -7,12 +7,24 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public abstract class Schedulable {
-	private final Bot<?> bot;
 	private final String name;
 	
 	public abstract void execute();
-
-	public void reset() {
-		bot.setRun(null);
+	
+	public void reset() {}
+	
+	@Getter
+	public static abstract class SchedulableBot extends Schedulable {
+		
+		private final Bot<?> bot;
+		
+		public SchedulableBot(Bot<?> bot, String name) {
+			super(name);
+			this.bot = bot;
+		}
+		
+		public void reset() {
+			bot.setRun(null);
+		}
 	}
 }
