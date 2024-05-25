@@ -104,6 +104,14 @@ public class TemplateStyles extends SimpleBot {
 	        }
 	    }
 	}
+
+	.mixin-floating-box() {
+    		background-color: @article-color;
+    		box-shadow: 0 0 .3rem .1rem rgba(0,0,0,0.3);
+    		border: 1px solid @menu-border-color-thick;
+    		font-size: 0.9em;
+    		color: @black;
+	}
 	
 	.clearfix() {
 	    &::after {
