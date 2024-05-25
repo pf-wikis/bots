@@ -120,6 +120,10 @@ public class TemplateStyles extends SimpleBot {
 	        display: block;
 	    }
 	}
+
+	@full-width: ~"(min-width: 1000px)";
+	@min-small-width: ~"(min-width:720px)";
+	@min-tiny-width: ~"(min-width:480px)";
 	""";
 	
 	private static final Map<Wiki,String> CONSTANTS = Map.of(
