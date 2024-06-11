@@ -130,7 +130,7 @@ public class UsageReporter extends SimpleBot {
 				r->"<code><nowiki>"+r.getKey()+"</nowiki></code>",
 				r->"%.1f".formatted(r.getValue()/7d)
 		);
-		run.getWiki().edit(reportPage()+"/Referrers", bot()+txt, "Update reporting pages data");
+		run.getWiki().edit(reportPage()+"/Referrers", bot()+"\n"+txt, "Update reporting pages data");
 	}
 	
 	private void topCategories() throws Exception {
