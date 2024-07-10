@@ -100,6 +100,7 @@ public class Discord implements Closeable {
 							Ints.tryParse(old.getContentRaw().replaceAll("(?s)^.*x (\\d+)$", "$1"))
 					).orElse(1));
 				}
+				old.delete().queue();
 			});
 			
 			jda.getTextChannelById(CHANNEL_BOT_ACTIVITY)
@@ -154,10 +155,8 @@ public class Discord implements Closeable {
 				}
 			}
 			if(!toDelete.isEmpty()) {
-				toDelete.forEach(msg -> {
-					channel.deleteMessageById(msg.getIdLong()).complete();
-					Uninterruptibles.sleepUninterruptibly(5, TimeUnit.SECONDS);
-				});
+				log.info("Deleting {} messages", toDelete.size());
+				channel.purgeMessages(toDelete);
 				repeat = true;
 			}
 		}
