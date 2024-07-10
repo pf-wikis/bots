@@ -142,12 +142,21 @@ public class CiteTemplates extends SimpleBot implements RunOnPage {
 	private void calcPageRanges(List<SectionDef> sections, Integer max) {
 		if(sections.isEmpty()) return;
 		for(int i=0;i<sections.size()-1;i++) {
-			var page = MWJsonHelper.tryParseInt(sections.get(i+1).getPage());
-			var myPage = MWJsonHelper.tryParseInt(sections.get(i).getPage());
-			if(page != null && myPage != null)
-				sections.get(i).setEndPage(Math.max(page-1, myPage));
+			var self = sections.get(i);
+			var next = sections.get(i+1);
+			var nextStartPage = MWJsonHelper.tryParseInt(next.getPage());
+			var myStartPage = MWJsonHelper.tryParseInt(self.getPage());
+			if(nextStartPage != null && myStartPage != null && self.getEndPage() == null)
+				self.setEndPage(Math.max(nextStartPage-1, myStartPage));
 		}
-		sections.get(sections.size()-1).setEndPage(max);
+		
+		var last = sections.getLast();
+		if(max != null && last.getEndPage() != null) {
+			if(last.getPage() != null)
+				last.setEndPage(Math.max(MWJsonHelper.tryParseInt(last.getPage()), max));
+			else
+				last.setEndPage(max);
+		}
 		for(var sect:sections) {
 			calcPageRanges(sect.getSubSections(), sect.getEndPage());
 		}

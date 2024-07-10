@@ -87,11 +87,18 @@ public class Query<T> {
 		}
 	};
 	
-	public static final Query<ImageUsageQuery> LIST_IMAGE_USAGE = new Query<>(
+	public static final Query<ImageUsageQuery> LIST_IMAGE_USAGE = new Query.WithContinue<>(
 		ImageUsageQuery.class, 
 		"list",
-		"imageusage"
-	);
+		"imageusage",
+		"iucontinue"
+	) {
+		@Override
+		public ImageUsageQuery mergeResults(ImageUsageQuery a, ImageUsageQuery b) {
+			a.getImageusage().addAll(b.getImageusage());
+			return a;
+		}
+	};
 	
 	public static final Query<AllusersQuery> LIST_ALL_USERS = new Query.WithContinue<>(
 			AllusersQuery.class, 
