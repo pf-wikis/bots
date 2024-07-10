@@ -3,10 +3,14 @@ package io.github.pfwikis.bots.common;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
+import com.google.common.primitives.Ints;
 import com.google.common.util.concurrent.Uninterruptibles;
 
 import io.github.pfwikis.bots.common.bots.Bot;
@@ -78,11 +82,28 @@ public class Discord implements Closeable {
 				//append error
 				.append("```java\n")
 				.append(txt)
-				.append("\n```");
+				.append("\n```\n")
+				.toString();
 			
 			init();
+			
+			var channel = jda.getTextChannelById(CHANNEL_BOT_ACTIVITY);
+			
+			var last100 = channel.getIterableHistory()
+				.takeAsync(30)
+				.get();
+			
+			var counter = new AtomicInteger(1);
+			last100.forEach(old -> {
+				if(old.getContentRaw().startsWith(msg) && old.getReactions().isEmpty()) {
+					counter.addAndGet(Optional.ofNullable(
+							Ints.tryParse(old.getContentRaw().replaceAll("(?s)^.*x (\\d+)$", "$1"))
+					).orElse(1));
+				}
+			});
+			
 			jda.getTextChannelById(CHANNEL_BOT_ACTIVITY)
-				.sendMessage(msg.toString())
+				.sendMessage(msg+(counter.get()>1?"x "+counter.get():""))
 				.queue();
 		} catch(Exception e2) {
 			log.error("Failed to report error to discord", e2);
