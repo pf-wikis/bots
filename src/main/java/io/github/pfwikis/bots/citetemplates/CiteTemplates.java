@@ -68,12 +68,13 @@ public class CiteTemplates extends SimpleBot implements RunOnPage {
 					.publisher(book.getPrintouts().getPublisher().stream().map(Result::getFulltext).toList())
 					.build();
 				
-				var rawSections = run.getWiki().semanticAsk("[[Fact type::Template:Facts/Book/Section]][[-Has subobject::"+book.getFulltext()+"]]|?Name|?On page|?Is subsection|?Author|?Author ordered");
+				var rawSections = run.getWiki().semanticAsk("[[Fact type::Template:Facts/Book/Section]][[-Has subobject::"+book.getFulltext()+"]]|?Name|?On page|?To page|?Is subsection|?Author|?Author ordered");
 				bookDef.getSections().addAll(rawSections.stream()
 					.map(s-> new SectionDef(
 						bookDef,
 						s.getPrintouts().getName(),
 						s.getPrintouts().getOnPage(),
+						s.getPrintouts().getToPage(),
 						null,
 						sortAuthors(s.getPrintouts()),
 						Boolean.TRUE.equals(s.getPrintouts().getIsSubsection()),
@@ -141,6 +142,13 @@ public class CiteTemplates extends SimpleBot implements RunOnPage {
 
 	private void calcPageRanges(List<SectionDef> sections, Integer max) {
 		if(sections.isEmpty()) return;
+		
+		//first check if we have a manual end page
+		for(var sect:sections) {
+			sect.setEndPage(MWJsonHelper.tryParseInt(sect.getToPage()));
+		}
+		
+		//otherwise we assume we end before the next chapter
 		for(int i=0;i<sections.size()-1;i++) {
 			var self = sections.get(i);
 			var next = sections.get(i+1);
@@ -157,6 +165,8 @@ public class CiteTemplates extends SimpleBot implements RunOnPage {
 			else
 				last.setEndPage(max);
 		}
+		
+		//then do subsections
 		for(var sect:sections) {
 			calcPageRanges(sect.getSubSections(), sect.getEndPage());
 		}

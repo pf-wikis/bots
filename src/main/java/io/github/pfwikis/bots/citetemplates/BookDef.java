@@ -147,6 +147,7 @@ public class BookDef implements BookPart {
 		private BookPart parent;
 		private String name;
 		private String page;
+		private String toPage;
 		private Integer endPage;
 		private List<String> authors = new ArrayList<>();
 		private boolean isSubsection;
