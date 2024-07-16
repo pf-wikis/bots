@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -63,10 +64,11 @@ public class ArticleOfTheWeek extends SimpleBot {
 		addBadge(article);
 	}
 
+	private static Pattern FEATURED_PATTERN = Pattern.compile("\\| *featured *[\\}\\|]");
 	private void addBadge(Candidate article) {
 		var wikiText = run.getWiki().getPageText(article.getTitle());
 		
-		if(!wikiText.toLowerCase().matches(".*\\| *featured *[\\}\\|].*")) {
+		if(!FEATURED_PATTERN.matcher(wikiText.toLowerCase()).find()) {
 			log.info("Did not find badge");
 			var newText = wikiText.replaceAll("(\\{\\{\\s*Badges\\s*\\|)", "$1featured|");
 			if(newText.equals(wikiText)) {
