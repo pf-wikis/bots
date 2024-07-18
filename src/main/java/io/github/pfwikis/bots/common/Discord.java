@@ -110,6 +110,13 @@ public class Discord implements Closeable {
 			log.error("Failed to report error to discord", e2);
 		}
 	}
+	
+	public void report(String msg) {
+		init();
+		jda.getTextChannelById(CHANNEL_BOT_ACTIVITY)
+			.sendMessage(msg)
+			.queue();
+	}
 
 	public void report(Bot<?> bot, String msg) {
 		try {

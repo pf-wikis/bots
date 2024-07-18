@@ -21,6 +21,7 @@ import io.github.pfwikis.bots.common.bots.Bot.RunOnPage;
 import io.github.pfwikis.bots.common.bots.DualBot;
 import io.github.pfwikis.bots.common.bots.Run.SingleRun;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
+import io.github.pfwikis.bots.healthcheck.HealthCheck;
 import io.github.pfwikis.bots.meta.Meta;
 import io.github.pfwikis.bots.newsfeedreader.NewsFeedReader;
 import io.github.pfwikis.bots.scheduler.Schedulable.SchedulableBot;
@@ -58,6 +59,7 @@ public class Scheduler {
 				checkAccounts(wiki);
 			}
 			
+			schedule(new HealthCheck(discord), Duration.ofHours(24));
 			for(var wiki : Wiki.values()) {
 				scheduleOnce(scheduleableBot(wiki, discord, new Meta()));
 				schedule(scheduleableBot(wiki, discord, new NewsFeedReader()), Duration.ofHours(1));
