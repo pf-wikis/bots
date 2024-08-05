@@ -43,6 +43,7 @@ public class CiteTemplates extends SimpleBot implements RunOnPage {
 			+ "|?Represented by page"
 			+ "|?Release year"
 			+ "|?Primary author"
+			+ "|?Author all"
 			+ "|?Author ordered"
 			+ "|?Primary author ordered"
 			+ "|?Author"
@@ -132,7 +133,7 @@ public class CiteTemplates extends SimpleBot implements RunOnPage {
 			.filter(v->!result.contains(v))
 			.forEachOrdered(result::add);
 		
-		out.getAuthors().stream()
+		out.getAllAuthors().stream()
 			.map(Result::getFulltext)
 			.filter(v->!result.contains(v))
 			.forEachOrdered(result::add);

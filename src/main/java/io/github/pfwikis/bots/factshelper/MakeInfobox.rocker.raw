@@ -52,7 +52,7 @@
 	{{#if:{{{Web enhancement|}}}|[[Category:Products with web enhancements]]}}
 }
 @if(form.containsProperty("Author")) {
-	{{#if: {{{Author|}}}|{{#arraymap:{{{Author|}}}|;|x|[[Category:Works by {{#getdisplaytitle:x}}]]|}}}}
+	{{#if: {{{Author all|}}}|{{#arraymap:{{{Author all|}}}|;|x|[[Category:Works by {{#getdisplaytitle:x}}]]|}}}}
 }
 @if(form.containsProperty("Artist")) {
 	{{#if: {{{Artist|}}}|{{#arraymap:{{{Artist|}}}|;|x|[[Category:Artwork by {{#getdisplaytitle:x}}]]|}}}}

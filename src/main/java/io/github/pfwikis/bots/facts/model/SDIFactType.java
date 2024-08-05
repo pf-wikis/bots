@@ -100,11 +100,8 @@ public enum SDIFactType {
 		}
 		
 		@Override
-		public String formAfterSet(SDIProperty prop) {
-			if(!"Author".equals(prop.getName())) {
-				return "{{#set:Author={{{$1|}}}|+sep=;}}".replace("$1", prop.getName());
-			}
-			return "";
+		public String formAfterSet(PropertyDefinition prop) {
+			return "{{#set:Author all={{{$1|}}}|+sep=;}}".replace("$1", prop.getName());
 		}
 		
 		@Override
@@ -113,8 +110,8 @@ public enum SDIFactType {
 		}
 		
 		@Override
-		public String subFormAtEnd(SDIProperty prop) {
-			return "{{#set:|Author={{{$1|}}}|+sep=;}}".replace("$1", prop.getName());
+		public String subFormAtEnd(PropertyDefinition prop) {
+			return "{{#set:|Author all={{{$1|}}}|+sep=;}}".replace("$1", prop.getName());
 		}
 	},
 	REPRESENTED_BY_PAGE(

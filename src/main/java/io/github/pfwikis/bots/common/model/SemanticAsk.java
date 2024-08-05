@@ -77,6 +77,8 @@ public class SemanticAsk {
 		private List<Result> artists = Collections.emptyList();
 		@JsonProperty("Author")
 		private List<Result> authors = Collections.emptyList();
+		@JsonProperty("Author all")
+		private List<Result> allAuthors = Collections.emptyList();
 		@JsonProperty("Primary author")
 		private List<Result> primaryAuthors = Collections.emptyList();
 		@JsonProperty("Author ordered")
