@@ -7,6 +7,9 @@
 	@for(prop:form.getGeneratedProperties()) {
 		|?@prop.getName()@?prop.getFactDisplayFormat()=@prop.getName()
 	}
+	@if(form.containsProperty("Author")) {
+		|?Author all=Author all
+	}
 	|userparam=Facts:{{{page|{{FULLPAGENAME}}}}}
 	|link=none
 	|format=plainlist
