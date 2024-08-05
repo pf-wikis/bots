@@ -8,8 +8,10 @@ import java.util.stream.Collectors;
 import com.beust.jcommander.Parameters;
 
 import io.github.pfwikis.bots.common.Wiki;
+import io.github.pfwikis.bots.common.bots.Run.SingleRun;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.common.model.SemanticAsk.Result;
+import io.github.pfwikis.bots.facts.model.SDIProperty;
 import lombok.extern.slf4j.Slf4j;
 import static io.github.pfwikis.bots.utils.RockerHelper.*;
 
@@ -26,25 +28,29 @@ public class FactsHelper extends SimpleBot {
 		if(run.getServer()==Wiki.SF) return;
 		
 		var formDefs = this.loadConfig(FormDefinition[].class);
-		var props = run.getWiki().semanticAsk("[[Has type::+]]"
-				+ "|?Has type"
-				+ "|?Has fact type"
-				+ "|?Has fact display format"
-				+ "|?Has fact note"
-				+ "|?Suggest values from"
-				+ "|?Has infobox label"
-				+ "|?Disable autocomplete"
-			)
-			.stream()
-			.map(this::createDefinition)
-			.collect(Collectors.toMap(d->d.getName(), d->d));
+		var props = loadPropertyDefinitions(run);
 		
 		for(var formDef:formDefs) {
 			handleForm(props, formDef);
 		}
 	}
 	
-	private void handleForm(Map<String, PropertyDefinition> props, FormDefinition form) {
+	public static Map<String, SDIProperty> loadPropertyDefinitions(SingleRun run) {
+		return run.getWiki().semanticAsk("[[Has type::+]]"
+			+ "|?Has type"
+			+ "|?Has fact type"
+			+ "|?Has fact display format"
+			+ "|?Has fact note"
+			+ "|?Suggest values from"
+			+ "|?Has infobox label"
+			+ "|?Disable autocomplete"
+		)
+		.stream()
+		.map(FactsHelper::createDefinition)
+		.collect(Collectors.toMap(d->d.getName(), d->d));
+	}
+
+	private void handleForm(Map<String, SDIProperty> props, FormDefinition form) {
 		try {
 			var rForm = form.resolve(props);
 			if(!form.getInfoboxProperties().isEmpty())
@@ -78,8 +84,8 @@ public class FactsHelper extends SimpleBot {
 		}
 	}
 
-	private PropertyDefinition createDefinition(Result rawProp) {
-		var res = new PropertyDefinition(
+	private static SDIProperty createDefinition(Result rawProp) {
+		var res = new SDIProperty(
 			rawProp.getFulltext().substring(9),
 			rawProp.getPrintouts().getHasType(),
 			rawProp.getPrintouts().getHasFactType(),

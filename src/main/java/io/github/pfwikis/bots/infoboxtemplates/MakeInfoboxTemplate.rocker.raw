@@ -1,0 +1,159 @@
+@args(BookDef book)
+<includeonly>
+
+@year => {
+	<span class="year" title="release year">
+	@if(book.getReleaseYear()!=null) {
+		@book.getReleaseYear()
+	}
+	</span>
+}
+@title => {
+	<span class="title">@if(book.getRepresentedByPage()!=null){[[@book.getRepresentedByPage()|@book.getName()]]}else{@book.getName()}</span>
+}
+@pages => {
+	{{#if:{{{show as|}}}|
+		<span class="location" title="location: typically a book page">, {{{show as}}}</span>
+	|
+		{{#if:{{{1|}}}|
+			<span class="location" title="location: typically a book page">
+			, @*space before important*@
+			{{#rmatch:{{{1}}}|^\d+$|
+				{{#if:{{{2|}}}|
+					{{{1}}}&ndash;{{{2}}}
+				|
+					{{{1}}}
+				}}
+			|
+				{{{1}}}
+			}}
+			</span>
+		}}
+	}}
+}
+@publisher => {
+	@if(!book.getPublisher().isEmpty()) {
+		<span class="publisher">
+		@for((i,pub):book.getPublisher()){
+			@if(!i.first()){, }[[@pub]]
+		}
+		</span>
+	}
+}
+
+<cite class="cite">
+@***************** author ***************@
+<span class="authors">
+@with(authorRanges = book.makeAuthorPageRanges()) {
+	@with(authorCases = book.makeAuthorSpecialCases()) {
+		@if(authorRanges.size()==1 && authorCases.isEmpty()) {
+			@book.makeAuthors()
+		}
+		else {
+			{{#rmatch:{{{1|}}}|^\d+$|
+				@HelperRangeMap.template(authorRanges, null, null)
+			|
+				@if(!authorCases.isEmpty()){
+					@{@{#switch:{{{1|}}}|
+				}
+				@for(option:authorCases.entrySet()) {
+					@option.getKey()=@option.getValue()|
+				}
+				@book.makeAuthors()
+				@if(!authorCases.isEmpty()){
+					@}@}
+				}
+			}}
+		}
+	}
+}
+</span>
+.@*important space*@ @*important space end*@
+@***************** article ***************@
+@with(articleRanges = book.makeArticlePageRanges()) {
+	@with(articleCases = book.makeArticleSpecialCases()) {
+		@if(articleRanges.size()>1 || !articleCases.isEmpty()) {
+			{{#rmatch:{{{1|}}}|^\d+$|
+				@prefix => {<span class="article">“}
+				@suffix => {” in @*important space before*@</span>}
+				@HelperRangeMap.template(articleRanges, prefix, suffix)
+			|
+				@if(!articleCases.isEmpty()){
+					{{#switch:{{{1|}}}
+						@for(option:articleCases.entrySet()) {
+							|@option.getKey()=<span class="article">“@option.getValue()” in @*important space before*@</span>
+						}
+					}}
+				}
+			}}
+		}
+	}
+}
+@*space after this is important*@ @title
+@pages. @publisher
+@if(!book.getPublisher().isEmpty()) {, }else { }
+@year</cite>
+
+{{#ifeq:{{{1|}}}|??|[[Category:Articles with question-mark page citations]]}}
+</includeonly><noinclude>
+{{Bot created|Bot Cite Templates|This template is automatically created from [[Facts:@book.getFactsPage()]].}}
+
+This template is meant to be used inside <syntaxhighlight lang="wikitext" inline><ref></ref></syntaxhighlight> tags.
+You probably want to use {{tl|Ref|@book.getFactsPage()}} instead.
+
+This template should not be edited directly. To change the contents, please edit [[Facts:@book.getFactsPage()]] instead.
+
+<templatedata>
+{
+	"params": {
+		"1": {
+			"label": "location",
+			"description": "A book page or webfiction chapter number or something like \"inside cover\".",
+			"type": "string",
+			"suggested": true
+		},
+		"2": {
+			"label": "end page",
+			"description": "If parameter 1 is a page and you want to reference a range of pages, this should be set to the last page of the range.",
+			"example": "6",
+			"type": "number"
+		},
+		"show as": {
+			"description": "If set, shows this instead of the location derived from parameters 1 and 2.",
+			"example": "65''ff''",
+			"type": "string"
+		}
+	},
+	"description": "Creates a citation text for use in <ref></ref> tags."
+}
+</templatedata>
+
+<h2>Examples</h2>
+
+<h3>Without location</h3>
+<syntaxhighlight lang="wikitext">{{Cite/@book.getFactsPage()}}</syntaxhighlight>
+{{Cite/@book.getFactsPage()}}<br><br>
+
+<h3>With arbitrary location</h3>
+<syntaxhighlight lang="wikitext">{{Cite/@book.getFactsPage()|any location}}</syntaxhighlight>
+{{Cite/@book.getFactsPage()|any location}}<br><br>
+<syntaxhighlight lang="wikitext">{{Cite/@book.getFactsPage()|15|show as=shown location}}</syntaxhighlight>
+{{Cite/@book.getFactsPage()|15|show as=shown location}}<br><br>
+
+<h3>With page, page range, or a specific location</h3>
+@for(s:book.getSections()) {
+	@if(s.getSubSections().isEmpty()) {
+		@if(s.getPage() != null) {
+			<syntaxhighlight lang="wikitext">{{Cite/@book.getFactsPage()|@s.getPage()@if(s.getEndPage()!=null){|@s.getEndPage()}}}</syntaxhighlight>
+			{{Cite/@book.getFactsPage()|@s.getPage()@if(s.getEndPage()!=null){|@s.getEndPage()}}}<br><br>
+		}
+	}
+	else {
+		@for(sub:s.getSubSections()) {
+			<syntaxhighlight lang="wikitext">{{Cite/@book.getFactsPage()|@sub.getPage()@if(sub.getEndPage()!=null){|@sub.getEndPage()}}}</syntaxhighlight>
+			{{Cite/@book.getFactsPage()|@sub.getPage()@if(sub.getEndPage()!=null){|@sub.getEndPage()}}}<br><br>
+		}
+	}
+}
+[[Category:Citation templates|@book.getFactsPage()]]
+</noinclude>

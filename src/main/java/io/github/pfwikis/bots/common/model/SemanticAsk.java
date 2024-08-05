@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TreeTraversingParser;
 import com.google.common.collect.Lists;
 
-import io.github.pfwikis.bots.factshelper.FactType;
+import io.github.pfwikis.bots.facts.model.SDIFactType;
 import io.github.pfwikis.bots.factshelper.PropertyType;
 import io.github.pfwikis.bots.utils.Jackson;
 import io.github.pfwikis.bots.utils.MWJsonHelper;
@@ -54,7 +54,7 @@ public class SemanticAsk {
 		@JsonProperty("Has type")
 		private PropertyType hasType;
 		@JsonProperty("Has fact type")
-		private FactType hasFactType;
+		private SDIFactType hasFactType;
 		@JsonProperty("Has fact display format")
 		private String hasFactDisplayFormat;
 		@JsonProperty("Has fact note")

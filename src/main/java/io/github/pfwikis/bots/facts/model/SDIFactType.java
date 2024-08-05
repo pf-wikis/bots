@@ -1,4 +1,4 @@
-package io.github.pfwikis.bots.factshelper;
+package io.github.pfwikis.bots.facts.model;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-public enum FactType {
+public enum SDIFactType {
 
 	PLAIN(
 			"Plain",
@@ -40,7 +40,7 @@ public enum FactType {
 		}
 		
 		@Override
-		public String formAfterSet(PropertyDefinition prop) {
+		public String formAfterSet(SDIProperty prop) {
 			return ("{{#set:$1 precision="+datePrecision()+"}}").replace("$1", prop.getName());
 		}
 	},
@@ -56,7 +56,7 @@ public enum FactType {
 		}
 		
 		@Override
-		public String infoboxLabel(PropertyDefinition prop) {
+		public String infoboxLabel(SDIProperty prop) {
 			return switch(prop.getName()) {
 				//plural s
 				case "Publisher",
@@ -88,19 +88,19 @@ public enum FactType {
 			"<span class=\"hidden\">{{#counter: $1-order-counter|set=0}}</span>{{#set:$1={{{$1|}}}|+sep=;}}{{#set:$1 ordered={{#arraymap:{{{$1|}}}|;|~|~;{{#counter: $1-order-counter}}|§}}|+sep=§}}",
 			"|$1={{{$1|}}}|+sep=;|$1 ordered={{#arraymap:{{{$1|}}}|;|~|~;{{#counter: $1-order-counter}}|§}}|+sep=§"
 	) {
-		
+
 		@Override
 		public String infoboxCode(String propName) {
-			return PAGE_LIST.infoboxCode(propName);
+			return "{{#arraymap:{{{$1|}}}|;|~|{{a|~}}|,\\s|and}}".replace("$1", propName);
 		}
 		
 		@Override
-		public String infoboxLabel(PropertyDefinition prop) {
+		public String infoboxLabel(SDIProperty prop) {
 			return PAGE_LIST.infoboxLabel(prop);
 		}
 		
 		@Override
-		public String formAfterSet(PropertyDefinition prop) {
+		public String formAfterSet(SDIProperty prop) {
 			if(!"Author".equals(prop.getName())) {
 				return "{{#set:Author={{{$1|}}}|+sep=;}}".replace("$1", prop.getName());
 			}
@@ -108,12 +108,12 @@ public enum FactType {
 		}
 		
 		@Override
-		public String formBeforeSubformTransclude(PropertyDefinition prop) {
+		public String formBeforeSubformTransclude(SDIProperty prop) {
 			return "{{#counter: $1-order-counter|set=0}}";
 		}
 		
 		@Override
-		public String subFormAtEnd(PropertyDefinition prop) {
+		public String subFormAtEnd(SDIProperty prop) {
 			return "{{#set:|Author={{{$1|}}}|+sep=;}}".replace("$1", prop.getName());
 		}
 	},
@@ -124,7 +124,7 @@ public enum FactType {
 			"{{#if:{{{$1|}}}|{{#set:$1={{{$1}}}}}|{{#ifexist:{{ROOTPAGENAME}}|{{#set:$1={{ROOTPAGENAME}}}}}}}}"
 	);
 	
-	private final static Map<String, FactType> MAP = Arrays.stream(FactType.values()).collect(Collectors.toMap(f->f.id, f->f));
+	private final static Map<String, SDIFactType> MAP = Arrays.stream(SDIFactType.values()).collect(Collectors.toMap(f->f.id, f->f));
 	
 	private final String id;
 	private final String displayFactCode;
@@ -132,7 +132,7 @@ public enum FactType {
 	private final String storeSubFactCode;
 
 	@JsonCreator
-	public static FactType of(String id) {
+	public static SDIFactType of(String id) {
 		var res = MAP.get(id);
 		if(res == null) {
 			throw new NoSuchElementException("Unknown fact type '"+id+"'");
@@ -152,15 +152,15 @@ public enum FactType {
 		return storeFactCode.replace("$1", propName);
 	}
 	
-	public String subFormAtEnd(PropertyDefinition prop) {
+	public String subFormAtEnd(SDIProperty prop) {
 		return "";
 	}
 	
-	public String formAfterSet(PropertyDefinition prop) {
+	public String formAfterSet(SDIProperty prop) {
 		return "";
 	}
 	
-	public String formBeforeSubformTransclude(PropertyDefinition prop) {
+	public String formBeforeSubformTransclude(SDIProperty prop) {
 		return "";
 	}
 	
@@ -179,7 +179,7 @@ public enum FactType {
 			+ "|empty}}";
 	}
 
-	public String infoboxLabel(PropertyDefinition prop) {
+	public String infoboxLabel(SDIProperty prop) {
 		if(prop.getInfoboxLabel()!=null) {
 			return prop.getInfoboxLabel();
 		}

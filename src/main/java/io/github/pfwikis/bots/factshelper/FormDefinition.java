@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import io.github.pfwikis.bots.facts.model.SDIProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Value;
@@ -25,10 +26,10 @@ public class FormDefinition {
 		
 		String name;
 		String pluralName;
-		List<PropertyDefinition> properties;
+		List<SDIProperty> properties;
 		List<FormDefinition.Resolved> subForms;
-		List<PropertyDefinition> infoboxProperties;
-		List<PropertyDefinition.Generated> generatedProperties;
+		List<SDIProperty> infoboxProperties;
+		List<SDIProperty.Generated> generatedProperties;
 		
 		public String toCSSName() {
 			return name.toLowerCase().replaceAll("[^a-z0-9]+", "-");
@@ -39,7 +40,7 @@ public class FormDefinition {
 		}
 	}
 
-	public Resolved resolve(Map<String, PropertyDefinition> props) {
+	public Resolved resolve(Map<String, SDIProperty> props) {
 		return new Resolved(
 			name,
 			pluralName,
@@ -50,8 +51,8 @@ public class FormDefinition {
 		);
 	}
 	
-	private List<PropertyDefinition.Generated> generated(Map<String, PropertyDefinition> props) {
-		var result = new ArrayList<PropertyDefinition.Generated>();
+	private List<SDIProperty.Generated> generated(Map<String, SDIProperty> props) {
+		var result = new ArrayList<SDIProperty.Generated>();
 		//add special autoproperties
 		result.add(props.get("Fact type").withGenerateCode("Template:Facts/"+name));
 		//Add a release year if if there is a release date
@@ -76,7 +77,7 @@ public class FormDefinition {
 		return result;
 	}
 
-	private static List<PropertyDefinition> resolve(List<String> properties, Map<String, PropertyDefinition> props) {
+	private static List<SDIProperty> resolve(List<String> properties, Map<String, SDIProperty> props) {
 		var result = new ArrayList<>(properties.stream()
 			.map(p->Pair.of(p, props.get(p)))
 			.map(p->Optional.ofNullable(p.getValue()).orElseThrow(()->new RuntimeException("Could not find definition for Property:"+p.getKey())))

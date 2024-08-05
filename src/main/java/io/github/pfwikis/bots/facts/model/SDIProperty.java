@@ -1,5 +1,6 @@
-package io.github.pfwikis.bots.factshelper;
+package io.github.pfwikis.bots.facts.model;
 
+import io.github.pfwikis.bots.factshelper.PropertyType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -9,10 +10,10 @@ import lombok.ToString;
 @Getter
 @ToString
 @RequiredArgsConstructor
-public class PropertyDefinition {
+public class SDIProperty {
 	private final String name;
 	private final PropertyType type;
-	private final FactType factType;
+	private final SDIFactType factType;
 	private final String factDisplayFormat;
 	private final String note;
 	private final String suggestValuesFrom;
@@ -25,8 +26,8 @@ public class PropertyDefinition {
 	
 	
 	@Getter
-	public static class Generated extends PropertyDefinition {
-		public Generated(String name, PropertyType type, FactType factType, String factDisplayFormat, String note,
+	public static class Generated extends SDIProperty {
+		public Generated(String name, PropertyType type, SDIFactType factType, String factDisplayFormat, String note,
 				String suggestValuesFrom, String infoboxLabel, boolean autocompleteDisabled, String generateCode) {
 			super(name, type, factType, factDisplayFormat, note, suggestValuesFrom, infoboxLabel, autocompleteDisabled);
 			this.generateCode = generateCode;
