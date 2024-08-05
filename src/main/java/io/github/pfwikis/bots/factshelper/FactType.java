@@ -101,10 +101,7 @@ public enum FactType {
 		
 		@Override
 		public String formAfterSet(PropertyDefinition prop) {
-			if(!"Author".equals(prop.getName())) {
-				return "{{#set:Author={{{$1|}}}|+sep=;}}".replace("$1", prop.getName());
-			}
-			return "";
+			return "{{#set:Author all={{{$1|}}}|+sep=;}}".replace("$1", prop.getName());
 		}
 		
 		@Override
@@ -114,7 +111,7 @@ public enum FactType {
 		
 		@Override
 		public String subFormAtEnd(PropertyDefinition prop) {
-			return "{{#set:|Author={{{$1|}}}|+sep=;}}".replace("$1", prop.getName());
+			return "{{#set:|Author all={{{$1|}}}|+sep=;}}".replace("$1", prop.getName());
 		}
 	},
 	REPRESENTED_BY_PAGE(
