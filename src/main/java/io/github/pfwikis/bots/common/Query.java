@@ -8,6 +8,7 @@ import io.github.pfwikis.bots.common.model.AllpagesQuery;
 import io.github.pfwikis.bots.common.model.AllusersQuery;
 import io.github.pfwikis.bots.common.model.ImageUsageQuery;
 import io.github.pfwikis.bots.common.model.LogEventsQuery;
+import io.github.pfwikis.bots.common.model.PageInfoQuery;
 import io.github.pfwikis.bots.common.model.PageQuery;
 import io.github.pfwikis.bots.common.model.QueryListUsers;
 import io.github.pfwikis.bots.common.model.QueryResponse;
@@ -99,6 +100,12 @@ public class Query<T> {
 			return a;
 		}
 	};
+	
+	public static final Query<PageInfoQuery> DISPLAY_TITLE = new Query<>(
+		PageInfoQuery.class, 
+		"prop",
+		"info"
+	);
 	
 	public static final Query<AllusersQuery> LIST_ALL_USERS = new Query.WithContinue<>(
 			AllusersQuery.class, 

@@ -1,4 +1,4 @@
-package io.github.pfwikis.bots.factshelper;
+package io.github.pfwikis.bots.facts.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,41 +7,20 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import io.github.pfwikis.bots.facts.model.SDIProperty;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.Value;
 
 @Getter
 @Setter
-public class FormDefinition {
+public class SDIRawConcept {
 	private String name;
 	private String pluralName;
 	private List<String> properties = new ArrayList<>();
-	private List<FormDefinition> subForms = new ArrayList<>();
+	private List<SDIRawConcept> subForms = new ArrayList<>();
 	private List<String> infoboxProperties = new ArrayList<>();
 	
-	@Value
-	public static class Resolved {
-		
-		String name;
-		String pluralName;
-		List<SDIProperty> properties;
-		List<FormDefinition.Resolved> subForms;
-		List<SDIProperty> infoboxProperties;
-		List<SDIProperty.Generated> generatedProperties;
-		
-		public String toCSSName() {
-			return name.toLowerCase().replaceAll("[^a-z0-9]+", "-");
-		}
-
-		public boolean containsProperty(String name) {
-			return properties.stream().anyMatch(p->p.getName().equals(name));
-		}
-	}
-
-	public Resolved resolve(Map<String, SDIProperty> props) {
-		return new Resolved(
+	public SDIConcept resolve(Map<String, SDIProperty> props) {
+		return new SDIConcept(
 			name,
 			pluralName,
 			resolve(properties, props),

@@ -1,4 +1,6 @@
-@args(BookDef book)
+@import io.github.pfwikis.bots.common.WikiAPI
+
+@args(WikiAPI wiki, BookDef book)
 <includeonly>
 
 @year => {
@@ -44,10 +46,10 @@
 <cite class="cite">
 @***************** author ***************@
 <span class="authors">
-@with(authorRanges = book.makeAuthorPageRanges()) {
-	@with(authorCases = book.makeAuthorSpecialCases()) {
+@with(authorRanges = book.makeAuthorPageRanges(wiki)) {
+	@with(authorCases = book.makeAuthorSpecialCases(wiki)) {
 		@if(authorRanges.size()==1 && authorCases.isEmpty()) {
-			@book.makeAuthors()
+			@book.makeAuthors(wiki)
 		}
 		else {
 			{{#rmatch:{{{1|}}}|^\d+$|
@@ -59,7 +61,7 @@
 				@for(option:authorCases.entrySet()) {
 					@option.getKey()=@option.getValue()|
 				}
-				@book.makeAuthors()
+				@book.makeAuthors(wiki)
 				@if(!authorCases.isEmpty()){
 					@}@}
 				}
@@ -96,7 +98,7 @@
 
 {{#ifeq:{{{1|}}}|??|[[Category:Articles with question-mark page citations]]}}
 </includeonly><noinclude>
-{{Bot created|Bot Cite Templates|This template is automatically created from [[Facts:@book.getFactsPage()]].}}
+{{Bot created|Bot Cite Templates|This template is automatically created from [[Created from::Facts:@book.getFactsPage()]].}}
 
 This template is meant to be used inside <syntaxhighlight lang="wikitext" inline><ref></ref></syntaxhighlight> tags.
 You probably want to use {{tl|Ref|@book.getFactsPage()}} instead.

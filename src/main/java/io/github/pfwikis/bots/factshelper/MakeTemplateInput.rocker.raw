@@ -1,4 +1,6 @@
-@args(FormDefinition.Resolved formDef)
+@import io.github.pfwikis.bots.facts.model.SDIConcept
+
+@args(SDIConcept formDef)
 
 <noinclude>{{Bot created|Bot Facts Helper}}[[Category:Synced to starfinderwiki]]</noinclude>
 

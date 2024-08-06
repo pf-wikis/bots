@@ -18,7 +18,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -35,37 +37,20 @@ import io.github.pfwikis.bots.common.model.QueryResponse;
 import io.github.pfwikis.bots.common.model.RecentChanges.RecentChange;
 import io.github.pfwikis.bots.common.model.SemanticAsk;
 import io.github.pfwikis.bots.common.model.SemanticAsk.Result;
+import io.github.pfwikis.bots.common.model.SemanticSubject;
+import io.github.pfwikis.bots.common.model.SemanticSubject.PageRef;
+import io.github.pfwikis.bots.utils.Jackson;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.HttpUrl;
 
 @Slf4j
 public class WikiAPI {
 
-	public static record Account(io.github.pfwikis.bots.common.Wiki wiki, String name) {}
-	public static record CacheEntry(WikiAPI api, Instant lastUsed) {}
-	
-	private static Map<Account, CacheEntry> CACHE = new HashMap<>();
-	
-	public static synchronized WikiAPI fromCache(io.github.pfwikis.bots.common.Wiki wiki, String name, String password) {
-		/* caching seems to lead to no longer working API objects
-		var acc = new Account(wiki, name);
-		var result = CACHE.computeIfAbsent(acc, k->new CacheEntry(new WikiAPI(wiki, name, password), Instant.now()));
-		
-		//test result if it might be too old
-		if(Duration.between(result.lastUsed(), Instant.now()).toMinutes()>5) {
-			try {
-				result.api().requestToken("csrf");
-			} catch(Exception e) {
-				log.info("{}-{} login not longer valid, new login", wiki.name(), name);
-				result = new CacheEntry(new WikiAPI(wiki, name, password), result.lastUsed());
-			}
-		}
-		CACHE.put(acc, new CacheEntry(result.api(), Instant.now()));
-		return result.api();
-		*/
+	public static synchronized WikiAPI create(io.github.pfwikis.bots.common.Wiki wiki, String name, String password) {
 		return new WikiAPI(wiki, name, password);
 	}
 
+	private io.github.pfwikis.bots.common.Wiki server;
 	private Wiki wiki;
 
 	private WikiAPI(io.github.pfwikis.bots.common.Wiki wiki, String name, String password) {
@@ -75,6 +60,7 @@ public class WikiAPI {
 		if(name != null) {
 			b = b.withLogin(name, password);
 		}
+		this.server = wiki;
 		this.wiki = b.build();
 	}
 
@@ -254,6 +240,10 @@ public class WikiAPI {
 		return wiki.exists(title);
 	}
 	
+	public boolean pageExists(PageRef page) {
+		return pageExists(page.toFullTitle());
+	}
+	
 	public String getPageText(String title) {
 		return wiki.getPageText(title);
 	}
@@ -315,6 +305,17 @@ public class WikiAPI {
 			Query.LIST_IMAGE_USAGE,
 			"iutitle", page
 		).getImageusage();
+	}
+	
+	public String getDisplayTitle(String page) {
+		return server.cache("getDisplayTitle", page, () ->
+			query(
+				Query.DISPLAY_TITLE,
+				"titles", page,
+				"inprop", "displaytitle"
+	
+			).getPages().get(0).getDisplaytitle()
+		);
 	}
 	
 	public List<WUser> getAdmins() {
@@ -435,5 +436,38 @@ public class WikiAPI {
 
 	public void undelete(String page, String reason) {
 		wiki.undelete(page, reason);
+	}
+
+	public SemanticSubject.Container semanticSubject(String page) {
+		var ns = wiki.whichNS(page).v;
+		var title = wiki.nss(page);
+		try {
+			return this.get(SemanticSubject.Container.class, "smwbrowse",
+				"browse", "subject",
+				"params", Jackson.JSON.writeValueAsString(Map.of("ns", ns, "subject", title))
+			);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public String toWikiLink(String page) {
+		var display = getDisplayTitle(page);
+		var usedPage = (wiki.whichNS(page).equals(NS.CATEGORY)?":":"")+page;
+		
+		if(StringUtils.isEmpty(display)) {
+			return "[["+usedPage+"]]";
+		}
+		
+		display = wiki.nss(display);
+		
+		if(!display.equals(page)) {
+			return "[["
+				+ usedPage
+				+ "|"
+				+ display
+				+ "]]";
+		}
+		return "[["+usedPage+"]]";
 	}
 }

@@ -1,4 +1,6 @@
-@args(String name, String pluralName, FormDefinition.Resolved formDef)
+@import io.github.pfwikis.bots.facts.model.SDIConcept
+
+@args(String name, String pluralName, SDIConcept conept)
 {{#default_form:@name}}
 
 @if(!name.contains("/")){{{Facts/@name/Input}}}

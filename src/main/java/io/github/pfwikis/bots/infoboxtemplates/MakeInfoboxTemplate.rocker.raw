@@ -1,159 +1,110 @@
-@args(BookDef book)
-<includeonly>
+@import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.*
+@import static org.apache.commons.lang3.StringUtils.startsWith
+@import java.util.Set
+@import java.util.List
+@import io.github.pfwikis.bots.common.model.SemanticSubject
+@import io.github.pfwikis.bots.facts.model.SDIConcept
+@import io.github.pfwikis.bots.common.bots.Run.SingleRun
 
-@year => {
-	<span class="year" title="release year">
-	@if(book.getReleaseYear()!=null) {
-		@book.getReleaseYear()
-	}
-	</span>
-}
-@title => {
-	<span class="title">@if(book.getRepresentedByPage()!=null){[[@book.getRepresentedByPage()|@book.getName()]]}else{@book.getName()}</span>
-}
-@pages => {
-	{{#if:{{{show as|}}}|
-		<span class="location" title="location: typically a book page">, {{{show as}}}</span>
-	|
-		{{#if:{{{1|}}}|
-			<span class="location" title="location: typically a book page">
-			, @*space before important*@
-			{{#rmatch:{{{1}}}|^\d+$|
-				{{#if:{{{2|}}}|
-					{{{1}}}&ndash;{{{2}}}
-				|
-					{{{1}}}
-				}}
-			|
-				{{{1}}}
-			}}
-			</span>
-		}}
-	}}
-}
-@publisher => {
-	@if(!book.getPublisher().isEmpty()) {
-		<span class="publisher">
-		@for((i,pub):book.getPublisher()){
-			@if(!i.first()){, }[[@pub]]
-		}
-		</span>
-	}
-}
-
-<cite class="cite">
-@***************** author ***************@
-<span class="authors">
-@with(authorRanges = book.makeAuthorPageRanges()) {
-	@with(authorCases = book.makeAuthorSpecialCases()) {
-		@if(authorRanges.size()==1 && authorCases.isEmpty()) {
-			@book.makeAuthors()
-		}
-		else {
-			{{#rmatch:{{{1|}}}|^\d+$|
-				@HelperRangeMap.template(authorRanges, null, null)
-			|
-				@if(!authorCases.isEmpty()){
-					@{@{#switch:{{{1|}}}|
-				}
-				@for(option:authorCases.entrySet()) {
-					@option.getKey()=@option.getValue()|
-				}
-				@book.makeAuthors()
-				@if(!authorCases.isEmpty()){
-					@}@}
-				}
-			}}
-		}
-	}
-}
-</span>
-.@*important space*@ @*important space end*@
-@***************** article ***************@
-@with(articleRanges = book.makeArticlePageRanges()) {
-	@with(articleCases = book.makeArticleSpecialCases()) {
-		@if(articleRanges.size()>1 || !articleCases.isEmpty()) {
-			{{#rmatch:{{{1|}}}|^\d+$|
-				@prefix => {<span class="article">“}
-				@suffix => {” in @*important space before*@</span>}
-				@HelperRangeMap.template(articleRanges, prefix, suffix)
-			|
-				@if(!articleCases.isEmpty()){
-					{{#switch:{{{1|}}}
-						@for(option:articleCases.entrySet()) {
-							|@option.getKey()=<span class="article">“@option.getValue()” in @*important space before*@</span>
-						}
-					}}
-				}
-			}}
-		}
-	}
-}
-@*space after this is important*@ @title
-@pages. @publisher
-@if(!book.getPublisher().isEmpty()) {, }else { }
-@year</cite>
-
-{{#ifeq:{{{1|}}}|??|[[Category:Articles with question-mark page citations]]}}
-</includeonly><noinclude>
-{{Bot created|Bot Cite Templates|This template is automatically created from [[Facts:@book.getFactsPage()]].}}
-
-This template is meant to be used inside <syntaxhighlight lang="wikitext" inline><ref></ref></syntaxhighlight> tags.
-You probably want to use {{tl|Ref|@book.getFactsPage()}} instead.
-
-This template should not be edited directly. To change the contents, please edit [[Facts:@book.getFactsPage()]] instead.
-
-<templatedata>
-{
-	"params": {
-		"1": {
-			"label": "location",
-			"description": "A book page or webfiction chapter number or something like \"inside cover\".",
-			"type": "string",
-			"suggested": true
-		},
-		"2": {
-			"label": "end page",
-			"description": "If parameter 1 is a page and you want to reference a range of pages, this should be set to the last page of the range.",
-			"example": "6",
-			"type": "number"
-		},
-		"show as": {
-			"description": "If set, shows this instead of the location derived from parameters 1 and 2.",
-			"example": "65''ff''",
-			"type": "string"
-		}
-	},
-	"description": "Creates a citation text for use in <ref></ref> tags."
-}
-</templatedata>
-
-<h2>Examples</h2>
-
-<h3>Without location</h3>
-<syntaxhighlight lang="wikitext">{{Cite/@book.getFactsPage()}}</syntaxhighlight>
-{{Cite/@book.getFactsPage()}}<br><br>
-
-<h3>With arbitrary location</h3>
-<syntaxhighlight lang="wikitext">{{Cite/@book.getFactsPage()|any location}}</syntaxhighlight>
-{{Cite/@book.getFactsPage()|any location}}<br><br>
-<syntaxhighlight lang="wikitext">{{Cite/@book.getFactsPage()|15|show as=shown location}}</syntaxhighlight>
-{{Cite/@book.getFactsPage()|15|show as=shown location}}<br><br>
-
-<h3>With page, page range, or a specific location</h3>
-@for(s:book.getSections()) {
-	@if(s.getSubSections().isEmpty()) {
-		@if(s.getPage() != null) {
-			<syntaxhighlight lang="wikitext">{{Cite/@book.getFactsPage()|@s.getPage()@if(s.getEndPage()!=null){|@s.getEndPage()}}}</syntaxhighlight>
-			{{Cite/@book.getFactsPage()|@s.getPage()@if(s.getEndPage()!=null){|@s.getEndPage()}}}<br><br>
-		}
-	}
-	else {
-		@for(sub:s.getSubSections()) {
-			<syntaxhighlight lang="wikitext">{{Cite/@book.getFactsPage()|@sub.getPage()@if(sub.getEndPage()!=null){|@sub.getEndPage()}}}</syntaxhighlight>
-			{{Cite/@book.getFactsPage()|@sub.getPage()@if(sub.getEndPage()!=null){|@sub.getEndPage()}}}<br><br>
-		}
-	}
-}
-[[Category:Citation templates|@book.getFactsPage()]]
+@args(SingleRun run, List<SDIConcept> concepts, SemanticSubject page)
+<noinclude>
+{{Bot created|Bot Infobox Maker|This template is automatically created from [[Created from::@page.getSubject().toFullTitle()]].}}
 </noinclude>
+@for(SDIConcept concept:concepts) {
+	@if(!page.hasConcept(concept)) {
+		@continue
+	}
+	<div class="infobox @concept.toCSSName()">
+		<div class="name">
+			@if(page.has(FULL_TITLE)) {
+				@page.get(FULL_TITLE)
+			}
+			else {
+				@page.get(NAME)
+			}
+		</div>
+		@if(run.getWiki().pageExists(page.get(IMAGE))) {
+			<div class="image">[[File:@page.get(IMAGE).getTitle()|250px|Cover Image|class=not-lazy]]</div>
+		}
+		@if(page.has(WEBSITE)) {
+			<div class="website">
+				[@page.get(WEBSITE) @page.getOr(PUBCODE, "Publisher's product page")]
+			</div>
+		}
+		<div class="type">
+			@concept.getName() @*<-important space*@
+			@with(type = prop(String.class, concept.getName()+" type")) {
+				@if(page.has(type)) {
+					- page.get(type)
+				}
+			}
+		</div>
+		<div class="table">
+			@for(prop:concept.getInfoboxProperties()) {
+				@if(page.has(prop)) {
+					<div class="key">@prop.infoboxLabel(page.getAll(prop))</div>
+					<div>@prop.infoboxValue(run.getWiki(), page.getAll(prop))</div>
+				}
+			}
+	
+			@*releases for this book*@
+			@with(releases = page.getSubObjects("Facts/"+concept.getName()+"/Release")) {
+			@if(!releases.isEmpty()) {
+				<div class="infobox-book-releases">
+					<div class="infobox-book-releases-title">Releases</div>
+					
+					sort=Release date,Release type
+					@for(release:releases) {
+						@*
+						<div class="name">{{{Release type|}}}{{#if:{{{Release note|}}}|&nbsp;({{{Release note}}})}}</div>
+						<div class="table">
+							{{#if:{{{Release date|}}}|<div class="key">Date</div><div>{{{Release date}}}</div>}}
+							{{#if:{{{Isbn|}}}|<div class="key">ISBN</div><div>{{ISBN|{{{Isbn}}}}}</div>}}
+							{{#if:{{{Pages|}}}|<div class="key">Pages</div><div>{{{Pages|}}}</div>}}
+							{{#if:{{{Rule system|}}}|<div class="key">Rule set</div><div>{{{Rule system}}}</div>}}
+							{{#if:{{{Price|}}}|<div class="key">Price</div><div>{{{Price}}}</div>}}
+						</div>*@
+					}
+				</div>
+			}}
+			@if(page.has(GALLERY_PAGE)) {
+				<div class="full-width works-by">
+					[[:@page.get(GALLERY_PAGE).toFullTitle()|Artwork from this book]]
+				</div>
+			}
+		</div>
+	</div>
+	
+	<includeonly>
+	@*Categories based on the properties.*@
+	@if(concept.containsProperty("Errata")) {
+		{{#if:{{{Errata|}}}|[[Category:Products with errata]]}}
+	}
+	@if(concept.containsProperty("Web enhancement")) {
+		{{#if:{{{Web enhancement|}}}|[[Category:Products with web enhancements]]}}
+	}
+	@if(concept.containsProperty("Author")) {
+		{{#if: {{{Author all|}}}|{{#arraymap:{{{Author all|}}}|;|x|[[Category:Works by {{#getdisplaytitle:x}}]]|}}}}
+	}
+	@if(concept.containsProperty("Artist")) {
+		{{#if: {{{Artist|}}}|{{#arraymap:{{{Artist|}}}|;|x|[[Category:Artwork by {{#getdisplaytitle:x}}]]|}}}}
+	}
+	@if(concept.containsProperty("Director")) {
+		{{#if: {{{Director|}}}|{{#arraymap:{{{Director|}}}|;|x|[[Category:Works by {{#getdisplaytitle:x}}]]|}}}}
+	}
+	@if(concept.containsProperty("Performer")) {
+		{{#if: {{{Performer|}}}|{{#arraymap:{{{Performer|}}}|;|x|[[Category:Works starring {{#getdisplaytitle:x}}]]|}}}}
+	}
+	@if(concept.containsProperty("Narrator")) {
+		{{#if: {{{Narrator|}}}|{{#arraymap:{{{Narrator|}}}|;|x|[[Category:Works starring {{#getdisplaytitle:x}}]]|}}}}
+	}
+	
+	@*Might be different between the wikis.*@
+	@*@if(subPages.contains("Template:Infobox/"+concept.getName()+"/Categories")) {
+		{{Infobox/@concept.getName()/Categories
+			@for(prop:concept.getProperties()) {|@prop.getName() = {{{@prop.getName()|}}}}
+			@for(prop:concept.getGeneratedProperties()) {|@prop.getName() = {{{@prop.getName()|}}}}
+		}}
+	}*@
+	</includeonly>
+}

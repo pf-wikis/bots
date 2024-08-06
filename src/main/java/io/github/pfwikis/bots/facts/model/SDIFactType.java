@@ -1,13 +1,19 @@
 package io.github.pfwikis.bots.facts.model;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fizzed.rocker.RockerContent;
+import org.apache.commons.lang3.StringUtils;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.google.common.base.Joiner;
+
+import io.github.pfwikis.bots.common.WikiAPI;
+import io.github.pfwikis.bots.common.model.SemanticSubject.PageRef;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,12 +39,6 @@ public enum SDIFactType {
 			"{{#set:$1={{{$1|}}}}}",
 			"|$1={{{$1|}}}|$1 precision="+datePrecision()
 	) {
-		
-		@Override
-		public String infoboxCode(String propName) {
-			return "{{{$1|}}}".replace("$1", propName);
-		}
-		
 		@Override
 		public String formAfterSet(SDIProperty prop) {
 			return ("{{#set:$1 precision="+datePrecision()+"}}").replace("$1", prop.getName());
@@ -49,33 +49,7 @@ public enum SDIFactType {
 			"{{#arraymap:{{{$1|}}}|;|~|{{a|~}}}}",
 			"{{#set:$1={{{$1|}}}|+sep=;}}",
 			"|$1={{{$1|}}}|+sep=;"
-	) {
-		@Override
-		public String infoboxCode(String propName) {
-			return "{{#arraymap:{{{$1|}}}|;|~|{{a|~}}|,\\s|and}}".replace("$1", propName);
-		}
-		
-		@Override
-		public String infoboxLabel(SDIProperty prop) {
-			return switch(prop.getName()) {
-				//plural s
-				case "Publisher",
-					"Narrator",
-					"Primary author",
-					"Author"
-					-> super.infoboxLabel(prop)+"{{#if:{{#pos:{{{%s|}}}|;}}|s}}".formatted(prop.getName());
-				//plural same as singular
-				case "Series",
-					"Follows",
-					"Precedes"
-					-> super.infoboxLabel(prop);
-				default -> {
-					log.warn("Unknown pluralization for property '{}'", prop.getName());
-					yield super.infoboxLabel(prop);
-				}
-			};
-		}
-	},
+	),
 	IMAGE(
 			"Image",
 			"{{#if:{{{$1|}}}|[[File:{{{$1|}}}|250px|{{{Name|}}}]]}}",
@@ -88,19 +62,8 @@ public enum SDIFactType {
 			"<span class=\"hidden\">{{#counter: $1-order-counter|set=0}}</span>{{#set:$1={{{$1|}}}|+sep=;}}{{#set:$1 ordered={{#arraymap:{{{$1|}}}|;|~|~;{{#counter: $1-order-counter}}|§}}|+sep=§}}",
 			"|$1={{{$1|}}}|+sep=;|$1 ordered={{#arraymap:{{{$1|}}}|;|~|~;{{#counter: $1-order-counter}}|§}}|+sep=§"
 	) {
-
 		@Override
-		public String infoboxCode(String propName) {
-			return "{{#arraymap:{{{$1|}}}|;|~|{{a|~}}|,\\s|and}}".replace("$1", propName);
-		}
-		
-		@Override
-		public String infoboxLabel(SDIProperty prop) {
-			return PAGE_LIST.infoboxLabel(prop);
-		}
-		
-		@Override
-		public String formAfterSet(PropertyDefinition prop) {
+		public String formAfterSet(SDIProperty prop) {
 			return "{{#set:Author all={{{$1|}}}|+sep=;}}".replace("$1", prop.getName());
 		}
 		
@@ -110,7 +73,7 @@ public enum SDIFactType {
 		}
 		
 		@Override
-		public String subFormAtEnd(PropertyDefinition prop) {
+		public String subFormAtEnd(SDIProperty prop) {
 			return "{{#set:|Author all={{{$1|}}}|+sep=;}}".replace("$1", prop.getName());
 		}
 	},
@@ -141,10 +104,6 @@ public enum SDIFactType {
 		return displayFactCode.replace("$1", propName);
 	}
 	
-	public String infoboxCode(String propName) {
-		return displayFactCode.replace("$1", propName);
-	}
-
 	public String storeFactCode(String propName) {
 		return storeFactCode.replace("$1", propName);
 	}
@@ -176,10 +135,36 @@ public enum SDIFactType {
 			+ "|empty}}";
 	}
 
-	public String infoboxLabel(SDIProperty prop) {
-		if(prop.getInfoboxLabel()!=null) {
-			return prop.getInfoboxLabel();
+	public String infoboxLabel(SDIProperty prop, List<Object> values) {
+		var label = prop.getInfoboxLabel()==null?prop.getName():prop.getInfoboxLabel();
+		if(values.size()>1 && label.charAt(label.length()-1)!='s')
+			label += "s";
+		return label;
+	}
+	
+	public String infoboxValue(WikiAPI wiki, SDIProperty prop, List<Object> values) {
+		if(values.size() == 0)
+			return "";
+		if(values.size() == 1)
+			return infoboxValue(wiki, prop, values.getFirst());
+		if(values.size() == 2)
+			return infoboxValue(wiki, prop, values.getFirst())
+				+ " and "
+				+ infoboxValue(wiki, prop, values.get(1));
+		var sb = new StringBuilder();
+		for(int i=0;i<values.size()-1;i++) {
+			if(i>0) sb.append(", ");
+			sb.append(infoboxValue(wiki, prop, values.get(i)));
 		}
-		return prop.getName();
+		sb.append(", and ");
+		sb.append(infoboxValue(wiki, prop, values.getLast()));
+		return sb.toString();
+	}
+
+	public String infoboxValue(WikiAPI wiki, SDIProperty prop, Object object) {
+		if(object instanceof PageRef page) {
+			return page.toWikiLink(wiki);
+		}
+		return object.toString();
 	}
 }

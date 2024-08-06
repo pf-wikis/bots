@@ -1,4 +1,4 @@
-package io.github.pfwikis.bots.factshelper;
+package io.github.pfwikis.bots.facts.model;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -10,8 +10,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public enum PropertyType {
-	ANNOTATION_URI			("http://semantic-mediawiki.org/swivt/1.0#_anu"),
+public enum SMWPropertyType {
+	ANNOTATION_URI("http://semantic-mediawiki.org/swivt/1.0#_anu"),
     BOOLEAN("http://semantic-mediawiki.org/swivt/1.0#_boo"),
     CODE("http://semantic-mediawiki.org/swivt/1.0#_cod"),
     DATE("http://semantic-mediawiki.org/swivt/1.0#_dat"),
@@ -30,12 +30,12 @@ public enum PropertyType {
     TEXT("http://semantic-mediawiki.org/swivt/1.0#_txt"),
     URL("http://semantic-mediawiki.org/swivt/1.0#_uri");
 
-	private final static Map<String, PropertyType> MAP = Arrays.stream(PropertyType.values()).collect(Collectors.toMap(f->f.id, f->f));
+	private final static Map<String, SMWPropertyType> MAP = Arrays.stream(SMWPropertyType.values()).collect(Collectors.toMap(f->f.id, f->f));
 	
 	private final String id;
 
 	@JsonCreator
-	public static PropertyType of(String id) {
+	public static SMWPropertyType of(String id) {
 		var res = MAP.get(id);
 		if(res == null) {
 			throw new NoSuchElementException("Unknown fact type '"+id+"'");

@@ -51,8 +51,8 @@ public class Downloader {
 	}
 	
 	public static void main(String... args) throws IOException {
-		new Downloader(args[0], WikiAPI.fromCache(Wiki.PF, null, null)).start();
-		new Downloader(args[0], WikiAPI.fromCache(Wiki.SF, null, null)).start();
+		new Downloader(args[0], WikiAPI.create(Wiki.PF, null, null)).start();
+		new Downloader(args[0], WikiAPI.create(Wiki.SF, null, null)).start();
 	}
 	
 	private static final Set<String> SKIP_LIST = Set.of(

@@ -38,7 +38,7 @@ public abstract class Run {
 		public synchronized void withMaster(Consumer<WikiAPI> task) {
 			if(masterWiki == null) {
 				try {
-					masterWiki = WikiAPI.fromCache(server, masterAccount, masterPassword);
+					masterWiki = WikiAPI.create(server, masterAccount, masterPassword);
 				} catch(Exception e) {
 					log.error("Failed to log in as {}", masterAccount, e);
 					System.exit(-1);

@@ -1,4 +1,6 @@
-@args(FormDefinition.Resolved parent, FormDefinition.Resolved form)
+@import io.github.pfwikis.bots.facts.model.SDIConcept
+
+@args(SDIConcept parent, SDIConcept form)
 <noinclude>
 {{Bot created|Bot Facts Helper}}
 {{#template_params:

@@ -1,4 +1,6 @@
-@args(String name, FormDefinition.Resolved form)
+@import io.github.pfwikis.bots.facts.model.SDIConcept
+
+@args(String name, SDIConcept form)
 
 <includeonly>{{#show: Facts:{{{page|}}}
 	@for(prop:form.getProperties()) {

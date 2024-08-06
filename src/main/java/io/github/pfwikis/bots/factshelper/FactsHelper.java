@@ -1,19 +1,19 @@
-package io.github.pfwikis.bots
-.factshelper;
+package io.github.pfwikis.bots.factshelper;
+
+import static io.github.pfwikis.bots.utils.RockerHelper.make;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.ArrayUtils;
 
 import com.beust.jcommander.Parameters;
 
 import io.github.pfwikis.bots.common.Wiki;
-import io.github.pfwikis.bots.common.bots.Run.SingleRun;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
-import io.github.pfwikis.bots.common.model.SemanticAsk.Result;
+import io.github.pfwikis.bots.facts.model.SDIConcept;
 import io.github.pfwikis.bots.facts.model.SDIProperty;
+import io.github.pfwikis.bots.facts.model.SDIRawConcept;
 import lombok.extern.slf4j.Slf4j;
-import static io.github.pfwikis.bots.utils.RockerHelper.*;
 
 @Slf4j
 @Parameters
@@ -27,50 +27,32 @@ public class FactsHelper extends SimpleBot {
 	public void run() throws IOException {
 		if(run.getServer()==Wiki.SF) return;
 		
-		var formDefs = this.loadConfig(FormDefinition[].class);
-		var props = loadPropertyDefinitions(run);
+		var props = SDIProperty.load(run);
+		var concepts = this.loadConfig(SDIRawConcept[].class);
 		
-		for(var formDef:formDefs) {
-			handleForm(props, formDef);
+		for(var concept:concepts) {
+			handleForm(concept.resolve(props));
 		}
 	}
 	
-	public static Map<String, SDIProperty> loadPropertyDefinitions(SingleRun run) {
-		return run.getWiki().semanticAsk("[[Has type::+]]"
-			+ "|?Has type"
-			+ "|?Has fact type"
-			+ "|?Has fact display format"
-			+ "|?Has fact note"
-			+ "|?Suggest values from"
-			+ "|?Has infobox label"
-			+ "|?Disable autocomplete"
-		)
-		.stream()
-		.map(FactsHelper::createDefinition)
-		.collect(Collectors.toMap(d->d.getName(), d->d));
-	}
-
-	private void handleForm(Map<String, SDIProperty> props, FormDefinition form) {
+	private void handleForm(SDIConcept form) {
 		try {
-			var rForm = form.resolve(props);
-			if(!form.getInfoboxProperties().isEmpty())
-				make(run.getWiki(), "Template:Infobox/"+form.getName(), MakeInfobox.template(rForm, run.getWiki().getAllSubPages("Template", "Infobox/"+form.getName())));
-			make(run.getWiki(), "Template:Facts/"+form.getName(), MakeTemplate.template(rForm));
-			make(run.getWiki(), "Template:Facts/"+form.getName()+"/Input", MakeTemplateInput.template(rForm));
-			make(run.getWiki(), "Template:Facts/"+form.getName()+"/Ask", MakeTemplateAsk.template(form.getName(), rForm));
-			make(run.getWiki(), "Template:Facts/"+form.getName()+"/Show", MakeTemplateShow.template(form.getName(), rForm));
-			make(run.getWiki(), "Form:"+form.getName(), MakeForm.template(form.getName(), form.getPluralName(), rForm, false));
-			make(run.getWiki(), "Category:Facts about "+form.getPluralName(), MakeCategory.template(form.getName(), form.getPluralName(), rForm));
+			make(run.getWiki(), "Template:Facts/"+form.getName(), MakeTemplate.template(form));
+			make(run.getWiki(), "Template:Facts/"+form.getName()+"/Input", MakeTemplateInput.template(form));
+			make(run.getWiki(), "Template:Facts/"+form.getName()+"/Ask", MakeTemplateAsk.template(form.getName(), form));
+			make(run.getWiki(), "Template:Facts/"+form.getName()+"/Show", MakeTemplateShow.template(form.getName(), form));
+			make(run.getWiki(), "Form:"+form.getName(), MakeForm.template(form.getName(), form.getPluralName(), form, false));
+			make(run.getWiki(), "Category:Facts about "+form.getPluralName(), MakeCategory.template(form.getName(), form.getPluralName(), form));
 			
-			for(var subForm:rForm.getSubForms()) {
-				handleSubForm(rForm, subForm);
+			for(var subForm:form.getSubForms()) {
+				handleSubForm(form, subForm);
 			}
 		} catch(Exception e) {
 			this.reportException(new RuntimeException("Failed to create facts utilities for "+form.getName(), e));
 		}
 	}
 	
-	private void handleSubForm(FormDefinition.Resolved parent, FormDefinition.Resolved subForm) {
+	private void handleSubForm(SDIConcept parent, SDIConcept subForm) {
 		try {
 			var slashName = parent.getName()+"/"+subForm.getName();
 			var spaceName = parent.getName()+" "+subForm.getPluralName();
@@ -84,26 +66,11 @@ public class FactsHelper extends SimpleBot {
 		}
 	}
 
-	private static SDIProperty createDefinition(Result rawProp) {
-		var res = new SDIProperty(
-			rawProp.getFulltext().substring(9),
-			rawProp.getPrintouts().getHasType(),
-			rawProp.getPrintouts().getHasFactType(),
-			rawProp.getPrintouts().getHasFactDisplayFormat(),
-			rawProp.getPrintouts().getHasFactNote(),
-			rawProp.getPrintouts().getSuggestValuesFrom(),
-			rawProp.getPrintouts().getHasInfoboxLabel(),
-			Boolean.TRUE.equals(rawProp.getPrintouts().getDisableAutocomplete())
-		);
-		return res;
-	}
-	
 	@Override
 	public String getDescription() {
 		return
 			"""
 			This bot automatically creates the following for each for defined in [[User:Bot Facts Helper/Config|here]]:
-			* '''Template:Infobox/...:''' the infobox for these facts (if specified in config)
 			* '''Template:Facts/...:''' to specify facts of the given kind.
 			* '''Template:Facts/.../Input:''' a template showing an input to easily create a new entity
 			* '''Template:Facts/.../Ask:''' to easily call a template for each entity of the type.

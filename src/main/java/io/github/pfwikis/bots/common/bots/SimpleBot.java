@@ -33,7 +33,7 @@ public abstract class SimpleBot extends Bot<SingleRun> {
 			
 			//try if login just works, otherwise try to create the account
 			try {
-				run.setWiki(WikiAPI.fromCache(server, botName, getBotPassword()));
+				run.setWiki(WikiAPI.create(server, botName, getBotPassword()));
 			} catch(Exception ignore) {
 				run.withMaster(wiki->{
 					try {
@@ -48,7 +48,7 @@ public abstract class SimpleBot extends Bot<SingleRun> {
 				});
 				
 				try {
-					run.setWiki(WikiAPI.fromCache(server, botName, getBotPassword()));
+					run.setWiki(WikiAPI.create(server, botName, getBotPassword()));
 				} catch(Exception e) {
 					log.error("Failed to log in as {}", botName, e);
 					System.exit(-1);
@@ -63,11 +63,11 @@ public abstract class SimpleBot extends Bot<SingleRun> {
 		return rootPassword+botName;
 	}
 
-	protected <T> T loadConfig(Class<T> type) {
+	public <T> T loadConfig(Class<T> type) {
 		return loadConfig(type, "Config");
 	}
 	
-	protected <T> T loadConfig(Class<T> type, String name) {
+	public <T> T loadConfig(Class<T> type, String name) {
 		var configPage = "User:"+botName+"/"+name;
 		rawConfig = run.getWiki().getPageText(configPage);
 		if(rawConfig.isEmpty()) {
@@ -94,11 +94,11 @@ public abstract class SimpleBot extends Bot<SingleRun> {
 		}
 	}
 	
-	protected <T> void saveConfig(T config, String reason) {
+	public <T> void saveConfig(T config, String reason) {
 		saveConfig(config, "Config", reason);
 	}
 	
-	protected <T> void saveConfig(T config, String name, String reason) {
+	public <T> void saveConfig(T config, String name, String reason) {
 		var configPage = "User:"+botName+"/"+name;
 		try {
 			var newConfig = Jackson.JSON.writeValueAsString(config);

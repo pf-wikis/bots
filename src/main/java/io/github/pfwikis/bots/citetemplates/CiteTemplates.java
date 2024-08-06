@@ -95,7 +95,7 @@ public class CiteTemplates extends SimpleBot implements RunOnPage {
 				}
 				calcPageRanges(bookDef.getSections(), null);
 				
-				var template = MakeCiteTemplate.template(bookDef);
+				var template = MakeCiteTemplate.template(run.getWiki(), bookDef);
 				RockerHelper.make(run.getWiki(), "Template:Cite/"+bookDef.getFactsPage(), template);
 			} catch(Exception e) {
 				reportException(new RuntimeException("Could not generate citations for "+book.getFulltext(), e));

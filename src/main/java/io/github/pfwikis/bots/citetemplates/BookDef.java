@@ -15,6 +15,7 @@ import com.google.common.collect.DiscreteDomain;
 import com.google.common.collect.Range;
 import com.google.common.collect.TreeRangeMap;
 
+import io.github.pfwikis.bots.common.WikiAPI;
 import io.github.pfwikis.bots.utils.MWJsonHelper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -90,15 +91,15 @@ public class BookDef implements BookPart {
 	
 	private static final Comparator<Range<Integer>> RANGE_COMP = Comparator.<Range<Integer>, Boolean>comparing(Range::hasLowerBound).thenComparing(Range::lowerEndpoint);
 
-	public Map<String, List<Range<Integer>>> makeAuthorPageRanges() {
-		return makeRanges(BookPart::makeAuthors);
+	public Map<String, List<Range<Integer>>> makeAuthorPageRanges(WikiAPI wiki) {
+		return makeRanges(bp->bp.makeAuthors(wiki));
 	}
 
 	@Override
-	public String makeAuthors() {
-		var result = formatAuthors(getAuthors());
+	public String makeAuthors(WikiAPI wiki) {
+		var result = formatAuthors(wiki, getAuthors());
 		if(result == null)
-			result = formatAuthors(getArtists());
+			result = formatAuthors(wiki, getArtists());
 		if(result == null)
 			return "Unknown author";
 		return result;
@@ -111,8 +112,8 @@ public class BookDef implements BookPart {
 		});
 	}
 	
-	public Map<String, String> makeAuthorSpecialCases() {
-		return makeSpecialCases(BookPart::makeAuthors);
+	public Map<String, String> makeAuthorSpecialCases(WikiAPI wiki) {
+		return makeSpecialCases(bp->bp.makeAuthors(wiki));
 	}
 	
 	public Map<String, String> makeArticleSpecialCases() {
@@ -154,10 +155,10 @@ public class BookDef implements BookPart {
 		private List<SectionDef> subSections = new ArrayList<>();
 		
 		@Override
-		public String makeAuthors() {
+		public String makeAuthors(WikiAPI wiki) {
 			if(authors != null && !authors.isEmpty())
-				return BookPart.super.makeAuthors();
-			return parent.makeAuthors();
+				return BookPart.super.makeAuthors(wiki);
+			return parent.makeAuthors(wiki);
 		}
 	}
 }

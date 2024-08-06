@@ -49,7 +49,7 @@ public class Scheduler {
 			for(var wiki : Wiki.values()) {
 				wiki.setMasterPassword(rootPassword);
 				try {
-					wiki.setMasterApi(WikiAPI.fromCache(wiki, wiki.getMasterAccount(), wiki.getMasterPassword()));
+					wiki.setMasterApi(WikiAPI.create(wiki, wiki.getMasterAccount(), wiki.getMasterPassword()));
 				} catch(Exception e) {
 					log.error("Failed to log in as {}", wiki.getMasterAccount(), e);
 					Uninterruptibles.sleepUninterruptibly(10, TimeUnit.MINUTES);
@@ -100,7 +100,7 @@ public class Scheduler {
 	private void initBot(Wiki wiki, Discord discord, SimpleBot bot) {
 		bot.setRootPassword(wiki.getMasterPassword());
 		var sr = new SingleRun(wiki, wiki.getMasterAccount(), wiki.getMasterPassword());
-		sr.setWiki(WikiAPI.fromCache(wiki, bot.getBotName(), bot.getBotPassword()));
+		sr.setWiki(WikiAPI.create(wiki, bot.getBotName(), bot.getBotPassword()));
 		
 		bot.setDiscord(discord);
 		bot.setLocalMode(localMode);

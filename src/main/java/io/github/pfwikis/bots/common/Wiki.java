@@ -1,7 +1,10 @@
 package io.github.pfwikis.bots.common;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -34,5 +37,22 @@ public enum Wiki {
 	private String masterPassword;
 	@Setter
 	private WikiAPI masterApi;
-	private final Map<String, Map<String, Object>> caches = new HashMap<>();
+	
+	
+	
+	
+	private static record CacheEntry(Instant loadTime, Object value) {}
+	private final Map<String, Map<String, CacheEntry>> caches = new HashMap<>();
+	
+	@SuppressWarnings("unchecked")
+	public synchronized <T> T cache(String cacheId, String key, Supplier<T> calc) {
+		var cache = caches.computeIfAbsent(cacheId, a->new HashMap<>());
+		var entry = cache.get(key);
+		if(entry != null && entry.loadTime().isAfter(Instant.now().minusSeconds(600))) {
+			return (T) entry.value();
+		}
+		var value = calc.get();
+		cache.put(key, new CacheEntry(Instant.now(), value));
+		return value;
+	}
 }
