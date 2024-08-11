@@ -59,7 +59,7 @@ public class PropertyStatistics extends SimpleBot {
 				sb.append("A count of the unique properties:\n");
 			}
 			var entries = counts.entrySet().stream()
-				.sorted(Comparator.<Entry<String>,Integer>comparing(Entry::getCount).reversed())
+				.sorted(Comparator.<Entry<String>,Integer>comparing(Entry::getCount).reversed().thenComparing(e->e.getElement()))
 				.limit(50)
 				.toList();
 			sb.append("<table class=\"wikitable\"><tr><th>Value</th><th>Count</th></tr>");
