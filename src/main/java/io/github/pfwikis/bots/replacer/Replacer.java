@@ -317,7 +317,7 @@ public class Replacer extends SimpleBot {
 			var l2 = mr.namedGroups().containsKey("l2")?mr.group("l2"):null;
 			var showAs = mr.namedGroups().containsKey("showas")?mr.group("showas"):null;
 			
-			var tTemplate = run.cache("resolve", template, this::resolve);
+			var tTemplate = run.cache("resolve", template, ()->this.resolve(template));
 			if(tTemplate == null) {
 				log.error("Can't resolve template '{}'", template);
 				return m.group();
@@ -333,12 +333,12 @@ public class Replacer extends SimpleBot {
 	}
 
 	private String resolve(String template) {
-		if(run.cache("existing", "Template:Cite/"+template, run.getWiki()::pageExists)) {
+		if(run.getWiki().pageExists("Template:Cite/"+template)) {
 			return template;
 		}
 		//test after resolving redirect
-		template = StringUtils.removeStart(run.cache("redirect", "Template:Cite book/"+template, run.getWiki()::resolveRedirects), "Template:Cite book/");
-		if(run.cache("existing", "Template:Cite/"+template, run.getWiki()::pageExists)) {
+		template = StringUtils.removeStart(run.getWiki().resolveRedirects("Template:Cite book/"+template), "Template:Cite book/");
+		if(run.getWiki().pageExists("Template:Cite/"+template)) {
 			return template;
 		}
 		
@@ -347,8 +347,8 @@ public class Replacer extends SimpleBot {
 		var m=Pattern.compile("\\| *title *= *\\[\\[ *([^\\|\\]]+)").matcher(txt);
 		if(m.find()) {
 			var realName = m.group(1);
-			realName = run.cache("redirect", realName, run.getWiki()::resolveRedirects);
-			if(run.cache("existing", "Template:Cite/"+realName, run.getWiki()::pageExists)) {
+			realName = run.getWiki().resolveRedirects(realName);
+			if(run.getWiki().pageExists("Template:Cite/"+realName)) {
 				return realName;
 			}
 		}

@@ -1,11 +1,13 @@
 package io.github.pfwikis.bots.common;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import io.github.pfwikis.bots.utils.SimpleCache;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -39,20 +41,10 @@ public enum Wiki {
 	private WikiAPI masterApi;
 	
 	
-	
-	
-	private static record CacheEntry(Instant loadTime, Object value) {}
-	private final Map<String, Map<String, CacheEntry>> caches = new HashMap<>();
+	private final SimpleCache<Object> cache = new SimpleCache<>(Duration.ofDays(1));
 	
 	@SuppressWarnings("unchecked")
 	public synchronized <T> T cache(String cacheId, String key, Supplier<T> calc) {
-		var cache = caches.computeIfAbsent(cacheId, a->new HashMap<>());
-		var entry = cache.get(key);
-		if(entry != null && entry.loadTime().isAfter(Instant.now().minusSeconds(3600))) {
-			return (T) entry.value();
-		}
-		var value = calc.get();
-		cache.put(key, new CacheEntry(Instant.now(), value));
-		return value;
+		return (T)cache.cache(cacheId, key, calc);
 	}
 }

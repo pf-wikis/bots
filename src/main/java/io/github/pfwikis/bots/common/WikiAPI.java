@@ -437,7 +437,7 @@ public class WikiAPI {
 	}
 
 	public String resolveRedirects(String page) {
-		return wiki.resolveRedirect(page);
+		return server.cache("resolveRedirects", page, ()->wiki.resolveRedirect(page));
 	}
 
 	public void undelete(String page, String reason) {

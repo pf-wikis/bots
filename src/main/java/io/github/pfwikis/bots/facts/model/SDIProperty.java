@@ -27,7 +27,7 @@ public class SDIProperty {
 	private final boolean autocompleteDisabled;
 	
 	public static Map<String, SDIProperty> load(SingleRun run) {
-		return run.cache("propertyDefinitions", "", b->
+		return run.cache("propertyDefinitions", "", ()->
 			run.getWiki().semanticAsk("[[Has type::+]]"
 				+ "|?Has type"
 				+ "|?Has fact type"
