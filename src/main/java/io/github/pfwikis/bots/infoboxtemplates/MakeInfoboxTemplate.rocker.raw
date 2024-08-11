@@ -5,15 +5,18 @@
 @import io.github.pfwikis.bots.common.model.SemanticSubject
 @import io.github.pfwikis.bots.facts.model.SDIConcept
 @import io.github.pfwikis.bots.common.bots.Run.SingleRun
+@import static java.util.Comparator.*
+@import java.time.LocalDate
+@import io.github.pfwikis.bots.utils.TemporalComparator
 
 @args(SingleRun run, List<SDIConcept> concepts, SemanticSubject page)
 <noinclude>
 {{Bot created|Bot Infobox Maker|This template is automatically created from [[Created from::@page.getSubject().toFullTitle()]].}}
+This template stores an infobox automatically created from [[@page.getSubject().toFullTitle()]]. It is not meant to be used directly. Instead
+use {{tl|Infobox|@concepts.getFirst().getName()}} or {{tl|Infobox|@concepts.getFirst().getName()|@page.getSubject().toFullTitle()}}.
+This template also add many categories based on the facts to each page it is used in.
 </noinclude>
 @for(SDIConcept concept:concepts) {
-	@if(!page.hasConcept(concept)) {
-		@continue
-	}
 	<div class="infobox @concept.toCSSName()">
 		<div class="name">
 			@if(page.has(FULL_TITLE)) {
@@ -23,8 +26,13 @@
 				@page.get(NAME)
 			}
 		</div>
-		@if(run.getWiki().pageExists(page.get(IMAGE))) {
-			<div class="image">[[File:@page.get(IMAGE).getTitle()|250px|Cover Image|class=not-lazy]]</div>
+		@if(page.has(IMAGE)) {
+			@with(boolean imageExists = run.getWiki().pageExists(page.get(IMAGE))) {
+				@*to create a wanted image and react to uploaded files*@
+				@if(!imageExists) {@{@{#ifexist:File:@page.get(IMAGE).getTitle()|}
+				<div class="image">[[File:@page.get(IMAGE).getTitle()|250px|Cover Image|class=not-lazy]]</div>
+				@if(!imageExists)  {@}@}}
+			}
 		}
 		@if(page.has(WEBSITE)) {
 			<div class="website">
@@ -35,7 +43,7 @@
 			@concept.getName() @*<-important space*@
 			@with(type = prop(String.class, concept.getName()+" type")) {
 				@if(page.has(type)) {
-					- page.get(type)
+					- @page.get(type)
 				}
 			}
 		</div>
@@ -48,63 +56,95 @@
 			}
 	
 			@*releases for this book*@
-			@with(releases = page.getSubObjects("Facts/"+concept.getName()+"/Release")) {
+			@with?(releaseConcept = concept.getSubConcept("Release")) {
+			@with(releases = page.getSubObjects("Facts/"+concept.getName()+"/Release")
+				.stream()
+				.sorted(
+					comparing((SemanticSubject r)->r.getOr(RELEASE_DATE, LocalDate.MAX), nullsLast(TemporalComparator.INSTANCE))
+					.thenComparing(comparing(r->r.getOr(RELEASE_TYPE, "ZZZZZZZZZZ"), nullsLast(naturalOrder()))))
+				.toList()) {
 			@if(!releases.isEmpty()) {
 				<div class="infobox-book-releases">
 					<div class="infobox-book-releases-title">Releases</div>
-					
-					sort=Release date,Release type
 					@for(release:releases) {
-						@*
-						<div class="name">{{{Release type|}}}{{#if:{{{Release note|}}}|&nbsp;({{{Release note}}})}}</div>
+						<div class="name">
+							@release.get(RELEASE_TYPE)
+							@if(release.has(RELEASE_NOTE)) {
+								&nbsp;(@release.get(RELEASE_NOTE))
+							}
+						</div>
 						<div class="table">
-							{{#if:{{{Release date|}}}|<div class="key">Date</div><div>{{{Release date}}}</div>}}
-							{{#if:{{{Isbn|}}}|<div class="key">ISBN</div><div>{{ISBN|{{{Isbn}}}}}</div>}}
-							{{#if:{{{Pages|}}}|<div class="key">Pages</div><div>{{{Pages|}}}</div>}}
-							{{#if:{{{Rule system|}}}|<div class="key">Rule set</div><div>{{{Rule system}}}</div>}}
-							{{#if:{{{Price|}}}|<div class="key">Price</div><div>{{{Price}}}</div>}}
-						</div>*@
+							@if(release.has(RELEASE_DATE)) {
+								<div class="key">Date</div>
+								<div>@releaseConcept.getProperty(RELEASE_DATE).infoboxValue(run.getWiki(), release.get(RELEASE_DATE))</div>
+							}
+							@if(release.has(ISBN)) {
+								<div class="key">ISBN</div>
+								<div>[[Special:BookSources/@release.get(ISBN)|@release.get(ISBN)]]</div>	
+							}
+							@if(release.has(PAGES)) {
+								<div class="key">Pages</div>
+								<div>@releaseConcept.getProperty(PAGES).infoboxValue(run.getWiki(), release.get(PAGES))</div>
+							}
+							@if(release.has(RULE_SYSTEM)) {
+								<div class="key">Rule set</div>
+								<div>@releaseConcept.getProperty(RULE_SYSTEM).infoboxValue(run.getWiki(), release.get(RULE_SYSTEM))</div>
+							}
+							@if(release.has(PRICE)) {
+								<div class="key">Price</div>
+								<div>@releaseConcept.getProperty(PRICE).infoboxValue(run.getWiki(), release.get(PRICE))</div>
+							}
+						</div>
 					}
 				</div>
-			}}
+			}}}
 			@if(page.has(GALLERY_PAGE)) {
 				<div class="full-width works-by">
 					[[:@page.get(GALLERY_PAGE).toFullTitle()|Artwork from this book]]
 				</div>
 			}
 		</div>
+		<div class="infobox-links">
+			<div class="infobox-link plainlinks fa">
+				[[@page.getSubject().toFullTitle()|]]
+			</div>
+		</div>
 	</div>
 	
 	<includeonly>
 	@*Categories based on the properties.*@
-	@if(concept.containsProperty("Errata")) {
-		{{#if:{{{Errata|}}}|[[Category:Products with errata]]}}
+	@if(concept.containsProperty(ERRATA) && page.has(ERRATA)) {
+		[[Category:Products with errata]]
 	}
-	@if(concept.containsProperty("Web enhancement")) {
-		{{#if:{{{Web enhancement|}}}|[[Category:Products with web enhancements]]}}
+	@if(concept.containsProperty(WEB_ENHANCEMENT) && page.has(WEB_ENHANCEMENT)) {
+		[[Category:Products with web enhancements]]
 	}
-	@if(concept.containsProperty("Author")) {
-		{{#if: {{{Author all|}}}|{{#arraymap:{{{Author all|}}}|;|x|[[Category:Works by {{#getdisplaytitle:x}}]]|}}}}
+	@if(concept.containsProperty(AUTHOR)) {
+		@for(author:page.getAll(AUTHOR_ALL)) {
+			[[Category:Works by @run.getWiki().getDisplayTitle(author.toFullTitle())]]
+		}
 	}
-	@if(concept.containsProperty("Artist")) {
-		{{#if: {{{Artist|}}}|{{#arraymap:{{{Artist|}}}|;|x|[[Category:Artwork by {{#getdisplaytitle:x}}]]|}}}}
+	@if(concept.containsProperty(ARTIST)) {
+		@for(author:page.getAll(ARTIST)) {
+			[[Category:Artwork by @run.getWiki().getDisplayTitle(author.toFullTitle())]]
+		}
 	}
-	@if(concept.containsProperty("Director")) {
-		{{#if: {{{Director|}}}|{{#arraymap:{{{Director|}}}|;|x|[[Category:Works by {{#getdisplaytitle:x}}]]|}}}}
+	@if(concept.containsProperty(DIRECTOR)) {
+		@for(author:page.getAll(DIRECTOR)) {
+			[[Category:Works by @run.getWiki().getDisplayTitle(author.toFullTitle())]]
+		}
 	}
-	@if(concept.containsProperty("Performer")) {
-		{{#if: {{{Performer|}}}|{{#arraymap:{{{Performer|}}}|;|x|[[Category:Works starring {{#getdisplaytitle:x}}]]|}}}}
+	@if(concept.containsProperty(PERFORMER)) {
+		@for(author:page.getAll(PERFORMER)) {
+			[[Category:Works starring @run.getWiki().getDisplayTitle(author.toFullTitle())]]
+		}
 	}
-	@if(concept.containsProperty("Narrator")) {
-		{{#if: {{{Narrator|}}}|{{#arraymap:{{{Narrator|}}}|;|x|[[Category:Works starring {{#getdisplaytitle:x}}]]|}}}}
+	@if(concept.containsProperty(NARRATOR)) {
+		@for(author:page.getAll(NARRATOR)) {
+			[[Category:Works starring @run.getWiki().getDisplayTitle(author.toFullTitle())]]
+		}
 	}
 	
-	@*Might be different between the wikis.*@
-	@*@if(subPages.contains("Template:Infobox/"+concept.getName()+"/Categories")) {
-		{{Infobox/@concept.getName()/Categories
-			@for(prop:concept.getProperties()) {|@prop.getName() = {{{@prop.getName()|}}}}
-			@for(prop:concept.getGeneratedProperties()) {|@prop.getName() = {{{@prop.getName()|}}}}
-		}}
-	}*@
+	@concept.conceptSpecificCategories(run, page)
 	</includeonly>
 }

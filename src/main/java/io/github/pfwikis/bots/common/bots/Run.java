@@ -22,6 +22,7 @@ public abstract class Run {
 	private OffsetDateTime timestamp = OffsetDateTime.now();
 	
 	public abstract void withMaster(Consumer<WikiAPI> task);
+	public abstract void withOwnUser(Consumer<WikiAPI> task);
 	
 	@RequiredArgsConstructor
 	public static class SingleRun extends Run {
@@ -46,6 +47,11 @@ public abstract class Run {
 				
 			}
 			task.accept(masterWiki);
+		}
+		
+		@Override
+		public void withOwnUser(Consumer<WikiAPI> task) {
+			task.accept(wiki);
 		}
 
 		public <T> T cache(String cacheId, String key, Function<String, T> calc) {
@@ -76,6 +82,12 @@ public abstract class Run {
 
 		public WikiAPI getSfWiki() {
 			return sfRun.getWiki();
+		}
+		
+		@Override
+		public void withOwnUser(Consumer<WikiAPI> task) {
+			pfRun.withOwnUser(task);
+			sfRun.withOwnUser(task);
 		}
 	}
 }

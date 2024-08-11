@@ -120,7 +120,7 @@ public class ArticleOfTheWeek extends SimpleBot {
 			.map(e-> new Candidate(e.getKey(), e.getValue()))
 			.toList());
 		
-		var shouldNotFeatureArticles = run.getWiki().semanticAsk("[[Category:Should not be featured]][[:+]]").stream().map(Result::getFulltext).collect(Collectors.toSet());
+		var shouldNotFeatureArticles = run.getWiki().semanticAsk("[[Category:Should not be featured]][[:+]]").stream().map(Result::getPage).collect(Collectors.toSet());
 		
 		
 		candidates.removeIf(c->!c.loadHTML(run));

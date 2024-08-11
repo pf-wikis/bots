@@ -1,16 +1,18 @@
 package io.github.pfwikis.bots.facts.model;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalAccessor;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.google.common.base.Joiner;
 
 import io.github.pfwikis.bots.common.WikiAPI;
 import io.github.pfwikis.bots.common.model.SemanticSubject.PageRef;
@@ -39,9 +41,21 @@ public enum SDIFactType {
 			"{{#set:$1={{{$1|}}}}}",
 			"|$1={{{$1|}}}|$1 precision="+datePrecision()
 	) {
+		
+		private static final DateTimeFormatter US_FORMAT = DateTimeFormatter
+			.ofPattern("[MMMM [dd, ]]yyyy")
+			.localizedBy(Locale.ENGLISH);
 		@Override
 		public String formAfterSet(SDIProperty prop) {
 			return ("{{#set:$1 precision="+datePrecision()+"}}").replace("$1", prop.getName());
+		}
+		
+		@Override
+		public String infoboxValue(WikiAPI wiki, SDIProperty prop, Object object) {
+			if(object instanceof TemporalAccessor date) {
+				return "<time datetime=\""+object+"\">"+US_FORMAT.format(date)+"</time>";
+			}
+			return super.infoboxValue(wiki, prop, object);
 		}
 	},
 	PAGE_LIST(

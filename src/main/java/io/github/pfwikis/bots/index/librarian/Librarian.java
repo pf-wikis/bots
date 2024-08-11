@@ -99,12 +99,12 @@ public class Librarian extends SimpleBot {
 			var pages = run.getWiki().semanticAsk("[[:+]][[Has infobox type::"+type+"]]");
 			
 			for(var page:pages) {
-				if(config.getPages().stream().anyMatch(p->p.getTitle().equals(page.getFulltext()))) {
+				if(config.getPages().stream().anyMatch(p->p.getTitle().equals(page.getPage()))) {
 					continue;
 				}
 				
 				var newPage = new LibrarianConfig.Page();
-				newPage.setTitle(page.getFulltext());
+				newPage.setTitle(page.getPage());
 				newPage.setType(type);
 				config.getPages().add(newPage);
 			}

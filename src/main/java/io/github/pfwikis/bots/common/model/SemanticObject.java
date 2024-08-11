@@ -14,7 +14,7 @@ public interface SemanticObject {
 	List<Property> getData();
 	
 	default boolean has(String prop) {
-		return getData().stream().anyMatch(p->p.getProperty().equals(prop));
+		return getData().stream().anyMatch(p->p.getProperty().equals(prop.replace(" ", "_")));
 	}
 	
 	default boolean has(SDIPropertyTypeMapping<?> prop) {
@@ -22,13 +22,13 @@ public interface SemanticObject {
 	}
 	
 	default boolean has(SDIProperty prop) {
-		return has(prop.getName().replace(" ", "_"));
+		return has(prop.getName());
 	}
 	
 	@SuppressWarnings("unchecked")
 	default <T> List<T> getAll(String prop) {
 		return (List<T>) getData().stream()
-			.filter(p->p.getProperty().equals(prop))
+			.filter(p->p.getProperty().equals(prop.replace(" ", "_")))
 			.collect(MoreCollectors.toOptional())
 			.map(op->op.getDataitem())
 			.orElse(Collections.emptyList());
@@ -39,7 +39,7 @@ public interface SemanticObject {
 	}
 	
 	default <T> List<T> getAll(SDIProperty prop) {
-		return getAll(prop.getName().replace(" ", "_"));
+		return getAll(prop.getName());
 	}
 	
 	default <T> T get(String prop) {

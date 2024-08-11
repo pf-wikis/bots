@@ -22,8 +22,10 @@ import io.github.pfwikis.bots.common.bots.DualBot;
 import io.github.pfwikis.bots.common.bots.Run.SingleRun;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.healthcheck.HealthCheck;
+import io.github.pfwikis.bots.maintenance.Maintenance;
 import io.github.pfwikis.bots.meta.Meta;
 import io.github.pfwikis.bots.newsfeedreader.NewsFeedReader;
+import io.github.pfwikis.bots.propertystatistics.PropertyStatistics;
 import io.github.pfwikis.bots.scheduler.Schedulable.SchedulableBot;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -63,6 +65,8 @@ public class Scheduler {
 			for(var wiki : Wiki.values()) {
 				scheduleOnce(scheduleableBot(wiki, discord, new Meta()));
 				schedule(scheduleableBot(wiki, discord, new NewsFeedReader()), Duration.ofHours(1));
+				schedule(scheduleableBot(wiki, discord, new Maintenance()), Duration.ofDays(7));
+				schedule(scheduleableBot(wiki, discord, new PropertyStatistics()), Duration.ofDays(7));
 				
 				schedule(
 					new RCWatcher(this, discord, wiki),

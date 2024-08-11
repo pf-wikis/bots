@@ -237,7 +237,7 @@ public class WikiAPI {
 	}
 	
 	public boolean pageExists(String title) {
-		return wiki.exists(title);
+		return server.cache("pageExists", title, ()->wiki.exists(title));
 	}
 	
 	public boolean pageExists(PageRef page) {
@@ -405,10 +405,16 @@ public class WikiAPI {
 
 	public ArrayList<Result> semanticAsk(String query) {
 		var results = new ArrayList<SemanticAsk.Result>();
-		var response = get(SemanticAsk.class, "ask", "api_version", "3", "query", query+"|limit=1000");
+		var response = get(SemanticAsk.class, "ask", "api_version", "3", "query", query+"|limit=5000");
 		response.getQuery().getResults().stream().flatMap(e->e.values().stream()).forEach(results::add);
+		int lastOffset = Integer.MIN_VALUE;
 		while(response.getQueryContinueOffset() != null) {
-			response = get(SemanticAsk.class, "ask", "api_version", "3", "query", query+"|limit=1000|offset="+response.getQueryContinueOffset());
+			int nextOffset = response.getQueryContinueOffset();
+			if(nextOffset < lastOffset) {
+				throw new IllegalStateException("Offset changed from "+lastOffset+" to "+response.getQueryContinueOffset());
+			}
+			lastOffset = response.getQueryContinueOffset();
+			response = get(SemanticAsk.class, "ask", "api_version", "3", "query", query+"|limit=5000|offset="+response.getQueryContinueOffset());
 			response.getQuery().getResults().stream().flatMap(e->e.values().stream()).forEach(results::add);
 		}
 		return results;

@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.beust.jcommander.Parameters;
 
+import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,10 +37,26 @@ public class Replacer extends SimpleBot {
 		
 		//removeOldCiteBooks();
 		
+		/*
 		for(int i=2005;i<=2026;i++) {
 			var p = run.getServer().getName()+" release calendar/"+i;
 			if(run.getWiki().pageExists(p))
 				run.getWiki().delete(p, "Remove outdated page");
+		}*/
+		
+		var pages = run.getWiki().semanticAsk("[[Deck type::Card game]]");
+		for(var p:pages) {
+			
+			var txt = run.getWiki().getPageText(p.getPage());
+			
+			var ntxt = txt.replaceAll("(\\| *Deck type *= *)[^\\|\n]*", "$1Cards");
+			if(!ntxt.equals(txt)) {
+				run.getWiki().edit(
+					p.getPage(),
+					ntxt,
+					"standardize facts values"
+				);
+			}
 		}
 
 		

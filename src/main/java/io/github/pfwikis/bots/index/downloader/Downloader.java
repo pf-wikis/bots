@@ -66,11 +66,11 @@ public class Downloader {
 	public void start() throws IOException {
 		var books = wiki.semanticAsk("[[Fact type::Template:Facts/Book]]|?Website");
 		for(var book:books) {
-			log.info("Checking {}", book.getFulltext());
+			log.info("Checking {}", book.getPage());
 			if(book.getPrintouts() == null || book.getPrintouts().getWebsite() == null) continue;
-			if(SKIP_LIST.contains(book.getFulltext())) continue;
+			if(SKIP_LIST.contains(book.getPage())) continue;
 			
-			var article = StringUtils.removeStart(book.getFulltext(), "Facts:");
+			var article = StringUtils.removeStart(book.getPage(), "Facts:");
 			var dirName = URLEncoder.encode(article.replace(' ', '_'), StandardCharsets.UTF_8);
 			var dir = new File("files/downloads", dirName);
 			

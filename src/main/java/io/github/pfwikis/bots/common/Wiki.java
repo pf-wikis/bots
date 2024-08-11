@@ -48,7 +48,7 @@ public enum Wiki {
 	public synchronized <T> T cache(String cacheId, String key, Supplier<T> calc) {
 		var cache = caches.computeIfAbsent(cacheId, a->new HashMap<>());
 		var entry = cache.get(key);
-		if(entry != null && entry.loadTime().isAfter(Instant.now().minusSeconds(600))) {
+		if(entry != null && entry.loadTime().isAfter(Instant.now().minusSeconds(3600))) {
 			return (T) entry.value();
 		}
 		var value = calc.get();

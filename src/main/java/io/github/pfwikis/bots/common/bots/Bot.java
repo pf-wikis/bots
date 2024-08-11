@@ -1,11 +1,13 @@
 package io.github.pfwikis.bots.common.bots;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import com.beust.jcommander.Parameter;
 
 import io.github.pfwikis.bots.common.Discord;
 import io.github.pfwikis.bots.common.Wiki;
+import io.github.pfwikis.bots.common.WikiAPI;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -144,8 +146,12 @@ public abstract class Bot<RUN extends Run> {
 				run.getTimestamp().toLocalDate().toString(),
 				!hadError?"<span style=\"color:ForestGreen\">OK</span>":"<span style=\"color:Crimson\">ERROR</span>[[Category:Pages with errors]]"
 			);
-			
-			run.withMaster(wiki->wiki.editIfChange("User:"+botName+"/Status", status, "Update "+botName+" status"));
+			Consumer<WikiAPI> task = wiki->wiki.editIfChange("User:"+botName+"/Status", status, "Update "+botName+" status");
+			try {
+				run.withOwnUser(task);
+			} catch(Exception e) {
+				run.withMaster(task);
+			}
 		} catch(Exception e) {
 			log.error("Failed to create bot report for {}", botName, e);
 			System.exit(-1);

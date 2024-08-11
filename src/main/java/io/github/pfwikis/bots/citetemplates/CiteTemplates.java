@@ -55,21 +55,21 @@ public class CiteTemplates extends SimpleBot implements RunOnPage {
 			try {
 				var name = book.getPrintouts().getName();
 				var bookDef = BookDef.builder()
-					.factsPage(StringUtils.removeStart(book.getFulltext(), "Facts:"))
+					.factsPage(StringUtils.removeStart(book.getPage(), "Facts:"))
 					.name(name)
-					.representedByPage(book.getPrintouts().getRepresentedByPage()!=null?book.getPrintouts().getRepresentedByPage().getFulltext():null)
+					.representedByPage(book.getPrintouts().getRepresentedByPage()!=null?book.getPrintouts().getRepresentedByPage().getPage():null)
 					.authors(sortAuthors(book.getPrintouts()))
-					.artists(book.getPrintouts().getArtists().stream().map(Result::getFulltext).toList())
+					.artists(book.getPrintouts().getArtists().stream().map(Result::getPage).toList())
 					.releaseYear("unknown".equals(book.getPrintouts().getReleaseYear())
 							?null
 							:Integer.parseInt(book.getPrintouts().getReleaseYear())
 					)
 					.fullTitle(book.getPrintouts().getFullTitle())
 					.isbn(book.getPrintouts().getIsbn())
-					.publisher(book.getPrintouts().getPublisher().stream().map(Result::getFulltext).toList())
+					.publisher(book.getPrintouts().getPublisher().stream().map(Result::getPage).toList())
 					.build();
 				
-				var rawSections = run.getWiki().semanticAsk("[[Fact type::Template:Facts/Book/Section]][[-Has subobject::"+book.getFulltext()+"]]|?Name|?On page|?To page|?Is subsection|?Author|?Author ordered");
+				var rawSections = run.getWiki().semanticAsk("[[Fact type::Template:Facts/Book/Section]][[-Has subobject::"+book.getPage()+"]]|?Name|?On page|?To page|?Is subsection|?Author|?Author ordered");
 				bookDef.getSections().addAll(rawSections.stream()
 					.map(s-> new SectionDef(
 						bookDef,
@@ -98,7 +98,7 @@ public class CiteTemplates extends SimpleBot implements RunOnPage {
 				var template = MakeCiteTemplate.template(run.getWiki(), bookDef);
 				RockerHelper.make(run.getWiki(), "Template:Cite/"+bookDef.getFactsPage(), template);
 			} catch(Exception e) {
-				reportException(new RuntimeException("Could not generate citations for "+book.getFulltext(), e));
+				reportException(new RuntimeException("Could not generate citations for "+book.getPage(), e));
 			}
 		}
 	}
@@ -115,12 +115,12 @@ public class CiteTemplates extends SimpleBot implements RunOnPage {
 			.map(Ordered::getPrimaryAuthor)
 			.map(Labeled::getValue)
 			.filter(i->i!=null)
-			.map(Result::getFulltext)
+			.map(Result::getPage)
 			.filter(v->!result.contains(v))
 			.forEachOrdered(result::add);
 		
 		out.getPrimaryAuthors().stream()
-			.map(Result::getFulltext)
+			.map(Result::getPage)
 			.filter(v->!result.contains(v))
 			.forEachOrdered(result::add);
 		
@@ -129,12 +129,12 @@ public class CiteTemplates extends SimpleBot implements RunOnPage {
 			.map(Ordered::getAuthor)
 			.map(Labeled::getValue)
 			.filter(i->i!=null)
-			.map(Result::getFulltext)
+			.map(Result::getPage)
 			.filter(v->!result.contains(v))
 			.forEachOrdered(result::add);
 		
 		out.getAllAuthors().stream()
-			.map(Result::getFulltext)
+			.map(Result::getPage)
 			.filter(v->!result.contains(v))
 			.forEachOrdered(result::add);
 		

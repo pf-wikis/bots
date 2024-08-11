@@ -4,15 +4,13 @@ import static io.github.pfwikis.bots.utils.RockerHelper.make;
 
 import java.io.IOException;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 import com.beust.jcommander.Parameters;
 
 import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
+import io.github.pfwikis.bots.facts.SDIModel;
 import io.github.pfwikis.bots.facts.model.SDIConcept;
 import io.github.pfwikis.bots.facts.model.SDIProperty;
-import io.github.pfwikis.bots.facts.model.SDIRawConcept;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -28,7 +26,7 @@ public class FactsHelper extends SimpleBot {
 		if(run.getServer()==Wiki.SF) return;
 		
 		var props = SDIProperty.load(run);
-		var concepts = this.loadConfig(SDIRawConcept[].class);
+		var concepts = SDIModel.CONCEPTS;
 		
 		for(var concept:concepts) {
 			handleForm(concept.resolve(props));

@@ -1,28 +1,14 @@
 package io.github.pfwikis.bots.infoboxtemplates;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
 
 import com.beust.jcommander.Parameters;
 
-import io.github.pfwikis.bots.citetemplates.BookDef.SectionDef;
 import io.github.pfwikis.bots.common.bots.Bot.RunOnPage;
-import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
-import io.github.pfwikis.bots.common.model.SemanticAsk.Labeled;
-import io.github.pfwikis.bots.common.model.SemanticAsk.Ordered;
-import io.github.pfwikis.bots.common.model.SemanticAsk.Printouts;
-import io.github.pfwikis.bots.common.model.SemanticAsk.Result;
-import io.github.pfwikis.bots.facts.model.SDIConcept;
+import io.github.pfwikis.bots.facts.SDIModel;
 import io.github.pfwikis.bots.facts.model.SDIProperty;
-import io.github.pfwikis.bots.facts.model.SDIRawConcept;
-import io.github.pfwikis.bots.factshelper.FactsHelper;
-import io.github.pfwikis.bots.utils.MWJsonHelper;
 import io.github.pfwikis.bots.utils.RockerHelper;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,25 +17,37 @@ import lombok.extern.slf4j.Slf4j;
 public class InfoboxTemplates extends SimpleBot implements RunOnPage {
 
 	public InfoboxTemplates() {
-		super("infobox-templates", "Bot Cite Templates");
+		super("infobox-templates", "Bot Infobox Templates");
 	}
 	
 	@Override
 	public void runOnPage(String page) {
 		if(page == null) {
-			page = "Facts:Player Core 2";
-			if(run.getServer()==Wiki.SF) return;
+			var pages = run.getWiki().getPagesInNamespace("Facts");
+			for(var p:pages) {
+				runOnPage(p.getTitle());
+			}
+			return;
 		}
 		
 		var properties = SDIProperty.load(run);
 		
-		//temporary
-		var factsHelper = new FactsHelper();
-		factsHelper.setRun(run);
-		var concepts = Arrays.stream(factsHelper.loadConfig(SDIRawConcept[].class)).map(c->c.resolve(properties)).toList();
 		var subject = run.getWiki().semanticSubject(page).getQuery();
+		var concepts = Arrays.stream(SDIModel.CONCEPTS)
+			.map(c->c.resolve(properties))
+			.filter(c->c.getInfoboxProperties()!=null && !c.getInfoboxProperties().isEmpty())
+			.filter(subject::hasConcept)
+			.toList();
 		
-		RockerHelper.make(run.getWiki(), "Template:Facts/Infoboxes/"+page, MakeInfoboxTemplate.template(run, concepts, subject));
+		
+		
+		if(!concepts.isEmpty()) {
+			RockerHelper.make(
+				run.getWiki(),
+				"Template:Facts/Infoboxes/"+page,
+				MakeInfoboxTemplate.template(run, concepts, subject)
+			);
+		}
 		
 	}
 
@@ -62,7 +60,7 @@ public class InfoboxTemplates extends SimpleBot implements RunOnPage {
 	public String getDescription() {
 		return
 			"""
-			This bot creates {{tl|Cite}} templates for all books with a facts page.
+			This bot creates infoboxes in subpages of [[Template:Facts/Infoboxes]]
 			""";
 	}
 		

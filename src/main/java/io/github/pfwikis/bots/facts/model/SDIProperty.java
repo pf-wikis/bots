@@ -4,12 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.fizzed.rocker.RockerContent;
-
 import io.github.pfwikis.bots.common.WikiAPI;
 import io.github.pfwikis.bots.common.bots.Run.SingleRun;
-import io.github.pfwikis.bots.common.model.SemanticAsk.Result;
-import io.github.pfwikis.bots.factshelper.FactsHelper;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +39,7 @@ public class SDIProperty {
 			)
 			.stream()
 			.map(p->new SDIProperty(
-					p.getFulltext().substring(9),
+					p.getPage().substring(9),
 					p.getPrintouts().getHasType(),
 					p.getPrintouts().getHasFactType(),
 					p.getPrintouts().getHasFactDisplayFormat(),
@@ -78,5 +74,9 @@ public class SDIProperty {
 
 	public String infoboxValue(WikiAPI wiki, List<Object> values) {
 		return factType.infoboxValue(wiki, this, values);
+	}
+	
+	public String infoboxValue(WikiAPI wiki, Object value) {
+		return factType.infoboxValue(wiki, this, value);
 	}
 }

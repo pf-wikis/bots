@@ -16,6 +16,7 @@ import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.bots.Bot;
 import io.github.pfwikis.bots.common.model.RecentChanges.RecentChange;
 import io.github.pfwikis.bots.factshelper.FactsHelper;
+import io.github.pfwikis.bots.infoboxtemplates.InfoboxTemplates;
 import io.github.pfwikis.bots.pagesyncer.PageSyncer;
 import io.github.pfwikis.bots.templatestyles.TemplateStyles;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +61,7 @@ public class RCWatcher extends Schedulable {
 		log.info("RC in {}", change.getTitle());
 		if(change.getTitle().startsWith("Facts:")) {
 			p.scheduleOnce(p.scheduleableBotOnPage(wiki, discord, makeBot(botCache, CiteTemplates.class, CiteTemplates::new), change.getTitle()));
+			p.scheduleOnce(p.scheduleableBotOnPage(wiki, discord, makeBot(botCache, InfoboxTemplates.class, InfoboxTemplates::new), change.getTitle()));
 		}
 		if(
 			change.getTitle().equals("User:Bot Facts Helper/Config")

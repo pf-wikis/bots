@@ -2,11 +2,12 @@ package io.github.pfwikis.bots.common.model;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
@@ -40,11 +41,13 @@ public class SemanticAsk {
 	
 	@Data
 	public static class Result {
-		private String fulltext;
+		@JsonProperty("fulltext")
+		private String page;
         private String fullurl;
         private int namespace;
         @JsonDeserialize(using = PrintoutsDeserializer.class)
         private Printouts printouts;
+        private String exists;
 	}
 	
 	@Data
@@ -97,6 +100,9 @@ public class SemanticAsk {
 		@JsonProperty("Disable autocomplete")
 		@JsonDeserialize(converter = MWJsonHelper.BooleanConverter.class)
 		private Boolean disableAutocomplete;
+		@JsonProperty("Created from")
+		private Result createdFrom;
+		private List<JsonNode> value = Collections.emptyList();
 	}
 	
 	@Data

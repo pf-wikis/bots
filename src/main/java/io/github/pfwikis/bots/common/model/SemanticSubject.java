@@ -1,9 +1,12 @@
 package io.github.pfwikis.bots.common.model;
 
+import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.FACT_TYPE;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Year;
+import java.time.YearMonth;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -12,8 +15,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.util.StdConverter;
-import com.fizzed.rocker.RockerContent;
-import com.google.common.collect.MoreCollectors;
 
 import io.github.pfwikis.bots.common.WikiAPI;
 import io.github.pfwikis.bots.facts.model.SDIConcept;
@@ -22,7 +23,6 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.FACT_TYPE;
 
 @Data
 public class SemanticSubject implements SemanticObject {
@@ -34,6 +34,7 @@ public class SemanticSubject implements SemanticObject {
 
 	
 	public boolean hasConcept(SDIConcept concept) {
+		if(!has(SDIPropertyTypeMapping.FACT_TYPE)) return false;
 		return ("Facts/"+concept.getName()).equals(get(SDIPropertyTypeMapping.FACT_TYPE).getTitle());
 	}
 	
@@ -72,11 +73,13 @@ public class SemanticSubject implements SemanticObject {
 				case 9 -> PageRef.of(item);
 				case 6 -> {
 					var parts = Arrays.stream(item.textValue().split("/")).mapToInt(Integer::parseInt).toArray();
-					if(parts.length==4)
-						yield LocalDate.of(parts[1], parts[2], parts[3]);
-					if(parts.length==8)
-						yield LocalDateTime.of(parts[1], parts[2], parts[3], parts[4], parts[5], parts[6]);
-					throw new IllegalStateException("Unhandled date format for "+item);
+					yield switch(parts.length) {
+						case 2 -> Year.of(parts[1]);
+						case 3 -> YearMonth.of(parts[1], parts[2]);
+						case 4 -> LocalDate.of(parts[1], parts[2], parts[3]);
+						case 8 -> LocalDateTime.of(parts[1], parts[2], parts[3], parts[4], parts[5], parts[6]);
+						default -> throw new IllegalStateException("Unhandled date format for "+item);
+					};
 				}
 				default -> throw new IllegalStateException("Unhandled subject property type "+type);
 			};
@@ -108,10 +111,16 @@ public class SemanticSubject implements SemanticObject {
 			return switch(ns) {
 				case 0 -> "";
 				case 6 -> "File:";
+				case 10 -> "Template:";
 				case 14 -> "Category:";
 				case 128 -> "Facts:";
 				default -> throw new IllegalStateException("Unhandled namespace "+ns);
 			}+title;
+		}
+		
+		@Override
+		public String toString() {
+			return toFullTitle();
 		}
 
 		public String toWikiLink(WikiAPI wiki) {
