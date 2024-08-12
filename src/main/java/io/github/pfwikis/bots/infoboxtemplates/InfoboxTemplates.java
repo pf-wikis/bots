@@ -1,5 +1,6 @@
 package io.github.pfwikis.bots.infoboxtemplates;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -82,10 +83,10 @@ public class InfoboxTemplates extends SimpleBot implements RunOnPageBot, Scatter
 	public static record Shard(String page, boolean first) {}
 	@Override
 	public List<Shard> createScatterShards() {
-		var shards = run.getWiki().getPagesInNamespace("Facts")
+		var shards = new ArrayList<>(run.getWiki().getPagesInNamespace("Facts")
 			.stream()
 			.map(p->new Shard(p.getTitle(), false))
-			.toList();
+			.toList());
 		shards.set(0, new Shard(shards.get(0).page(), true));
 		return shards;
 	}

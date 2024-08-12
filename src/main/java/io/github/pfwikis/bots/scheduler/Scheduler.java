@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
 import com.beust.jcommander.Parameter;
@@ -65,12 +66,11 @@ public class Scheduler {
 			
 			schedule(new HealthCheck(discord), Duration.ofHours(24));
 			for(var wiki : Wiki.values()) {
+				planScatter(wiki, discord, new PropertyStatistics(), Duration.ofHours(24), Duration.ofDays(1));
+				planScatter(wiki, discord, new InfoboxTemplates(), Duration.ofHours(24), null);
 				scheduleOnce(scheduleableBot(wiki, discord, new Meta()));
 				schedule(scheduleableBot(wiki, discord, new NewsFeedReader()), Duration.ofHours(1));
 				schedule(scheduleableBot(wiki, discord, new Maintenance()), Duration.ofDays(7));
-				planScatter(wiki, discord, new PropertyStatistics(), Duration.ofHours(24), Duration.ofDays(1));
-				planScatter(wiki, discord, new InfoboxTemplates(), Duration.ofHours(24), null);
-				
 				
 				schedule(
 					new RCWatcher(this, discord, wiki),
@@ -78,11 +78,11 @@ public class Scheduler {
 				);
 			}
 			
-			worker();
+			worker(discord);
 		}
 	}
 	
-	private void worker() {
+	private void worker(Discord discord) {
 		var thread = Thread.currentThread();
 		thread.setName("Scheduler Worker");
 		while(true) {
@@ -99,6 +99,13 @@ public class Scheduler {
 				task.run();
 			} catch(Exception e) {
 				log.error("Failed to execute job {}", name, e);
+				if(discord != null)
+					discord.report("""
+					**Bots Error**
+					```java
+					{}
+					```
+					""".replace("{}", ExceptionUtils.getStackTrace(e)));
 			} finally {
 				thread.setName("Scheduler Worker");
 			}
@@ -157,6 +164,7 @@ public class Scheduler {
 			@Override
 			public void execute() {
 				synchronized(bot) {
+					initBot(wiki, discord, bot);
 					var shards = bot.createScatterShards();
 					var scatterDur = scatterWidth.dividedBy(shards.size());
 					for(int i=0;i<shards.size();i++) {
@@ -169,6 +177,14 @@ public class Scheduler {
 							scheduleOnce(sbot, delay);
 						}
 					}
+					log.info(
+						"Planned {} scattered runs withing the next {} every {} for bot {}-{}",
+						shards.size(),
+						scatterWidth,
+						scatterDur,
+						wiki.getCode(),
+						bot.getId()
+					);
 				}
 			}
 		});
