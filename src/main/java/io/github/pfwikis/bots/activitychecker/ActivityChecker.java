@@ -11,6 +11,7 @@ import com.beust.jcommander.Parameters;
 import io.github.pfwikis.bots.Runner;
 import io.github.pfwikis.bots.common.Discord;
 import io.github.pfwikis.bots.common.bots.Bot;
+import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.common.model.AllusersQuery.WUser;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +25,7 @@ public class ActivityChecker extends SimpleBot {
 	}
 
 	@Override
-	public void run() throws IOException, InterruptedException {
+	public void run(RunContext ctx) throws IOException, InterruptedException {
 		var admins = run.getWiki().getAdmins();
 		var oldAdmins = new ArrayList<WUser>();
 		log.info("Found {} admins", admins.size());

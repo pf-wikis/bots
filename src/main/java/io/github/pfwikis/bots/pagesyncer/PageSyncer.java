@@ -11,14 +11,15 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.beust.jcommander.Parameters;
 
-import io.github.pfwikis.bots.common.bots.Bot.RunOnPage;
 import io.github.pfwikis.bots.common.bots.DualBot;
+import io.github.pfwikis.bots.common.bots.RunContext;
+import io.github.pfwikis.bots.common.bots.RunOnPageBot;
 import io.github.pfwikis.bots.common.model.Page;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Parameters
-public class PageSyncer extends DualBot implements RunOnPage {
+public class PageSyncer extends DualBot implements RunOnPageBot {
 
 	public PageSyncer() {
 		super("page-syncer", "Bot Page Syncer");
@@ -34,7 +35,11 @@ public class PageSyncer extends DualBot implements RunOnPage {
 	private static final int[] NAMESPACES = {8,10,14,102,106,274,828};
 
 	@Override
-	public void run() throws IOException {
+	public void run(RunContext ctx) throws Exception {
+		if(ctx.getPage() != null) {
+			runOnPage(ctx.getPage());
+			return;
+		}
 		var sfToken = run.getSfWiki().requestToken("csrf");
 		
 		var toSyncPages = run.getPfWiki().getPagesInCategory("Category:Synced to starfinderwiki", Arrays.stream(NAMESPACES).mapToObj(Integer::toString).collect(Collectors.joining("|")));
@@ -83,7 +88,6 @@ public class PageSyncer extends DualBot implements RunOnPage {
         return synced;
 	}
 
-	@Override
 	public void runOnPage(String page) throws Exception {
 		if(!page.endsWith("/doc"))
 			runOnPage(page+"/doc");

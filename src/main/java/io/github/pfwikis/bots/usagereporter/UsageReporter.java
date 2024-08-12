@@ -16,6 +16,7 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 import com.google.common.collect.Multiset.Entry;
 
+import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.utils.Jackson;
 import io.github.pfwikis.bots.utils.MWTable;
@@ -45,7 +46,7 @@ public class UsageReporter extends SimpleBot {
 	}
 
 	@Override
-	public void run() throws Exception {
+	public void run(RunContext ctx) throws Exception {
 		topCategories();
 		topResolvedCategories();
 		referrer();

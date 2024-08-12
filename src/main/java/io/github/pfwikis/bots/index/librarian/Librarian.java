@@ -7,6 +7,7 @@ import java.util.Comparator;
 import com.beust.jcommander.Parameters;
 import com.google.common.collect.HashMultiset;
 
+import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.index.common.GDrive;
 import io.github.pfwikis.bots.utils.Jackson;
@@ -21,7 +22,7 @@ public class Librarian extends SimpleBot {
 	}
 	
 	@Override
-	public void run() throws Exception {
+	public void run(RunContext ctx) throws Exception {
 		var config = loadConfig(LibrarianConfig.class);
 		collectPages(config);
 		Collections.sort(config.getPages(), Comparator.comparing(LibrarianConfig.Page::getTitle));

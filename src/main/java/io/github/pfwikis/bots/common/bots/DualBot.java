@@ -22,7 +22,7 @@ public abstract class DualBot extends Bot<DualRun> {
 		var run = new DualRun();
 		var sBot = new SimpleBot(id, botName) {
 			@Override
-			public void run() throws IOException {}
+			public void run(RunContext ctx) throws IOException {}
 			
 			@Override
 			public String getDescription() {return null;}

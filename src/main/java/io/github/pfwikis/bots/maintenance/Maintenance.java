@@ -2,6 +2,7 @@ package io.github.pfwikis.bots.maintenance;
 
 import com.beust.jcommander.Parameters;
 
+import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,7 +16,7 @@ public class Maintenance extends SimpleBot {
 	}
 
 	@Override
-	protected void run() throws Exception {
+	protected void run(RunContext ctx) throws Exception {
 		var entries = run.getWiki().semanticAsk("[[Created from::+]]|?Created from");
 		entries.forEach(r-> {
 			var generated = r.getPage();

@@ -17,11 +17,13 @@ import io.github.pfwikis.bots.Runner;
 import io.github.pfwikis.bots.common.Discord;
 import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.WikiAPI;
-import io.github.pfwikis.bots.common.bots.Bot.RunOnPage;
 import io.github.pfwikis.bots.common.bots.DualBot;
 import io.github.pfwikis.bots.common.bots.Run.SingleRun;
+import io.github.pfwikis.bots.common.bots.RunContext;
+import io.github.pfwikis.bots.common.bots.ScatteredRunnableBot;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.healthcheck.HealthCheck;
+import io.github.pfwikis.bots.infoboxtemplates.InfoboxTemplates;
 import io.github.pfwikis.bots.maintenance.Maintenance;
 import io.github.pfwikis.bots.meta.Meta;
 import io.github.pfwikis.bots.newsfeedreader.NewsFeedReader;
@@ -66,7 +68,9 @@ public class Scheduler {
 				scheduleOnce(scheduleableBot(wiki, discord, new Meta()));
 				schedule(scheduleableBot(wiki, discord, new NewsFeedReader()), Duration.ofHours(1));
 				schedule(scheduleableBot(wiki, discord, new Maintenance()), Duration.ofDays(7));
-				schedule(scheduleableBot(wiki, discord, new PropertyStatistics()), Duration.ofDays(7));
+				planScatter(wiki, discord, new PropertyStatistics(), Duration.ofHours(24), Duration.ofDays(1));
+				planScatter(wiki, discord, new InfoboxTemplates(), Duration.ofHours(24), null);
+				
 				
 				schedule(
 					new RCWatcher(this, discord, wiki),
@@ -120,52 +124,74 @@ public class Scheduler {
 			bot.setRun(bot.createRuns().get(0));
 	}
 	
-	public <T extends SimpleBot&RunOnPage> SchedulableBot scheduleableBotOnPage(Wiki wiki, Discord discord, T bot, String title) {
-		return new SchedulableBot(bot, wiki.name()+"-"+bot.getId()+" on "+title) {
+	public SchedulableBot scheduleableBot(Wiki wiki, Discord discord, SimpleBot bot, RunContext ctx) {
+		return new SchedulableBot(bot, wiki.name()+"-"+bot.getId()+ctx.toInfoText()) {
 			@Override
 			public void execute() {
 				synchronized(bot) {
 					initBot(wiki, discord, bot);
-					bot.runSinglePage(title);
+					bot.startRun(discord, ctx);
 				}
 			}
 		};
 	}
 	
-	public <T extends DualBot&RunOnPage> SchedulableBot scheduleableBotOnPage(Discord discord, T bot, String title) {
-		return new SchedulableBot(bot, bot.getId()+" on "+title) {
+	public SchedulableBot scheduleableBot(Discord discord, DualBot bot, RunContext ctx) {
+		return new SchedulableBot(bot, bot.getId()+ctx.toInfoText()) {
 			@Override
 			public void execute() {
 				synchronized(bot) {
 					initBot(discord, bot);
-					bot.runSinglePage(title);
+					bot.startRun(discord, ctx);
 				}
 			}
 		};
 	}
 	
 	public SchedulableBot scheduleableBot(Wiki wiki, Discord discord, SimpleBot bot) {
-		return new SchedulableBot(bot, wiki.name()+"-"+bot.getId()) {
+		return scheduleableBot(wiki, discord, bot, new RunContext());
+	}
+	
+	private <K, T extends SimpleBot&ScatteredRunnableBot<K>> void planScatter(Wiki wiki, Discord discord, T bot, Duration scatterWidth, Duration sleepBetweenRuns) {
+		scheduleOnce(new SchedulableBot(bot, wiki.name()+"-"+bot.getId()+"-planScatter") {
 			@Override
 			public void execute() {
 				synchronized(bot) {
-					initBot(wiki, discord, bot);
-					bot.startRun(discord);
+					var shards = bot.createScatterShards();
+					var scatterDur = scatterWidth.dividedBy(shards.size());
+					for(int i=0;i<shards.size();i++) {
+						var sbot = scheduleableBot(wiki, discord, bot, RunContext.builder().scatterShard(shards.get(i)).build());
+						var delay = Instant.now().plus(scatterDur.multipliedBy(i+1));
+						if(sleepBetweenRuns != null) {
+							schedule(sbot, sleepBetweenRuns, delay);
+						}
+						else {
+							scheduleOnce(sbot, delay);
+						}
+					}
 				}
 			}
-		};
+		});
 	}
 	
 	public void scheduleOnce(Schedulable schedulable) {
+		scheduleOnce(schedulable, Instant.now());
+	}
+	
+	public void scheduleOnce(Schedulable schedulable, Instant firstRun) {
 		if(Arrays.stream(tasks.toArray(Task[]::new)).anyMatch(t->t.getSchedulable().getName().equals(schedulable.getName()))) {
 			log.warn("Already scheduled a task with name '{}'. Skipping.", schedulable.getName());
 			return;
 		}
-		schedule(new Task(schedulable, Instant.now()));
+		schedule(new Task(schedulable, firstRun));
 	}
 	
 	public void schedule(Schedulable schedulable, Duration sleepBetweenRuns) {
-		schedule(new Task.Repeatable(schedulable, Instant.now(), this, sleepBetweenRuns));
+		schedule(schedulable, sleepBetweenRuns, Instant.now());
+	}
+	
+	public void schedule(Schedulable schedulable, Duration sleepBetweenRuns, Instant firstRun) {
+		schedule(new Task.Repeatable(schedulable, firstRun, this, sleepBetweenRuns));
 	}
 	
 	public void schedule(Task task) {

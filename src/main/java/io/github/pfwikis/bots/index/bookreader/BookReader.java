@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import com.beust.jcommander.Parameters;
 import com.google.common.util.concurrent.MoreExecutors;
 
+import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.index.common.GDrive;
 import lombok.extern.slf4j.Slf4j;
@@ -65,7 +66,7 @@ public class BookReader extends SimpleBot {
 	}
 	
 	@Override
-	public void run() throws Exception {
+	public void run(RunContext ctx) throws Exception {
 	}
 
 

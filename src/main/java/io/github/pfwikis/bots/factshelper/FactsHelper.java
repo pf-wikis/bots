@@ -7,6 +7,7 @@ import java.io.IOException;
 import com.beust.jcommander.Parameters;
 
 import io.github.pfwikis.bots.common.Wiki;
+import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.facts.SDIModel;
 import io.github.pfwikis.bots.facts.model.SDIConcept;
@@ -22,7 +23,7 @@ public class FactsHelper extends SimpleBot {
 	}
 
 	@Override
-	public void run() throws IOException {
+	public void run(RunContext ctx) throws IOException {
 		if(run.getServer()==Wiki.SF) return;
 		
 		var props = SDIProperty.load(run);

@@ -14,6 +14,7 @@ import io.github.pfwikis.bots.citetemplates.CiteTemplates;
 import io.github.pfwikis.bots.common.Discord;
 import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.bots.Bot;
+import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.model.RecentChanges.RecentChange;
 import io.github.pfwikis.bots.factshelper.FactsHelper;
 import io.github.pfwikis.bots.infoboxtemplates.InfoboxTemplates;
@@ -59,9 +60,10 @@ public class RCWatcher extends Schedulable {
 
 	private void handle(RecentChange change, ClassToInstanceMap<Bot<?>> botCache) {
 		log.info("RC in {}", change.getTitle());
+		var ctx = RunContext.builder().page(change.getTitle()).build();
 		if(change.getTitle().startsWith("Facts:")) {
-			p.scheduleOnce(p.scheduleableBotOnPage(wiki, discord, makeBot(botCache, CiteTemplates.class, CiteTemplates::new), change.getTitle()));
-			p.scheduleOnce(p.scheduleableBotOnPage(wiki, discord, makeBot(botCache, InfoboxTemplates.class, InfoboxTemplates::new), change.getTitle()));
+			p.scheduleOnce(p.scheduleableBot(wiki, discord, makeBot(botCache, CiteTemplates.class, CiteTemplates::new), ctx));
+			p.scheduleOnce(p.scheduleableBot(wiki, discord, makeBot(botCache, InfoboxTemplates.class, InfoboxTemplates::new), ctx));
 		}
 		if(
 			change.getTitle().equals("User:Bot Facts Helper/Config")
@@ -74,7 +76,7 @@ public class RCWatcher extends Schedulable {
 			p.scheduleOnce(p.scheduleableBot(wiki, discord, makeBot(botCache, TemplateStyles.class, TemplateStyles::new)));
 		}
 		if(wiki == Wiki.PF) {
-			p.scheduleOnce(p.scheduleableBotOnPage(discord, makeBot(botCache, PageSyncer.class, PageSyncer::new), change.getTitle()));
+			p.scheduleOnce(p.scheduleableBot(discord, makeBot(botCache, PageSyncer.class, PageSyncer::new), ctx));
 		}
 	}
 	

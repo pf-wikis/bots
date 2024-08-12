@@ -2,32 +2,38 @@ package io.github.pfwikis.bots.propertystatistics;
 
 import java.io.IOException;
 import java.util.Comparator;
+import java.util.List;
+import java.util.stream.IntStream;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.beust.jcommander.Parameters;
-import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.NumericNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset.Entry;
 
+import io.github.pfwikis.bots.common.bots.RunContext;
+import io.github.pfwikis.bots.common.bots.ScatteredRunnableBot;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Parameters
-public class PropertyStatistics extends SimpleBot {
-
+public class PropertyStatistics extends SimpleBot implements ScatteredRunnableBot<PropertyStatistics.Shard> {
+	
 	public PropertyStatistics() {
 		super("property-statistics", "Bot Property Statistics");
 	}
 
 	@Override
-	public void run() throws IOException, InterruptedException {
+	public void run(RunContext ctx) throws IOException, InterruptedException {
 		var props = run.getWiki().getPagesInNamespace("Property");
 		for(var prop:props) {
+			if(ctx.getScatterShard() instanceof Shard shard && prop.getTitle().hashCode()%10 != shard.hashModulo) {
+				continue;
+			}
 			String name = StringUtils.removeStart(prop.getTitle(), "Property:");
 			var results = run.getWiki().semanticAsk("[["+name+"::+]]|?"+name+"=value|format=valuerank|maxtags=10000");
 			var counts = HashMultiset.<String>create();
@@ -78,4 +84,12 @@ public class PropertyStatistics extends SimpleBot {
 		""";
 	}
 
+	
+	public static record Shard(int hashModulo) {}
+
+
+	@Override
+	public List<Shard> createScatterShards() {
+		return IntStream.range(0, 10).mapToObj(Shard::new).toList();
+	}
 }

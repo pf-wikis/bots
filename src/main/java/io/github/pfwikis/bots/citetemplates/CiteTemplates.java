@@ -1,6 +1,5 @@
 package io.github.pfwikis.bots.citetemplates;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -10,7 +9,8 @@ import org.apache.commons.lang3.StringUtils;
 import com.beust.jcommander.Parameters;
 
 import io.github.pfwikis.bots.citetemplates.BookDef.SectionDef;
-import io.github.pfwikis.bots.common.bots.Bot.RunOnPage;
+import io.github.pfwikis.bots.common.bots.RunContext;
+import io.github.pfwikis.bots.common.bots.RunOnPageBot;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.common.model.SemanticAsk.Labeled;
 import io.github.pfwikis.bots.common.model.SemanticAsk.Ordered;
@@ -22,17 +22,18 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Parameters
-public class CiteTemplates extends SimpleBot implements RunOnPage {
+public class CiteTemplates extends SimpleBot implements RunOnPageBot {
 
 	public CiteTemplates() {
 		super("cite-templates", "Bot Cite Templates");
 	}
 	
 	@Override
-	public void runOnPage(String page) {
+	public void run(RunContext ctx) {
+		var page = ctx.getPage();
 		//also check superpages
 		if(page != null && page.contains("/")) {
-			runOnPage(page.substring(0,page.lastIndexOf("/")));
+			run(ctx.withPage(page.substring(0,page.lastIndexOf("/"))));
 		}
 		var books = run.getWiki().semanticAsk(
 			(page==null?"":("[["+page+"]]"))
@@ -103,11 +104,6 @@ public class CiteTemplates extends SimpleBot implements RunOnPage {
 		}
 	}
 
-	@Override
-	public void run() throws IOException {
-		runOnPage(null);
-	}
-	
 	private List<String> sortAuthors(Printouts out) {
 		List<String> result = new ArrayList<>();
 		out.getPrimaryAuthorsOrdered().stream()

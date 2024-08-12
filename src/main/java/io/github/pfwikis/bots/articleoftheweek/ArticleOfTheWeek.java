@@ -18,6 +18,7 @@ import com.beust.jcommander.internal.Lists;
 
 import io.github.pfwikis.bots.common.bots.Run.SingleRun;
 import io.github.pfwikis.bots.common.Discord;
+import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.common.model.ParseResponse.Content;
 import io.github.pfwikis.bots.common.model.RecentChanges.RecentChange;
@@ -35,7 +36,7 @@ public class ArticleOfTheWeek extends SimpleBot {
 	}
 
 	@Override
-	public void run() throws IOException {
+	public void run(RunContext ctx) throws IOException {
 		var article = findArticle();
 		if(article == null) return;
 		

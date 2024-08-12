@@ -15,6 +15,7 @@ import com.beust.jcommander.Parameters;
 
 import io.github.pfwikis.bots.common.Style;
 import io.github.pfwikis.bots.common.Wiki;
+import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.utils.Retry;
 
@@ -26,7 +27,7 @@ public class NewsFeedReader extends SimpleBot {
 	}
 
 	@Override
-	public void run() throws IOException {
+	public void run(RunContext ctx) throws IOException {
 		String pageContent = 
 			"<noinclude>{{Bot created|%s}}</noinclude>".formatted(this.getBotName())
 			+collectFeed("Paizo blog", "https://paizo.com/community/blog&xml=atom")

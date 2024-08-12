@@ -32,35 +32,7 @@ public abstract class Bot<RUN extends Run> {
 	protected Discord discord;
 	private boolean hadError = false;
 
-	public static interface RunOnPage {
-		void runOnPage(String page) throws Exception;
-		void executeBeforeRuns();
-		Run getRun();
-		Discord getDiscord();
-		void createBotReport();
-		void reportException(Exception e);
-		void executeAfterRuns();
-		
-		public default void runSinglePage(String page) {
-			synchronized(this) {
-				try {
-					executeBeforeRuns();
-					getRun().setDiscord(getDiscord());
-					
-					try {
-						runOnPage(page);
-						createBotReport();
-					} catch (Exception e) {
-						reportException(e);
-					}
-					executeAfterRuns();
-				} catch(Exception e) {
-					reportException(e);
-				}
-			}
-		}
-	}
-	protected abstract void run() throws Exception;
+	protected abstract void run(RunContext ctx) throws Exception;
 
 	public void beforeRuns() throws Exception {}
 	public void afterRuns() throws Exception {}
@@ -92,7 +64,7 @@ public abstract class Bot<RUN extends Run> {
 				this.run.setDiscord(discord);
 				
 				try {
-					run();
+					run(new RunContext());
 					createBotReport();
 				} catch (Exception e) {
 					reportException(e);
@@ -107,16 +79,20 @@ public abstract class Bot<RUN extends Run> {
 		}
 	}
 	
-	public synchronized void startRun(Discord discord) {
-		executeBeforeRuns();
-		this.run.setDiscord(discord);
+	public synchronized void startRun(Discord discord, RunContext ctx) {
 		try {
-			run();
-			createBotReport();
-		} catch (Exception e) {
+			executeBeforeRuns();
+			this.run.setDiscord(discord);
+			try {
+				run(ctx);
+				createBotReport();
+			} catch (Exception e) {
+				reportException(e);
+			}
+			executeAfterRuns();
+		} catch(Exception e) {
 			reportException(e);
 		}
-		executeAfterRuns();
 	}
 	
 	public void executeBeforeRuns() {

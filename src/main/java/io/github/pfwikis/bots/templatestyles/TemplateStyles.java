@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.beust.jcommander.Parameters;
 
 import io.github.pfwikis.bots.common.Wiki;
+import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,7 +25,7 @@ public class TemplateStyles extends SimpleBot {
 	}
 
 	@Override
-	public void run() throws IOException {
+	public void run(RunContext ctx) throws IOException {
 		var styles = run.getWiki().getPagesInNamespace("Style");
 		var fullStyle = new StringBuilder();
 		

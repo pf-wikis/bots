@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import com.beust.jcommander.Parameters;
 
 import io.github.pfwikis.bots.Runner;
+import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,7 +43,7 @@ public class Meta extends SimpleBot {
 	}
 
 	@Override
-	public void run() throws Exception {
+	public void run(RunContext ctx) throws Exception {
 		Runner.getAllBots().forEach(bot-> {
 			if(bot instanceof SimpleBot sb)
 				sb.setRun(run);

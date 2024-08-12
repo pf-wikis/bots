@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.beust.jcommander.Parameters;
 
 import io.github.pfwikis.bots.common.Discord;
+import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.common.model.Page;
 import io.github.pfwikis.bots.utils.Jackson;
@@ -43,7 +44,7 @@ public class Assistant extends SimpleBot {
 	}
 
 	@Override
-	public void run() throws Exception {
+	public void run(RunContext ctx) throws Exception {
 		//check if task is in environment variable
 		String env = System.getenv("ISSUE_TEMPLATE");
 		log.info("Got task from issue: {}", env);
