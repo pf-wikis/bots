@@ -165,7 +165,25 @@ public class SDIModel {
 
 			@Override
 			protected void generateCategories() {
-				String categoryWord = "Adventure".equals(page.getOr(BOOK_TYPE, ""))?"adventures":"sourcebooks";
+				var bookType = page.getOr(BOOK_TYPE, "");
+				var isAdventure = false;
+				if(Set.of(
+						"Adventure",
+						"Adventure Path issue",
+						game+" Society scenario",
+						game+" Society (2E) scenario",
+						game+" Bounty",
+						game+" Quest",
+						game+" Quest (2E)",
+						game+" One-Shot",
+						game+" Society Adventure Card Guild Adventure"
+				).contains(bookType)) {
+					addCats("Adventures");
+					addCats(ifYear("{} adventures"));
+					isAdventure = true;
+				}
+				
+				String categoryWord = isAdventure?"adventures":"sourcebooks";
 				addCats(switch(page.getOr(RULE_SYSTEM, "")) {
 					case "PFRPG" -> "PFRPG "+categoryWord;
 					case "PF2",
@@ -181,30 +199,8 @@ public class SDIModel {
 					default->List.of();
 				});
 				
-				var bookType = page.getOr(BOOK_TYPE, "");
-				if(Set.of(
-						"Core",
-						"Sourcebook"
-				).contains(bookType)) {
-					addCats("Sourcebooks");
-					addCats(ifYear("{} sourcebooks"));
-				}
-				if(Set.of(
-						"Adventure",
-						"Adventure Path issue",
-						game+" Society scenario",
-						game+" Society (2E) scenario",
-						game+" Bounty",
-						game+" Quest",
-						game+" Quest (2E)",
-						game+" One-Shot",
-						game+" Society Adventure Card Guild Adventure"
-				).contains(bookType)) {
-					addCats("Adventures");
-					addCats(ifYear("{} adventures"));
-				}
-				
 				addCats(switch(bookType) {
+					case "Sourcebook" -> List.of("Sourcebooks", ifYear("{} sourcebooks"));
 					case "Adventure Path issue" -> game+" Adventure Path";
 					case "Adventure Path compilation" -> List.of(game+" Adventure Path", "Adventure compilations");
 					case "Pathfinder Quest" -> "Pathfinder Quests";
@@ -216,13 +212,12 @@ public class SDIModel {
 					case "Pathfinder One-Shot" -> "Pathfinder One-Shots";
 					case "Starfinder One-Shot" -> "Starfinder One-Shots";
 					case "Pathfinder Society Adventure Card Guild Adventure" -> "Pathfinder Society Adventure Card Guild scenarios";
-					case "Starfinder Society Adventure Card Guild Adventure" -> "Starfinder Society Adventure Card Guild scenarios";
 					case "Novel" -> List.of("Novels", "Fiction", ifYear("{} fiction"));
 					case "Novella" -> List.of("Novellas", "Fiction", ifYear("{} fiction"));
-					case "Periodical" -> List.of("Periodicals", ifYear("{} periodicals"));
+					case "Periodical" -> List.of("Periodicals", "Fiction", ifYear("{} fiction"), ifYear("{} periodicals"));
 					case "Comic book" -> List.of(
-						"Comics",
-						ifYear("{} comics"),
+						"Comics", ifYear("{} comics"),
+						"Fiction", ifYear("{} fiction"),
 						series.stream().map(s->s.getTitle()+" comics").toList(),
 						page.getAll(AUTHOR_ALL).stream().map(a->run.getWiki().getDisplayTitle(a.toFullTitle())).map(a->"Comics by "+a).toList()
 					);

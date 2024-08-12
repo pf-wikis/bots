@@ -45,17 +45,17 @@ public class Replacer extends SimpleBot {
 				run.getWiki().delete(p, "Remove outdated page");
 		}*/
 		
-		var pages = run.getWiki().semanticAsk("[[Deck type::Card game]]");
+		var pages = run.getWiki().semanticAsk("[[Book type::Core]]");
 		for(var p:pages) {
 			
 			var txt = run.getWiki().getPageText(p.getPage());
 			
-			var ntxt = txt.replaceAll("(\\| *Deck type *= *)[^\\|\n]*", "$1Cards");
+			var ntxt = txt.replaceAll("(\\| *Book type *= *)[^\\|\n]*", "$1"+"Sourcebook");
 			if(!ntxt.equals(txt)) {
 				run.getWiki().edit(
 					p.getPage(),
 					ntxt,
-					"standardize facts values"
+					"Core books are now considered sourcebooks"
 				);
 			}
 		}
