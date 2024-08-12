@@ -61,7 +61,7 @@ public class InfoboxTemplates extends SimpleBot implements RunOnPageBot, Scatter
 	private void runOnShard(Shard shard) {
 		if(shard.first()) {
 			run.getWiki().editIfChange("Template:Facts/Infoboxes", """
-				{{Bot created|Bot Infobox Maker}}
+				{{Bot created|Bot Infobox Templates}}
 				This is an overview over the infoboxes created by [[User:Bot Infobox Templates]] from facts pages:
 				{{Subpages|Template:Facts/Infoboxes}}		
 				""", "Update from bot update.");
