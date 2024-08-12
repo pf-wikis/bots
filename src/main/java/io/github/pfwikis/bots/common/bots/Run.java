@@ -2,11 +2,8 @@ package io.github.pfwikis.bots.common.bots;
 
 import java.time.Duration;
 import java.time.OffsetDateTime;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 import io.github.pfwikis.bots.common.Discord;
 import io.github.pfwikis.bots.common.Wiki;
@@ -59,7 +56,7 @@ public abstract class Run {
 		private final SimpleCache<Object> cache = new SimpleCache<>(Duration.ofMinutes(10));
 		
 		@SuppressWarnings("unchecked")
-		public synchronized <T> T cache(String cacheId, String key, Supplier<T> calc) {
+		public synchronized <T> T cache(String cacheId, String key, Callable<T> calc) {
 			return (T)cache.cache(cacheId, key, calc);
 		}
 

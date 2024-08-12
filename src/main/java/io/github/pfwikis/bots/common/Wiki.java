@@ -1,11 +1,7 @@
 package io.github.pfwikis.bots.common;
 
 import java.time.Duration;
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.concurrent.Callable;
 
 import io.github.pfwikis.bots.utils.SimpleCache;
 import lombok.Getter;
@@ -44,7 +40,7 @@ public enum Wiki {
 	private final SimpleCache<Object> cache = new SimpleCache<>(Duration.ofDays(1));
 	
 	@SuppressWarnings("unchecked")
-	public synchronized <T> T cache(String cacheId, String key, Supplier<T> calc) {
+	public synchronized <T> T cache(String cacheId, String key, Callable<T> calc) {
 		return (T)cache.cache(cacheId, key, calc);
 	}
 }
