@@ -9,6 +9,8 @@ import java.time.YearMonth;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -89,6 +91,7 @@ public class SemanticSubject implements SemanticObject {
 	@Getter
 	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class PageRef {
+		private final String interwiki;
 		private final int ns;
 		private final String title;
 		
@@ -99,23 +102,25 @@ public class SemanticSubject implements SemanticObject {
 		
 		@JsonCreator
 		public static PageRef of(String txt) {
-			int split = txt.lastIndexOf("##");
-			txt = txt.substring(0,split);
-			split = txt.lastIndexOf('#');
+			var parts = StringUtils.splitPreserveAllTokens(txt, '#');
 			return new PageRef(
-				Integer.parseInt(txt.substring(split+1)),
-				txt.substring(0, split).replace('_', ' '));
+				parts[2],
+				Integer.parseInt(parts[1]),
+				parts[0].replace('_', ' '));
 		}
 
 		public String toFullTitle() {
-			return switch(ns) {
-				case 0 -> "";
-				case 6 -> "File:";
-				case 10 -> "Template:";
-				case 14 -> "Category:";
-				case 128 -> "Facts:";
-				default -> throw new IllegalStateException("Unhandled namespace "+ns);
-			}+title;
+			return
+				(interwiki.isBlank()?"":(interwiki+":"))
+				+ switch(ns) {
+					case 0 -> "";
+					case 6 -> "File:";
+					case 10 -> "Template:";
+					case 14 -> "Category:";
+					case 128 -> "Facts:";
+					default -> throw new IllegalStateException("Unhandled namespace "+ns);
+				}
+				+ title;
 		}
 		
 		@Override

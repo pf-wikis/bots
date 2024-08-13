@@ -308,14 +308,19 @@ public class WikiAPI {
 	}
 	
 	public String getDisplayTitle(String page) {
-		return server.cache("getDisplayTitle", page, () ->
-			query(
-				Query.DISPLAY_TITLE,
-				"titles", page,
-				"inprop", "displaytitle"
-	
-			).getPages().get(0).getDisplaytitle()
-		);
+		return server.cache("getDisplayTitle", page, () -> {
+			var results = query(
+					Query.DISPLAY_TITLE,
+					"titles", page,
+					"inprop", "displaytitle"
+				).getPages();
+			if(!results.isEmpty())
+				return results.getFirst().getDisplaytitle();
+			else {
+				//this can happen on interwiki links
+				return wiki.nss(page).replace('_', ' ');
+			}
+		});
 	}
 	
 	public List<WUser> getAdmins() {
