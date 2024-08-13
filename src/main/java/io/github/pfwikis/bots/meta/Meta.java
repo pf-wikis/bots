@@ -47,6 +47,8 @@ public class Meta extends SimpleBot {
 		Runner.getAllBots().forEach(bot-> {
 			if(bot instanceof SimpleBot sb)
 				sb.setRun(run);
+			var descr = bot.getDescription();
+			if(descr == null) return;
 			log.info("Updating info for bot {}", bot.getBotName());
 			var userPage = """
 			{{Bot|Virenerus}}
@@ -65,7 +67,7 @@ public class Meta extends SimpleBot {
 			{{User:%s/Status}}
 			|}
 			""".formatted(
-				bot.getDescription(),
+				descr,
 				"https://github.com/pf-wikis/bots/tree/main/src/main/java/"+bot.getClass().getName().replace(".", "/")+".java",
 				bot.getBotName()
 			);

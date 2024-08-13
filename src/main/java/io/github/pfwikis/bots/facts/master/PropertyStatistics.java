@@ -1,4 +1,4 @@
-package io.github.pfwikis.bots.propertystatistics;
+package io.github.pfwikis.bots.facts.master;
 
 import java.io.IOException;
 import java.util.Comparator;
@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 public class PropertyStatistics extends SimpleBot implements ScatteredRunnableBot<PropertyStatistics.Shard> {
 	
 	public PropertyStatistics() {
-		super("property-statistics", "Bot Property Statistics");
+		super("property-statistics", "Bot Facts Master");
 	}
 
 	@Override
@@ -73,15 +73,13 @@ public class PropertyStatistics extends SimpleBot implements ScatteredRunnableBo
 				sb.append("\n\t<tr><td>").append(e.getElement()).append("</td><td>").append(e.getCount()).append("</td></tr>");
 			}
 			sb.append("\n</table>");
-			run.getWiki().editIfChange("User:Bot Property Statistics/"+name, sb.toString(), "Update property statistics");
+			run.getWiki().editIfChange("User:Bot Facts Master/Statistics/"+name, sb.toString(), "Update property statistics");
 		}
 	}
 	
 	@Override
 	public String getDescription() {
-		return """
-		This bot regularly updates the statistics of properties on their pages
-		""";
+		return null;
 	}
 
 	
