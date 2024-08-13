@@ -85,6 +85,8 @@ public class InfoboxTemplates extends SimpleBot implements RunOnPageBot, Scatter
 	public List<Shard> createScatterShards() {
 		var shards = new ArrayList<>(run.getWiki().getPagesInNamespace("Facts")
 			.stream()
+			.filter(p->!p.getTitle().endsWith("/Releases"))
+			.filter(p->!p.getTitle().endsWith("/Sections"))
 			.map(p->new Shard(p.getTitle(), false))
 			.toList());
 		shards.set(0, new Shard(shards.get(0).page(), true));
