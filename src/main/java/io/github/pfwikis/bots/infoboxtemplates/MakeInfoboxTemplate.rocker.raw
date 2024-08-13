@@ -68,7 +68,7 @@ This template also add many categories based on the facts to each page it is use
 					<div class="infobox-book-releases-title">Releases</div>
 					@for(release:releases) {
 						<div class="name">
-							@release.get(RELEASE_TYPE)
+							@?release.getOr(RELEASE_TYPE, null)
 							@if(release.has(RELEASE_NOTE)) {
 								&nbsp;(@release.get(RELEASE_NOTE))
 							}

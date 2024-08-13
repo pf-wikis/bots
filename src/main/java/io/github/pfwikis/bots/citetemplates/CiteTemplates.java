@@ -31,10 +31,6 @@ public class CiteTemplates extends SimpleBot implements RunOnPageBot {
 	@Override
 	public void run(RunContext ctx) {
 		var page = ctx.getPage();
-		//also check superpages
-		if(page != null && page.contains("/")) {
-			run(ctx.withPage(page.substring(0,page.lastIndexOf("/"))));
-		}
 		var books = run.getWiki().semanticAsk(
 			(page==null?"":("[["+page+"]]"))
 			+ "[[Fact type::"

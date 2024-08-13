@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.common.base.Supplier;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.MutableClassToInstanceMap;
@@ -62,8 +64,14 @@ public class RCWatcher extends Schedulable {
 		log.info("RC in {}", change.getTitle());
 		var ctx = RunContext.builder().page(change.getTitle()).build();
 		if(change.getTitle().startsWith("Facts:")) {
-			p.scheduleOnce(p.scheduleableBot(wiki, discord, makeBot(botCache, CiteTemplates.class, CiteTemplates::new), ctx));
-			p.scheduleOnce(p.scheduleableBot(wiki, discord, makeBot(botCache, InfoboxTemplates.class, InfoboxTemplates::new), ctx));
+			var title = change.getTitle();
+			//special handling since those never contain facts themselves but feed their parent page
+			title = StringUtils.removeEnd(title, "/Releases");
+			title = StringUtils.removeEnd(title, "/Sections");
+			var localCtx = RunContext.builder().page(title).build();
+			
+			p.scheduleOnce(p.scheduleableBot(wiki, discord, makeBot(botCache, CiteTemplates.class, CiteTemplates::new), localCtx));
+			p.scheduleOnce(p.scheduleableBot(wiki, discord, makeBot(botCache, InfoboxTemplates.class, InfoboxTemplates::new), localCtx));
 		}
 		if(
 			change.getTitle().equals("User:Bot Facts Helper/Config")
