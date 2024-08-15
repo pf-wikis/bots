@@ -481,10 +481,28 @@ public class WikiAPI {
 		var ns = wiki.whichNS(page).v;
 		var title = wiki.nss(page);
 		try {
-			return this.get(SemanticSubject.Container.class, "smwbrowse",
+			var result = this.get(SemanticSubject.Container.class, "smwbrowse",
 				"browse", "subject",
 				"params", Jackson.JSON.writeValueAsString(Map.of("ns", ns, "subject", title))
 			);
+			
+			//package subojects into properties where appropriate
+			var subIt = result.getQuery().getSubObjects().iterator();
+			while(subIt.hasNext()) {
+				var sub = subIt.next();
+				boolean matched = false;
+				for(var prop:result.getQuery().getData()) {
+					for(int i = 0;i<prop.getDataitem().size();i++) {
+						if(sub.getSubject().equals(prop.getDataitem().get(i))) {
+							prop.getDataitem().set(i, sub);
+							matched = true;
+						}
+					}
+				}
+				if(matched) subIt.remove();
+			}
+			
+			return result;
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
 		}

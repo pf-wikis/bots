@@ -16,19 +16,22 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 
 import io.github.pfwikis.bots.common.WikiAPI;
 import io.github.pfwikis.bots.common.model.SemanticSubject.PageRef;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@RequiredArgsConstructor
-public enum SDIFactType {
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public abstract class SDIFactType<JType> {
 
-	PLAIN(
+	public static final SDIFactType<String> STRING = new SDIFactType<>(
 			"Plain",
 			"{{{$1|}}}",
 			"{{#set:$1={{{$1|}}}}}",
 			"|$1={{{$1|}}}"
-	),
+	) {
+		
+	};/*,
 	MULTILINE_WIKITEXT(
 			"Multiline wikitext",
 			"{{{$1|}}}",
@@ -96,9 +99,9 @@ public enum SDIFactType {
 			"{{#if:{{{$1|}}}|[[{{{$1}}}]]|{{#ifexist:{{ROOTPAGENAME}}|''default value:'' [[{{ROOTPAGENAME}}]]}}}}",
 			"{{#if:{{{$1|}}}|{{#set:$1={{{$1}}}}}|{{#ifexist:{{ROOTPAGENAME}}|{{#set:$1={{ROOTPAGENAME}}}}}}}}",
 			"{{#if:{{{$1|}}}|{{#set:$1={{{$1}}}}}|{{#ifexist:{{ROOTPAGENAME}}|{{#set:$1={{ROOTPAGENAME}}}}}}}}"
-	);
+	);*/
 	
-	private final static Map<String, SDIFactType> MAP = Arrays.stream(SDIFactType.values()).collect(Collectors.toMap(f->f.id, f->f));
+	private final static Map<String, SDIFactType<?>> MAP = Arrays.stream(SDIFactType.values()).collect(Collectors.toMap(f->f.id, f->f));
 	
 	private final String id;
 	private final String displayFactCode;
@@ -106,7 +109,7 @@ public enum SDIFactType {
 	private final String storeSubFactCode;
 
 	@JsonCreator
-	public static SDIFactType of(String id) {
+	public static SDIFactType<?> of(String id) {
 		var res = MAP.get(id);
 		if(res == null) {
 			throw new NoSuchElementException("Unknown fact type '"+id+"'");
@@ -175,7 +178,7 @@ public enum SDIFactType {
 		return sb.toString();
 	}
 
-	public String infoboxValue(WikiAPI wiki, SDIProperty prop, Object object) {
+	public absString infoboxValue(WikiAPI wiki, SDIProperty<JType> prop, JType object) {
 		if(object instanceof PageRef page) {
 			return page.toWikiLink(wiki);
 		}

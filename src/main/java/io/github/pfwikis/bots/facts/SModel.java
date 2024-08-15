@@ -80,7 +80,7 @@ import io.github.pfwikis.bots.common.model.SemanticSubject.PageRef;
 import io.github.pfwikis.bots.facts.model.SDIRawConcept;
 import lombok.RequiredArgsConstructor;
 
-public class SDIModel {
+public class SModel {
 
 	public static final SDIRawConcept BOOK = SDIRawConcept.builder()
 			.name("Book")

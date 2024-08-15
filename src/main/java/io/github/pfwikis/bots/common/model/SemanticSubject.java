@@ -23,6 +23,7 @@ import io.github.pfwikis.bots.facts.model.SDIConcept;
 import io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping;
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -89,11 +90,13 @@ public class SemanticSubject implements SemanticObject {
 	}
 	
 	@Getter
+	@EqualsAndHashCode
 	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class PageRef {
 		private final String interwiki;
 		private final int ns;
 		private final String title;
+		private final String hash;
 		
 		public static PageRef of(JsonNode item) {
 			var txt = item.textValue();
@@ -106,7 +109,9 @@ public class SemanticSubject implements SemanticObject {
 			return new PageRef(
 				parts[2],
 				Integer.parseInt(parts[1]),
-				parts[0].replace('_', ' '));
+				parts[0].replace('_', ' '),
+				parts[3]
+			);
 		}
 		
 		public static PageRef of(int ns, String title) {
@@ -123,11 +128,13 @@ public class SemanticSubject implements SemanticObject {
 					case 6 -> "File:";
 					case 10 -> "Template:";
 					case 14 -> "Category:";
+					case 102 -> "Property:";
 					case 120 -> "Featured:";
 					case 128 -> "Facts:";
 					default -> throw new IllegalStateException("Unhandled namespace "+ns);
 				}
-				+ title;
+				+ title
+				+ (hash.isBlank()?"":("#"+hash));
 		}
 		
 		@Override
