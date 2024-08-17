@@ -1,71 +1,6 @@
 package io.github.pfwikis.bots.facts;
 
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.ACCESSORY_TYPE;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.ARTIST;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.AUDIO_TYPE;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.AUTHOR;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.AUTHOR_ALL;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.AWARDS;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.BLURB_HEADING;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.BLURB_QUOTEE;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.BLURB_TEXT;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.BLURB_TEXT_EXTRAS;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.BOOK_TYPE;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.CHAPTERS;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.COMPOSER;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.DECKSIZE;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.DECK_TYPE;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.DESCRIPTION;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.DESIGNER;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.DEVELOPER;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.DIMENSIONS;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.DIRECTOR;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.DISCS;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.ENGINE;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.ERRATA;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.FOLLOWS;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.FULL_TITLE;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.GALLERY;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.GENRE;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.IMAGE;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.ISBN;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.IS_SUBSECTION;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.LEVEL_RANGE_END;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.LEVEL_RANGE_START;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.LOCATION;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.MAP_TYPE;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.MATERIAL;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.MINIATURES_TYPE;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.MODES;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.NAME;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.NARRATOR;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.ON_PAGE;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.PAGES;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.PERFORMER;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.PLATFORMS;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.PRECEDES;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.PRICE;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.PRIMARY_AUTHOR;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.PRODUCER;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.PROGRAMMER;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.PUBCODE;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.PUBLISHER;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.QUANTITY;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.REGION;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.RELEASE_DATE;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.RELEASE_NOTE;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.RELEASE_TYPE;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.RELEASE_YEAR;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.REPRESENTED_BY_PAGE;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.RULE_SYSTEM;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.RUNTIME;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.SERIALIZED;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.SERIES;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.TO_PAGE;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.VIDEO_GAME_TYPE;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.WEBSITE;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.WEB_ENHANCEMENT;
-import static io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping.WRITER;
+import static io.github.pfwikis.bots.facts.SFactsProperties.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,95 +12,101 @@ import com.beust.jcommander.Strings;
 import io.github.pfwikis.bots.common.bots.Run.SingleRun;
 import io.github.pfwikis.bots.common.model.SemanticSubject;
 import io.github.pfwikis.bots.common.model.SemanticSubject.PageRef;
-import io.github.pfwikis.bots.facts.model.SDIRawConcept;
+import io.github.pfwikis.bots.facts.model.SConcept;
+import io.github.pfwikis.bots.facts.model.SInfoboxProperty;
 import lombok.RequiredArgsConstructor;
 
 public class SModel {
 
-	public static final SDIRawConcept BOOK = SDIRawConcept.builder()
-			.name("Book")
-			.pluralName("Books")
-			.properties(List.of(
-				NAME,
-				FULL_TITLE,
-				REPRESENTED_BY_PAGE,
-				BOOK_TYPE,
-				IMAGE,
-				RULE_SYSTEM,
-				PRIMARY_AUTHOR,
-				AUTHOR,
-				ARTIST,
-				NARRATOR,
-				PUBLISHER,
-				SERIES,
-				FOLLOWS,
-				PRECEDES,
-				WEBSITE,
-				PUBCODE,
-				SERIALIZED,
-				PAGES,
-				RUNTIME,
-				CHAPTERS,
-				GALLERY,
-				AWARDS,
-				ERRATA,
-				WEB_ENHANCEMENT,
-				LEVEL_RANGE_START,
-				LEVEL_RANGE_END,
-				LOCATION,
-				BLURB_HEADING,
-				BLURB_TEXT,
-				BLURB_TEXT_EXTRAS,
-				BLURB_QUOTEE
-			))
-			.infoboxProperties(List.of(
-				PRIMARY_AUTHOR,
-				PUBLISHER,
-				SERIALIZED,
-				PAGES,
-				NARRATOR,
-				RUNTIME,
-				RULE_SYSTEM,
-				CHAPTERS,
-				SERIES,
-				FOLLOWS,
-				PRECEDES,
-				AWARDS,
-				ERRATA,
-				WEB_ENHANCEMENT
-			))
-			.subForms(List.of(
-				SDIRawConcept.builder()
-					.name("Section")
-					.pluralName("Sections")
-					.properties(List.of(
-						NAME,
-						IS_SUBSECTION,
-						AUTHOR,
-						ON_PAGE,
-						TO_PAGE,
-						DESCRIPTION
-					))
+	public static final SConcept BOOK = SConcept.builder()
+		.name("Book")
+		.pluralName("Books")
+		.properties(
+			Name,
+			Full_title,
+			Represented_by_page,
+			Book_type,
+			Image,
+			Rule_system,
+			Primary_author,
+			Author,
+			Artist,
+			Narrator,
+			Publisher,
+			Series,
+			Follows,
+			Precedes,
+			Website,
+			Pubcode,
+			Serialized,
+			Pages,
+			Runtime,
+			Chapters,
+			Gallery,
+			Awards,
+			Errata,
+			Web_enhancement,
+			Level_range_start,
+			Level_range_end,
+			Location,
+			Blurb_heading,
+			Blurb_text,
+			Blurb_text_extras,
+			Blurb_quotee
+		)
+		.infoboxProperties(
+			SInfoboxProperty.Simple.builder()
+				.prop(Primary_author)
+				.label("Author")
+				.fallback(Author)
 				.build(),
-				SDIRawConcept.builder()
-					.name("Release")
-					.pluralName("Releases")
-					.properties(List.of(
-						RELEASE_TYPE,
-						RELEASE_NOTE,
-						RELEASE_DATE,
-						ISBN,
-						PAGES,
-						RULE_SYSTEM,
-						PRICE
-					))
-				.build()
-			))
-		.conceptSpecificCategoriesFunction(new Helper() {
+			Publisher,
+			Serialized,
+			Pages,
+			Narrator,
+			Runtime,
+			SInfoboxProperty.Simple.builder()
+				.prop(Rule_system)
+				.label("Rule set")
+				.build(),
+			Chapters,
+			Series,
+			Follows,
+			Precedes,
+			Awards,
+			Errata,
+			Web_enhancement
+		)
+		.subConcepts(
+			SConcept.builder()
+				.name("Section")
+				.pluralName("Sections")
+				.properties(
+					Name,
+					Is_subsection,
+					Author,
+					On_page,
+					To_page,
+					Description
+				),
+			SConcept.builder()
+				.name("Release")
+				.pluralName("Releases")
+				.properties(
+					Release_type,
+					Release_note,
+					Release_date,
+					Isbn,
+					Pages,
+					Rule_system,
+					Price
+				)
+		)
+		/*.conceptSpecificCategoriesFunction(new Helper() {
 
 			@Override
 			protected void generateCategories() {
-				var bookType = page.getOr(BOOK_TYPE, "");
+				var bookType = page.getOr(Book_type, "");
 				var isAdventure = false;
 				if(Set.of(
 						"Adventure",
@@ -184,7 +125,7 @@ public class SModel {
 				}
 				
 				String categoryWord = isAdventure?"adventures":"sourcebooks";
-				addCats(switch(page.getOr(RULE_SYSTEM, "")) {
+				addCats(switch(page.getOr(Rule_system, "")) {
 					case "PFRPG" -> "PFRPG "+categoryWord;
 					case "PF2",
 						"Pathfinder Playtest"
@@ -219,7 +160,7 @@ public class SModel {
 						"Comics", ifYear("{} comics"),
 						"Fiction", ifYear("{} fiction"),
 						series.stream().map(s->s.getTitle()+" comics").toList(),
-						page.getAll(AUTHOR_ALL).stream().map(a->run.getWiki().getDisplayTitle(a.toFullTitle())).map(a->"Comics by "+a).toList()
+						page.getAll(Author_all).stream().map(a->run.getWiki().getDisplayTitle(a.toFullTitle())).map(a->"Comics by "+a).toList()
 					);
 					case "Short Fiction" -> List.of("Fiction", ifYear("{} fiction"));
 					default -> List.of();
@@ -256,63 +197,66 @@ public class SModel {
 				
 				
 				if(Set.of("Novel", "Short Fiction", "Novella").contains(bookType)) {
-					if(page.has(SERIALIZED) && !page.get(SERIALIZED).isBlank()) {
+					if(page.has(Serialized) && !page.get(Serialized).isBlank()) {
 						addCats("Serial fiction");
 					}
 				}
 			}
-		})
+		})*/
 		.build();
-	public static final SDIRawConcept ACCESSORY = SDIRawConcept.builder()
+	public static final SConcept ACCESSORY = SConcept.builder()
 			.name("Accessory")
 			.pluralName("Accessories")
-			.properties(List.of(
-				NAME,
-				FULL_TITLE,
-				REPRESENTED_BY_PAGE,
-				ACCESSORY_TYPE,
-				IMAGE,
-				RELEASE_DATE,
-				WEBSITE,
-				AUTHOR,
-				ARTIST,
-				PUBLISHER,
-				PUBCODE,
-				ISBN,
-				PRICE,
-				QUANTITY,
-				MATERIAL,
-				RULE_SYSTEM,
-				SERIES,
-				FOLLOWS,
-				PRECEDES,
-				AWARDS,
-				ERRATA,
-				WEB_ENHANCEMENT,
-				GALLERY,
-				BLURB_HEADING,
-				BLURB_TEXT,
-				BLURB_TEXT_EXTRAS,
-				BLURB_QUOTEE
-			))
-			.infoboxProperties(List.of(
-				AUTHOR,
-				ARTIST,
-				PUBLISHER,
-				PRICE,
-				RELEASE_DATE,
-				QUANTITY,
-				MATERIAL,
-				ISBN,
-				RULE_SYSTEM,
-				SERIES,
-				FOLLOWS,
-				PRECEDES,
-				AWARDS,
-				ERRATA,
-				WEB_ENHANCEMENT
-			))
-			.conceptSpecificCategoriesFunction(new Helper() {
+			.properties(
+				Name,
+				Full_title,
+				Represented_by_page,
+				Accessory_type,
+				Image,
+				Release_date,
+				Website,
+				Author,
+				Artist,
+				Publisher,
+				Pubcode,
+				Isbn,
+				Price,
+				Quantity,
+				Material,
+				Rule_system,
+				Series,
+				Follows,
+				Precedes,
+				Awards,
+				Errata,
+				Web_enhancement,
+				Gallery,
+				Blurb_heading,
+				Blurb_text,
+				Blurb_text_extras,
+				Blurb_quotee
+			)
+			.infoboxProperties(
+				Author,
+				Artist,
+				Publisher,
+				Price,
+				Release_date,
+				Quantity,
+				Material,
+				Isbn,
+				SInfoboxProperty.Simple.builder()
+					.prop(Rule_system)
+					.label("Rule set")
+					.build(),
+				Series,
+				Follows,
+				Precedes,
+				Awards,
+				Errata,
+				Web_enhancement
+			)
+			/*.conceptSpecificCategoriesFunction(new Helper() {
 				@Override
 				protected void generateCategories() {
 					addCats("Accessories");
@@ -323,62 +267,65 @@ public class SModel {
 					ifMatchingSeries(game+" Book Tabs", game+" Book Tabs");
 					
 				}
-			})
+			})*/
 		.build();
-	public static final SDIRawConcept MAP = SDIRawConcept.builder()
+	public static final SConcept MAP = SConcept.builder()
 			.name("Map")
 			.pluralName("Maps")
-			.properties(List.of(
-				NAME,
-				FULL_TITLE,
-				REPRESENTED_BY_PAGE,
-				MAP_TYPE,
-				WEBSITE,
-				PUBCODE,
-				IMAGE,
-				GALLERY,
-				ARTIST,
-				PUBLISHER,
-				PRICE,
-				RELEASE_DATE,
-				REGION,
-				DIMENSIONS,
-				QUANTITY,
-				ISBN,
-				PAGES,
-				RULE_SYSTEM,
-				SERIES,
-				FOLLOWS,
-				PRECEDES,
-				AWARDS,
-				BLURB_HEADING,
-				BLURB_TEXT,
-				BLURB_TEXT_EXTRAS,
-				BLURB_QUOTEE
-			))
-			.infoboxProperties(List.of(
-				ARTIST,
-				PUBLISHER,
-				PRICE,
-				RELEASE_DATE,
-				REGION,
-				DIMENSIONS,
-				QUANTITY,
-				ISBN,
-				PAGES,
-				RULE_SYSTEM,
-				SERIES,
-				FOLLOWS,
-				PRECEDES,
-				AWARDS
-			))
-		.conceptSpecificCategoriesFunction(new Helper() {
+			.properties(
+				Name,
+				Full_title,
+				Represented_by_page,
+				Map_type,
+				Website,
+				Pubcode,
+				Image,
+				Gallery,
+				Artist,
+				Publisher,
+				Price,
+				Release_date,
+				Region,
+				Dimensions,
+				Quantity,
+				Isbn,
+				Pages,
+				Rule_system,
+				Series,
+				Follows,
+				Precedes,
+				Awards,
+				Blurb_heading,
+				Blurb_text,
+				Blurb_text_extras,
+				Blurb_quotee
+			)
+			.infoboxProperties(
+				Artist,
+				Publisher,
+				Price,
+				Release_date,
+				Region,
+				Dimensions,
+				Quantity,
+				Isbn,
+				Pages,
+				SInfoboxProperty.Simple.builder()
+					.prop(Rule_system)
+					.label("Rule set")
+					.build(),
+				Series,
+				Follows,
+				Precedes,
+				Awards
+			)
+		/*.conceptSpecificCategoriesFunction(new Helper() {
 			@Override
 			protected void generateCategories() {
 				addCats(ifYear("{} accessories"));
 				addCats("Accessories");
 				
-				addCats(switch(page.getOr(MAP_TYPE, "") ) {
+				addCats(switch(page.getOr(Map_type, "") ) {
 					case "Poster Map Folio" -> "Poster Map Folios"; 
 					case "Flip-Mat" -> game+" Flip-Mats"; 
 					case "Map tiles" -> game+" Flip-Tiles"; 
@@ -387,50 +334,50 @@ public class SModel {
 				});
 				
 				ifMatchingSeries(game+" Campaign Setting", game+" Campaign Setting");
-				page.getAll(REGION).forEach(r->addCats("Images of "+run.getWiki().getDisplayTitle(r.toFullTitle())));
+				page.getAll(Region).forEach(r->addCats("Images of "+run.getWiki().getDisplayTitle(r.toFullTitle())));
 			}
-		})
+		})*/
 		.build();
-	public static final SDIRawConcept MINIATURES = SDIRawConcept.builder()
+	public static final SConcept MINIATURES = SConcept.builder()
 			.name("Miniatures")
 			.pluralName("Miniatures")
-			.properties(List.of(
-				NAME,
-				FULL_TITLE,
-				REPRESENTED_BY_PAGE,
-				MINIATURES_TYPE,
-				WEBSITE,
-				PUBCODE,
-				IMAGE,
-				GALLERY,
-				AUTHOR,
-				PUBLISHER,
-				PRICE,
-				RELEASE_DATE,
-				ISBN,
-				QUANTITY,
-				SERIES,
-				FOLLOWS,
-				PRECEDES,
-				AWARDS,
-				ARTIST,
-				BLURB_HEADING,
-				BLURB_TEXT,
-				BLURB_TEXT_EXTRAS,
-				BLURB_QUOTEE
-			))
-			.infoboxProperties(List.of(
-				AUTHOR,
-				PUBLISHER,
-				PRICE,
-				RELEASE_DATE,
-				ISBN,
-				QUANTITY,
-				SERIES,
-				FOLLOWS,
-				PRECEDES,
-				AWARDS
-			))
+			.properties(
+				Name,
+				Full_title,
+				Represented_by_page,
+				Miniatures_type,
+				Website,
+				Pubcode,
+				Image,
+				Gallery,
+				Author,
+				Publisher,
+				Price,
+				Release_date,
+				Isbn,
+				Quantity,
+				Series,
+				Follows,
+				Precedes,
+				Awards,
+				Artist,
+				Blurb_heading,
+				Blurb_text,
+				Blurb_text_extras,
+				Blurb_quotee
+			)
+			.infoboxProperties(
+				Author,
+				Publisher,
+				Price,
+				Release_date,
+				Isbn,
+				Quantity,
+				Series,
+				Follows,
+				Precedes,
+				Awards
+			)/*
 			.conceptSpecificCategoriesFunction(new Helper() {
 				@Override
 				protected void generateCategories() {
@@ -440,175 +387,178 @@ public class SModel {
 					ifMatchingSeries(game+" Battles", game+" Battles");
 					ifMatchingSeries(game+" Paper Minis", game+" Paper Minis");
 				}
-			})
+			})*/
 		.build();
-	public static final SDIRawConcept AUDIO = SDIRawConcept.builder()
+	public static final SConcept AUDIO = SConcept.builder()
 			.name("Audio")
 			.pluralName("Audio")
-			.properties(List.of(
-				NAME,
-				FULL_TITLE,
-				REPRESENTED_BY_PAGE,
-				AUDIO_TYPE,
-				WEBSITE,
-				PUBCODE,
-				IMAGE,
-				AUTHOR,
-				DIRECTOR,
-				PERFORMER,
-				PUBLISHER,
-				PRICE,
-				RELEASE_DATE,
-				DISCS,
-				RUNTIME,
-				ISBN,
-				SERIES,
-				FOLLOWS,
-				PRECEDES,
-				LOCATION,
-				BLURB_HEADING,
-				BLURB_TEXT,
-				BLURB_TEXT_EXTRAS,
-				BLURB_QUOTEE
-			))
-			.infoboxProperties(List.of(
-				AUTHOR,
-				DIRECTOR,
-				PERFORMER,
-				PUBLISHER,
-				PRICE,
-				RELEASE_DATE,
-				DISCS,
-				RUNTIME,
-				ISBN,
-				SERIES,
-				FOLLOWS,
-				PRECEDES
-			))
-			.conceptSpecificCategoriesFunction(new Helper() {
+			.properties(
+				Name,
+				Full_title,
+				Represented_by_page,
+				Audio_type,
+				Website,
+				Pubcode,
+				Image,
+				Author,
+				Director,
+				Performer,
+				Publisher,
+				Price,
+				Release_date,
+				Discs,
+				Runtime,
+				Isbn,
+				Series,
+				Follows,
+				Precedes,
+				Location,
+				Blurb_heading,
+				Blurb_text,
+				Blurb_text_extras,
+				Blurb_quotee
+			)
+			.infoboxProperties(
+				Author,
+				Director,
+				Performer,
+				Publisher,
+				Price,
+				Release_date,
+				Discs,
+				Runtime,
+				Isbn,
+				Series,
+				Follows,
+				Precedes
+			)
+			/*.conceptSpecificCategoriesFunction(new Helper() {
 				@Override
 				protected void generateCategories() {
-					addCats(switch(page.getOr(AUDIO_TYPE, "") ) {
+					addCats(switch(page.getOr(Audio_type, "") ) {
 						case "Full-cast Audio Drama" -> List.of("Audio dramas", ifYear("{} audio dramas"));
 						case "Soundscape" -> List.of("Soundscapes", ifYear("{} soundscapes"));
 						case "Game score", "Soundtrack" -> List.of("Soundtracks", ifYear("{} soundtracks"));
 						default -> List.of();
 					});
 				}
-			})
+			})*/
 		.build();
-	public static final SDIRawConcept VIDEO_GAME = SDIRawConcept.builder()
+	public static final SConcept VIDEO_GAME = SConcept.builder()
 			.name("Video game")
 			.pluralName("Video games")
-			.properties(List.of(
-				NAME,
-				FULL_TITLE,
-				REPRESENTED_BY_PAGE,
-				VIDEO_GAME_TYPE,
-				IMAGE,
-				GENRE,
-				MODES,
-				DEVELOPER,
-				PUBLISHER,
-				DIRECTOR,
-				PRODUCER,
-				DESIGNER,
-				ARTIST,
-				WRITER,
-				COMPOSER,
-				PROGRAMMER,
-				ENGINE,
-				PLATFORMS,
-				PRICE,
-				RELEASE_DATE,
-				FOLLOWS,
-				PRECEDES,
-				LOCATION,
-				BLURB_HEADING,
-				BLURB_TEXT,
-				BLURB_TEXT_EXTRAS,
-				BLURB_QUOTEE
-			))
-			.infoboxProperties(List.of(
-				GENRE,
-				MODES,
-				DEVELOPER,
-				PUBLISHER,
-				DIRECTOR,
-				PRODUCER,
-				DESIGNER,
-				ARTIST,
-				WRITER,
-				COMPOSER,
-				PROGRAMMER,
-				ENGINE,
-				PLATFORMS,
-				PRICE,
-				RELEASE_DATE,
-				FOLLOWS,
-				PRECEDES
-			))
+			.properties(
+				Name,
+				Full_title,
+				Represented_by_page,
+				Video_game_type,
+				Image,
+				Genre,
+				Modes,
+				Developer,
+				Publisher,
+				Director,
+				Producer,
+				Designer,
+				Artist,
+				Writer,
+				Composer,
+				Programmer,
+				Engine,
+				Platforms,
+				Price,
+				Release_date,
+				Follows,
+				Precedes,
+				Location,
+				Blurb_heading,
+				Blurb_text,
+				Blurb_text_extras,
+				Blurb_quotee
+			)
+			.infoboxProperties(
+				Genre,
+				Modes,
+				Developer,
+				Publisher,
+				Director,
+				Producer,
+				Designer,
+				Artist,
+				Writer,
+				Composer,
+				Programmer,
+				Engine,
+				Platforms,
+				Price,
+				Release_date,
+				Follows,
+				Precedes
+			)/*
 			.conceptSpecificCategoriesFunction(new Helper() {
 				@Override
 				protected void generateCategories() {
-					addCats(switch(page.getOr(VIDEO_GAME_TYPE, "") ) {
+					addCats(switch(page.getOr(Video_game_type, "") ) {
 						case "Computer RPG" -> "RPG video games";
 						default -> "video games";
 					});
 				}
-			})
+			})*/
 		.build();
-	public static final SDIRawConcept DECK = SDIRawConcept.builder()
+	public static final SConcept DECK = SConcept.builder()
 			.name("Deck")
 			.pluralName("Decks")
-			.properties(List.of(
-				NAME,
-				FULL_TITLE,
-				REPRESENTED_BY_PAGE,
-				DECK_TYPE,
-				WEBSITE,
-				PUBCODE,
-				IMAGE,
-				GALLERY,
-				AUTHOR,
-				ARTIST,
-				PUBLISHER,
-				PRICE,
-				RELEASE_DATE,
-				DECKSIZE,
-				ISBN,
-				RULE_SYSTEM,
-				SERIES,
-				FOLLOWS,
-				PRECEDES,
-				AWARDS,
-				ERRATA,
-				WEB_ENHANCEMENT,
-				BLURB_HEADING,
-				BLURB_TEXT,
-				BLURB_TEXT_EXTRAS,
-				BLURB_QUOTEE
-			))
-			.infoboxProperties(List.of(
-				AUTHOR,
-				ARTIST,
-				PUBLISHER,
-				PRICE,
-				RELEASE_DATE,
-				DECKSIZE,
-				ISBN,
-				RULE_SYSTEM,
-				SERIES,
-				FOLLOWS,
-				PRECEDES,
-				AWARDS,
-				ERRATA,
-				WEB_ENHANCEMENT
-			))
+			.properties(
+				Name,
+				Full_title,
+				Represented_by_page,
+				Deck_type,
+				Website,
+				Pubcode,
+				Image,
+				Gallery,
+				Author,
+				Artist,
+				Publisher,
+				Price,
+				Release_date,
+				Decksize,
+				Isbn,
+				Rule_system,
+				Series,
+				Follows,
+				Precedes,
+				Awards,
+				Errata,
+				Web_enhancement,
+				Blurb_heading,
+				Blurb_text,
+				Blurb_text_extras,
+				Blurb_quotee
+			)
+			.infoboxProperties(
+				Author,
+				Artist,
+				Publisher,
+				Price,
+				Release_date,
+				Decksize,
+				Isbn,
+				SInfoboxProperty.Simple.builder()
+					.prop(Rule_system)
+					.label("Rule set")
+					.build(),
+				Series,
+				Follows,
+				Precedes,
+				Awards,
+				Errata,
+				Web_enhancement
+			)/*
 			.conceptSpecificCategoriesFunction(new Helper() {
 				@Override
 				protected void generateCategories() {
-					addCats(switch(page.getOr(DECK_TYPE, "") ) {
+					addCats(switch(page.getOr(Deck_type, "") ) {
 						//Adventure Card Game categories
 						case "Base Set" -> List.of("Base sets", "Card games", ifYear("{} card games"));
 						case "Adventure Deck" -> List.of("Adventure decks", "Card games", ifYear("{} card games"));
@@ -626,17 +576,17 @@ public class SModel {
 						default -> List.of("Decks", ifYear("{} decks"));
 					});
 					
-					if("PACG".equals(page.getOr(RULE_SYSTEM, ""))) {
+					if("PACG".equals(page.getOr(Rule_system, ""))) {
 						 addCats("Pathfinder Adventure Card Game");
 					}
 					ifMatchingSeries(game+" Cards", game+" Cards");
 					ifMatchingSeries(game+" Adventure Card Game", game+" Adventure Card Game");
 					ifMatchingSeries(game+" Accessories", game+" Accessories");
 				}
-			})
+			})*/
 		.build();
 	
-	public static final SDIRawConcept[] CONCEPTS = {
+	public static final SConcept[] CONCEPTS = {
 		BOOK,
 		ACCESSORY,
 		MAP,
@@ -645,7 +595,7 @@ public class SModel {
 		VIDEO_GAME,
 		DECK
 	};
-	
+	/*
 	@RequiredArgsConstructor
 	private static abstract class Helper implements BiFunction<SingleRun, SemanticSubject, String> {
 		
@@ -658,8 +608,8 @@ public class SModel {
 		protected abstract void generateCategories();
 		
 		protected Object ifYear(String pattern) {
-			if(page.has(RELEASE_YEAR))
-				return pattern.replace("{}", page.get(RELEASE_YEAR).toString());
+			if(page.has(Release_year))
+				return pattern.replace("{}", page.get(Release_year).toString());
 			return List.of();
 		}
 		
@@ -685,7 +635,7 @@ public class SModel {
 			this.run = run;
 			this.page = page;
 			this.game = run.getServer().getName();
-			this.series = page.getAll(SERIES);
+			this.series = page.getAll(Series);
 			
 			this.cats = new ArrayList<String>();
 			generateCategories();
@@ -696,5 +646,5 @@ public class SModel {
 				+ Strings.join("]][[Category:", cats)
 				+ "]]";
 		}
-	}
+	}*/
 }

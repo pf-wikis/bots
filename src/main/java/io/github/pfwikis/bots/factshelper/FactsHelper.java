@@ -10,8 +10,8 @@ import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.facts.SModel;
-import io.github.pfwikis.bots.facts.model.SDIConcept;
-import io.github.pfwikis.bots.facts.model.SDIProperty;
+import io.github.pfwikis.bots.facts.model.SConcept;
+import io.github.pfwikis.bots.facts.model.SProperty;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -24,17 +24,14 @@ public class FactsHelper extends SimpleBot {
 
 	@Override
 	public void run(RunContext ctx) throws IOException {
-		if(run.getServer()==Wiki.SF) return;
-		
-		var props = SDIProperty.load(run);
 		var concepts = SModel.CONCEPTS;
 		
 		for(var concept:concepts) {
-			handleForm(concept.resolve(props));
+			handleConcept(concept);
 		}
 	}
 	
-	private void handleForm(SDIConcept form) {
+	private void handleConcept(SConcept form) {
 		try {
 			make(run.getWiki(), "Template:Facts/"+form.getName(), MakeTemplate.template(form));
 			make(run.getWiki(), "Template:Facts/"+form.getName()+"/Input", MakeTemplateInput.template(form));
@@ -51,7 +48,7 @@ public class FactsHelper extends SimpleBot {
 		}
 	}
 	
-	private void handleSubForm(SDIConcept parent, SDIConcept subForm) {
+	private void handleSubForm(SConcept parent, SConcept subForm) {
 		try {
 			var slashName = parent.getName()+"/"+subForm.getName();
 			var spaceName = parent.getName()+" "+subForm.getPluralName();

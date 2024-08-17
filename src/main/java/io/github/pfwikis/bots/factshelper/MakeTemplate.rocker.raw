@@ -1,35 +1,32 @@
-@import io.github.pfwikis.bots.facts.model.SDIConcept
+@import io.github.pfwikis.bots.facts.model.SConcept
+@import io.github.pfwikis.bots.facts.util.ConceptUtil
 
-@args(SDIConcept form)
+@args(SConcept c)
 <noinclude>
 {{Bot created|Bot Facts Helper}}
 {{#template_params:
-	@for((i,prop):form.getProperties()) {
+	@for((i,prop):c.getProperties()) {
 		@if(!i.first()){|}@prop.getName() (property=@prop.getName())
 	}
 }}
-[[Category:Synced to starfinderwiki]][[Category:Facts templates]]
+[[Category:Facts templates]]
 </noinclude><includeonly><div class="facts">
 {{#ifexist:Template:Cite/{{PAGENAME}}|
 	<div class="citethis">
 		You can cite this entity by using {{tl|Ref|{{PAGENAME}}}} or {{tl|Cite/{{PAGENAME}}}}.
 	</div>
 }}
-@*<div class="facts-display-subpages">
-	<ul>{{#arraymap:{{#rreplace:{{SUBPAGES:{{{1}}}|sep=~}}|(([^~]+~){{{{limit|20}}}}).*|$1}}|~|%|<li>[[%|{{SUBPAGENAME:%}}]]</li>|}}</ul>
-	{{#ifexpr:{{NUMBEROFSUBPAGES:{{{1}}}}}>{{{limit|20}}}|[{{fullurl:Special:PrefixIndex|stripprefix=1&prefix={{urlencode:{{{1}}}/}}}} all {{NUMBEROFSUBPAGES:{{{1}}}}} subpages]}}
-</div>*@
 
-@if(!form.getSubForms().isEmpty()) {
+@if(!c.getSubConcepts().isEmpty()) {
 	<div class="facts-display-header">
-		<div class="facts-display-header-item">General @form.getName() Facts</div>
-		@for(sub:form.getSubForms()) {
-			<div class="facts-display-header-item">{{#formredlink:target=Facts:{{PAGENAME}}/@sub.getPluralName()|form=@form.getName()/@sub.getName()|link text=Create @sub.getPluralName()|existing page link text=@sub.getPluralName()}}</div>
+		<div class="facts-display-header-item">General @c.getName() Facts</div>
+		@for(sub:c.getSubConcepts()) {
+			<div class="facts-display-header-item">{{#formredlink:target=Facts:{{PAGENAME}}/@sub.getPluralName()|form=@c.getName()/@sub.getName()|link text=Create @sub.getPluralName()|existing page link text=@sub.getPluralName()}}</div>
 		}
 	</div>
 }
-<div class="facts-display facts-display-@form.toCSSName()">
-	@for(prop:form.getProperties()) {
+<div class="facts-display facts-display-@ConceptUtil.cssName(c)">
+	@for(prop:c.getProperties()) {
 		@DisplayTemplateField.template(prop.getName(), prop.getFactType().displayFactCode(prop.getName())) -> {
 			@prop.getFactType().displayFactCode(prop.getName())@prop.getFactType().storeFactCode(prop.getName())@prop.getFactType().formAfterSet(prop)
 		}
@@ -37,13 +34,13 @@
 </div>
 
 <h3>Automatic properties</h3>
-<div class="facts-display facts-display-@form.toCSSName()">
-@for(prop:form.getGeneratedProperties()) {
+<div class="facts-display facts-display-@ConceptUtil.cssName(c)">
+@for(prop:c.getGeneratedProperties()) {
 	@DisplayTemplateField.template(prop.getName(), null) -> {[[@prop.getName()::@prop.getGenerateCode()]]}
 }
 </div>
 <div class="facts-subforms">
-	@for(sub:form.getSubForms()) {
+	@for(sub:c.getSubConcepts()) {
 		@*The counter just reset the counter before listing the subelements so their order can be preserved.*@
 		{{#counter: @sub.getName()-counter|set=0}}
 		@for(prop:sub.getProperties()) {
@@ -56,5 +53,5 @@
 </div>
 
 </div>
-[[Category:Facts about @form.getPluralName()]]
+[[Category:Facts about @c.getPluralName()]]
 </includeonly>

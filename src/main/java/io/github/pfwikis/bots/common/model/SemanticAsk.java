@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.node.TreeTraversingParser;
 import com.google.common.collect.Lists;
 
 import io.github.pfwikis.bots.facts.model.SMWPropertyType;
-import io.github.pfwikis.bots.facts.model.SDIFactType;
+import io.github.pfwikis.bots.facts.model.SFactType;
 import io.github.pfwikis.bots.utils.Jackson;
 import io.github.pfwikis.bots.utils.MWJsonHelper;
 import lombok.Data;
@@ -57,7 +57,7 @@ public class SemanticAsk {
 		@JsonProperty("Has type")
 		private SMWPropertyType hasType;
 		@JsonProperty("Has fact type")
-		private SDIFactType hasFactType;
+		private SFactType hasFactType;
 		@JsonProperty("Has fact display format")
 		private String hasFactDisplayFormat;
 		@JsonProperty("Has fact note")

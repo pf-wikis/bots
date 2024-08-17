@@ -6,8 +6,8 @@ import java.util.List;
 import com.google.common.collect.MoreCollectors;
 
 import io.github.pfwikis.bots.common.model.SemanticSubject.Property;
-import io.github.pfwikis.bots.facts.model.SDIProperty;
-import io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping;
+import io.github.pfwikis.bots.facts.model.SProperty;
+import io.github.pfwikis.bots.facts.model.SPropertyTypeMapping;
 
 public interface SemanticObject {
 	
@@ -17,11 +17,11 @@ public interface SemanticObject {
 		return getData().stream().anyMatch(p->p.getProperty().equals(prop.replace(" ", "_")));
 	}
 	
-	default boolean has(SDIPropertyTypeMapping<?> prop) {
+	default boolean has(SPropertyTypeMapping<?> prop) {
 		return has(prop.getProperty());
 	}
 	
-	default boolean has(SDIProperty prop) {
+	default boolean has(SProperty<?> prop) {
 		return has(prop.getName());
 	}
 	
@@ -34,11 +34,11 @@ public interface SemanticObject {
 			.orElse(Collections.emptyList());
 	}
 	
-	default <T> List<T> getAll(SDIPropertyTypeMapping<T> prop) {
+	default <T> List<T> getAll(SPropertyTypeMapping<T> prop) {
 		return getAll(prop.getProperty());
 	}
 	
-	default <T> List<T> getAll(SDIProperty prop) {
+	default <T> List<T> getAll(SProperty<?> prop) {
 		return getAll(prop.getName());
 	}
 	
@@ -52,11 +52,11 @@ public interface SemanticObject {
 		}
 	}
 	
-	default <T> T get(SDIPropertyTypeMapping<T> prop) {
+	default <T> T get(SPropertyTypeMapping<T> prop) {
 		return get(prop.getProperty());
 	}
 	
-	default <T> T getOr(SDIPropertyTypeMapping<T> prop, T defaultValue) {
+	default <T> T getOr(SPropertyTypeMapping<T> prop, T defaultValue) {
 		var values = getAll(prop);
 		if(values.size()==0) {
 			return defaultValue;
