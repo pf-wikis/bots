@@ -108,15 +108,22 @@ public class SemanticSubject implements SemanticObject {
 				Integer.parseInt(parts[1]),
 				parts[0].replace('_', ' '));
 		}
-
+		
+		public static PageRef of(int ns, String title) {
+			return new PageRef("", ns, title.replace('_', ' '));
+		}
+		
 		public String toFullTitle() {
 			return
 				(interwiki.isBlank()?"":(interwiki+":"))
 				+ switch(ns) {
 					case 0 -> "";
+					case 1 -> "Talk:";
+					case 4 -> "Project:";
 					case 6 -> "File:";
 					case 10 -> "Template:";
 					case 14 -> "Category:";
+					case 120 -> "Featured:";
 					case 128 -> "Facts:";
 					default -> throw new IllegalStateException("Unhandled namespace "+ns);
 				}

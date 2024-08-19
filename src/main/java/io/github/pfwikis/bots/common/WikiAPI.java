@@ -33,6 +33,7 @@ import io.github.fastily.jwiki.dwrap.Revision;
 import io.github.pfwikis.bots.common.model.AllusersQuery.WUser;
 import io.github.pfwikis.bots.common.model.Page;
 import io.github.pfwikis.bots.common.model.ParseResponse;
+import io.github.pfwikis.bots.common.model.QueryPageQuery.QPPage;
 import io.github.pfwikis.bots.common.model.QueryResponse;
 import io.github.pfwikis.bots.common.model.RecentChanges.RecentChange;
 import io.github.pfwikis.bots.common.model.SemanticAsk;
@@ -307,6 +308,19 @@ public class WikiAPI {
 		).getImageusage();
 	}
 	
+	public List<Page> getPagesLinkingTo(String page) {
+		return query(
+			Query.LIST_PAGES_LINKING_TO,
+			"titles", page
+		).getPages()
+			.stream()
+			.flatMap(p->p.getLinkshere()==null
+				?Stream.empty()
+				:Arrays.stream(p.getLinkshere())
+			)
+			.toList();
+	}
+	
 	public String getDisplayTitle(String page) {
 		return server.cache("getDisplayTitle", page, () -> {
 			var results = query(
@@ -333,6 +347,15 @@ public class WikiAPI {
 	
 	public int getNamespaceId(String page) {
 		return wiki.whichNS(page).v;
+	}
+	
+	public List<QPPage> getRedirects() {
+		return query(
+			Query.LIST_QUERY_PAGE,
+			"qppage", "Listredirects",
+			"qplimit", "5000"
+		).getQuerypage()
+			.getResults();
 	}
 	
 	public List<JsonNode> getLogEvents(ZonedDateTime end, String user) {

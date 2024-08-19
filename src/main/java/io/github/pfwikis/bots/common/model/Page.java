@@ -9,4 +9,5 @@ public class Page {
 	private String displaytitle;
 	private Page[] transcludedin;
 	private Page[] categories;
+	private Page[] linkshere;
 }

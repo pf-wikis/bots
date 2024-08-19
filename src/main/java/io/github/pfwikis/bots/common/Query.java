@@ -11,6 +11,7 @@ import io.github.pfwikis.bots.common.model.LogEventsQuery;
 import io.github.pfwikis.bots.common.model.PageInfoQuery;
 import io.github.pfwikis.bots.common.model.PageQuery;
 import io.github.pfwikis.bots.common.model.QueryListUsers;
+import io.github.pfwikis.bots.common.model.QueryPageQuery;
 import io.github.pfwikis.bots.common.model.QueryResponse;
 import io.github.pfwikis.bots.common.model.QueryTokens;
 import io.github.pfwikis.bots.common.model.RecentChanges;
@@ -74,6 +75,19 @@ public class Query<T> {
 		"prop",
 		"categories"
 	);
+			
+	public static final Query<QueryPageQuery> LIST_QUERY_PAGE = new Query.WithContinue<>(
+		QueryPageQuery.class, 
+		"list",
+		"querypage",
+		"qpoffset"
+	) {
+		@Override
+		public QueryPageQuery mergeResults(QueryPageQuery a, QueryPageQuery b) {
+			a.getQuerypage().getResults().addAll(b.getQuerypage().getResults());
+			return a;
+		}
+	};
 	
 	public static final Query<LogEventsQuery> LIST_LOG_EVENTS = new Query.WithContinue<>(
 		LogEventsQuery.class, 
@@ -97,6 +111,19 @@ public class Query<T> {
 		@Override
 		public ImageUsageQuery mergeResults(ImageUsageQuery a, ImageUsageQuery b) {
 			a.getImageusage().addAll(b.getImageusage());
+			return a;
+		}
+	};
+	
+	public static final Query<PageQuery> LIST_PAGES_LINKING_TO = new Query.WithContinue<>(
+		PageQuery.class, 
+		"prop",
+		"linkshere",
+		"lhcontinue"
+	) {
+		@Override
+		public PageQuery mergeResults(PageQuery a, PageQuery b) {
+			a.getPages().addAll(b.getPages());
 			return a;
 		}
 	};
