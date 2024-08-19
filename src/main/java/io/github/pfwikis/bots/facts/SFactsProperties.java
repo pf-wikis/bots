@@ -21,16 +21,17 @@ public class SFactsProperties {
 		"Audio type",
 		SFactTypes.STRING)
 		.setDescription("The type of audio product.");
-	public static final SProperty<List<PageRef>> Author_all = new SProperty<>(
+	public static final SGeneratedProperty<List<PageRef>> Author_all = new SGeneratedProperty<>(
 		"Author all",
-		SFactTypes.PAGE_LIST)
+		SFactTypes.PAGE_LIST,
+		"{{{Author|}}};{{{Primary author|}}}"
+		)
 		.setDescription("This entity is automatically filled with all authors, section authors and primary authors.");
 	public static final SProperty<List<PageRef>> Author = new SProperty<>(
 		"Author",
 		SFactTypes.PAGE_LIST_ORDERED)
 		.setSuggestValuesFrom("Category:Authors")
-		.setDescription("This entity was written by the given Person. This property can appear multiple times to indicate multiple authors.")
-		.setGeneratedProperties(List.of(new SGeneratedProperty(Author_all)));
+		.setDescription("This entity was written by the given Person. This property can appear multiple times to indicate multiple authors.");
 	public static final SProperty<String> Awards = new SProperty<>(
 		"Awards",
 		SFactTypes.STRING)
@@ -144,15 +145,17 @@ public class SFactsProperties {
 		.setAutocompleteDisabled(true)
 		.setFormNote("Fill this only, if the commonly used title of this product is a shorter form of the full title.")
 		.setDescription("The full book title. This should only be used in addition to name if the book has a long name that is not typically used in its full form.");
+	public static final SGeneratedProperty<PageRef> Gallery_page = new SGeneratedProperty<>(
+		"Gallery page",
+		SFactTypes.PAGE,
+		"{{#if:{{{Gallery|}}}|Category:Artwork from {{{Gallery}}}|Category:Artwork from {{PAGENAME}}}}")
+		.setDescription("The category page of the gallery of images belonging to this entity.");
 	public static final SProperty<String> Gallery = new SProperty<>(
 		"Gallery",
 		SFactTypes.STRING)
 		.setAutocompleteDisabled(true)
+		.setGeneratedProperties(List.of(Gallery_page))
 		.setDescription("If the gallery has a different category name than \"Artwork from PAGENAME\".");
-	public static final SProperty<PageRef> Gallery_page = new SProperty<>(
-		"Gallery page",
-		SFactTypes.PAGE)
-		.setDescription("The category page of the gallery of images belonging to this entity.");
 	public static final SProperty<String> Genre = new SProperty<>(
 		"Genre",
 		SFactTypes.STRING)
@@ -241,6 +244,7 @@ public class SFactsProperties {
 		"Primary author",
 		SFactTypes.PAGE_LIST_ORDERED)
 		.setSuggestValuesFrom("Category:Authors")
+		.setGeneratedProperties(List.of(Author_all))
 		.setDescription("This entity was written by the given Person. This property can appear multiple times to indicate multiple authors. Compared to the Author property this should be credited on the cover page.");
 	public static final SProperty<List<PageRef>> Producer = new SProperty<>(
 		"Producer",
@@ -273,21 +277,29 @@ public class SFactsProperties {
 		SFactTypes.PAGE_LIST)
 		.setSuggestValuesFrom("Category:Locations")
 		.setDescription("The region shown on this map.");
-	public static final SProperty<String> Release_date_precision = new SProperty<>(
+	public static final SGeneratedProperty<String> Release_date_precision = new SGeneratedProperty<>(
 		"Release date precision",
-		SFactTypes.STRING)
+		SFactTypes.STRING,
+		"{{#if:{{{Release year|}}}|"
+			+"{{#rmatch:{{{Release year|}}}|^\\d{4}-\\d{1,2}-\\d{1,2}$|date|"
+				+ "{{#rmatch:{{{Release year|}}}|^\\d{4}-\\d{1,2}$|month|"
+					+ "{{#rmatch:{{{Release year|}}}|^\\d{4}$|year|unknown}}"
+				+ "}}"
+			+ "}}"
+		+ "|empty}}")
 		.setDescription("Automatically generated property that says how precise a given date was.");
-	public static final SProperty<String> Release_year = new SProperty<>(
+	public static final SGeneratedProperty<String> Release_year = new SGeneratedProperty<>(
 		"Release year",
-		SFactTypes.STRING)
+		SFactTypes.STRING,
+		"TODO")
 		.setDescription("The year in which this product was released. This is typically automatically calculated.");
 	public static final SProperty<Temporal> Release_date = new SProperty<>(
 		"Release date",
 		SFactTypes.DATE)
 		.setDescription("The release date or a partial release date.")
 		.setGeneratedProperties(List.of(
-			new SGeneratedProperty(Release_date_precision),
-			new SGeneratedProperty(Release_year)
+			Release_date_precision,
+			Release_year
 		));
 	public static final SProperty<String> Release_note = new SProperty<>(
 		"Release note",
@@ -302,6 +314,7 @@ public class SFactsProperties {
 		SFactTypes.PAGE)
 		.setFormNote("Only fill this if it is different from the Main page of the same name.")
 		.setSuggestValuesFrom("Namespace:Main")
+		.setDefaultValue("{{#ifexist:{{ROOTPAGENAME}}|{{ROOTPAGENAME}}}}")
 		.setDescription("This entity is best represented by this wikipage.");
 	public static final SProperty<String> Rule_system = new SProperty<>(
 		"Rule system",
@@ -352,5 +365,6 @@ public class SFactsProperties {
 	public static final SProperty<Boolean> Is_subsection = new SProperty<>(
 		"Is subsection",
 		SFactTypes.BOOLEAN)
-		.setDescription("Marks this section as a subsection of the previous section.");
+		.setDescription("Marks this section as a subsection of the previous section.")
+		.setDefaultValue("f");
 }

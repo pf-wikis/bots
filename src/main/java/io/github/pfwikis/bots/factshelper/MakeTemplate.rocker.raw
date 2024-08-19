@@ -27,25 +27,25 @@
 }
 <div class="facts-display facts-display-@ConceptUtil.cssName(c)">
 	@for(prop:c.getProperties()) {
-		@DisplayTemplateField.template(prop.getName(), prop.getFactType().displayFactCode(prop.getName())) -> {
-			@prop.getFactType().displayFactCode(prop.getName())@prop.getFactType().storeFactCode(prop.getName())@prop.getFactType().formAfterSet(prop)
+		@DisplayTemplateField.template(prop.getName(), prop.wikitextToDisplayFact()) -> {
+			@prop.wikitextToDisplayFact()
+			{{#set:@prop.getName()=@prop.wikitextToStoreFact()}}
 		}
 	}
 </div>
 
 <h3>Automatic properties</h3>
 <div class="facts-display facts-display-@ConceptUtil.cssName(c)">
-@for(prop:c.getGeneratedProperties()) {
-	@DisplayTemplateField.template(prop.getName(), null) -> {[[@prop.getName()::@prop.getGenerateCode()]]}
+@for(gen:c.getGeneratedProperties()) {
+	@DisplayTemplateField.template(gen.getName(), null) -> {
+		{{#set:@gen.getName()=@gen.wikitextToStoreFact()}}
+	}
 }
 </div>
 <div class="facts-subforms">
 	@for(sub:c.getSubConcepts()) {
 		@*The counter just reset the counter before listing the subelements so their order can be preserved.*@
 		{{#counter: @sub.getName()-counter|set=0}}
-		@for(prop:sub.getProperties()) {
-			@prop.getFactType().formBeforeSubformTransclude(prop)
-		}
 		
 		@*This link can not go into a #ifexists, otherwise new entries are not propagated correctly.*@
 		{{{{FULLPAGENAME}}/@sub.getPluralName()}}

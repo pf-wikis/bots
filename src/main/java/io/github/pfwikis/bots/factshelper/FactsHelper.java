@@ -31,20 +31,20 @@ public class FactsHelper extends SimpleBot {
 		}
 	}
 	
-	private void handleConcept(SConcept form) {
+	private void handleConcept(SConcept c) {
 		try {
-			make(run.getWiki(), "Template:Facts/"+form.getName(), MakeTemplate.template(form));
-			make(run.getWiki(), "Template:Facts/"+form.getName()+"/Input", MakeTemplateInput.template(form));
-			make(run.getWiki(), "Template:Facts/"+form.getName()+"/Ask", MakeTemplateAsk.template(form.getName(), form));
-			make(run.getWiki(), "Template:Facts/"+form.getName()+"/Show", MakeTemplateShow.template(form.getName(), form));
-			make(run.getWiki(), "Form:"+form.getName(), MakeForm.template(form.getName(), form.getPluralName(), form, false));
-			make(run.getWiki(), "Category:Facts about "+form.getPluralName(), MakeCategory.template(form.getName(), form.getPluralName(), form));
+			make(run.getWiki(), "Template:Facts/"+c.getName(), MakeTemplate.template(c));
+			make(run.getWiki(), "Template:Facts/"+c.getName()+"/Input", MakeTemplateInput.template(c));
+			make(run.getWiki(), "Template:Facts/"+c.getName()+"/Ask", MakeTemplateAsk.template(c.getName(), c));
+			make(run.getWiki(), "Template:Facts/"+c.getName()+"/Show", MakeTemplateShow.template(c.getName(), c));
+			make(run.getWiki(), "Form:"+c.getName(), MakeForm.template(c.getName(), c.getPluralName(), c, false));
+			make(run.getWiki(), "Category:Facts about "+c.getPluralName(), MakeCategory.template(c.getName(), c.getPluralName(), c));
 			
-			for(var subForm:form.getSubForms()) {
-				handleSubForm(form, subForm);
+			for(var subForm:c.getSubForms()) {
+				handleSubForm(c, subForm);
 			}
 		} catch(Exception e) {
-			this.reportException(new RuntimeException("Failed to create facts utilities for "+form.getName(), e));
+			this.reportException(new RuntimeException("Failed to create facts utilities for "+c.getName(), e));
 		}
 	}
 	

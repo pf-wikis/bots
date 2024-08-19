@@ -1,15 +1,12 @@
 package io.github.pfwikis.bots.facts.model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 
-import com.google.common.collect.MoreCollectors;
-
-import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.bots.Run.SingleRun;
 import io.github.pfwikis.bots.common.model.SemanticSubject;
-import lombok.Builder;
 import lombok.Setter;
 import lombok.Value;
 import lombok.experimental.Accessors;
@@ -21,8 +18,8 @@ public class SConcept {
 	String pluralName;
 	List<SProperty<?>> properties;
 	List<SConcept> subConcepts;
-	List<SProperty<?>> infoboxProperties;
-	List<SGeneratedProperty> generatedProperties;
+	List<SInfoboxProperty> infoboxProperties;
+	List<SGeneratedProperty<?>> generatedProperties;
 	BiFunction<SingleRun, SemanticSubject, String> conceptSpecificCategoriesFunction;
 	
 	public static Builder builder() {
@@ -61,9 +58,25 @@ public class SConcept {
 		}
 		
 		public SConcept build() {
+			var gens = new ArrayList<SGeneratedProperty<?>>();
+			
+			var c = new SConcept(
+				name,
+				pluralName,
+				properties,
+				subConcepts,
+				infoboxProperties,
+				gens,
+				null
+			);
+			
+			for(var prop:properties) {
+				gens.addAll(prop.generateProperties(c));
+			}
+			
+			return c;
 			//TODO return SConcept
 			//generate generated properties
-			return null;
 		}
 	}
 	

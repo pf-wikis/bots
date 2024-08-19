@@ -33,9 +33,7 @@ public abstract class SFactType<JType> {
 	@Getter(lazy = true)
 	private final JavaType javaType = findType();
 	private final SMWPropertyType propertyType;
-	private final String displayFactCode;
-	private final String storeFactCode;
-	private final String storeSubFactCode;
+	private final String displayFactWikitext;
 	
 	private JavaType findType() {
 		Class<?> t = this.getClass();
@@ -45,24 +43,38 @@ public abstract class SFactType<JType> {
 		ParameterizedType sup = (ParameterizedType)t.getGenericSuperclass();
 		return Jackson.JSON.constructType(sup.getActualTypeArguments()[0]);
 	}
-/*
-	public String displayFactCode(String propName) {
-		return displayFactCode.replace("$1", propName);
+
+	public String wikitextToDisplayFact(SProperty<JType> p) {
+		return displayFactWikitext.replace("$v", "{{{"+p.getName()+"|}}}")
+			+ (p.getDefaultValue()!=null
+				?("''default:'' "+displayFactWikitext.replace("$v", p.getDefaultValue()))
+				:""
+			);
 	}
 	
-	public String storeFactCode(String propName) {
-		return storeFactCode.replace("$1", propName);
+	public String wikitextToStoreFact(SProperty<JType> p) {
+		return wikitextToStoreFact(p, "{{{"+p.getName()+"|}}}");
 	}
+	
+	public String wikitextToStoreFact(SProperty<JType> p, String v) {
+		var result = changeStoreFactWikitext(v);
+		if(p.getDefaultValue() == null)
+			return result;
+		return "{{#if:"+v+"|"+result+"|"+changeStoreFactWikitext(p.getDefaultValue())+"}}";
+	}
+	
+	protected String changeStoreFactWikitext(String wt) {
+		return wt;
+	}
+/*
+	
+	
 	
 	public String subFormAtEnd(SProperty<JType> prop) {
 		return "";
 	}
 	
 	public String formAfterSet(SProperty<JType> prop) {
-		return "";
-	}
-	
-	public String formBeforeSubformTransclude(SProperty<JType> prop) {
 		return "";
 	}
 	

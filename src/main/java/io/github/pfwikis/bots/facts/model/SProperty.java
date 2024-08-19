@@ -3,6 +3,8 @@ package io.github.pfwikis.bots.facts.model;
 import java.util.Collections;
 import java.util.List;
 
+import com.fizzed.rocker.RockerContent;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -19,26 +21,18 @@ public class SProperty<JType> {
 	private String description;
 	private boolean autocompleteDisabled;
 	private String suggestValuesFrom;
-	private List<SGeneratedProperty> generatedProperties = Collections.emptyList();
+	private List<SGeneratedProperty<?>> generatedProperties = Collections.emptyList();
 	private String formNote;
 	private String allowsPattern;
-	/*
-	private String factDisplayFormat;
-	
-	
-	
-	
+	private String defaultValue;
 
-	public String infoboxLabel(List<Object> values) {
-		return factType.infoboxLabel(this, values);
+
+	public String wikitextToDisplayFact() {
+		return factType.wikitextToDisplayFact(this);
 	}
 
-	public String infoboxValue(WikiAPI wiki, List<Object> values) {
-		return factType.infoboxValue(wiki, this, values);
+
+	public String wikitextToStoreFact() {
+		return factType.wikitextToStoreFact(this);
 	}
-	
-	public String infoboxValue(WikiAPI wiki, Object value) {
-		return factType.infoboxValue(wiki, this, value);
-	}
-	*/
 }
