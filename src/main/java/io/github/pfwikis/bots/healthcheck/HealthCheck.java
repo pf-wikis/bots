@@ -55,9 +55,11 @@ public class HealthCheck extends Schedulable {
 					retry = false;
 					tryTest(url, domain);
 				} catch (ConnectException e) {
-					if(tryCount++>6)
+					if(tryCount++>6) {
 						throw e;
+					}
 					else {
+						log.warn("Failed with {} on {}. Retrying in 10s.", e.getMessage(), url, e);
 						retry = true;
 						Uninterruptibles.sleepUninterruptibly(10, TimeUnit.SECONDS);
 					}
