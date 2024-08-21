@@ -39,8 +39,6 @@ public class HealthCheck extends Schedulable {
 	@Override
 	public void execute() {
 		test("https://pathfinderwiki.com", "pathfinderwiki.com");
-		test("https://matomo.pathfinderwiki.com", "pathfinderwiki.com");
-		test("https://map.pathfinderwiki.com", "pathfinderwiki.com");
 		test("https://starfinderwiki.com", "starfinderwiki.com");
 	}
 	
@@ -117,5 +115,4 @@ public class HealthCheck extends Schedulable {
 			throw new IllegalStateException("Could not find Certificate for url "+url);
 		}
 	}
-
 }
