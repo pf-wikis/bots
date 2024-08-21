@@ -94,10 +94,14 @@ public class HealthCheck extends Schedulable {
 				+ "! Something is wrong with the renewal system.");
 		}
 	}
+	
+	private final OkHttpClient client = new OkHttpClient.Builder()
+			.connectTimeout(30, TimeUnit.SECONDS)
+			.callTimeout(30, TimeUnit.SECONDS)
+			.readTimeout(30, TimeUnit.SECONDS)
+			.build();
 
 	private X509Certificate getCertificate(String url, String domain) throws MalformedURLException, IOException {
-		OkHttpClient client = new OkHttpClient();
-
 		Request request = new Request.Builder()
 			.url(url)
 			.build();
