@@ -2,11 +2,13 @@ package io.github.pfwikis.bots.facts.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
 
 import io.github.pfwikis.bots.common.bots.Run.SingleRun;
 import io.github.pfwikis.bots.common.model.SemanticSubject;
+import io.github.pfwikis.bots.facts.SFactsProperties;
 import lombok.Setter;
 import lombok.Value;
 import lombok.experimental.Accessors;
@@ -19,7 +21,7 @@ public class SConcept {
 	List<SProperty<?>> properties;
 	List<SConcept> subConcepts;
 	List<SInfoboxProperty> infoboxProperties;
-	List<SGeneratedProperty<?>> generatedProperties;
+	List<SProperty<?>> generatedProperties;
 	BiFunction<SingleRun, SemanticSubject, String> conceptSpecificCategoriesFunction;
 	
 	public static Builder builder() {
@@ -32,9 +34,9 @@ public class SConcept {
 		private String name;
 		@Setter
 		private String pluralName;
-		private List<SProperty<?>> properties;
-		private List<SInfoboxProperty> infoboxProperties;
-		private List<SConcept> subConcepts;
+		private List<SProperty<?>> properties = Collections.emptyList();
+		private List<SInfoboxProperty> infoboxProperties = Collections.emptyList();
+		private List<SConcept> subConcepts = Collections.emptyList();
 		
 		public Builder properties(SProperty<?>... properties) {
 			this.properties=List.of(properties);
@@ -58,7 +60,7 @@ public class SConcept {
 		}
 		
 		public SConcept build() {
-			var gens = new ArrayList<SGeneratedProperty<?>>();
+			var gens = new ArrayList<SProperty<?>>();
 			
 			var c = new SConcept(
 				name,
@@ -70,13 +72,17 @@ public class SConcept {
 				null
 			);
 			
+			gens.add(SFactsProperties.Fact_type.withGenerateWikitext("Template:Facts/"+name));
 			for(var prop:properties) {
 				gens.addAll(prop.generateProperties(c));
 			}
+			for(var sub:subConcepts) {
+				for(var prop:sub.properties) {
+					gens.addAll(prop.generateProperties(c));
+				}
+			}
 			
 			return c;
-			//TODO return SConcept
-			//generate generated properties
 		}
 	}
 	

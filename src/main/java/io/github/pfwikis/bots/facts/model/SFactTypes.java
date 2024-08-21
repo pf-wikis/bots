@@ -12,7 +12,7 @@ public class SFactTypes {
 	) {};
 	public static final SFactType<PageRef> PAGE = new SFactType<>(
 			SMWPropertyType.PAGE,
-			"$v"
+			"[[$v]]"
 	) {};
 	public static final SFactType<List<PageRef>> PAGE_LIST = new SFactType<>(
 			SMWPropertyType.PAGE,
@@ -34,7 +34,7 @@ public class SFactTypes {
 	) {};
 	public static final SFactType<PageRef> IMAGE = new SFactType<>(
 			SMWPropertyType.PAGE,
-			"[[File:{{{1|}}}]]"
+			"[[File:{{{$v|}}}|250px]]"
 	) {
 		@Override
 		protected String changeStoreFactWikitext(String wt) {

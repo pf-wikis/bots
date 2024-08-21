@@ -11,7 +11,7 @@ import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.facts.SModel;
 import io.github.pfwikis.bots.facts.model.SConcept;
-import io.github.pfwikis.bots.facts.model.SProperty;
+import io.github.pfwikis.bots.facts.model.property.SSimpleProperty;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -34,6 +34,7 @@ public class FactsHelper extends SimpleBot {
 	private void handleConcept(SConcept c) {
 		try {
 			make(run.getWiki(), "Template:Facts/"+c.getName(), MakeTemplate.template(c));
+			/*
 			make(run.getWiki(), "Template:Facts/"+c.getName()+"/Input", MakeTemplateInput.template(c));
 			make(run.getWiki(), "Template:Facts/"+c.getName()+"/Ask", MakeTemplateAsk.template(c.getName(), c));
 			make(run.getWiki(), "Template:Facts/"+c.getName()+"/Show", MakeTemplateShow.template(c.getName(), c));
@@ -42,7 +43,7 @@ public class FactsHelper extends SimpleBot {
 			
 			for(var subForm:c.getSubForms()) {
 				handleSubForm(c, subForm);
-			}
+			}*/
 		} catch(Exception e) {
 			this.reportException(new RuntimeException("Failed to create facts utilities for "+c.getName(), e));
 		}

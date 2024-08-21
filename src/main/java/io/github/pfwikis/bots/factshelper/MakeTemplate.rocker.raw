@@ -38,6 +38,7 @@
 <div class="facts-display facts-display-@ConceptUtil.cssName(c)">
 @for(gen:c.getGeneratedProperties()) {
 	@DisplayTemplateField.template(gen.getName(), null) -> {
+		@gen.wikitextToDisplayFact()
 		{{#set:@gen.getName()=@gen.wikitextToStoreFact()}}
 	}
 }

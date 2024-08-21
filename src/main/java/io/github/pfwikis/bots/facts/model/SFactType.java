@@ -1,27 +1,10 @@
 package io.github.pfwikis.bots.facts.model;
 
 import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.time.temporal.ChronoField;
-import java.time.temporal.TemporalAccessor;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
 
-import io.github.pfwikis.bots.common.WikiAPI;
-import io.github.pfwikis.bots.common.model.SemanticSubject.PageRef;
 import io.github.pfwikis.bots.utils.Jackson;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,16 +27,17 @@ public abstract class SFactType<JType> {
 		return Jackson.JSON.constructType(sup.getActualTypeArguments()[0]);
 	}
 
-	public String wikitextToDisplayFact(SProperty<JType> p) {
-		return displayFactWikitext.replace("$v", "{{{"+p.getName()+"|}}}")
-			+ (p.getDefaultValue()!=null
-				?("''default:'' "+displayFactWikitext.replace("$v", p.getDefaultValue()))
-				:""
-			);
-	}
-	
-	public String wikitextToStoreFact(SProperty<JType> p) {
-		return wikitextToStoreFact(p, "{{{"+p.getName()+"|}}}");
+	public String wikitextToDisplayFact(SProperty<JType> p, String v) {
+		var res = displayFactWikitext.replace("$v", v);
+		if(p.getDefaultValue() == null ) {
+			return res;
+		}
+		return 
+			"{{#if:{{{"+p.getName()+"|}}}|"
+			+ res
+			+ "|''default:'' "
+			+ displayFactWikitext.replace("$v", p.getDefaultValue())
+			+ "}}";
 	}
 	
 	public String wikitextToStoreFact(SProperty<JType> p, String v) {

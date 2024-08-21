@@ -12,7 +12,7 @@ import io.github.pfwikis.bots.common.bots.RunOnPageBot;
 import io.github.pfwikis.bots.common.bots.ScatteredRunnableBot;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.facts.SModel;
-import io.github.pfwikis.bots.facts.model.SProperty;
+import io.github.pfwikis.bots.facts.model.property.SSimpleProperty;
 import io.github.pfwikis.bots.utils.RockerHelper;
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,6 +40,7 @@ public class InfoboxTemplates extends SimpleBot implements RunOnPageBot, Scatter
 	}
 
 	private void runOnPage(String page) {
+		/*
 		var properties = SProperty.load(run);
 		
 		var subject = run.getWiki().semanticSubject(page).getQuery();
@@ -57,7 +58,7 @@ public class InfoboxTemplates extends SimpleBot implements RunOnPageBot, Scatter
 				"Template:Facts/Infoboxes/"+page,
 				MakeInfoboxTemplate.template(run, concepts, subject)
 			);
-		}
+		}*/
 	}
 
 	private void runOnShard(Shard shard) {

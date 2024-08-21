@@ -1,7 +1,5 @@
 package io.github.pfwikis.bots.common.model;
 
-import static io.github.pfwikis.bots.facts.model.SPropertyTypeMapping.FACT_TYPE;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Year;
@@ -19,6 +17,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.util.StdConverter;
 
 import io.github.pfwikis.bots.common.WikiAPI;
+import io.github.pfwikis.bots.facts.SFactsProperties;
 import io.github.pfwikis.bots.facts.model.SConcept;
 import io.github.pfwikis.bots.facts.model.SPropertyTypeMapping;
 import lombok.AccessLevel;
@@ -37,15 +36,15 @@ public class SemanticSubject implements SemanticObject {
 
 	
 	public boolean hasConcept(SConcept concept) {
-		if(!has(SPropertyTypeMapping.FACT_TYPE)) return false;
-		return ("Facts/"+concept.getName()).equals(get(SPropertyTypeMapping.FACT_TYPE).getTitle());
+		if(!has(SFactsProperties.Fact_type)) return false;
+		return ("Facts/"+concept.getName()).equals(get(SFactsProperties.Fact_type).getTitle());
 	}
 	
 	public List<SemanticSubject> getSubObjects(String factType) {
 		var res = subObjects.stream()
-			.filter(e->e.has(FACT_TYPE))
+			.filter(e->e.has(SFactsProperties.Fact_type))
 			.filter(e->
-				e.get(FACT_TYPE).getTitle()
+				e.get(SFactsProperties.Fact_type).getTitle()
 					.equals(factType))
 			.toList();
 		return res;

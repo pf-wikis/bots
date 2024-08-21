@@ -3,8 +3,8 @@ import java.time.temporal.Temporal;
 import java.util.List;
 
 import io.github.pfwikis.bots.common.model.SemanticSubject.PageRef;
+import io.github.pfwikis.bots.facts.model.SConcept;
 import io.github.pfwikis.bots.facts.model.SFactTypes;
-import io.github.pfwikis.bots.facts.model.SGeneratedProperty;
 import io.github.pfwikis.bots.facts.model.SProperty;
 
 public class SFactsProperties {
@@ -21,11 +21,10 @@ public class SFactsProperties {
 		"Audio type",
 		SFactTypes.STRING)
 		.setDescription("The type of audio product.");
-	public static final SGeneratedProperty<List<PageRef>> Author_all = new SGeneratedProperty<>(
+	public static final SProperty<List<PageRef>> Author_all = new SProperty<>(
 		"Author all",
-		SFactTypes.PAGE_LIST,
-		"{{{Author|}}};{{{Primary author|}}}"
-		)
+		SFactTypes.PAGE_LIST)
+		.setGenerateWikitext("{{{Author|}}};{{{Primary author|}}}")
 		.setDescription("This entity is automatically filled with all authors, section authors and primary authors.");
 	public static final SProperty<List<PageRef>> Author = new SProperty<>(
 		"Author",
@@ -132,7 +131,7 @@ public class SFactsProperties {
 	public static final SProperty<String> Fact_type = new SProperty<>(
 		"Fact type",
 		SFactTypes.STRING)
-		.setSuggestValuesFrom("Category:Facts templates")
+		.setGenerateWikitext("unknown")
 		.setDescription("The type of fact represented by this entity. This should be a reference to the template that created it.");
 	public static final SProperty<List<PageRef>> Follows = new SProperty<>(
 		"Follows",
@@ -145,16 +144,19 @@ public class SFactsProperties {
 		.setAutocompleteDisabled(true)
 		.setFormNote("Fill this only, if the commonly used title of this product is a shorter form of the full title.")
 		.setDescription("The full book title. This should only be used in addition to name if the book has a long name that is not typically used in its full form.");
-	public static final SGeneratedProperty<PageRef> Gallery_page = new SGeneratedProperty<>(
+	public static final SProperty<PageRef> Gallery_page = new SProperty<>(
 		"Gallery page",
-		SFactTypes.PAGE,
-		"{{#if:{{{Gallery|}}}|Category:Artwork from {{{Gallery}}}|Category:Artwork from {{PAGENAME}}}}")
+		SFactTypes.PAGE)
+		.setGenerateWikitext("{{#if:{{{Gallery|}}}|Category:Artwork from {{{Gallery}}}|Category:Artwork from {{PAGENAME}}}}")
 		.setDescription("The category page of the gallery of images belonging to this entity.");
 	public static final SProperty<String> Gallery = new SProperty<>(
 		"Gallery",
-		SFactTypes.STRING)
+		SFactTypes.STRING) {
+			public List<SProperty<?>> generateProperties(SConcept c) {
+				return List.of(Gallery_page);
+			};
+		}
 		.setAutocompleteDisabled(true)
-		.setGeneratedProperties(List.of(Gallery_page))
 		.setDescription("If the gallery has a different category name than \"Artwork from PAGENAME\".");
 	public static final SProperty<String> Genre = new SProperty<>(
 		"Genre",
@@ -242,9 +244,12 @@ public class SFactsProperties {
 		.setAllowsPattern("^(Free|[$€]\\d+(.\\d+)?)$");
 	public static final SProperty<List<PageRef>> Primary_author = new SProperty<>(
 		"Primary author",
-		SFactTypes.PAGE_LIST_ORDERED)
+		SFactTypes.PAGE_LIST_ORDERED) {
+			public List<SProperty<?>> generateProperties(SConcept c) {
+				return List.of(Author_all);
+			};
+		}
 		.setSuggestValuesFrom("Category:Authors")
-		.setGeneratedProperties(List.of(Author_all))
 		.setDescription("This entity was written by the given Person. This property can appear multiple times to indicate multiple authors. Compared to the Author property this should be credited on the cover page.");
 	public static final SProperty<List<PageRef>> Producer = new SProperty<>(
 		"Producer",
@@ -277,10 +282,10 @@ public class SFactsProperties {
 		SFactTypes.PAGE_LIST)
 		.setSuggestValuesFrom("Category:Locations")
 		.setDescription("The region shown on this map.");
-	public static final SGeneratedProperty<String> Release_date_precision = new SGeneratedProperty<>(
+	public static final SProperty<String> Release_date_precision = new SProperty<>(
 		"Release date precision",
-		SFactTypes.STRING,
-		"{{#if:{{{Release year|}}}|"
+		SFactTypes.STRING)
+		.setGenerateWikitext("{{#if:{{{Release year|}}}|"
 			+"{{#rmatch:{{{Release year|}}}|^\\d{4}-\\d{1,2}-\\d{1,2}$|date|"
 				+ "{{#rmatch:{{{Release year|}}}|^\\d{4}-\\d{1,2}$|month|"
 					+ "{{#rmatch:{{{Release year|}}}|^\\d{4}$|year|unknown}}"
@@ -288,19 +293,20 @@ public class SFactsProperties {
 			+ "}}"
 		+ "|empty}}")
 		.setDescription("Automatically generated property that says how precise a given date was.");
-	public static final SGeneratedProperty<String> Release_year = new SGeneratedProperty<>(
+	public static final SProperty<String> Release_year = new SProperty<>(
 		"Release year",
-		SFactTypes.STRING,
-		"TODO")
+		SFactTypes.STRING)
+		.setGenerateWikitext("unknown")
+		.setDefaultValue("unknown")
 		.setDescription("The year in which this product was released. This is typically automatically calculated.");
 	public static final SProperty<Temporal> Release_date = new SProperty<>(
 		"Release date",
-		SFactTypes.DATE)
-		.setDescription("The release date or a partial release date.")
-		.setGeneratedProperties(List.of(
-			Release_date_precision,
-			Release_year
-		));
+		SFactTypes.DATE) {
+			public List<SProperty<?>> generateProperties(SConcept c) {
+				return List.of(Release_date_precision, Release_year);
+			};
+		}
+		.setDescription("The release date or a partial release date.");
 	public static final SProperty<String> Release_note = new SProperty<>(
 		"Release note",
 		SFactTypes.STRING)
