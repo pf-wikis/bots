@@ -40,7 +40,12 @@ public class Discord implements Closeable {
 		if(!init) {
 			try {
 				jda = JDABuilder.createDefault(discordToken).build();
-				log.info("To add this bot to a server: {}", jda.getInviteUrl(Permission.MESSAGE_EXT_EMOJI, Permission.MESSAGE_SEND));
+				log.info("To add this bot to a server: {}", jda
+					.getInviteUrl(
+						Permission.MESSAGE_EXT_EMOJI,
+						Permission.MESSAGE_SEND,
+						Permission.MESSAGE_MANAGE
+				));
 				jda.awaitReady();
 				jda.getPresence().setStatus(OnlineStatus.ONLINE);
 				init = true;

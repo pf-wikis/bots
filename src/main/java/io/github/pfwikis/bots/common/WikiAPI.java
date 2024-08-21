@@ -302,6 +302,9 @@ public class WikiAPI {
 	}
 	
 	public List<Page> getImageUsage(String page) {
+		if(!page.startsWith("File:"))
+			return Collections.emptyList();
+		
 		return query(
 			Query.LIST_IMAGE_USAGE,
 			"iutitle", page
