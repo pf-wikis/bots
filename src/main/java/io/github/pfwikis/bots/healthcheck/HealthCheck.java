@@ -3,14 +3,11 @@ package io.github.pfwikis.bots.healthcheck;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.security.cert.X509Certificate;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
-
-import javax.net.ssl.HttpsURLConnection;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
@@ -20,6 +17,9 @@ import com.google.common.util.concurrent.Uninterruptibles;
 import io.github.pfwikis.bots.common.Discord;
 import io.github.pfwikis.bots.scheduler.Schedulable;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 @Slf4j
 @Parameters
@@ -59,7 +59,7 @@ public class HealthCheck extends Schedulable {
 						throw e;
 					}
 					else {
-						log.warn("Failed with {} on {}. Retrying in 10s.", e.getMessage(), url, e);
+						log.warn("Failed with {} on {} . Retrying in 10s.", e.getMessage(), url, e);
 						retry = true;
 						Uninterruptibles.sleepUninterruptibly(10, TimeUnit.SECONDS);
 					}
@@ -96,18 +96,21 @@ public class HealthCheck extends Schedulable {
 	}
 
 	private X509Certificate getCertificate(String url, String domain) throws MalformedURLException, IOException {
-		var con = (HttpsURLConnection) URI.create(url).toURL().openConnection();
-		try {
-			con.connect();
-			for(var cert:con.getServerCertificates()) {
+		OkHttpClient client = new OkHttpClient();
+
+		Request request = new Request.Builder()
+			.url(url)
+			.build();
+
+		try (Response response = client.newCall(request).execute()) {
+			var certs = response.handshake().peerCertificates();
+			for(var cert:certs) {
 				if(cert instanceof X509Certificate xCert) {
 					if(("CN="+domain).equals(xCert.getSubjectX500Principal().getName()))
 						return xCert;
 				}
 			}
 			throw new IllegalStateException("Could not find Certificate for url "+url);
-		} finally {
-			con.disconnect();
 		}
 	}
 

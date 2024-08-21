@@ -87,29 +87,34 @@ public class Discord implements Closeable {
 				//append error
 				.append("```java\n")
 				.append(txt)
-				.append("\n```\n")
+				.append("\n```")
 				.toString();
 			
 			init();
 			
 			var channel = jda.getTextChannelById(CHANNEL_BOT_ACTIVITY);
 			
-			var last100 = channel.getIterableHistory()
+			var last30 = channel.getIterableHistory()
 				.takeAsync(30)
 				.get();
 			
 			var counter = new AtomicInteger(1);
-			last100.forEach(old -> {
-				if(old.getContentRaw().startsWith(msg) && old.getReactions().isEmpty()) {
-					counter.addAndGet(Optional.ofNullable(
-							Ints.tryParse(old.getContentRaw().replaceAll("(?s)^.*x (\\d+)$", "$1"))
-					).orElse(1));
-				}
+			last30.forEach(old -> {
+				if(old.getContentRaw().contains("Test"))
+					System.out.println("aaa");
+				
+				if(old.getAuthor().getIdLong()!=jda.getSelfUser().getIdLong()) return;
+				if(!old.getContentRaw().startsWith(msg)) return;
+				if(!old.getReactions().isEmpty()) return;
+				
+				counter.addAndGet(Optional.ofNullable(
+						Ints.tryParse(old.getContentRaw().replaceAll("(?s)^.*x (\\d+)$", "$1"))
+				).orElse(1));
 				old.delete().queue();
 			});
 			
 			jda.getTextChannelById(CHANNEL_BOT_ACTIVITY)
-				.sendMessage(msg+(counter.get()>1?"x "+counter.get():""))
+				.sendMessage(msg+(counter.get()>1?"\nx "+counter.get():""))
 				.queue();
 		} catch(Exception e2) {
 			log.error("Failed to report error to discord", e2);
