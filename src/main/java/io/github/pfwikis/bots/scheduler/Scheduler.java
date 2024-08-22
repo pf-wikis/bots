@@ -132,10 +132,16 @@ public class Scheduler {
 	}
 	
 	public SchedulableBot scheduleableBot(Wiki wiki, Discord discord, SimpleBot bot, RunContext ctx) {
+		return scheduleableBot(wiki, discord, bot, ctx, false);
+	}
+	
+	public SchedulableBot scheduleableBot(Wiki wiki, Discord discord, SimpleBot bot, RunContext ctx, boolean reset) {
 		return new SchedulableBot(bot, wiki.name()+"-"+bot.getId()+ctx.toInfoText()) {
 			@Override
 			public void execute() {
 				synchronized(bot) {
+					if(reset)
+						bot.setRun(null);
 					initBot(wiki, discord, bot);
 					bot.startRun(discord, ctx);
 				}
@@ -168,7 +174,7 @@ public class Scheduler {
 					var shards = bot.createScatterShards();
 					var scatterDur = scatterWidth.dividedBy(shards.size());
 					for(int i=0;i<shards.size();i++) {
-						var sbot = scheduleableBot(wiki, discord, bot, RunContext.builder().scatterShard(shards.get(i)).build());
+						var sbot = scheduleableBot(wiki, discord, bot, RunContext.builder().scatterShard(shards.get(i)).build(), true);
 						var delay = Instant.now().plus(scatterDur.multipliedBy(i+1));
 						if(sleepBetweenRuns != null) {
 							schedule(sbot, sleepBetweenRuns, delay);
