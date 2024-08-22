@@ -4,6 +4,7 @@ import java.lang.reflect.ParameterizedType;
 
 import com.fasterxml.jackson.databind.JavaType;
 
+import io.github.pfwikis.bots.common.WikiAPI;
 import io.github.pfwikis.bots.utils.Jackson;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -50,52 +51,8 @@ public abstract class SFactType<JType> {
 	protected String changeStoreFactWikitext(String wt) {
 		return wt;
 	}
-/*
-	
-	
-	
-	public String subFormAtEnd(SProperty<JType> prop) {
-		return "";
-	}
-	
-	public String formAfterSet(SProperty<JType> prop) {
-		return "";
-	}
-	
-	public String storeSubFactCode(String propName) {
-		return storeSubFactCode.replace("$1", propName);
-	}
-	
-	public String infoboxLabel(SProperty<JType> prop, List<Object> values) {
-		var label = prop.getInfoboxLabel()==null?prop.getName():prop.getInfoboxLabel();
-		if(values.size()>1 && label.charAt(label.length()-1)!='s')
-			label += "s";
-		return label;
-	}
-	
-	public String infoboxValue(WikiAPI wiki, SProperty<JType> prop, List<Object> values) {
-		if(values.size() == 0)
-			return "";
-		if(values.size() == 1)
-			return infoboxValue(wiki, prop, values.getFirst());
-		if(values.size() == 2)
-			return infoboxValue(wiki, prop, values.getFirst())
-				+ " and "
-				+ infoboxValue(wiki, prop, values.get(1));
-		var sb = new StringBuilder();
-		for(int i=0;i<values.size()-1;i++) {
-			if(i>0) sb.append(", ");
-			sb.append(infoboxValue(wiki, prop, values.get(i)));
-		}
-		sb.append(", and ");
-		sb.append(infoboxValue(wiki, prop, values.getLast()));
-		return sb.toString();
-	}
 
-	public String infoboxValue(WikiAPI wiki, SProperty<JType> prop, JType object) {
-		if(object instanceof PageRef page) {
-			return page.toWikiLink(wiki);
-		}
+	public String wikitextToInfoboxDisplay(WikiAPI wiki, Object object) {
 		return object.toString();
-	}*/
+	}
 }

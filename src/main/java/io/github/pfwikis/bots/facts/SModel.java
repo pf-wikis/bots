@@ -55,8 +55,8 @@ public class SModel {
 			Blurb_quotee
 		)
 		.infoboxProperties(
-			SInfoboxProperty.Simple.builder()
-				.prop(Primary_author)
+			SInfoboxProperty.builder()
+				.property(Primary_author)
 				.label("Author")
 				.fallback(Author)
 				.build(),
@@ -65,8 +65,8 @@ public class SModel {
 			Pages,
 			Narrator,
 			Runtime,
-			SInfoboxProperty.Simple.builder()
-				.prop(Rule_system)
+			SInfoboxProperty.builder()
+				.property(Rule_system)
 				.label("Rule set")
 				.build(),
 			Chapters,
@@ -245,8 +245,8 @@ public class SModel {
 				Quantity,
 				Material,
 				Isbn,
-				SInfoboxProperty.Simple.builder()
-					.prop(Rule_system)
+				SInfoboxProperty.builder()
+					.property(Rule_system)
 					.label("Rule set")
 					.build(),
 				Series,
@@ -310,8 +310,8 @@ public class SModel {
 				Quantity,
 				Isbn,
 				Pages,
-				SInfoboxProperty.Simple.builder()
-					.prop(Rule_system)
+				SInfoboxProperty.builder()
+					.property(Rule_system)
 					.label("Rule set")
 					.build(),
 				Series,
@@ -544,8 +544,8 @@ public class SModel {
 				Release_date,
 				Decksize,
 				Isbn,
-				SInfoboxProperty.Simple.builder()
-					.prop(Rule_system)
+				SInfoboxProperty.builder()
+					.property(Rule_system)
 					.label("Rule set")
 					.build(),
 				Series,

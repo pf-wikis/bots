@@ -128,9 +128,9 @@ public class SFactsProperties {
 		SFactTypes.STRING)
 		.setAutocompleteDisabled(true)
 		.setDescription("A link to all the erratas related to this book.");
-	public static final SProperty<String> Fact_type = new SProperty<>(
+	public static final SProperty<PageRef> Fact_type = new SProperty<>(
 		"Fact type",
-		SFactTypes.STRING)
+		SFactTypes.PAGE)
 		.setGenerateWikitext("unknown")
 		.setDescription("The type of fact represented by this entity. This should be a reference to the template that created it.");
 	public static final SProperty<List<PageRef>> Follows = new SProperty<>(

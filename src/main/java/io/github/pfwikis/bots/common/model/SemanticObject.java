@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.google.common.collect.MoreCollectors;
 
+import io.github.pfwikis.bots.common.model.SemanticSubject.PageRef;
 import io.github.pfwikis.bots.common.model.SemanticSubject.Property;
 import io.github.pfwikis.bots.facts.model.SProperty;
 import io.github.pfwikis.bots.facts.model.SPropertyTypeMapping;
@@ -38,34 +39,47 @@ public interface SemanticObject {
 		return getAll(prop.getProperty());
 	}
 	
-	default <T> List<T> getAll(SProperty<?> prop) {
+	default <T> List<T> getAll(SProperty<T> prop) {
 		return getAll(prop.getName());
 	}
 	
 	default <T> T get(String prop) {
-		var values = getAll(prop);
+		List<T> values = getAll(prop);
 		if(values.size()==1) {
-			return (T) values.getFirst();
+			return values.getFirst();
 		}
 		else {
 			throw new IllegalStateException("Property "+prop+" has "+values.size()+" values");
 		}
 	}
 	
+	default <T> T get(SProperty<T> prop) {
+		T result = get(prop.getName());
+		return result;
+	}
+	
 	default <T> T get(SPropertyTypeMapping<T> prop) {
 		return get(prop.getProperty());
 	}
 	
-	default <T> T getOr(SPropertyTypeMapping<T> prop, T defaultValue) {
-		var values = getAll(prop);
+	default <T> T getOr(String prop, T defaultValue) {
+		List<T> values = getAll(prop);
 		if(values.size()==0) {
 			return defaultValue;
 		}
 		else if(values.size()==1) {
-			return (T) values.getFirst();
+			return values.getFirst();
 		}
 		else {
-			throw new IllegalStateException("Property "+prop.getProperty()+" has "+values.size()+" values");
+			throw new IllegalStateException("Property "+prop+" has "+values.size()+" values");
 		}
+	}
+	
+	default <T> T getOr(SPropertyTypeMapping<T> prop, T defaultValue) {
+		return getOr(prop.getProperty(), defaultValue);
+	}
+	
+	default <T> T getOr(SProperty<T> prop, T defaultValue) {
+		return getOr(prop.getName(), defaultValue);
 	}
 }

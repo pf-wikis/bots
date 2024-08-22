@@ -52,7 +52,7 @@ public class SConcept {
 			this.infoboxProperties= Arrays.stream(properties)
 				.map(o->switch(o) {
 					case SInfoboxProperty p -> p; 
-					case SProperty<?> p -> new SInfoboxProperty.Simple(p); 
+					case SProperty<?> p -> new SInfoboxProperty(p); 
 					default -> throw new IllegalArgumentException("Unexpected param type "+o.getClass());
 				})
 				.toList();
@@ -84,6 +84,14 @@ public class SConcept {
 			
 			return c;
 		}
+	}
+
+	public SConcept getSubConcept(String name) {
+		for(var sub:subConcepts) {
+			if(sub.getName().equals(name))
+				return sub;
+		}
+		return null;
 	}
 	
 	/*

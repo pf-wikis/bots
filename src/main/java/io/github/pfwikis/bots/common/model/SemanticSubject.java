@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.util.StdConverter;
 import io.github.pfwikis.bots.common.WikiAPI;
 import io.github.pfwikis.bots.facts.SFactsProperties;
 import io.github.pfwikis.bots.facts.model.SConcept;
-import io.github.pfwikis.bots.facts.model.SPropertyTypeMapping;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -114,7 +113,7 @@ public class SemanticSubject implements SemanticObject {
 		}
 		
 		public static PageRef of(int ns, String title) {
-			return new PageRef("", ns, title.replace('_', ' '));
+			return new PageRef("", ns, title.replace('_', ' '), "");
 		}
 		
 		public String toFullTitle() {
