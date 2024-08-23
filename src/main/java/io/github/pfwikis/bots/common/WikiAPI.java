@@ -103,12 +103,14 @@ public class WikiAPI {
 		}
 	}
 
-	public void editIfChange(String page, String content, String reason) {
+	public boolean editIfChange(String page, String content, String reason) {
 		content = content.trim();
 		var oldText = wiki.getPageText(page);
 		if(!content.equals(oldText)) {
 			edit(page, content, reason);
+			return true;
 		}
+		return false;
 	}
 
 	public Set<String> getAllSubPages(String namespace, String page) {
@@ -506,5 +508,9 @@ public class WikiAPI {
 				+ "]]";
 		}
 		return "[["+usedPage+"]]";
+	}
+
+	public String withoutNamespace(String title) {
+		return wiki.nss(title);
 	}
 }

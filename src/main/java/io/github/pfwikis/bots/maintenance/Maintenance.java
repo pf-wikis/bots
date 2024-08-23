@@ -1,6 +1,9 @@
 package io.github.pfwikis.bots.maintenance;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -10,6 +13,7 @@ import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.common.model.Page;
 import io.github.pfwikis.bots.common.model.SemanticSubject.PageRef;
+import io.github.pfwikis.bots.utils.StringHelper;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -28,14 +32,20 @@ public class Maintenance extends SimpleBot {
 	}
 
 	private void resolveAndRemoveRedirects() {
-		var redirects = run.getWiki().getRedirects();
+		var redirects = run.getWiki().getRedirects().stream()
+			.filter(r->StringUtils.startsWithAny(r.getTitle(), "File:", "Template:", "Facts:"))
+			.toList();
+		log.info("There are {} redirects that are not necessary", redirects.size());
 		for(var red:redirects) {
 			var from = red.getTitle();
-			if(!StringUtils.startsWithAny(from, "File:", "Template:", "Facts:")) continue;
+			var fromTitle = run.getWiki().withoutNamespace(from);
+			var fromTitlePattern = StringHelper.titleToPattern(fromTitle, true);
+			var fromPattern = Pattern.quote(from.substring(0, from.indexOf(fromTitle)))+fromTitlePattern;
+			
 			//temporary workaround until manually resolved
 			if(from.equals("Template:Iconic")) continue;
 			var to = red.getDatabaseResult().toFullPageTitle(run.getServer());
-			var toTitle = red.getDatabaseResult().getRedirectTitle();
+			var toTitle = red.getDatabaseResult().getRedirectTitle().replace('_', ' ');
 			
 			var uses = new HashSet<Page>(run.getWiki().getImageUsage(from));
 			uses.addAll(run.getWiki().getPagesLinkingTo(from));
@@ -47,14 +57,22 @@ public class Maintenance extends SimpleBot {
 				
 				for(var use:uses) {
 					var txt = run.getWiki().getPageText(use.getTitle());
-					var ntxt = txt.replace(from, to);
+					var ntxt = txt.replaceAll(fromPattern, to);
 					//special case: Templates can be transcluded
 					if(from.startsWith("Template:")) {
-						ntxt = ntxt.replace("{{"+from.substring(9), "{{"+toTitle);
+						ntxt = ntxt
+							.replaceAll("(?s)(\\{\\{\\s*)"+fromTitlePattern+"(\\s*[\\|\\}])", "$1"+toTitle+"$2")
+							.replaceAll("(?s)(\\{\\{\\s*tl\\s*\\|)"+fromTitlePattern+"(\\s*[\\|\\}])", "$1"+toTitle+"$2");
+					}
+					//special case: citation templates
+					if(from.startsWith("Template:Cite/")) {
+						ntxt = ntxt.replaceAll(
+							"(\\{\\{ *(Cite|Ref) *\\| *)"+StringHelper.titleToPattern(from.substring(14), false)+"( *[\\|\\}])",
+							"$1"+to.substring(14)+"$3");
 					}
 					//special case: image Files can be used via the Image: ns
 					if(from.startsWith("File:")) {
-						ntxt = ntxt.replace("Image:"+from.substring(5), "Image:"+toTitle);
+						ntxt = ntxt.replaceAll(fromTitlePattern, toTitle);
 					}
 					if(!ntxt.equals(txt)) {
 						run.getWiki().edit(use.getTitle(), ntxt, "Resolved unnecessary redirect");
@@ -65,7 +83,7 @@ public class Maintenance extends SimpleBot {
 				}
 			}
 			if(!resolveFailed)
-				run.getWiki().delete(from, "No longer needed redirect");
+				run.getWiki().delete(from, "No longer needed redirect to [[:"+to+"]]");
 			else
 				log.warn("Can not delete {}, as I am not able to resolve all uses", from);
 		}
