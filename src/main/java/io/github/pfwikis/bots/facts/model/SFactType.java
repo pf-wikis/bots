@@ -6,16 +6,19 @@ import com.fasterxml.jackson.databind.JavaType;
 
 import io.github.pfwikis.bots.common.WikiAPI;
 import io.github.pfwikis.bots.utils.Jackson;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@EqualsAndHashCode(of = "id")
 @RequiredArgsConstructor
 public abstract class SFactType<JType> {
-	
+	private final String id;
 	@Getter(lazy = true)
 	private final JavaType javaType = findType();
+	@Getter
 	private final SMWPropertyType propertyType;
 	private final String displayFactWikitext;
 	
@@ -54,5 +57,9 @@ public abstract class SFactType<JType> {
 
 	public String wikitextToInfoboxDisplay(WikiAPI wiki, Object object) {
 		return object.toString();
+	}
+
+	public String wikitextToQuery(SProperty<JType> prop) {
+		return "";
 	}
 }

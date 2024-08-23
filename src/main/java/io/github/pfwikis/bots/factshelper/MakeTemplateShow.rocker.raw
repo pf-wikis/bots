@@ -1,16 +1,13 @@
-@import io.github.pfwikis.bots.facts.model.SDIConcept
+@import io.github.pfwikis.bots.facts.model.SConcept
 
-@args(String name, SDIConcept form)
+@args(String name, SConcept c)
 
 <includeonly>{{#show: Facts:{{{page|}}}
-	@for(prop:form.getProperties()) {
-		|?@prop.getName()@?prop.getFactDisplayFormat()=@prop.getName()
+	@for(prop:c.getProperties()) {
+		|@prop.getName()@?prop.wikitextToQuery()=@prop.getName()
 	}
-	@for(prop:form.getGeneratedProperties()) {
-		|?@prop.getName()@?prop.getFactDisplayFormat()=@prop.getName()
-	}
-	@if(form.containsProperty("Author")) {
-		|?Author all=Author all
+	@for(prop:c.getGeneratedProperties()) {
+		|@prop.getName()@?prop.wikitextToQuery()=@prop.getName()
 	}
 	|userparam=Facts:{{{page|{{FULLPAGENAME}}}}}
 	|link=none
@@ -23,7 +20,7 @@
 }}</includeonly><noinclude>
 {{Bot created|Bot Facts Helper}}
 This template allows you to call another template with all the fact properties of a page.
-It then provides all the properties as named parameters and the page it was called on as.
+It then provides all the properties as named parameters and the page it was called on as @*space*@
 <code><nowiki>{{{#userparam}}}</nowiki></code>.
 
 <templatedata>

@@ -45,4 +45,9 @@ public class SProperty<JType> {
 	public List<SProperty<?>> generateProperties(SConcept c) {
 		return Collections.emptyList();
 	}
+
+
+	public String wikitextToQuery() {
+		return factType.wikitextToQuery(this);
+	}
 }

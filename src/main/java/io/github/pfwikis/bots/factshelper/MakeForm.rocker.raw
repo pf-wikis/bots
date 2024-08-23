@@ -1,9 +1,9 @@
-@import static io.github.pfwikis.bots.facts.model.SMWPropertyType.* 
-@import static io.github.pfwikis.bots.facts.model.SDIFactType.*
+@*@import static io.github.pfwikis.bots.facts.model.SMWPropertyType.**@
+@import static io.github.pfwikis.bots.facts.model.SFactTypes.*
 @import static org.apache.commons.lang3.StringUtils.startsWith
-@import io.github.pfwikis.bots.facts.model.SDIConcept
+@import io.github.pfwikis.bots.facts.model.SConcept
 
-@args(String name, String pluralName, SDIConcept form, boolean isSubform)
+@args(String name, String pluralName, SConcept form, boolean isSubform)
 <noinclude>
 {{Bot created|Bot Facts Helper}}[[Category:Synced to starfinderwiki]]
 This is the ''@name'' form. To create a page with this form, see [[:Category:Facts about @pluralName]]
@@ -12,13 +12,17 @@ This is the ''@name'' form. To create a page with this form, see [[:Category:Fac
 {{{for template|Facts/@name@if(isSubform){|multiple|add button text=Add @form.getName().toLowerCase()}}}}
 <div class="facts-form">
 @for(prop:form.getProperties()) {
-	<div class="facts-form-key @if(prop.getSmwType() == BOOLEAN){inline}">@prop.getName()</div>
+	<div class="facts-form-key @if(prop.getFactType().equals(BOOLEAN)){inline}">@prop.getName()</div>
 	<div class="facts-form-value">
 		<div class="facts-form-input">
 			{{{field|@prop.getName()
+				@(switch(prop.getFactType()) {
+					default -> "graww";
+				})
+			
 				@if(prop.getFactType() == IMAGE) {|input type=combobox|values from namespace=File}
 				else if(prop.getFactType() == MULTILINE_WIKITEXT) {|input type=textarea|autogrow|editor=visualeditor}
-				else if(prop.getFactType() == PAGE_LIST || prop.getFactType() == AUTHOR) {|list|input type=tokens|delimiter=;}
+				else if(prop.getFactType() == PAGE_LIST || prop.getFactType() == PAGE_LIST_ORDERED) {|list|input type=tokens|delimiter=;}
 				else if(prop.getSmwType() == TEXT || prop.getSmwType() == PAGE) {|input type=@if(prop.isAutocompleteDisabled()){text}else{combobox}}
 				else if(prop.getSmwType() == BOOLEAN) {|input type=checkbox}
 				else if(prop.getSmwType() == NUMBER) {|input type=regexp|regexp=/^[0-9]*$/}
