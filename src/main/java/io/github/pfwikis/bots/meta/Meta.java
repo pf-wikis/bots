@@ -45,6 +45,21 @@ public class Meta extends SimpleBot {
 	@Override
 	public void run(RunContext ctx) throws Exception {
 		Runner.getAllBots().forEach(bot-> {
+			log.info("Checking if bot {} needs an account", bot.getBotName());
+			run.withMaster(wiki->{
+				try {
+					if(!wiki.accountExists(bot.getBotName())) {
+						log.info("Creating account for {}", bot.getBotName());
+						wiki.createAccount(bot.getBotName(), bot.getBotPassword());
+						wiki.addRight(bot.getBotName(), "bot|sysop|techadmin", "never");
+					}
+				} catch(Exception e) {
+					log.error("Failed to check account {}", bot.getBotName(), e);
+					System.exit(-1);
+				}
+			});
+			
+			
 			if(bot instanceof SimpleBot sb)
 				sb.setRun(run);
 			var descr = bot.getDescription();

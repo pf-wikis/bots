@@ -1,16 +1,13 @@
 package io.github.pfwikis.bots.common.bots;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import io.github.pfwikis.bots.common.Discord;
 import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.WikiAPI;
 import io.github.pfwikis.bots.common.bots.Run.SingleRun;
-import io.github.pfwikis.bots.scheduler.Schedulable.SchedulableBot;
 import io.github.pfwikis.bots.utils.Jackson;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,39 +30,12 @@ public abstract class SimpleBot extends Bot<SingleRun> {
 		var runs = new ArrayList<SingleRun>(2);
 		for(var server:Wiki.values()) {
 			var run = new SingleRun(server, "VirenerusBot", rootPassword);
-			
-			//try if login just works, otherwise try to create the account
-			try {
-				run.setWiki(WikiAPI.create(server, botName, getBotPassword()));
-			} catch(Exception ignore) {
-				run.withMaster(wiki->{
-					try {
-						if(!wiki.accountExists(botName)) {
-							wiki.createAccount(botName, rootPassword+botName);
-							wiki.addRight(botName, "bot|sysop|techadmin", "never");
-						}
-					} catch(Exception e) {
-						log.error("Failed to check account {}", botName, e);
-						System.exit(-1);
-					}
-				});
-				
-				try {
-					run.setWiki(WikiAPI.create(server, botName, getBotPassword()));
-				} catch(Exception e) {
-					log.error("Failed to log in as {}", botName, e);
-					System.exit(-1);
-				}
-			}
+			run.setWiki(WikiAPI.create(server, botName, getBotPassword()));
 			runs.add(run);
 		}
 		return runs;
 	}
 	
-	public String getBotPassword() {
-		return rootPassword+botName;
-	}
-
 	public <T> T loadConfig(Class<T> type) {
 		return loadConfig(type, "Config");
 	}

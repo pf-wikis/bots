@@ -28,9 +28,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.github.fastily.jwiki.core.NS;
-import io.github.fastily.jwiki.core.Wiki;
 import io.github.fastily.jwiki.dwrap.Revision;
 import io.github.pfwikis.bots.common.model.AllusersQuery.WUser;
+import io.github.pfwikis.bots.common.api.MWApi;
+import io.github.pfwikis.bots.common.api.MWApiCache;
 import io.github.pfwikis.bots.common.model.Page;
 import io.github.pfwikis.bots.common.model.ParseResponse;
 import io.github.pfwikis.bots.common.model.QueryPageQuery.QPPage;
@@ -42,7 +43,6 @@ import io.github.pfwikis.bots.common.model.SemanticSubject;
 import io.github.pfwikis.bots.common.model.SemanticSubject.PageRef;
 import io.github.pfwikis.bots.utils.Jackson;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.HttpUrl;
 
 @Slf4j
 public class WikiAPI {
@@ -52,17 +52,11 @@ public class WikiAPI {
 	}
 
 	private io.github.pfwikis.bots.common.Wiki server;
-	private Wiki wiki;
+	private MWApi wiki;
 
 	private WikiAPI(io.github.pfwikis.bots.common.Wiki wiki, String name, String password) {
-		var b = new Wiki.Builder()
-	            .withDomain(wiki.getUrl())
-	            .withApiEndpoint(HttpUrl.get(wiki.getUrl()+"/w/api.php"));
-		if(name != null) {
-			b = b.withLogin(name, password);
-		}
 		this.server = wiki;
-		this.wiki = b.build();
+		this.wiki = MWApiCache.get(wiki, name, password);
 	}
 
 	public boolean upload(Path p, String title, String desc, String summary) {

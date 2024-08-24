@@ -36,6 +36,10 @@ public abstract class Bot<RUN extends Run> {
 
 	public void beforeRuns() throws Exception {}
 	public void afterRuns() throws Exception {}
+	
+	public String getBotPassword() {
+		return rootPassword+botName;
+	}
 
 	public synchronized void reportException(Exception e) {
 		hadError = true;

@@ -20,10 +20,10 @@ import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.WikiAPI;
 import io.github.pfwikis.bots.common.bots.DualBot;
 import io.github.pfwikis.bots.common.bots.Run.SingleRun;
-import io.github.pfwikis.bots.facts.master.PropertyStatistics;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.ScatteredRunnableBot;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
+import io.github.pfwikis.bots.facts.master.PropertyStatistics;
 import io.github.pfwikis.bots.healthcheck.HealthCheck;
 import io.github.pfwikis.bots.infoboxtemplates.InfoboxTemplates;
 import io.github.pfwikis.bots.maintenance.Maintenance;
@@ -71,7 +71,6 @@ public class Scheduler {
 				scheduleOnce(scheduleableBot(wiki, discord, new Meta()));
 				schedule(scheduleableBot(wiki, discord, new NewsFeedReader()), Duration.ofHours(1));
 				schedule(scheduleableBot(wiki, discord, new Maintenance()), Duration.ofDays(7));
-				
 				schedule(
 					new RCWatcher(this, discord, wiki),
 					Duration.ofMinutes(2)
@@ -119,16 +118,14 @@ public class Scheduler {
 		
 		bot.setDiscord(discord);
 		bot.setLocalMode(localMode);
-		if(bot.getRun() == null)
-			bot.setRun(sr);
+		bot.setRun(sr);
 	}
 	
 	private void initBot(Discord discord, DualBot bot) {
 		bot.setRootPassword(Wiki.PF.getMasterPassword());
 		bot.setDiscord(discord);
 		bot.setLocalMode(localMode);
-		if(bot.getRun() == null)
-			bot.setRun(bot.createRuns().get(0));
+		bot.setRun(bot.createRuns().get(0));
 	}
 	
 	public SchedulableBot scheduleableBot(Wiki wiki, Discord discord, SimpleBot bot, RunContext ctx) {
