@@ -13,6 +13,7 @@
 	</appender>
 
 	<logger name="org.apache.pdfbox" level="ERROR" />
+	<logger name="io.github.fastily.jwiki.core.WAction" level="DEBUG" />
 	<root level="INFO">
 		<appender-ref ref="CONSOLE" />
 	</root>

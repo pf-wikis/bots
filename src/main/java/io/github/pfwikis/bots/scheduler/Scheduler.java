@@ -66,15 +66,16 @@ public class Scheduler {
 			
 			schedule(new HealthCheck(discord), Duration.ofHours(24));
 			for(var wiki : Wiki.values()) {
+				scheduleOnce(scheduleableBot(wiki, discord, new Meta()));
 				planScatter(wiki, discord, new PropertyStatistics(), Duration.ofHours(24), Duration.ofDays(1));
 				planScatter(wiki, discord, new InfoboxTemplates(), Duration.ofHours(24), null);
-				scheduleOnce(scheduleableBot(wiki, discord, new Meta()));
-				schedule(scheduleableBot(wiki, discord, new NewsFeedReader()), Duration.ofHours(1));
-				schedule(scheduleableBot(wiki, discord, new Maintenance()), Duration.ofDays(7));
+				
 				schedule(
 					new RCWatcher(this, discord, wiki),
 					Duration.ofMinutes(2)
 				);
+				schedule(scheduleableBot(wiki, discord, new NewsFeedReader()), Duration.ofHours(1));
+				schedule(scheduleableBot(wiki, discord, new Maintenance()), Duration.ofDays(7));
 			}
 			
 			worker(discord);
