@@ -11,8 +11,6 @@ public abstract class Schedulable {
 	
 	public abstract void execute();
 	
-	public void reset() {}
-	
 	@Getter
 	public static abstract class SchedulableBot extends Schedulable {
 		
@@ -21,10 +19,6 @@ public abstract class Schedulable {
 		public SchedulableBot(Bot<?> bot, String name) {
 			super(name);
 			this.bot = bot;
-		}
-		
-		public void reset() {
-			bot.setRun(null);
 		}
 	}
 }

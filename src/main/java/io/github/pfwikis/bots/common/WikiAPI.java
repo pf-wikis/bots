@@ -23,15 +23,15 @@ import org.apache.commons.lang3.StringUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.github.fastily.jwiki.core.NS;
 import io.github.fastily.jwiki.dwrap.Revision;
-import io.github.pfwikis.bots.common.model.AllusersQuery.WUser;
 import io.github.pfwikis.bots.common.api.MWApi;
 import io.github.pfwikis.bots.common.api.MWApiCache;
+import io.github.pfwikis.bots.common.model.AllusersQuery.WUser;
+import io.github.pfwikis.bots.common.model.LogEventsQuery.LogEvent;
 import io.github.pfwikis.bots.common.model.Page;
 import io.github.pfwikis.bots.common.model.ParseResponse;
 import io.github.pfwikis.bots.common.model.QueryPageQuery.QPPage;
@@ -63,10 +63,6 @@ public class WikiAPI {
 		return wiki.upload(p, title, desc, summary);
 	}
 
-	public List<RecentChange> getRecentChanges(Duration timeRange, String namespace, String show) {
-		return getRecentChanges(Instant.now().minus(timeRange), namespace, show);
-	}
-	
 	public List<RecentChange> getRecentChanges(Instant changesSince, String namespace, String show) {
 		var query = new String[] {
 			"rcend", changesSince.truncatedTo(ChronoUnit.SECONDS).toString(),
@@ -357,12 +353,22 @@ public class WikiAPI {
 			.getResults();
 	}
 	
-	public List<JsonNode> getLogEvents(ZonedDateTime end, String user) {
+	public List<LogEvent> getLogEvents(ZonedDateTime end, String user) {
 		return query(
 			Query.LIST_LOG_EVENTS,
 			"lelimit", "5000",
 			"leend", end.toInstant().truncatedTo(ChronoUnit.SECONDS).toString(),
 			"leuser", user
+		).getLogevents();
+	}
+	
+	public List<LogEvent> getRecentLogEvents(String types, Instant changesSince) {
+		return query(
+			Query.LIST_LOG_EVENTS,
+			"lelimit", "5000",
+			"leend", changesSince.truncatedTo(ChronoUnit.SECONDS).toString(),
+			"leprop", "details|ids|timestamp|title|type|user|userid",
+			"letype", types
 		).getLogevents();
 	}
 	

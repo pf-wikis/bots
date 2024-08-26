@@ -2,6 +2,7 @@ package io.github.pfwikis.bots.articleoftheweek;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -113,7 +114,7 @@ public class ArticleOfTheWeek extends SimpleBot {
 
 	private Candidate findArticle() {
 		Duration timeRange = Duration.ofDays(7);
-		var options = run.getWiki().getRecentChanges(timeRange, "0", "!minor|!bot");
+		var options = run.getWiki().getRecentChanges(Instant.now().minus(timeRange), "0", "!minor|!bot");
 		var candidates = Lists.newArrayList(options.stream()
 			.collect(Collectors.groupingBy(c->c.getTitle()))
 			.entrySet()

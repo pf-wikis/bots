@@ -1,22 +1,18 @@
 package io.github.pfwikis.bots.scheduler;
 
-import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.common.base.Supplier;
-import com.google.common.collect.ClassToInstanceMap;
-import com.google.common.collect.MutableClassToInstanceMap;
-
 import io.github.pfwikis.bots.citetemplates.CiteTemplates;
 import io.github.pfwikis.bots.common.Discord;
 import io.github.pfwikis.bots.common.Wiki;
-import io.github.pfwikis.bots.common.bots.Bot;
 import io.github.pfwikis.bots.common.bots.RunContext;
+import io.github.pfwikis.bots.common.model.LogEventsQuery.LogEvent;
 import io.github.pfwikis.bots.common.model.RecentChanges.RecentChange;
 import io.github.pfwikis.bots.factshelper.FactsHelper;
 import io.github.pfwikis.bots.infoboxtemplates.InfoboxTemplates;
@@ -29,7 +25,10 @@ public class RCWatcher extends Schedulable {
 	private final Scheduler p;
 	private final Discord discord;
 	private final Wiki wiki;
-	private Instant nextTimestamp;
+	private Instant nextEditTimestamp;
+	private Instant nextMoveTimestamp;
+	private List<RecentChange> edits;
+	private List<LogEvent> moves;
 	
 	public RCWatcher(Scheduler p, Discord discord, Wiki wiki) {
 		super(wiki.name()+"-RCWatcher");
@@ -41,63 +40,68 @@ public class RCWatcher extends Schedulable {
 	@Override
 	public void execute() {
 		Thread.currentThread().setName(this.toString());
-		List<RecentChange> rc;
-		if(nextTimestamp == null) {
-			log.info("Querying changes of the last 24h");
-			rc = wiki.getMasterApi().getRecentChanges(Duration.ofHours(24), null, null);
-			nextTimestamp = rc.stream()
-					.map(e->e.getTimestamp()).max(Comparator.naturalOrder())
-					.orElse(null);
+		
+		loadChanges();
+		
+		for(var change:edits) {
+			handleChange(change.getTitle(), change.getTimestamp());
 		}
-		else {
-			log.info("Querying changes since {}", nextTimestamp);
-			rc = wiki.getMasterApi().getRecentChanges(nextTimestamp, null, null);
+		edits = null;
+		for(var change:moves) {
+			handleChange(change.getParams().getTargetTitle(), change.getTimestamp());
 		}
-		Collections.reverse(rc);
-		ClassToInstanceMap<Bot<?>> botCache = MutableClassToInstanceMap.create();
-		for(var change:rc) {
-			handle(change, botCache);
-		}
+		moves=null;
 	}
 
-	private void handle(RecentChange change, ClassToInstanceMap<Bot<?>> botCache) {
-		log.info("RC in {}", change.getTitle());
-		var ctx = RunContext.builder().page(change.getTitle()).build();
-		if(change.getTitle().startsWith("Facts:")) {
-			var title = change.getTitle();
+	private void loadChanges() {
+		if(nextEditTimestamp == null) nextEditTimestamp = Instant.now().minus(24, ChronoUnit.HOURS);
+		if(nextMoveTimestamp == null) nextMoveTimestamp = Instant.now().minus(24, ChronoUnit.HOURS);
+		
+		log.info("Querying edits since {}"+nextEditTimestamp);
+		edits = wiki.getMasterApi().getRecentChanges(nextEditTimestamp, null, null);
+		log.info("Querying moves since {}"+nextMoveTimestamp);
+		moves = wiki.getMasterApi().getRecentLogEvents("move", nextMoveTimestamp);
+		Collections.reverse(edits);
+		Collections.reverse(moves);
+		
+		nextEditTimestamp=edits.stream().map(e->e.getTimestamp())
+			.max(Comparator.naturalOrder())
+			.orElse(nextEditTimestamp);
+		nextMoveTimestamp=moves.stream().map(e->e.getTimestamp())
+			.max(Comparator.naturalOrder())
+			.orElse(nextMoveTimestamp);
+	}
+	
+	
+	private CiteTemplates botCiteTemplates = new CiteTemplates();
+	private InfoboxTemplates botInfoboxTemplates = new InfoboxTemplates();
+	private FactsHelper botFactsHelper = new FactsHelper();
+	private TemplateStyles botTemplateStyles = new TemplateStyles();
+	private PageSyncer botPageSyncer = new PageSyncer();
+	
+	private void handleChange(String changedPage, Instant changeTime) {
+		log.info("RC in {}", changedPage);
+		var ctx = RunContext.builder().page(changedPage).build();
+		if(changedPage.startsWith("Facts:")) {
+			var title = changedPage;
 			//special handling since those never contain facts themselves but feed their parent page
 			title = StringUtils.removeEnd(title, "/Releases");
 			title = StringUtils.removeEnd(title, "/Sections");
 			var localCtx = RunContext.builder().page(title).build();
 			
-			p.scheduleOnce(p.scheduleableBot(wiki, discord, makeBot(botCache, CiteTemplates.class, CiteTemplates::new), localCtx));
-			p.scheduleOnce(p.scheduleableBot(wiki, discord, makeBot(botCache, InfoboxTemplates.class, InfoboxTemplates::new), localCtx));
+			p.scheduleOnce(p.scheduleableBot(wiki, discord, botCiteTemplates, localCtx), changeTime);
+			p.scheduleOnce(p.scheduleableBot(wiki, discord, botInfoboxTemplates, localCtx), changeTime);
 		}
-		if(
-			change.getTitle().equals("User:Bot Facts Helper/Config")
-			||
-			change.getTitle().startsWith("Property:")
-		) {
-			p.scheduleOnce(p.scheduleableBot(wiki, discord, makeBot(botCache, FactsHelper.class, FactsHelper::new)));
+		if(changedPage.startsWith("Property:")) {
+			p.scheduleOnce(p.scheduleableBot(wiki, discord, botFactsHelper), changeTime);
 		}
-		if(change.getTitle().startsWith("Style:")) {
-			p.scheduleOnce(p.scheduleableBot(wiki, discord, makeBot(botCache, TemplateStyles.class, TemplateStyles::new)));
+		if(changedPage.startsWith("Style:")) {
+			p.scheduleOnce(p.scheduleableBot(wiki, discord, botTemplateStyles), changeTime);
 		}
 		if(wiki == Wiki.PF) {
-			p.scheduleOnce(p.scheduleableBot(discord, makeBot(botCache, PageSyncer.class, PageSyncer::new), ctx));
+			p.scheduleOnce(p.scheduleableBot(discord, botPageSyncer, ctx), changeTime);
 		}
 	}
-	
-	private <T extends Bot<?>> T makeBot(ClassToInstanceMap<Bot<?>> botCache, Class<T> type, Supplier<T> constructor) {
-		var result = botCache.getInstance(type);
-		if(result == null) {
-			result = constructor.get();
-			botCache.putInstance(type, result);
-		}
-		return result;
-	}
-	
-	
 	
 	@Override
 	public String toString() {
