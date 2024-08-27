@@ -1,8 +1,8 @@
-@import io.github.pfwikis.bots.facts.model.SDIConcept
+@import io.github.pfwikis.bots.facts.model.SConcept
 
-@args(String name, String pluralName, SDIConcept conept)
+@args(String name, String pluralName, SConcept cocnept)
+{{Bot created|Bot Facts Helper}}
 {{#default_form:@name}}
 
 @if(!name.contains("/")){{{Facts/@name/Input}}}
 [[Category:Facts|@pluralName]]
-[[Category:Synced to starfinderwiki]]

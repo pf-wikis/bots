@@ -1,5 +1,27 @@
-@args(String propertyName, String displayTest, RockerBody content)
-@if(displayTest!=null){@{@{#if:@displayTest|}
-<div class="facts-display-key">[[@propertyName::@@@@@@]]</div>
-<div class="facts-display-value">@content</div>
-@if(displayTest!=null){@}@}}
+@args(SProperty prop, RockerBody content)
+
+@*do not show if the field is not required and has no value*@
+@if(!prop.isRequired()) {
+	@{@{#if:@prop.wikitextToTestIfValue()|
+}
+
+
+
+<div class="facts-display-key">[[@prop.getName()::@@@@@@]]</div>
+<div class="facts-display-value">
+	@if(prop.isRequired()) {
+		{{#if:@prop.wikitextToTestIfValue()
+			|@content
+			|[[Category:Pages with errors]]{{#info: @prop.getName() is required!|error}}
+		}}
+	}
+	else {
+		@content
+	}
+</div>
+
+
+
+@if(!prop.isRequired()) {
+	@}@}
+}

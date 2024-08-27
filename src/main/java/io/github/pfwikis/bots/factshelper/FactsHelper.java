@@ -6,12 +6,10 @@ import java.io.IOException;
 
 import com.beust.jcommander.Parameters;
 
-import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.facts.SModel;
 import io.github.pfwikis.bots.facts.model.SConcept;
-import io.github.pfwikis.bots.facts.model.property.SSimpleProperty;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -40,7 +38,7 @@ public class FactsHelper extends SimpleBot {
 			make(run.getWiki(), "Form:"+c.getName(), MakeForm.template(c.getName(), c.getPluralName(), c, false));
 			make(run.getWiki(), "Category:Facts about "+c.getPluralName(), MakeCategory.template(c.getName(), c.getPluralName(), c));
 			
-			for(var subForm:c.getSubForms()) {
+			for(var subForm:c.getSubConcepts()) {
 				handleSubForm(c, subForm);
 			}
 		} catch(Exception e) {

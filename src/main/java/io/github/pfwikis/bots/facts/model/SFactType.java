@@ -48,7 +48,7 @@ public abstract class SFactType<JType> {
 		var result = changeStoreFactWikitext(v);
 		if(p.getDefaultValue() == null)
 			return result;
-		return "{{#if:"+v+"|"+result+"|"+changeStoreFactWikitext(p.getDefaultValue())+"}}";
+		return changeStoreFactWikitext("{{#if:"+v+"|"+v+"|"+p.getDefaultValue()+"}}");
 	}
 	
 	protected String changeStoreFactWikitext(String wt) {

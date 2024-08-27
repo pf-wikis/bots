@@ -27,7 +27,7 @@
 }
 <div class="facts-display facts-display-@ConceptUtil.cssName(c)">
 	@for(prop:c.getProperties()) {
-		@DisplayTemplateField.template(prop.getName(), prop.wikitextToDisplayFact()) -> {
+		@DisplayTemplateField.template(prop.getName(), prop.wikitextToStoreFact()) -> {
 			@prop.wikitextToDisplayFact()
 			{{#set:@prop.getName()=@prop.wikitextToStoreFact()}}
 		}

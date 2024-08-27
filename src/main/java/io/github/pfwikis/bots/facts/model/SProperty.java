@@ -24,6 +24,7 @@ public class SProperty<JType> {
 	private String suggestValuesFrom;
 	private String formNote;
 	private String allowsPattern;
+	private boolean required;
 	@With
 	private String defaultValue;
 	@With

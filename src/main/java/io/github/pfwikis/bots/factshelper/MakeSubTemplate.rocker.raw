@@ -47,3 +47,11 @@ Copy some fields to parent
 -->@for(prop:c.getProperties()) {@prop.getFactType().subFormAtEnd(prop)}
 }}
 </includeonly>
+
+
+todo add error if required
+@if(prop.isRequired()) {
+				{{#if:@prop.wikitextToStoreFact()||
+					[[Category:Pages with errors]]{{#info: @prop.getName() is required!|error}}
+				}}
+			}

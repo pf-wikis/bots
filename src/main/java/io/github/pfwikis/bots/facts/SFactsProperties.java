@@ -321,6 +321,7 @@ public class SFactsProperties {
 		.setFormNote("Only fill this if it is different from the Main page of the same name.")
 		.setSuggestValuesFrom("Namespace:Main")
 		.setDefaultValue("{{#ifexist:{{ROOTPAGENAME}}|{{ROOTPAGENAME}}}}")
+		.setRequired(true)
 		.setDescription("This entity is best represented by this wikipage.");
 	public static final SProperty<String> Rule_system = new SProperty<>(
 		"Rule system",
