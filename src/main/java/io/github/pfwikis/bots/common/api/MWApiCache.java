@@ -64,7 +64,13 @@ public enum MWApiCache {
 			if(wiki == null) login();
 			var implMethod = INSTANCE.getImplMethod(interfaceMethod);
 			try {
-				return implMethod.invoke(wiki, args);
+				var result = implMethod.invoke(wiki, args);
+				
+				//we want to retry on failed edits
+				if(implMethod.getName().equals("edit") && result instanceof Boolean b && b==false) {
+					throw new IllegalStateException("Failed to edit");
+				}
+				return result;
 			} catch(Exception e1) {
 				try {
 					//on failure we want to first try to login again and retry
