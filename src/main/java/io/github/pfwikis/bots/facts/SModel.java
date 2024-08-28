@@ -1,17 +1,85 @@
 package io.github.pfwikis.bots.facts;
 
-import static io.github.pfwikis.bots.facts.SFactsProperties.*;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Accessory_type;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Artist;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Audio_type;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Author;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Author_all;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Awards;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Blurb_heading;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Blurb_quotee;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Blurb_text;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Blurb_text_extras;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Book_type;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Chapters;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Composer;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Deck_type;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Decksize;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Description;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Designer;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Developer;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Dimensions;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Director;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Discs;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Engine;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Errata;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Follows;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Full_title;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Gallery;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Genre;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Image;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Is_subsection;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Isbn;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Level_range_end;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Level_range_start;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Location;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Map_type;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Material;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Miniatures_type;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Modes;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Name;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Narrator;
+import static io.github.pfwikis.bots.facts.SFactsProperties.On_page;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Pages;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Performer;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Platforms;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Precedes;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Price;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Primary_author;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Producer;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Programmer;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Pubcode;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Publisher;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Quantity;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Region;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Release_date;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Release_note;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Release_type;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Release_year;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Represented_by_page;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Rule_system;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Runtime;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Serialized;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Series;
+import static io.github.pfwikis.bots.facts.SFactsProperties.To_page;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Video_game_type;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Web_enhancement;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Website;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Writer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.beust.jcommander.Strings;
 
 import io.github.pfwikis.bots.common.bots.Run.SingleRun;
-import io.github.pfwikis.bots.common.model.SemanticSubject;
-import io.github.pfwikis.bots.common.model.SemanticSubject.PageRef;
+import io.github.pfwikis.bots.common.model.subject.PageRef;
+import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
 import io.github.pfwikis.bots.facts.model.SConcept;
 import io.github.pfwikis.bots.facts.model.SInfoboxProperty;
 import lombok.RequiredArgsConstructor;
@@ -55,8 +123,7 @@ public class SModel {
 			Blurb_quotee
 		)
 		.infoboxProperties(
-			SInfoboxProperty.builder()
-				.property(Primary_author)
+			SInfoboxProperty.from(Primary_author)
 				.label("Author")
 				.fallback(Author)
 				.build(),
@@ -65,8 +132,7 @@ public class SModel {
 			Pages,
 			Narrator,
 			Runtime,
-			SInfoboxProperty.builder()
-				.property(Rule_system)
+			SInfoboxProperty.from(Rule_system)
 				.label("Rule set")
 				.build(),
 			Chapters,
@@ -101,8 +167,21 @@ public class SModel {
 					Rule_system,
 					Price
 				)
+				.infoboxProperties(
+					SInfoboxProperty.from(Release_date)
+						.label("Date")
+						.build(),
+					SInfoboxProperty.from(Isbn)
+						.label("ISBN")
+						.build(),
+					Pages,
+					SInfoboxProperty.from(Rule_system)
+						.label("Rule set")
+						.build(),
+					Price
+				)
 		)
-		/*.conceptSpecificCategoriesFunction(new Helper() {
+		.conceptSpecificCategoriesFunction(new Helper() {
 
 			@Override
 			protected void generateCategories() {
@@ -160,7 +239,7 @@ public class SModel {
 						"Comics", ifYear("{} comics"),
 						"Fiction", ifYear("{} fiction"),
 						series.stream().map(s->s.getTitle()+" comics").toList(),
-						page.getAll(Author_all).stream().map(a->run.getWiki().getDisplayTitle(a.toFullTitle())).map(a->"Comics by "+a).toList()
+						page.get(Author_all).stream().map(a->run.getWiki().getDisplayTitle(a.toFullTitle())).map(a->"Comics by "+a).toList()
 					);
 					case "Short Fiction" -> List.of("Fiction", ifYear("{} fiction"));
 					default -> List.of();
@@ -172,7 +251,7 @@ public class SModel {
 					addCats(game+" Society scenarios");
 					series.forEach(s-> {
 						if(s.getTitle().startsWith("Season ")) {
-							addCats(s.getTitle()+" scenarios");
+							addCats(StringUtils.appendIfMissing(s.getTitle(), " scenarios"));
 						}
 					});
 				}
@@ -180,7 +259,7 @@ public class SModel {
 					addCats(game+" Society (2E) scenarios");
 					series.forEach(s-> {
 						if(s.getTitle().startsWith("Season ")) {
-							addCats(s.getTitle()+" (2E) scenarios");
+							addCats(StringUtils.appendIfMissing(s.getTitle()," (2E) scenarios"));
 						}
 					});
 				}
@@ -202,7 +281,7 @@ public class SModel {
 					}
 				}
 			}
-		})*/
+		})
 		.build();
 	public static final SConcept ACCESSORY = SConcept.builder()
 			.name("Accessory")
@@ -244,9 +323,10 @@ public class SModel {
 				Release_date,
 				Quantity,
 				Material,
-				Isbn,
-				SInfoboxProperty.builder()
-					.property(Rule_system)
+				SInfoboxProperty.from(Isbn)
+					.label("ISBN")
+					.build(),
+				SInfoboxProperty.from(Rule_system)
 					.label("Rule set")
 					.build(),
 				Series,
@@ -256,7 +336,7 @@ public class SModel {
 				Errata,
 				Web_enhancement
 			)
-			/*.conceptSpecificCategoriesFunction(new Helper() {
+			.conceptSpecificCategoriesFunction(new Helper() {
 				@Override
 				protected void generateCategories() {
 					addCats("Accessories");
@@ -267,7 +347,7 @@ public class SModel {
 					ifMatchingSeries(game+" Book Tabs", game+" Book Tabs");
 					
 				}
-			})*/
+			})
 		.build();
 	public static final SConcept MAP = SConcept.builder()
 			.name("Map")
@@ -308,10 +388,11 @@ public class SModel {
 				Region,
 				Dimensions,
 				Quantity,
-				Isbn,
+				SInfoboxProperty.from(Isbn)
+					.label("ISBN")
+					.build(),
 				Pages,
-				SInfoboxProperty.builder()
-					.property(Rule_system)
+				SInfoboxProperty.from(Rule_system)
 					.label("Rule set")
 					.build(),
 				Series,
@@ -319,7 +400,7 @@ public class SModel {
 				Precedes,
 				Awards
 			)
-		/*.conceptSpecificCategoriesFunction(new Helper() {
+		.conceptSpecificCategoriesFunction(new Helper() {
 			@Override
 			protected void generateCategories() {
 				addCats(ifYear("{} accessories"));
@@ -334,9 +415,9 @@ public class SModel {
 				});
 				
 				ifMatchingSeries(game+" Campaign Setting", game+" Campaign Setting");
-				page.getAll(Region).forEach(r->addCats("Images of "+run.getWiki().getDisplayTitle(r.toFullTitle())));
+				page.getOr(Region, Collections.emptyList()).forEach(r->addCats("Images of "+run.getWiki().getDisplayTitle(r.toFullTitle())));
 			}
-		})*/
+		})
 		.build();
 	public static final SConcept MINIATURES = SConcept.builder()
 			.name("Miniatures")
@@ -371,13 +452,15 @@ public class SModel {
 				Publisher,
 				Price,
 				Release_date,
-				Isbn,
+				SInfoboxProperty.from(Isbn)
+					.label("ISBN")
+					.build(),
 				Quantity,
 				Series,
 				Follows,
 				Precedes,
 				Awards
-			)/*
+			)
 			.conceptSpecificCategoriesFunction(new Helper() {
 				@Override
 				protected void generateCategories() {
@@ -387,7 +470,7 @@ public class SModel {
 					ifMatchingSeries(game+" Battles", game+" Battles");
 					ifMatchingSeries(game+" Paper Minis", game+" Paper Minis");
 				}
-			})*/
+			})
 		.build();
 	public static final SConcept AUDIO = SConcept.builder()
 			.name("Audio")
@@ -427,12 +510,14 @@ public class SModel {
 				Release_date,
 				Discs,
 				Runtime,
-				Isbn,
+				SInfoboxProperty.from(Isbn)
+					.label("ISBN")
+					.build(),
 				Series,
 				Follows,
 				Precedes
 			)
-			/*.conceptSpecificCategoriesFunction(new Helper() {
+			.conceptSpecificCategoriesFunction(new Helper() {
 				@Override
 				protected void generateCategories() {
 					addCats(switch(page.getOr(Audio_type, "") ) {
@@ -442,7 +527,7 @@ public class SModel {
 						default -> List.of();
 					});
 				}
-			})*/
+			})
 		.build();
 	public static final SConcept VIDEO_GAME = SConcept.builder()
 			.name("Video game")
@@ -494,7 +579,7 @@ public class SModel {
 				Release_date,
 				Follows,
 				Precedes
-			)/*
+			)
 			.conceptSpecificCategoriesFunction(new Helper() {
 				@Override
 				protected void generateCategories() {
@@ -503,7 +588,7 @@ public class SModel {
 						default -> "video games";
 					});
 				}
-			})*/
+			})
 		.build();
 	public static final SConcept DECK = SConcept.builder()
 			.name("Deck")
@@ -543,9 +628,10 @@ public class SModel {
 				Price,
 				Release_date,
 				Decksize,
-				Isbn,
-				SInfoboxProperty.builder()
-					.property(Rule_system)
+				SInfoboxProperty.from(Isbn)
+					.label("ISBN")
+					.build(),
+				SInfoboxProperty.from(Rule_system)
 					.label("Rule set")
 					.build(),
 				Series,
@@ -554,7 +640,7 @@ public class SModel {
 				Awards,
 				Errata,
 				Web_enhancement
-			)/*
+			)
 			.conceptSpecificCategoriesFunction(new Helper() {
 				@Override
 				protected void generateCategories() {
@@ -583,7 +669,7 @@ public class SModel {
 					ifMatchingSeries(game+" Adventure Card Game", game+" Adventure Card Game");
 					ifMatchingSeries(game+" Accessories", game+" Accessories");
 				}
-			})*/
+			})
 		.build();
 	
 	public static final SConcept[] CONCEPTS = {
@@ -595,7 +681,7 @@ public class SModel {
 		VIDEO_GAME,
 		DECK
 	};
-	/*
+	
 	@RequiredArgsConstructor
 	private static abstract class Helper implements BiFunction<SingleRun, SemanticSubject, String> {
 		
@@ -635,7 +721,7 @@ public class SModel {
 			this.run = run;
 			this.page = page;
 			this.game = run.getServer().getName();
-			this.series = page.getAll(Series);
+			this.series = page.getOr(Series, Collections.emptyList());
 			
 			this.cats = new ArrayList<String>();
 			generateCategories();
@@ -646,5 +732,5 @@ public class SModel {
 				+ Strings.join("]][[Category:", cats)
 				+ "]]";
 		}
-	}*/
+	}
 }

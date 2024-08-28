@@ -1,9 +1,7 @@
 package io.github.pfwikis.bots.maintenance;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -12,7 +10,6 @@ import com.beust.jcommander.Parameters;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.common.model.Page;
-import io.github.pfwikis.bots.common.model.SemanticSubject.PageRef;
 import io.github.pfwikis.bots.utils.StringHelper;
 import lombok.extern.slf4j.Slf4j;
 

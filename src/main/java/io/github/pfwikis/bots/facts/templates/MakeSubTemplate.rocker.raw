@@ -1,0 +1,77 @@
+@import io.github.pfwikis.bots.facts.model.SConcept
+@import io.github.pfwikis.bots.facts.util.ConceptUtil
+@import static io.github.pfwikis.bots.facts.SFactsProperties.Author
+@import static io.github.pfwikis.bots.facts.SFactsProperties.Author_all
+@import static io.github.pfwikis.bots.facts.SFactsProperties.Is_subsection
+
+@args(SConcept parent, SConcept c)
+<noinclude>
+{{Bot created|Bot Facts Master}}
+{{#template_params:
+	@for((i,prop):c.getProperties()) {
+		@if(!i.first()){|}
+		@prop.getName() (property=@prop.getName())
+	}
+}}
+[[Category:Facts templates]]
+</noinclude><includeonly>
+
+
+@*Only show the properties on the subpage*@
+{{#ifeq:{{SUBPAGENAME}}|@c.getPluralName()|
+	{{#ifeq:{{#counter: i}}|1| @*this counter makes sure the header is only rendered once*@
+		<div class="facts-display-header">
+			<div class="facts-display-header-item">
+				[[Facts:{{BASEPAGENAME}}|General @parent.getName() Facts]]
+			</div>
+			@for(sub:parent.getSubConcepts()) {
+				<div class="facts-display-header-item">
+					{{#ifeq:{{PAGENAME}}|{{BASEPAGENAME}}/@sub.getPluralName()
+					|@sub.getPluralName()
+					|{{#formredlink:target=Facts:{{BASEPAGENAME}}/@sub.getPluralName()|form=@parent.getName()/@sub.getName()|link text=Create @sub.getPluralName()|existing page link text=@sub.getPluralName()}}}}
+				</div>
+			}
+		</div>
+	}}
+	
+	<div class="
+			facts-display @*important space*@
+			facts-display-@ConceptUtil.cssName(parent)-@ConceptUtil.cssName(c)
+			@if(c.containsProperty(Is_subsection)) {
+				@**@ facts-display-subsection-{{{Is subsection|No}}}@*<-important space*@
+			}
+	 ">
+		@for(prop:c.getProperties()) {
+			@DisplayTemplateField.template(prop) -> {
+				@prop.wikitextToDisplayFact()
+			}
+		}
+	</div>[[Category:Facts about @parent.getName() @c.getPluralName()]]
+}}
+
+
+
+
+@*Only store the properties if this template is transcluded into another root page.*@
+{{#ifeq:{{SUBPAGENAME}}|@c.getPluralName()||
+	@for(prop:c.getProperties()) {
+		@prop.wikitextBeforeStoringFact()
+	}
+	{{#subobject:
+		|Fact type=Template:Facts/@parent.getName()/@c.getName()
+		@for(prop:c.getProperties()) {
+			|@prop.getName()=@prop.wikitextToStoreFact()
+		}
+		|@@sortkey={{#counter: @c.getName()-counter | pad length=3 }}
+	}}
+
+	@*Copy some fields to parent*@
+	@if(c.containsProperty(Author)) {
+		{{#set:Author all=@Author_all.wikitextToStoreFact()}}
+	}
+	@* generic solution we do not use right now
+	@for(prop:c.getProperties()) {
+		@prop.getFactType().subFormAtEnd(prop)
+	}*@
+}}
+</includeonly>

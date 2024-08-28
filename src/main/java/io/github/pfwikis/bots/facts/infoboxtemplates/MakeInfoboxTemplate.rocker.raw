@@ -2,7 +2,7 @@
 @import static org.apache.commons.lang3.StringUtils.startsWith
 @import java.util.Set
 @import java.util.List
-@import io.github.pfwikis.bots.common.model.SemanticSubject
+@import io.github.pfwikis.bots.common.model.subject.SemanticSubject
 @import io.github.pfwikis.bots.facts.model.SConcept
 @import io.github.pfwikis.bots.common.bots.Run.SingleRun
 @import static java.util.Comparator.*
@@ -10,6 +10,8 @@
 @import io.github.pfwikis.bots.utils.TemporalComparator
 @import io.github.pfwikis.bots.facts.util.ConceptUtil
 @import io.github.pfwikis.bots.facts.model.SInfoboxProperty
+@import io.github.pfwikis.bots.facts.SFactsProperties
+@import io.github.pfwikis.bots.facts.model.SProperty
 
 @args(SingleRun run, List<SConcept> concepts, SemanticSubject page)
 <noinclude>
@@ -43,21 +45,25 @@ This template also add many categories based on the facts to each page it is use
 		}
 		<div class="type">
 			@concept.getName() @*<-important space*@
-			@with(type = concept.getName()+" type") {
+			@with(type = SFactsProperties.get(concept.getName()+" type")) {
 				@if(page.has(type)) {
-					- @page.<String>get(type)
+					- @((String)page.get(type))
 				}
 			}
 		</div>
 		<div class="table">
-			@for(SInfoboxProperty ibProp:concept.getInfoboxProperties()) {
-				@if(page.has(ibProp.getProperty())) {
-					<div class="key">@ibProp.wikitextToInfoboxLabel(page.getAll(ibProp.getProperty()).size())</div>
-					<div>@ibProp.wikitextToInfoboxDisplay(run.getWiki(), page.getAll(ibProp.getProperty()))</div>
+			@for(SInfoboxProperty<?> ibProp:concept.getInfoboxProperties()) {
+				@if(ibProp.isPresentIn(page)) {
+					<div class="key">
+						@ibProp.toInfoboxLabel(page)
+					</div>
+					<div>
+						@ibProp.toInfoboxDisplay(run.getWiki(), page)
+					</div>
 				}
 			}
 	
-			@*releases for this book*@
+			@*releases*@
 			@with?(SConcept releaseConcept = concept.getSubConcept("Release")) {
 			@with(releases = page.getSubObjects("Facts/"+concept.getName()+"/Release")
 				.stream()
@@ -76,25 +82,15 @@ This template also add many categories based on the facts to each page it is use
 							}
 						</div>
 						<div class="table">
-							@if(release.has(Release_date)) {
-								<div class="key">Date</div>
-								<div>@releaseConcept.getProperty(Release_date).infoboxValue(run.getWiki(), release.get(Release_date))</div>
-							}
-							@if(release.has(Isbn)) {
-								<div class="key">Isbn</div>
-								<div>[[Special:BookSources/@release.get(Isbn)|@release.get(Isbn)]]</div>	
-							}
-							@if(release.has(Pages)) {
-								<div class="key">Pages</div>
-								<div>@releaseConcept.getProperty(Pages).infoboxValue(run.getWiki(), release.get(Pages))</div>
-							}
-							@if(release.has(Rule_system)) {
-								<div class="key">Rule set</div>
-								<div>@releaseConcept.getProperty(Rule_system).infoboxValue(run.getWiki(), release.get(Rule_system))</div>
-							}
-							@if(release.has(Price)) {
-								<div class="key">Price</div>
-								<div>@releaseConcept.getProperty(Price).infoboxValue(run.getWiki(), release.get(Price))</div>
+							@for(ibProp:releaseConcept.getInfoboxProperties()) {
+								@if(
+									!ibProp.getProperty().equals(Release_type)
+									&& !ibProp.getProperty().equals(Release_note)
+									&& ibProp.isPresentIn(release)
+								) {
+									<div class="key">@ibProp.toInfoboxLabel(release)</div>
+									<div>@ibProp.toInfoboxDisplay(run.getWiki(), release)</div>
+								}
 							}
 						</div>
 					}
@@ -121,28 +117,33 @@ This template also add many categories based on the facts to each page it is use
 	@if(concept.containsProperty(Web_enhancement) && page.has(Web_enhancement)) {
 		[[Category:Products with web enhancements]]
 	}
-	@if(concept.containsProperty(Author)) {
-		@for(author:page.getAll(Author_all)) {
+	@if(concept.containsProperty(Author_all) && page.has(Author_all)) {
+		@for(author:page.get(Author_all)) {
 			[[Category:Works by @run.getWiki().getDisplayTitle(author.toFullTitle())]]
 		}
 	}
-	@if(concept.containsProperty(Artist)) {
-		@for(author:page.getAll(Artist)) {
+	else if(concept.containsProperty(Author) && page.has(Author)) {
+		@for(author:page.get(Author)) {
+			[[Category:Works by @run.getWiki().getDisplayTitle(author.toFullTitle())]]
+		}
+	}
+	@if(concept.containsProperty(Artist) && page.has(Artist)) {
+		@for(author:page.get(Artist)) {
 			[[Category:Artwork by @run.getWiki().getDisplayTitle(author.toFullTitle())]]
 		}
 	}
-	@if(concept.containsProperty(Director)) {
-		@for(author:page.getAll(Director)) {
+	@if(concept.containsProperty(Director) && page.has(Director)) {
+		@for(author:page.get(Director)) {
 			[[Category:Works by @run.getWiki().getDisplayTitle(author.toFullTitle())]]
 		}
 	}
-	@if(concept.containsProperty(Performer)) {
-		@for(author:page.getAll(Performer)) {
+	@if(concept.containsProperty(Performer) && page.has(Performer)) {
+		@for(author:page.get(Performer)) {
 			[[Category:Works starring @run.getWiki().getDisplayTitle(author.toFullTitle())]]
 		}
 	}
-	@if(concept.containsProperty(Narrator)) {
-		@for(author:page.getAll(Narrator)) {
+	@if(concept.containsProperty(Narrator) && page.has(Narrator)) {
+		@for(author:page.get(Narrator)) {
 			[[Category:Works starring @run.getWiki().getDisplayTitle(author.toFullTitle())]]
 		}
 	}

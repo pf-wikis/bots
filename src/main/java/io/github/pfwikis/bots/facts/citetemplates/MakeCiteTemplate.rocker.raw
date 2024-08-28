@@ -1,4 +1,5 @@
 @import io.github.pfwikis.bots.common.WikiAPI
+@import static io.github.pfwikis.bots.facts.SFactsProperties.*
 
 @args(WikiAPI wiki, BookDef book)
 <includeonly>
@@ -11,7 +12,7 @@
 	</span>
 }
 @title => {
-	<span class="title">@if(book.getRepresentedByPage()!=null){[[@book.getRepresentedByPage()|@book.getName()]]}else{@book.getName()}</span>
+	<span class="title">@if(book.has(Represented_by_page)){[[@book.get(Represented_by_page)|@book.get(Name)]]}else{@book.get(Name)}</span>
 }
 @pages => {
 	{{#if:{{{show as|}}}|
@@ -34,10 +35,10 @@
 	}}
 }
 @publisher => {
-	@if(!book.getPublisher().isEmpty()) {
+	@if(book.has(Publisher)) {
 		<span class="publisher">
-		@for((i,pub):book.getPublisher()){
-			@if(!i.first()){, }[[@pub]]
+		@for((i,pub):book.get(Publisher)){
+			@if(!i.first()){, }@pub.toWikiLink(wiki)
 		}
 		</span>
 	}
@@ -93,7 +94,7 @@
 }
 @*space after this is important*@ @title
 @pages. @publisher
-@if(!book.getPublisher().isEmpty()) {, }else { }
+@if(book.has(Publisher)) {, }else { }
 @year</cite>
 
 {{#ifeq:{{{1|}}}|??|[[Category:Articles with question-mark page citations]]}}
@@ -145,15 +146,15 @@ This template should not be edited directly. To change the contents, please edit
 <h3>With page, page range, or a specific location</h3>
 @for(s:book.getSections()) {
 	@if(s.getSubSections().isEmpty()) {
-		@if(s.getPage() != null) {
-			<syntaxhighlight lang="wikitext">{{Cite/@book.getFactsPage()|@s.getPage()@if(s.getEndPage()!=null){|@s.getEndPage()}}}</syntaxhighlight>
-			{{Cite/@book.getFactsPage()|@s.getPage()@if(s.getEndPage()!=null){|@s.getEndPage()}}}<br><br>
+		@if(s.has(On_page)) {
+			<syntaxhighlight lang="wikitext">{{Cite/@book.getFactsPage()|@s.get(On_page)@if(s.getEndPage()!=null){|@s.getEndPage()}}}</syntaxhighlight>
+			{{Cite/@book.getFactsPage()|@s.get(On_page)@if(s.getEndPage()!=null){|@s.getEndPage()}}}<br><br>
 		}
 	}
 	else {
 		@for(sub:s.getSubSections()) {
-			<syntaxhighlight lang="wikitext">{{Cite/@book.getFactsPage()|@sub.getPage()@if(sub.getEndPage()!=null){|@sub.getEndPage()}}}</syntaxhighlight>
-			{{Cite/@book.getFactsPage()|@sub.getPage()@if(sub.getEndPage()!=null){|@sub.getEndPage()}}}<br><br>
+			<syntaxhighlight lang="wikitext">{{Cite/@book.getFactsPage()|@sub.get(On_page)@if(sub.getEndPage()!=null){|@sub.getEndPage()}}}</syntaxhighlight>
+			{{Cite/@book.getFactsPage()|@sub.get(On_page)@if(sub.getEndPage()!=null){|@sub.getEndPage()}}}<br><br>
 		}
 	}
 }

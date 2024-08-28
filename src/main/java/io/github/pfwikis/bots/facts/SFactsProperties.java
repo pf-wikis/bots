@@ -1,8 +1,13 @@
 package io.github.pfwikis.bots.facts;
+import java.lang.reflect.Modifier;
 import java.time.temporal.Temporal;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
-import io.github.pfwikis.bots.common.model.SemanticSubject.PageRef;
+import io.github.pfwikis.bots.common.model.subject.PageRef;
 import io.github.pfwikis.bots.facts.model.SConcept;
 import io.github.pfwikis.bots.facts.model.SFactTypes;
 import io.github.pfwikis.bots.facts.model.SProperty;
@@ -67,9 +72,9 @@ public class SFactsProperties {
 		"Book type",
 		SFactTypes.STRING)
 		.setDescription("The type of book.");
-	public static final SProperty<String> Chapters = new SProperty<>(
+	public static final SProperty<Integer> Chapters = new SProperty<>(
 		"Chapters",
-		SFactTypes.STRING)
+		SFactTypes.INTEGER)
 		.setDescription("The number of chapters.");
 	public static final SProperty<List<PageRef>> Composer = new SProperty<>(
 		"Composer",
@@ -132,6 +137,7 @@ public class SFactsProperties {
 		"Fact type",
 		SFactTypes.PAGE)
 		.setGenerateWikitext("unknown")
+		.setRequired(true)
 		.setDescription("The type of fact represented by this entity. This should be a reference to the template that created it.");
 	public static final SProperty<List<PageRef>> Follows = new SProperty<>(
 		"Follows",
@@ -152,7 +158,7 @@ public class SFactsProperties {
 	public static final SProperty<String> Gallery = new SProperty<>(
 		"Gallery",
 		SFactTypes.STRING) {
-			public List<SProperty<?>> generateProperties(SConcept c) {
+			public List<SProperty<?>> generateProperties(SConcept c, SConcept parent) {
 				return List.of(Gallery_page);
 			};
 		}
@@ -168,16 +174,16 @@ public class SFactsProperties {
 		.setDescription("The page of an image representing this entity.");
 	public static final SProperty<String> Isbn = new SProperty<>(
 		"Isbn",
-		SFactTypes.STRING)
+		SFactTypes.ISBN)
 		.setDescription("The ISBN.")
 		.setAllowsPattern("^(?=(?:\\D*\\d){10}(?:(?:\\D*\\d){3})?$)[\\d-]+$");
-	public static final SProperty<String> Level_range_end = new SProperty<>(
+	public static final SProperty<Integer> Level_range_end = new SProperty<>(
 		"Level range end",
-		SFactTypes.STRING)
+		SFactTypes.INTEGER)
 		.setDescription("This adventure should end with the characters at this level '''or''' this society adventure can be played in a range ending with this level.");
-	public static final SProperty<String> Level_range_start = new SProperty<>(
+	public static final SProperty<Integer> Level_range_start = new SProperty<>(
 		"Level range start",
-		SFactTypes.STRING)
+		SFactTypes.INTEGER)
 		.setDescription("This adventure is supposed to be started at this level '''or''' this society adventure can be played in a range starting with this level.");
 	public static final SProperty<List<PageRef>> Location = new SProperty<>(
 		"Location",
@@ -203,7 +209,8 @@ public class SFactsProperties {
 		"Name",
 		SFactTypes.STRING)
 		.setAutocompleteDisabled(true)
-		.setDescription("The general name of an entity. This is used for many different types.");
+		.setDescription("The general name of an entity. This is used for many different types.")
+		.setRequired(true);
 	public static final SProperty<List<PageRef>> Narrator = new SProperty<>(
 		"Narrator",
 		SFactTypes.PAGE_LIST)
@@ -213,14 +220,11 @@ public class SFactsProperties {
 		"On page",
 		SFactTypes.STRING)
 		.setDescription("The page this entity can be found on in the respective book. If the entitity is on multiple pages, this should indicate the starting page. Other allowed values are \"Inside Back Cover\", \"Inside Front Cover\", and \"Inside Covers\".")
-		.setAllowsPattern("^(\\d+|Inside Back Cover|Inside Front Cover|Inside Covers)$");
-	public static final SProperty<Integer> Order = new SProperty<>(
-		"Order",
-		SFactTypes.INTEGER)
-		.setDescription("Stores a number that is used to establish some kind of order between multiple entries.");
-	public static final SProperty<String> Pages = new SProperty<>(
+		.setAllowsPattern("^(\\d+|Inside Back Cover|Inside Front Cover|Inside Covers)$")
+		.setAutocompleteDisabled(true);
+	public static final SProperty<Integer> Pages = new SProperty<>(
 		"Pages",
-		SFactTypes.STRING)
+		SFactTypes.INTEGER)
 		.setDescription("The number of pages in this book.");
 	public static final SProperty<List<PageRef>> Performer = new SProperty<>(
 		"Performer",
@@ -245,7 +249,7 @@ public class SFactsProperties {
 	public static final SProperty<List<PageRef>> Primary_author = new SProperty<>(
 		"Primary author",
 		SFactTypes.PAGE_LIST_ORDERED) {
-			public List<SProperty<?>> generateProperties(SConcept c) {
+			public List<SProperty<?>> generateProperties(SConcept c, SConcept parent) {
 				return List.of(Author_all);
 			};
 		}
@@ -285,25 +289,38 @@ public class SFactsProperties {
 	public static final SProperty<String> Release_date_precision = new SProperty<>(
 		"Release date precision",
 		SFactTypes.STRING)
-		.setGenerateWikitext("{{#if:{{{Release year|}}}|"
-			+"{{#rmatch:{{{Release year|}}}|^\\d{4}-\\d{1,2}-\\d{1,2}$|date|"
-				+ "{{#rmatch:{{{Release year|}}}|^\\d{4}-\\d{1,2}$|month|"
-					+ "{{#rmatch:{{{Release year|}}}|^\\d{4}$|year|unknown}}"
-				+ "}}"
-			+ "}}"
-		+ "|empty}}")
+		.setGenerateWikitext("{{#invoke:Dates|precision|{{{Release date|}}}}}")
 		.setDescription("Automatically generated property that says how precise a given date was.");
 	public static final SProperty<String> Release_year = new SProperty<>(
 		"Release year",
 		SFactTypes.STRING)
-		.setGenerateWikitext("unknown")
+		.setGenerateWikitext("{{#rmatch:{{{Release date|}}}-{{{Serialized|}}}|.*?([0-9]{4}).*|${1}|unknown}}")
 		.setDefaultValue("unknown")
 		.setDescription("The year in which this product was released. This is typically automatically calculated.");
 	public static final SProperty<Temporal> Release_date = new SProperty<>(
 		"Release date",
 		SFactTypes.DATE) {
-			public List<SProperty<?>> generateProperties(SConcept c) {
-				return List.of(Release_date_precision, Release_year);
+			public List<SProperty<?>> generateProperties(SConcept c, SConcept parent) {
+				if(parent != null) {
+					Function<String, String> first = f->"{{#ask:[[-Has subobject::{{FULLPAGENAME}}]][[Release date::+]]|?Release date#"+f+"=|sort=Release date|limit=1|order=ASC|mainlabel=-|searchlabel=}}";
+					parent.getGeneratedProperties().addAll(List.of(
+						Release_year.withGenerateWikitext(
+							Release_year.getGenerateWikitext().replace("{{{Release date|}}}", first.apply("-F[Y]"))
+						),
+						Release_date.withGenerateWikitext(first.apply("ISO-P")),
+						Release_date_precision.withGenerateWikitext(
+							Release_date_precision.getGenerateWikitext().replace(
+								"{{{Release date|}}}",
+								first.apply("ISO-P")
+							)
+						)
+					));
+				}
+				
+				return List.of(
+					Release_date_precision,
+					Release_year
+				);
 			};
 		}
 		.setDescription("The release date or a partial release date.");
@@ -331,6 +348,7 @@ public class SFactsProperties {
 	public static final SProperty<String> Runtime = new SProperty<>(
 		"Runtime",
 		SFactTypes.STRING)
+		.setAutocompleteDisabled(true)
 		.setDescription("The runtime given as a number and a unit.");
 	public static final SProperty<String> Serialized = new SProperty<>(
 		"Serialized",
@@ -346,9 +364,9 @@ public class SFactsProperties {
 		SFactTypes.MULTILINE_WIKITEXT)
 		.setAutocompleteDisabled(true)
 		.setDescription("A text describing the entity in detail.");
-	public static final SProperty<String> To_page = new SProperty<>(
+	public static final SProperty<Integer> To_page = new SProperty<>(
 		"To page",
-		SFactTypes.STRING)
+		SFactTypes.INTEGER)
 		.setDescription("Can only be used together with On page to give a full page range for the entity.");
 	public static final SProperty<String> Video_game_type = new SProperty<>(
 		"Video game type",
@@ -363,6 +381,7 @@ public class SFactsProperties {
 		"Website",
 		SFactTypes.STRING)
 		.setFormNote("The URL of the product's official page on the publisher's website.")
+		.setAutocompleteDisabled(true)
 		.setDescription("An URL that is strongly linked to this entity. E.g. the Paizo page for a book.");
 	public static final SProperty<List<PageRef>> Writer = new SProperty<>(
 		"Writer",
@@ -373,5 +392,32 @@ public class SFactsProperties {
 		"Is subsection",
 		SFactTypes.BOOLEAN)
 		.setDescription("Marks this section as a subsection of the previous section.")
-		.setDefaultValue("f");
+		.setDefaultValue("No");
+	
+	private static final Map<String, SProperty<?>> ALL_PROPERTIES;
+	static {
+		ALL_PROPERTIES = new HashMap<>();
+		for(var f:SFactsProperties.class.getFields()) {
+			if(Modifier.isStatic(f.getModifiers()) && SProperty.class.isAssignableFrom(f.getType())) {
+				try {
+					var p = (SProperty<?>) f.get(null);
+					ALL_PROPERTIES.put(p.getName(), p);
+				} catch (IllegalArgumentException | IllegalAccessException e) {
+					throw new IllegalStateException("Could not collection property "+f, e);
+				}
+			}
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T> SProperty<T> get(String name) {
+		return (SProperty<T>) ALL_PROPERTIES.get(name);
+	}
+	
+	public static List<SProperty<?>> getAll() {
+		return ALL_PROPERTIES.values()
+			.stream()
+			.sorted(Comparator.comparing(p->p.getName()))
+			.toList();
+	}
 }

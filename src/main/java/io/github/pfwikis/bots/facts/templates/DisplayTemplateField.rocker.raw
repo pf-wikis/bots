@@ -1,0 +1,28 @@
+@import io.github.pfwikis.bots.facts.model.SProperty
+@import static io.github.pfwikis.bots.utils.RockerHelper.n
+
+@args(SProperty<?> prop, RockerBody content)
+
+@*do not show if the field is not required and has no default value*@
+@if(!prop.isRequired()) {
+	@{@{#if:@prop.wikitextToTestIfValue(true)|
+}
+
+
+<div class="facts-display-key">[[@prop.getName()::@@@@@@]]</div>
+<div class="facts-display-value">@n()
+	@if(prop.isRequired() && prop.isGenerateWikitextDynamic()) {
+		{{#if:@prop.wikitextToTestIfValue(true)
+			|@content
+			|[[Category:Pages with errors]]{{#info: @prop.getName() is required!|error}}
+		}}
+	}
+	else {
+		@content
+	}
+@n()</div>
+
+
+@if(!prop.isRequired()) {
+	@}@}
+}

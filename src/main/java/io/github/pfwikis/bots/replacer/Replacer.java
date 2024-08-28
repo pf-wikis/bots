@@ -15,6 +15,7 @@ import com.beust.jcommander.Parameters;
 import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
+import io.github.pfwikis.bots.utils.SimpleCache.CacheId;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -318,7 +319,7 @@ public class Replacer extends SimpleBot {
 			var l2 = mr.namedGroups().containsKey("l2")?mr.group("l2"):null;
 			var showAs = mr.namedGroups().containsKey("showas")?mr.group("showas"):null;
 			
-			var tTemplate = run.cache("resolve", template, ()->this.resolve(template));
+			var tTemplate = run.cache(CacheId.REPLACER_RESOLVE, template, ()->this.resolve(template));
 			if(tTemplate == null) {
 				log.error("Can't resolve template '{}'", template);
 				return m.group();

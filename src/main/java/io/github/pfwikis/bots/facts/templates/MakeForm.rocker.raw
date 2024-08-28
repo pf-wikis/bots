@@ -1,0 +1,33 @@
+@*@import static io.github.pfwikis.bots.facts.model.SMWPropertyType.**@
+@import static io.github.pfwikis.bots.facts.model.SFactTypes.*
+@import static org.apache.commons.lang3.StringUtils.startsWith
+@import io.github.pfwikis.bots.facts.model.SConcept
+
+@args(String name, String pluralName, SConcept c, boolean isSubform)
+<noinclude>
+{{Bot created|Bot Facts Master}}[[Category:Synced to starfinderwiki]]
+This is the ''@name'' form. To create a page with this form, see [[:Category:Facts about @pluralName]]
+
+</noinclude><includeonly>
+{{{for template|Facts/@name@if(isSubform){|multiple|add button text=Add @c.getName().toLowerCase()}}}}
+<div class="facts-form">
+	@for(prop:c.getProperties()) {
+		<div class="facts-form-key @if(prop.getFactType().equals(BOOLEAN)){inline}">
+			@prop.getName()
+		</div>
+		<div class="facts-form-value">
+			<div class="facts-form-input">
+				{{{field|@prop.getName()
+					@prop.configureFormField()
+				}}}
+			</div>
+			@if(prop.getFormNote()!=null){
+				<div class="facts-form-note">@prop.getFormNote()</div>
+			}
+		</div>
+	}
+	<div class="facts-form-key">Free text</div>
+	<div class="facts-form-value">{{{standard input|free text|autogrow|editor=visualeditor}}}</div>
+</div>
+{{{end template}}}
+</includeonly>

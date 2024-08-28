@@ -1,6 +1,7 @@
 package io.github.pfwikis.bots.facts.model;
 
 import java.lang.reflect.ParameterizedType;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.JavaType;
 
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @EqualsAndHashCode(of = "id")
 @RequiredArgsConstructor
 public abstract class SFactType<JType> {
+	@Getter
 	private final String id;
 	@Getter(lazy = true)
 	private final JavaType javaType = findType();
@@ -32,34 +34,37 @@ public abstract class SFactType<JType> {
 	}
 
 	public String wikitextToDisplayFact(SProperty<JType> p, String v) {
-		var res = displayFactWikitext.replace("$v", v);
-		if(p.getDefaultValue() == null ) {
-			return res;
-		}
-		return 
-			"{{#if:{{{"+p.getName()+"|}}}|"
-			+ res
-			+ "|''default:'' "
-			+ displayFactWikitext.replace("$v", p.getDefaultValue())
-			+ "}}";
+		return displayFactWikitext.replace("$v", v);
 	}
 	
 	public String wikitextToStoreFact(SProperty<JType> p, String v) {
-		var result = changeStoreFactWikitext(v);
-		if(p.getDefaultValue() == null)
-			return result;
-		return changeStoreFactWikitext("{{#if:"+v+"|"+v+"|"+p.getDefaultValue()+"}}");
+		return v;
 	}
 	
-	protected String changeStoreFactWikitext(String wt) {
-		return wt;
-	}
-
-	public String wikitextToInfoboxDisplay(WikiAPI wiki, Object object) {
-		return object.toString();
+	public String toInfoboxDisplay(WikiAPI wiki, JType v) {
+		return v.toString();
 	}
 
 	public String wikitextToQuery(SProperty<JType> prop) {
 		return "";
 	}
+
+	public String wikitextToTestIfValue(SProperty<JType> p, String v) {
+		return v;
+	}
+
+	public String wikitextBeforeStoringFact(SProperty<JType> p) {
+		return "";
+	}
+
+	@SuppressWarnings("unchecked")
+	public JType convertToJava(List<Object> values) {
+		return switch(values.size()) {
+			case 0 -> null;
+			case 1 -> (JType)values.getFirst();
+			default -> throw new IllegalStateException("There are "+values.size()+" values");
+		};
+	}
+
+	protected abstract String configureFormField(SProperty<?> prop);
 }

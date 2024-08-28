@@ -3,7 +3,7 @@
 
 @args(SConcept c)
 <noinclude>
-{{Bot created|Bot Facts Helper}}
+{{Bot created|Bot Facts Master}}
 {{#template_params:
 	@for((i,prop):c.getProperties()) {
 		@if(!i.first()){|}@prop.getName() (property=@prop.getName())
@@ -14,6 +14,11 @@
 {{#ifexist:Template:Cite/{{PAGENAME}}|
 	<div class="citethis">
 		You can cite this entity by using {{tl|Ref|{{PAGENAME}}}} or {{tl|Cite/{{PAGENAME}}}}.
+	</div>
+}}
+{{#ifexist:Template:Facts/Infoboxes/{{FULLPAGENAME}}|
+	<div class="citethis">
+		The infobox for this entity can be used via {{tl|Infobox|@c.getName()|{{PAGENAME}}}} or just {{tl|Infobox|@c.getName()}} on the page <code>{{PAGENAME}}</code>.
 	</div>
 }}
 
@@ -27,8 +32,9 @@
 }
 <div class="facts-display facts-display-@ConceptUtil.cssName(c)">
 	@for(prop:c.getProperties()) {
-		@DisplayTemplateField.template(prop.getName(), prop.wikitextToStoreFact()) -> {
+		@DisplayTemplateField.template(prop) -> {
 			@prop.wikitextToDisplayFact()
+			@prop.wikitextBeforeStoringFact()
 			{{#set:@prop.getName()=@prop.wikitextToStoreFact()}}
 		}
 	}
@@ -37,8 +43,9 @@
 <h3>Automatic properties</h3>
 <div class="facts-display facts-display-@ConceptUtil.cssName(c)">
 @for(gen:c.getGeneratedProperties()) {
-	@DisplayTemplateField.template(gen.getName(), null) -> {
+	@DisplayTemplateField.template(gen) -> {
 		@gen.wikitextToDisplayFact()
+		@gen.wikitextBeforeStoringFact()
 		{{#set:@gen.getName()=@gen.wikitextToStoreFact()}}
 	}
 }

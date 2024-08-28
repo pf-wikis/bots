@@ -9,6 +9,7 @@ import io.github.pfwikis.bots.common.Discord;
 import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.WikiAPI;
 import io.github.pfwikis.bots.utils.SimpleCache;
+import io.github.pfwikis.bots.utils.SimpleCache.CacheId;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -56,7 +57,7 @@ public abstract class Run {
 		private final SimpleCache<Object> cache = new SimpleCache<>(Duration.ofMinutes(10));
 		
 		@SuppressWarnings("unchecked")
-		public synchronized <T> T cache(String cacheId, String key, Callable<T> calc) {
+		public synchronized <T> T cache(CacheId cacheId, String key, Callable<T> calc) {
 			return (T)cache.cache(cacheId, key, calc);
 		}
 

@@ -1,0 +1,103 @@
+@import io.github.pfwikis.bots.facts.model.SProperty
+@import static io.github.pfwikis.bots.facts.model.SFactTypes.*
+@import static io.github.pfwikis.bots.utils.RockerHelper.n
+
+@args(SProperty<?> p)
+{{Bot created|Bot Facts Master}}
+
+
+@with?(String descr=p.getDescription()) {
+	@descr{{#set:Property description=@descr@@en}}
+}
+
+@n()== Definition ==@n()
+
+<table class="wikitable property">
+	<tr>
+		<th>Trait</th>
+		<th>Value</th>
+		<th>Description</th>
+	</tr>
+
+	@if(p.getFactType().equals(PAGE_LIST_ORDERED)) {
+		<tr>
+			<td>Type</td>
+			<td>PAGE_LIST_ORDERED ([[Has type::Record]])</td>
+			<td>
+				This determines what kind of values can be stored in this property and how they 
+				are edited in the forms.
+			</td>
+		</tr>
+		<tr>
+			<td>Type components</td>
+			<td>[[Has fields::Ordered value;Order]]</td>
+			<td>These are the two components necessary to keep the order for this list of pages.</td>
+		</tr>
+	}
+	else {
+		<tr>
+			<td>Type</td>
+			<td>@p.getFactType().getId() ([[Has type::@p.getFactType().getPropertyType().getWikiName()]])</td>
+			<td>
+				This determines what kind of values can be stored in this property and how they 
+				are edited in the forms.
+			</td>
+		</tr>
+	}
+	@if(p.isRequired()) {
+		<tr>
+			<td>Required</td>
+			<td>required</td>
+			<td>
+				This value must be present.
+				@if(p.getDefaultValue() != null) {					@**@ It must not be present if the default value produces an output.
+				}
+			</td>
+		</tr>
+	}
+	<tr>
+		<td>Autocomplete</td>
+		<td>
+			@if(p.isAutocompleteDisabled()) {
+				disabled
+			}
+			else if(p.getSuggestValuesFrom()!=null) {
+				based on @p.getSuggestValuesFrom();
+			}
+			else {
+				based on values used with this property
+			}
+		</td>
+		<td>Describes how form select the suggested values.</td>
+	</tr>
+	@with?(def=p.getDefaultValue()) {
+		<tr>
+			<td>Default value</td>
+			<td>
+				<syntaxhighlight lang="wikitext" inline>@def</syntaxhighlight>
+			</td>
+			<td>The value stored if no other value is set.</td>
+		</tr>
+	}
+	@with?(pat=p.getAllowsPattern()) {
+		<tr>
+			<td>Allows pattern</td>
+			<td>
+				<syntaxhighlight lang="sed" inline>@pat</syntaxhighlight>{{#set:Allows pattern=@p.toSafeName()}}
+			</td>
+			<td>The REGEX pattern values of this field should match.</td>
+		</tr>
+	}
+	@with?(v=p.getFormNote()) {
+		<tr>
+			<td>Form note</td>
+			<td>@v</td>
+			<td>An additional info shown next to the field in forms.</td>
+		</tr>
+	}
+</table>
+
+
+@n()== Usage ==@n()
+{{User:Bot Facts Master/Statistics/@p.getName()}}
+[[Category:Properties]]

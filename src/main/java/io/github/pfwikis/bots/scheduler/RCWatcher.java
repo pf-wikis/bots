@@ -8,14 +8,13 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import io.github.pfwikis.bots.citetemplates.CiteTemplates;
 import io.github.pfwikis.bots.common.Discord;
 import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.model.LogEventsQuery.LogEvent;
 import io.github.pfwikis.bots.common.model.RecentChanges.RecentChange;
-import io.github.pfwikis.bots.factshelper.FactsHelper;
-import io.github.pfwikis.bots.infoboxtemplates.InfoboxTemplates;
+import io.github.pfwikis.bots.facts.citetemplates.CiteTemplates;
+import io.github.pfwikis.bots.facts.infoboxtemplates.InfoboxTemplates;
 import io.github.pfwikis.bots.pagesyncer.PageSyncer;
 import io.github.pfwikis.bots.templatestyles.TemplateStyles;
 import lombok.extern.slf4j.Slf4j;
@@ -75,7 +74,6 @@ public class RCWatcher extends Schedulable {
 	
 	private CiteTemplates botCiteTemplates = new CiteTemplates();
 	private InfoboxTemplates botInfoboxTemplates = new InfoboxTemplates();
-	private FactsHelper botFactsHelper = new FactsHelper();
 	private TemplateStyles botTemplateStyles = new TemplateStyles();
 	private PageSyncer botPageSyncer = new PageSyncer();
 	
@@ -91,9 +89,6 @@ public class RCWatcher extends Schedulable {
 			
 			p.scheduleOnce(p.scheduleableBot(wiki, discord, botCiteTemplates, localCtx), changeTime);
 			p.scheduleOnce(p.scheduleableBot(wiki, discord, botInfoboxTemplates, localCtx), changeTime);
-		}
-		if(changedPage.startsWith("Property:")) {
-			p.scheduleOnce(p.scheduleableBot(wiki, discord, botFactsHelper), changeTime);
 		}
 		if(changedPage.startsWith("Style:")) {
 			p.scheduleOnce(p.scheduleableBot(wiki, discord, botTemplateStyles), changeTime);

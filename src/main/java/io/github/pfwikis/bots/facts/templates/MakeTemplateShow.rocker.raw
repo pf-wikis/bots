@@ -4,10 +4,10 @@
 
 <includeonly>{{#show: Facts:{{{page|}}}
 	@for(prop:c.getProperties()) {
-		|@prop.getName()@?prop.wikitextToQuery()=@prop.getName()
+		|?@prop.getName()@?prop.wikitextToQuery()=@prop.getName()
 	}
 	@for(prop:c.getGeneratedProperties()) {
-		|@prop.getName()@?prop.wikitextToQuery()=@prop.getName()
+		|?@prop.getName()@?prop.wikitextToQuery()=@prop.getName()
 	}
 	|userparam=Facts:{{{page|{{FULLPAGENAME}}}}}
 	|link=none
@@ -18,7 +18,7 @@
 	|searchlabel=
 	|default={{{default|}}}
 }}</includeonly><noinclude>
-{{Bot created|Bot Facts Helper}}
+{{Bot created|Bot Facts Master}}
 This template allows you to call another template with all the fact properties of a page.
 It then provides all the properties as named parameters and the page it was called on as @*space*@
 <code><nowiki>{{{#userparam}}}</nowiki></code>.

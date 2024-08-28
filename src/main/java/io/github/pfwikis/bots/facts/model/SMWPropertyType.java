@@ -1,38 +1,173 @@
 package io.github.pfwikis.bots.facts.model;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Year;
+import java.time.YearMonth;
+import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.NumericNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 
+import io.github.pfwikis.bots.common.model.subject.PageRef;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum SMWPropertyType {
-	ANNOTATION_URI("http://semantic-mediawiki.org/swivt/1.0#_anu"),
-    BOOLEAN("http://semantic-mediawiki.org/swivt/1.0#_boo"),
-    CODE("http://semantic-mediawiki.org/swivt/1.0#_cod"),
-    DATE("http://semantic-mediawiki.org/swivt/1.0#_dat"),
-    EMAIL("http://semantic-mediawiki.org/swivt/1.0#_ema"),
-    EXTERNAL_IDENTIFIER("http://semantic-mediawiki.org/swivt/1.0#_eid"),
-    GEOGRAPHIC_COORDINATES("http://semantic-mediawiki.org/swivt/1.0#_geo"),
-    KEYWORD("http://semantic-mediawiki.org/swivt/1.0#_keyw"),
-    MONOLINGUAL_TEXT("http://semantic-mediawiki.org/swivt/1.0#_mlt_rec"),
-    NUMBER("http://semantic-mediawiki.org/swivt/1.0#_num"),
-    PAGE("http://semantic-mediawiki.org/swivt/1.0#_wpg"),
-    QUANTITY("http://semantic-mediawiki.org/swivt/1.0#_qty"),
-    RECORD("http://semantic-mediawiki.org/swivt/1.0#_rec"),
-    REFERENCE("http://semantic-mediawiki.org/swivt/1.0#_ref_rec"),
-    TELEPHONE_NUMBER("http://semantic-mediawiki.org/swivt/1.0#_tel"),
-    TEMPERATURE("http://semantic-mediawiki.org/swivt/1.0#_tem"),
-    TEXT("http://semantic-mediawiki.org/swivt/1.0#_txt"),
-    URL("http://semantic-mediawiki.org/swivt/1.0#_uri");
+	ANNOTATION_URI(
+		null,
+		"http://semantic-mediawiki.org/swivt/1.0#_anu",
+		"Annotation URI"
+	),
+    BOOLEAN(
+		4,
+		"http://semantic-mediawiki.org/swivt/1.0#_boo",
+		"Boolean"
+	) {
+		@Override
+		public Boolean convertToJava(JsonNode v) {
+			return "t".equals(v.textValue());
+		}
+	},
+    CODE(
+		null,
+		"http://semantic-mediawiki.org/swivt/1.0#_cod",
+		"Code"
+	),
+    DATE(
+		6,
+		"http://semantic-mediawiki.org/swivt/1.0#_dat",
+		"Date"
+	) {
+		@Override
+		public Temporal convertToJava(JsonNode v) {
+			var parts = Arrays.stream(v.textValue().split("/")).mapToInt(Integer::parseInt).toArray();
+			return switch(parts.length) {
+				case 2 -> Year.of(parts[1]);
+				case 3 -> YearMonth.of(parts[1], parts[2]);
+				case 4 -> LocalDate.of(parts[1], parts[2], parts[3]);
+				case 8 -> LocalDateTime.of(parts[1], parts[2], parts[3], parts[4], parts[5], parts[6]);
+				default -> throw new IllegalStateException("Unhandled date format for "+v);
+			};
+		}
+	},
+    EMAIL(
+		null,
+		"http://semantic-mediawiki.org/swivt/1.0#_ema",
+		"Email"
+	),
+    EXTERNAL_IDENTIFIER(
+		null,
+		"http://semantic-mediawiki.org/swivt/1.0#_eid",
+		"External identifier"
+	),
+    GEOGRAPHIC_COORDINATES(
+		null,
+		"http://semantic-mediawiki.org/swivt/1.0#_geo",
+		"Geographic coordinates"
+	),
+    KEYWORD(
+		null,
+		"http://semantic-mediawiki.org/swivt/1.0#_keyw",
+		"Keyword"
+	),
+    MONOLINGUAL_TEXT(
+		null,
+		"http://semantic-mediawiki.org/swivt/1.0#_mlt_rec",
+		"Monolingual text"
+	),
+    NUMBER(
+		1,
+		"http://semantic-mediawiki.org/swivt/1.0#_num",
+    	"Number"
+	) {
+		@Override
+		public Number convertToJava(JsonNode v) {
+			if(v instanceof TextNode tn) {
+				var dec = new BigDecimal(tn.textValue());
+				if(dec.stripTrailingZeros().scale()<=0) {
+					try {
+						return dec.intValueExact();
+					} catch(Exception e) {}
+				}
+				return dec;
+			}
+			var n = (NumericNode)v;
+			if(n.canConvertToInt())
+				return n.intValue();
+			else
+				return n.decimalValue();
+		}
+	},
+    PAGE(
+		9,
+		"http://semantic-mediawiki.org/swivt/1.0#_wpg",
+		"Page"
+	) {
+		@Override
+		public PageRef convertToJava(JsonNode v) {
+			return PageRef.of(v);
+		}
+	},
+    QUANTITY(
+		null,
+		"http://semantic-mediawiki.org/swivt/1.0#_qty",
+		"Quantity"
+	),
+    RECORD(
+		null,
+		"http://semantic-mediawiki.org/swivt/1.0#_rec",
+		"Record"
+	),
+    REFERENCE(
+		null,
+		"http://semantic-mediawiki.org/swivt/1.0#_ref_rec",
+		"Reference"
+	),
+    TELEPHONE_NUMBER(
+		null,
+		"http://semantic-mediawiki.org/swivt/1.0#_tel",
+		"Telephone number"
+	),
+    TEMPERATURE(
+		null,
+		"http://semantic-mediawiki.org/swivt/1.0#_tem",
+		"Temperature"
+	),
+    TEXT(
+		2,
+		"http://semantic-mediawiki.org/swivt/1.0#_txt",
+		"Text"
+	),
+    URL(
+		5,
+		"http://semantic-mediawiki.org/swivt/1.0#_uri",
+		"URL"
+	);
 
-	private final static Map<String, SMWPropertyType> MAP = Arrays.stream(SMWPropertyType.values()).collect(Collectors.toMap(f->f.id, f->f));
+	private final static Map<String, SMWPropertyType> MAP = Arrays.stream(SMWPropertyType.values())
+			.flatMap(p->Stream.concat(
+				Stream.of(Pair.of(p.id, p)),
+				p.intId!=null?Stream.of(Pair.of(p.intId.toString(), p)):Stream.empty()
+			))
+			.collect(Collectors.toMap(f->f.getKey(), f->f.getValue()));
+	private final static Map<Integer, SMWPropertyType> INT_MAP = Arrays.stream(SMWPropertyType.values()).filter(f->f.intId!=null).collect(Collectors.toMap(f->f.intId, f->f));
 	
+	private final Integer intId;
 	private final String id;
+	@Getter
+	private final String wikiName;
 
 	@JsonCreator
 	public static SMWPropertyType of(String id) {
@@ -41,5 +176,18 @@ public enum SMWPropertyType {
 			throw new NoSuchElementException("Unknown fact type '"+id+"'");
 		}
 		return res;
+	}
+	
+	@JsonCreator
+	public static SMWPropertyType of(int id) {
+		var res = INT_MAP.get(id);
+		if(res == null) {
+			throw new NoSuchElementException("Unknown fact type '"+id+"'");
+		}
+		return res;
+	}
+
+	public Object convertToJava(JsonNode v) {
+		return v.textValue();
 	}
 }

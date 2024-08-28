@@ -4,10 +4,10 @@
 
 <includeonly>{{#ask: [[Fact type::Template:Facts/@name]]{{{query|}}}
 	@for(prop:c.getProperties()) {
-		|@prop.getName()@?prop.wikitextToQuery()=@prop.getName()
+		|?@prop.getName()@?prop.wikitextToQuery()=@prop.getName()
 	}
 	@for(prop:c.getGeneratedProperties()) {
-		|@prop.getName()@?prop.wikitextToQuery()=@prop.getName()
+		|?@prop.getName()@?prop.wikitextToQuery()=@prop.getName()
 	}
 	|limit={{{limit|1000}}}
 	|introtemplate={{{introtemplate|}}}
@@ -23,7 +23,7 @@
 	|searchlabel=
 	|default={{{default|}}}
 }}</includeonly><noinclude>
-{{Bot created|Bot Facts Helper}}
+{{Bot created|Bot Facts Master}}
 This template allows you to call another template with all the fact properties of a page.
 It then provides all its properties as named parameters and the page it was called on as @*space*@
 <code><nowiki>{{{#userparam}}}</nowiki></code>.

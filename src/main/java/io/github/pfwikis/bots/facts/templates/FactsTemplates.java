@@ -1,34 +1,55 @@
-package io.github.pfwikis.bots.factshelper;
+package io.github.pfwikis.bots.facts.templates;
 
 import static io.github.pfwikis.bots.utils.RockerHelper.make;
 
 import java.io.IOException;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import com.beust.jcommander.Parameters;
 
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
+import io.github.pfwikis.bots.facts.SFactsProperties;
 import io.github.pfwikis.bots.facts.SModel;
 import io.github.pfwikis.bots.facts.model.SConcept;
+import io.github.pfwikis.bots.facts.model.SProperty;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Parameters
-public class FactsHelper extends SimpleBot {
+public class FactsTemplates extends SimpleBot {
 
-	public FactsHelper() {
-		super("facts-helper", "Bot Facts Helper");
+	public FactsTemplates() {
+		super("facts-templates", "Bot Facts Master");
 	}
 
 	@Override
 	public void run(RunContext ctx) throws IOException {
 		var concepts = SModel.CONCEPTS;
 		
+		handlePropertyDefinitions();
+		
 		for(var concept:concepts) {
 			handleConcept(concept);
 		}
 	}
 	
+	private void handlePropertyDefinitions() {
+		var patterns = "This page contains the regex patterns of the facts system:\n"
+			+ SFactsProperties.getAll()
+			.stream()
+			.filter(p->p.getAllowsPattern() != null)
+			.map(p->" "+p.toSafeName()+"|"+p.getAllowsPattern())
+			.collect(Collectors.joining("\n"));
+		run.getWiki().editIfChange("MediaWiki:Smw_allows_pattern", patterns, "Update facts patterns");
+		
+		for(var p:SProperty.getAll()) {
+			make(run.getWiki(), "Property:"+p.getName(), MakeProperty.template(p));
+		}
+	}
+
 	private void handleConcept(SConcept c) {
 		try {
 			make(run.getWiki(), "Template:Facts/"+c.getName(), MakeTemplate.template(c));
@@ -62,16 +83,28 @@ public class FactsHelper extends SimpleBot {
 
 	@Override
 	public String getDescription() {
-		return
-			"""
-			This bot automatically creates the following for each for defined in [[User:Bot Facts Helper/Config|here]]:
-			* '''Template:Facts/...:''' to specify facts of the given kind.
-			* '''Template:Facts/.../Input:''' a template showing an input to easily create a new entity
-			* '''Template:Facts/.../Ask:''' to easily call a template for each entity of the type.
-			* '''Template:Facts/.../Show:''' to easily call a template with the properties of a single entity the type.
-			* '''Form:...:''' a form to edit entities of this type automatically.
-			* '''Category:Facts about ...:''' the category that organizes the facts.
-			""";
+		var sb = new StringBuilder();
+		sb.append("This bot is the ruling automaton in charge of the facts system.")
+			.append("It creates most pages in the Property namespace:");
+		for(var p:SProperty.getAll()) {
+			sb.append("\n* [[Property:$p]]".replace("$p", p.getName()));
+		}
+		sb.append("\nIt creates the following facts related pages:");
+		for(var c:SModel.CONCEPTS) {
+			sb.append("\n")
+			.append(
+				"""
+				* for $cs
+				** '''[[:Template:Facts/$c]]:''' to specify facts of the given kind.
+				** '''[[:Template:Facts/$c/Input]]:''' a template showing an input to easily create a new entity
+				** '''[[:Template:Facts/$c/Ask]]:''' to easily call a template for each entity of the type.
+				** '''[[:Template:Facts/$c/Show]]:''' to easily call a template with the properties of a single entity the type.
+				** '''[[:Form:$c]]:''' a form to edit entities of this type in an approachable way.
+				** '''[[:Category:Facts about $cs]]:''' the category that organizes the facts.
+				""".replace("$cs", c.getPluralName()).replace("$c", c.getName())
+			);
+		}
+		return sb.toString();
 	}
 		
 }

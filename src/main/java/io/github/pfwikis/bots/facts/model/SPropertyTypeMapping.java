@@ -1,9 +1,5 @@
 package io.github.pfwikis.bots.facts.model;
 
-import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAccessor;
-
-import io.github.pfwikis.bots.common.model.SemanticSubject.PageRef;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
