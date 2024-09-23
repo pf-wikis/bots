@@ -70,11 +70,18 @@ public class Query<T> {
 		};
 	};
 	
-	public static final Query<PageQuery> PROP_CATEGORIES = new Query<>(
+	public static final Query<PageQuery> PROP_CATEGORIES = new Query.WithContinue<>(
 		PageQuery.class,
 		"prop",
-		"categories"
-	);
+		"categories",
+		"clcontinue"
+	) {
+		@Override
+		public PageQuery mergeResults(PageQuery a, PageQuery b) {
+			a.getPages().addAll(b.getPages());
+			return a;
+		}
+	};
 			
 	public static final Query<QueryPageQuery> LIST_QUERY_PAGE = new Query.WithContinue<>(
 		QueryPageQuery.class, 

@@ -15,6 +15,7 @@ import com.beust.jcommander.Parameters;
 import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
+import io.github.pfwikis.bots.facts.SModel;
 import io.github.pfwikis.bots.utils.SimpleCache.CacheId;
 import lombok.extern.slf4j.Slf4j;
 
@@ -46,17 +47,19 @@ public class Replacer extends SimpleBot {
 				run.getWiki().delete(p, "Remove outdated page");
 		}*/
 		
-		var pages = run.getWiki().semanticAsk("[[Book type::Core]]");
+		var pages = run.getWiki().getPagesTranscluding("Template:Infobox");
 		for(var p:pages) {
 			
-			var txt = run.getWiki().getPageText(p.getPage());
+			var txt = run.getWiki().getPageText(p.getTitle());
 			
-			var ntxt = txt.replaceAll("(\\| *Book type *= *)[^\\|\n]*", "$1"+"Sourcebook");
+			var ntxt = txt.replaceAll("Infobox *\\| *("
+					+Arrays.stream(SModel.CONCEPTS).map(c->c.getName()).collect(Collectors.joining("|"))
+					+")", "Infobox");
 			if(!ntxt.equals(txt)) {
 				run.getWiki().edit(
-					p.getPage(),
+					p.getTitle(),
 					ntxt,
-					"Core books are now considered sourcebooks"
+					"Simplify infobox usage"
 				);
 			}
 		}
