@@ -1,5 +1,0 @@
-@args(String propertyName, String displayTest, RockerBody content)
-@if(displayTest!=null){@{@{#if:@displayTest|}
-<div class="facts-display-key">[[@propertyName::@@@@@@]]</div>
-<div class="facts-display-value">@content</div>
-@if(displayTest!=null){@}@}}

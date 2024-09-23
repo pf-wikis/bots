@@ -1,0 +1,20 @@
+@import io.github.pfwikis.bots.facts.model.SConcept
+
+@args(SConcept c)
+
+<noinclude>{{Bot created|Bot Facts Master}}[[Category:Synced to starfinderwiki]]</noinclude>
+
+{{#if:{{{1|}}}|
+	{{#formredlink:
+		target=Facts:{{{1|}}}
+		|form=@c.getName()
+		|link text=Create @c.getName() Facts
+	}}
+|
+	You can edit or create facts about a new @c.getName() by entering its name here:
+	{{#forminput:form=@c.getName()
+		|autocomplete on category=Facts about @c.getPluralName()
+		|query string=namespace=Facts
+		|button text=Create/Edit @c.getName() Facts
+	}}
+}}

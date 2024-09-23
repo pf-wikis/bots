@@ -1,8 +1,0 @@
-@import io.github.pfwikis.bots.facts.model.SDIConcept
-
-@args(String name, String pluralName, SDIConcept conept)
-{{#default_form:@name}}
-
-@if(!name.contains("/")){{{Facts/@name/Input}}}
-[[Category:Facts|@pluralName]]
-[[Category:Synced to starfinderwiki]]

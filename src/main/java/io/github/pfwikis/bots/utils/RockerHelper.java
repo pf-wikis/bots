@@ -9,8 +9,16 @@ public class RockerHelper {
 		var txt = template.render().toString();
 		var trimmed = txt.strip()
 				.replaceAll("(?m)^\t+", "")
-				.replaceAll("\n", "")
-				.replaceAll("  +", " ");
+				.replace("\n", "")
+				.replaceAll("  +", " ")
+				.replace("§§§n§§§", "\n");
 		wiki.editIfChange(page, trimmed, "Automatic regeneration of template");
+	}
+	
+	/**
+	 * @return a rocker linebreak that will not be removed by make
+	 */
+	public static String n() {
+		return "§§§n§§§";
 	}
 }

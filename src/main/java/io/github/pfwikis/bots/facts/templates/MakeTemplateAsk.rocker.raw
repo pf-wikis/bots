@@ -1,16 +1,13 @@
-@import io.github.pfwikis.bots.facts.model.SDIConcept
+@import io.github.pfwikis.bots.facts.model.SConcept
 
-@args(String name, SDIConcept form)
+@args(String name, SConcept c)
 
 <includeonly>{{#ask: [[Fact type::Template:Facts/@name]]{{{query|}}}
-	@for(prop:form.getProperties()) {
-		|?@prop.getName()@?prop.getFactDisplayFormat()=@prop.getName()
+	@for(prop:c.getProperties()) {
+		|?@prop.getName()@?prop.wikitextToQuery()=@prop.getName()
 	}
-	@for(prop:form.getGeneratedProperties()) {
-		|?@prop.getName()@?prop.getFactDisplayFormat()=@prop.getName()
-	}
-	@if(form.containsProperty("Author")) {
-		|?Author all=Author all
+	@for(prop:c.getGeneratedProperties()) {
+		|?@prop.getName()@?prop.wikitextToQuery()=@prop.getName()
 	}
 	|limit={{{limit|1000}}}
 	|introtemplate={{{introtemplate|}}}
@@ -26,9 +23,9 @@
 	|searchlabel=
 	|default={{{default|}}}
 }}</includeonly><noinclude>
-{{Bot created|Bot Facts Helper}}
+{{Bot created|Bot Facts Master}}
 This template allows you to call another template with all the fact properties of a page.
-It then provides all the properties as named parameters and the page it was called on as.
+It then provides all its properties as named parameters and the page it was called on as @*space*@
 <code><nowiki>{{{#userparam}}}</nowiki></code>.
 
 <templatedata>

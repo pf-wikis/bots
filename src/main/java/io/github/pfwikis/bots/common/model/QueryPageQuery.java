@@ -5,7 +5,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.github.pfwikis.bots.common.Wiki;
-import io.github.pfwikis.bots.common.model.SemanticSubject.PageRef;
+import io.github.pfwikis.bots.common.model.subject.PageRef;
 import lombok.Data;
 
 @Datapublic class QueryPageQuery {

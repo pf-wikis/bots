@@ -27,6 +27,7 @@ public abstract class Bot<RUN extends Run> {
 	protected String discordToken;
 	@Parameter(names = "--localMode")
 	protected boolean localMode;
+	public static boolean globalLocalMode;
 
 	protected RUN run;
 	protected Discord discord;
@@ -39,6 +40,11 @@ public abstract class Bot<RUN extends Run> {
 	
 	public String getBotPassword() {
 		return rootPassword+botName;
+	}
+	
+	public void setLocalMode(boolean v) {
+		this.localMode=v;
+		Bot.globalLocalMode|=v;
 	}
 
 	public synchronized void reportException(Exception e) {

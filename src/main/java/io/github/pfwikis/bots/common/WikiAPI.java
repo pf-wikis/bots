@@ -1,6 +1,7 @@
 package io.github.pfwikis.bots.common;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
@@ -30,6 +31,7 @@ import io.github.fastily.jwiki.core.NS;
 import io.github.fastily.jwiki.dwrap.Revision;
 import io.github.pfwikis.bots.common.api.MWApi;
 import io.github.pfwikis.bots.common.api.MWApiCache;
+import io.github.pfwikis.bots.common.bots.Bot;
 import io.github.pfwikis.bots.common.model.AllusersQuery.WUser;
 import io.github.pfwikis.bots.common.model.LogEventsQuery.LogEvent;
 import io.github.pfwikis.bots.common.model.Page;
@@ -39,9 +41,10 @@ import io.github.pfwikis.bots.common.model.QueryResponse;
 import io.github.pfwikis.bots.common.model.RecentChanges.RecentChange;
 import io.github.pfwikis.bots.common.model.SemanticAsk;
 import io.github.pfwikis.bots.common.model.SemanticAsk.Result;
-import io.github.pfwikis.bots.common.model.SemanticSubject;
-import io.github.pfwikis.bots.common.model.SemanticSubject.PageRef;
+import io.github.pfwikis.bots.common.model.subject.PageRef;
+import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
 import io.github.pfwikis.bots.utils.Jackson;
+import io.github.pfwikis.bots.utils.SimpleCache.CacheId;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -96,7 +99,18 @@ public class WikiAPI {
 	public boolean editIfChange(String page, String content, String reason) {
 		content = content.trim();
 		var oldText = wiki.getPageText(page);
-		if(!content.equals(oldText)) {
+
+		if(Bot.globalLocalMode && !content.equals(oldText)) {
+			try {
+				var diffOld = oldText.replaceAll("((?=\\[\\[)|<div|\\{\\{#if)", "\n$1");
+				Files.writeString(Path.of("debug/old.html"), diffOld);
+				Files.writeString(Path.of("debug/newForTesting.html"), content);
+				var diffNew = content.replaceAll("((?=\\[\\[)|<div|\\{\\{#if)", "\n$1");
+				Files.writeString(Path.of("debug/new.html"), diffNew);
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+			
 			edit(page, content, reason);
 			return true;
 		}
@@ -230,7 +244,11 @@ public class WikiAPI {
 	}
 	
 	public boolean pageExists(String title) {
-		return server.cache("pageExists", title, ()->wiki.exists(title));
+		return server.cache(CacheId.PAGE_EXISTS, title, ()->wiki.exists(title));
+	}
+	
+	public void precacheExistence(List<String> existingPages) {
+		existingPages.forEach(p->server.storeInCache(CacheId.PAGE_EXISTS, p, Boolean.TRUE));
 	}
 	
 	public boolean pageExists(PageRef page) {
@@ -317,7 +335,7 @@ public class WikiAPI {
 	}
 	
 	public String getDisplayTitle(String page) {
-		return server.cache("getDisplayTitle", page, () -> {
+		return server.cache(CacheId.DISPLAY_TITLE, page, () -> {
 			var results = query(
 					Query.DISPLAY_TITLE,
 					"titles", page,
@@ -470,21 +488,23 @@ public class WikiAPI {
 	}
 
 	public String resolveRedirects(String page) {
-		return server.cache("resolveRedirects", page, ()->wiki.resolveRedirect(page));
+		return server.cache(CacheId.RESOLVED_REDIRECT, page, ()->wiki.resolveRedirect(page));
 	}
 
 	public void undelete(String page, String reason) {
 		wiki.undelete(page, reason);
 	}
 
-	public SemanticSubject.Container semanticSubject(String page) {
+	public SemanticSubject semanticSubject(String page) {
 		var ns = wiki.whichNS(page).v;
 		var title = wiki.nss(page);
 		try {
-			return this.get(SemanticSubject.Container.class, "smwbrowse",
+			var result = this.get(SemanticSubject.Container.class, "smwbrowse",
 				"browse", "subject",
 				"params", Jackson.JSON.writeValueAsString(Map.of("ns", ns, "subject", title))
 			);
+			
+			return result.postProcess();
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
 		}

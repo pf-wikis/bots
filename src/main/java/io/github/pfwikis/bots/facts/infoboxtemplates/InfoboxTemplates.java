@@ -1,4 +1,4 @@
-package io.github.pfwikis.bots.infoboxtemplates;
+package io.github.pfwikis.bots.facts.infoboxtemplates;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,8 +10,8 @@ import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.RunOnPageBot;
 import io.github.pfwikis.bots.common.bots.ScatteredRunnableBot;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
-import io.github.pfwikis.bots.facts.SDIModel;
-import io.github.pfwikis.bots.facts.model.SDIProperty;
+import io.github.pfwikis.bots.common.model.Page;
+import io.github.pfwikis.bots.facts.SModel;
 import io.github.pfwikis.bots.utils.RockerHelper;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,19 +31,22 @@ public class InfoboxTemplates extends SimpleBot implements RunOnPageBot, Scatter
 			runOnPage(ctx.getPage());
 		}
 		else {
-			var pages = run.getWiki().getPagesInNamespace("Facts");
-			for(var p:pages) {
-				runOnPage(p.getTitle());
+			run.getWiki().precacheExistence(run.getWiki()
+				.getPagesInNamespace("File")
+				.stream()
+				.map(Page::getTitle)
+				.toList()
+			);
+			for(var s:createScatterShards()) {
+				runOnPage(s.page);
 			}
 		}
 	}
 
 	private void runOnPage(String page) {
-		var properties = SDIProperty.load(run);
+		var subject = run.getWiki().semanticSubject(page);
 		
-		var subject = run.getWiki().semanticSubject(page).getQuery();
-		var concepts = Arrays.stream(SDIModel.CONCEPTS)
-			.map(c->c.resolve(properties))
+		var concepts = Arrays.stream(SModel.CONCEPTS)
 			.filter(c->c.getInfoboxProperties()!=null && !c.getInfoboxProperties().isEmpty())
 			.filter(subject::hasConcept)
 			.toList();

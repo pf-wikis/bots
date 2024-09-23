@@ -5,67 +5,34 @@ import java.util.List;
 
 import com.google.common.collect.MoreCollectors;
 
-import io.github.pfwikis.bots.common.model.SemanticSubject.Property;
-import io.github.pfwikis.bots.facts.model.SDIProperty;
-import io.github.pfwikis.bots.facts.model.SDIPropertyTypeMapping;
+import io.github.pfwikis.bots.common.model.subject.SemanticSubject.Property;
+import io.github.pfwikis.bots.facts.model.SProperty;
 
 public interface SemanticObject {
 	
 	List<Property> getData();
 	
-	default boolean has(String prop) {
-		return getData().stream().anyMatch(p->p.getProperty().equals(prop.replace(" ", "_")));
+	default boolean has(SProperty<?> prop) {
+		return getData().stream().anyMatch(p->p.getProperty().equals(prop.getName().replace(" ", "_")));
 	}
 	
-	default boolean has(SDIPropertyTypeMapping<?> prop) {
-		return has(prop.getProperty());
+	default <T> T get(SProperty<T> prop) {
+		var result = getOr(prop, null);
+		if(result == null)
+			throw new IllegalStateException(prop.getName()+ " has no value");
+		return result;
 	}
 	
-	default boolean has(SDIProperty prop) {
-		return has(prop.getName());
-	}
-	
-	@SuppressWarnings("unchecked")
-	default <T> List<T> getAll(String prop) {
-		return (List<T>) getData().stream()
-			.filter(p->p.getProperty().equals(prop.replace(" ", "_")))
-			.collect(MoreCollectors.toOptional())
-			.map(op->op.getDataitem())
-			.orElse(Collections.emptyList());
-	}
-	
-	default <T> List<T> getAll(SDIPropertyTypeMapping<T> prop) {
-		return getAll(prop.getProperty());
-	}
-	
-	default <T> List<T> getAll(SDIProperty prop) {
-		return getAll(prop.getName());
-	}
-	
-	default <T> T get(String prop) {
-		var values = getAll(prop);
-		if(values.size()==1) {
-			return (T) values.getFirst();
-		}
-		else {
-			throw new IllegalStateException("Property "+prop+" has "+values.size()+" values");
-		}
-	}
-	
-	default <T> T get(SDIPropertyTypeMapping<T> prop) {
-		return get(prop.getProperty());
-	}
-	
-	default <T> T getOr(SDIPropertyTypeMapping<T> prop, T defaultValue) {
-		var values = getAll(prop);
+	default <T> T getOr(SProperty<T> prop, T defaultValue) {
+		var values = getData().stream()
+				.filter(p->p.getProperty().equals(prop.getName().replace(" ", "_")))
+				.collect(MoreCollectors.toOptional())
+				.map(op->op.getDataitem())
+				.orElse(Collections.emptyList());
+		
 		if(values.size()==0) {
 			return defaultValue;
 		}
-		else if(values.size()==1) {
-			return (T) values.getFirst();
-		}
-		else {
-			throw new IllegalStateException("Property "+prop.getProperty()+" has "+values.size()+" values");
-		}
+		return prop.getFactType().convertToJava(values);
 	}
 }

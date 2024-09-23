@@ -1,4 +1,8 @@
-package io.github.pfwikis.bots.citetemplates;
+package io.github.pfwikis.bots.facts.citetemplates;
+
+import static io.github.pfwikis.bots.facts.SFactsProperties.Artist;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Name;
+import static io.github.pfwikis.bots.facts.SFactsProperties.On_page;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,7 +20,8 @@ import com.google.common.collect.Range;
 import com.google.common.collect.TreeRangeMap;
 
 import io.github.pfwikis.bots.common.WikiAPI;
-import io.github.pfwikis.bots.utils.MWJsonHelper;
+import io.github.pfwikis.bots.common.model.subject.PageRef;
+import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,19 +35,12 @@ import lombok.Setter;
 @Builder
 public class BookDef implements BookPart {
 	private String factsPage;
-	private String name;
-	private String representedByPage;
+	private SemanticSubject subject;
 	@Builder.Default
-	private List<String> authors = new ArrayList<>();
-	@Builder.Default
-	private List<String> artists = new ArrayList<>();
+	private List<PageRef> authors = new ArrayList<>();
 	@Builder.Default
 	private List<SectionDef> sections = new ArrayList<>();
-	@Builder.Default
-	private List<String> publisher = new ArrayList<>();
 	private Integer releaseYear;
-	private String fullTitle;
-	private String isbn;
 	
 	private Map<String, List<Range<Integer>>> makeRanges(Function<BookPart, String> makeValue) {
 		var bookValue = makeValue.apply(this);
@@ -50,7 +48,7 @@ public class BookDef implements BookPart {
 		ranges.put(Range.<Integer>all(), makeValue.apply(this));
 		for(var sect:sections) {
 			var sectValue = makeValue.apply(sect);
-			var page = MWJsonHelper.tryParseInt(sect.getPage());
+			var page = sect.tryParsePage();
 			if(sectValue == null || sectValue.equals(bookValue) || page == null) continue;
 			if(sect.getEndPage() != null)
 				ranges.put(Range.closed(page, sect.getEndPage()).canonical(DiscreteDomain.integers()), sectValue);
@@ -62,7 +60,7 @@ public class BookDef implements BookPart {
 			var sectValue = makeValue.apply(sect);
 			for(var subSect:sect.getSubSections()) {
 				var subSectValue = makeValue.apply(subSect);
-				var page = MWJsonHelper.tryParseInt(subSect.getPage());
+				var page = subSect.tryParsePage();
 				if(subSectValue == null || subSectValue.equals(bookValue) || subSectValue.equals(sectValue) || page == null) continue;
 				if(subSect.getEndPage() != null)
 					ranges.put(Range.closed(page, subSect.getEndPage()).canonical(DiscreteDomain.integers()), subSectValue);
@@ -99,7 +97,7 @@ public class BookDef implements BookPart {
 	public String makeAuthors(WikiAPI wiki) {
 		var result = formatAuthors(wiki, getAuthors());
 		if(result == null)
-			result = formatAuthors(wiki, getArtists());
+			result = formatAuthors(wiki, getOr(Artist, null));
 		if(result == null)
 			return "Unknown author";
 		return result;
@@ -107,7 +105,7 @@ public class BookDef implements BookPart {
 	
 	public Map<String, List<Range<Integer>>> makeArticlePageRanges() {
 		return makeRanges(bp-> {
-			if(bp instanceof SectionDef sec) return sec.getName();
+			if(bp instanceof SectionDef sec) return sec.get(Name);
 			return ""; 
 		});
 	}
@@ -118,7 +116,7 @@ public class BookDef implements BookPart {
 	
 	public Map<String, String> makeArticleSpecialCases() {
 		return makeSpecialCases(bp-> {
-			if(bp instanceof SectionDef sec) return sec.getName();
+			if(bp instanceof SectionDef sec) return sec.get(Name);
 			return ""; 
 		});
 	}
@@ -127,13 +125,13 @@ public class BookDef implements BookPart {
 		var bookValue = makeValue.apply(this);
 		var res = new HashMap<String, String>();
 		for(var sect : sections) {
-			if(sect.getPage()!=null && MWJsonHelper.tryParseInt(sect.getPage())==null && !bookValue.equals(makeValue.apply(sect))) {
-				res.put(sect.getPage(), makeValue.apply(sect));
+			if(sect.has(On_page) && sect.tryParsePage()==null && !bookValue.equals(makeValue.apply(sect))) {
+				res.put(sect.get(On_page), makeValue.apply(sect));
 			}
 			
 			for(var subSect : sect.getSubSections()) {
-				if(subSect.getPage()!=null && MWJsonHelper.tryParseInt(subSect.getPage())==null && !bookValue.equals(makeValue.apply(subSect))) {
-					res.put(subSect.getPage(), makeValue.apply(subSect));
+				if(subSect.has(On_page) && subSect.tryParsePage()==null && !bookValue.equals(makeValue.apply(subSect))) {
+					res.put(subSect.get(On_page), makeValue.apply(subSect));
 				}
 			}
 		}
@@ -146,11 +144,9 @@ public class BookDef implements BookPart {
 	@AllArgsConstructor
 	public static class SectionDef implements BookPart {
 		private BookPart parent;
-		private String name;
-		private String page;
-		private String toPage;
+		private SemanticSubject subject;
 		private Integer endPage;
-		private List<String> authors = new ArrayList<>();
+		private List<PageRef> authors = new ArrayList<>();
 		private boolean isSubsection;
 		private List<SectionDef> subSections = new ArrayList<>();
 		

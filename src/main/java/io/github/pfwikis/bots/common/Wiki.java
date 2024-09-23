@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import io.github.pfwikis.bots.utils.SimpleCache;
+import io.github.pfwikis.bots.utils.SimpleCache.CacheId;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -40,7 +41,11 @@ public enum Wiki {
 	private final SimpleCache<Object> cache = new SimpleCache<>(Duration.ofDays(1));
 	
 	@SuppressWarnings("unchecked")
-	public synchronized <T> T cache(String cacheId, String key, Callable<T> calc) {
+	public synchronized <T> T cache(CacheId cacheId, String key, Callable<T> calc) {
 		return (T)cache.cache(cacheId, key, calc);
+	}
+	
+	public synchronized void storeInCache(CacheId cacheId, String key, Object value) {
+		cache.store(cacheId, key, value);
 	}
 }

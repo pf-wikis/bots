@@ -1,0 +1,65 @@
+@import io.github.pfwikis.bots.facts.model.SConcept
+@import io.github.pfwikis.bots.facts.util.ConceptUtil
+
+@args(SConcept c)
+<noinclude>
+{{Bot created|Bot Facts Master}}
+{{#template_params:
+	@for((i,prop):c.getProperties()) {
+		@if(!i.first()){|}@prop.getName() (property=@prop.getName())
+	}
+}}
+[[Category:Facts templates]]
+</noinclude><includeonly><div class="facts">
+{{#ifexist:Template:Cite/{{PAGENAME}}|
+	<div class="citethis">
+		You can cite this entity by using {{tl|Ref|{{PAGENAME}}}} or {{tl|Cite/{{PAGENAME}}}}.
+	</div>
+}}
+{{#ifexist:Template:Facts/Infoboxes/{{FULLPAGENAME}}|
+	<div class="citethis">
+		The infobox for this entity can be used via {{tl|Infobox|@c.getName()|{{PAGENAME}}}} or just {{tl|Infobox|@c.getName()}} on the page <code>{{PAGENAME}}</code>.
+	</div>
+}}
+
+@if(!c.getSubConcepts().isEmpty()) {
+	<div class="facts-display-header">
+		<div class="facts-display-header-item">General @c.getName() Facts</div>
+		@for(sub:c.getSubConcepts()) {
+			<div class="facts-display-header-item">{{#formredlink:target=Facts:{{PAGENAME}}/@sub.getPluralName()|form=@c.getName()/@sub.getName()|link text=Create @sub.getPluralName()|existing page link text=@sub.getPluralName()}}</div>
+		}
+	</div>
+}
+<div class="facts-display facts-display-@ConceptUtil.cssName(c)">
+	@for(prop:c.getProperties()) {
+		@DisplayTemplateField.template(prop) -> {
+			@prop.wikitextToDisplayFact()
+			@prop.wikitextBeforeStoringFact()
+			{{#set:@prop.getName()=@prop.wikitextToStoreFact()}}
+		}
+	}
+</div>
+
+<h3>Automatic properties</h3>
+<div class="facts-display facts-display-@ConceptUtil.cssName(c)">
+@for(gen:c.getGeneratedProperties()) {
+	@DisplayTemplateField.template(gen) -> {
+		@gen.wikitextToDisplayFact()
+		@gen.wikitextBeforeStoringFact()
+		{{#set:@gen.getName()=@gen.wikitextToStoreFact()}}
+	}
+}
+</div>
+<div class="facts-subforms">
+	@for(sub:c.getSubConcepts()) {
+		@*The counter just reset the counter before listing the subelements so their order can be preserved.*@
+		{{#counter: @sub.getName()-counter|set=0}}
+		
+		@*This link can not go into a #ifexists, otherwise new entries are not propagated correctly.*@
+		{{{{FULLPAGENAME}}/@sub.getPluralName()}}
+	}
+</div>
+
+</div>
+[[Category:Facts about @c.getPluralName()]]
+</includeonly>

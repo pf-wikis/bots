@@ -24,8 +24,8 @@ import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.ScatteredRunnableBot;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.facts.master.PropertyStatistics;
+import io.github.pfwikis.bots.facts.templates.FactsTemplates;
 import io.github.pfwikis.bots.healthcheck.HealthCheck;
-import io.github.pfwikis.bots.infoboxtemplates.InfoboxTemplates;
 import io.github.pfwikis.bots.maintenance.Maintenance;
 import io.github.pfwikis.bots.meta.Meta;
 import io.github.pfwikis.bots.newsfeedreader.NewsFeedReader;
@@ -67,8 +67,8 @@ public class Scheduler {
 			schedule(new HealthCheck(discord), Duration.ofHours(24));
 			for(var wiki : Wiki.values()) {
 				scheduleOnce(scheduleableBot(wiki, discord, new Meta()));
+				scheduleOnce(scheduleableBot(wiki, discord, new FactsTemplates()));
 				planScatter(wiki, discord, new PropertyStatistics(), Duration.ofHours(24), Duration.ofDays(1));
-				//planScatter(wiki, discord, new InfoboxTemplates(), Duration.ofHours(24), null);
 				
 				schedule(
 					new RCWatcher(this, discord, wiki),

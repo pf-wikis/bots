@@ -1,0 +1,8 @@
+@import io.github.pfwikis.bots.facts.model.SConcept
+
+@args(String name, String pluralName, SConcept cocnept)
+{{Bot created|Bot Facts Master}}
+{{#default_form:@name}}
+
+@if(!name.contains("/")){{{Facts/@name/Input}}}
+[[Category:Facts|@pluralName]]

@@ -1,0 +1,153 @@
+@import static io.github.pfwikis.bots.facts.SFactsProperties.*
+@import static org.apache.commons.lang3.StringUtils.startsWith
+@import java.util.Set
+@import java.util.List
+@import io.github.pfwikis.bots.common.model.subject.SemanticSubject
+@import io.github.pfwikis.bots.facts.model.SConcept
+@import io.github.pfwikis.bots.common.bots.Run.SingleRun
+@import static java.util.Comparator.*
+@import java.time.LocalDate
+@import io.github.pfwikis.bots.utils.TemporalComparator
+@import io.github.pfwikis.bots.facts.util.ConceptUtil
+@import io.github.pfwikis.bots.facts.model.SInfoboxProperty
+@import io.github.pfwikis.bots.facts.SFactsProperties
+@import io.github.pfwikis.bots.facts.model.SProperty
+
+@args(SingleRun run, List<SConcept> concepts, SemanticSubject page)
+<noinclude>
+{{Bot created|Bot Infobox Templates|This template is automatically created from [[Created from::@page.getSubject().toFullTitle()]].}}
+This template stores an infobox automatically created from [[@page.getSubject().toFullTitle()]]. It is not meant to be used directly. Instead
+use {{tl|Infobox|@concepts.getFirst().getName()}} or {{tl|Infobox|@concepts.getFirst().getName()|@page.getSubject().toFullTitle()}}.
+This template also add many categories based on the facts to each page it is used in.
+</noinclude>
+@for(SConcept concept:concepts) {
+	<div class="infobox @ConceptUtil.cssName(concept)">
+		<div class="name">
+			@if(page.has(Full_title)) {
+				@page.get(Full_title)
+			}
+			else {
+				@page.get(Name)
+			}
+		</div>
+		@if(page.has(Image)) {
+			@with(boolean imageExists = run.getWiki().pageExists(page.get(Image))) {
+				@*to create a wanted image and react to uploaded files*@
+				@if(!imageExists) {@{@{#ifexist:File:@page.get(Image).getTitle()|}
+				<div class="image">[[File:@page.get(Image).getTitle()|250px|Cover Image|class=not-lazy]]</div>
+				@if(!imageExists)  {@}@}}
+			}
+		}
+		@if(page.has(Website)) {
+			<div class="website">
+				[@page.get(Website) @page.getOr(Pubcode, "Publisher's product page")]
+			</div>
+		}
+		<div class="type">
+			@concept.getName() @*<-important space*@
+			@with(type = SFactsProperties.get(concept.getName()+" type")) {
+				@if(page.has(type)) {
+					- @((String)page.get(type))
+				}
+			}
+		</div>
+		<div class="table">
+			@for(SInfoboxProperty<?> ibProp:concept.getInfoboxProperties()) {
+				@if(ibProp.isPresentIn(page)) {
+					<div class="key">
+						@ibProp.toInfoboxLabel(page)
+					</div>
+					<div>
+						@ibProp.toInfoboxDisplay(run.getWiki(), page)
+					</div>
+				}
+			}
+	
+			@*releases*@
+			@with?(SConcept releaseConcept = concept.getSubConcept("Release")) {
+			@with(releases = page.getSubObjects("Facts/"+concept.getName()+"/Release")
+				.stream()
+				.sorted(
+					comparing((SemanticSubject r)->r.getOr(Release_date, LocalDate.MAX), nullsLast(TemporalComparator.INSTANCE))
+					.thenComparing(comparing(r->r.getOr(Release_type, "ZZZZZZZZZZ"), nullsLast(naturalOrder()))))
+				.toList()) {
+			@if(!releases.isEmpty()) {
+				<div class="infobox-book-releases">
+					<div class="infobox-book-releases-title">Releases</div>
+					@for(release:releases) {
+						<div class="name">
+							@?release.getOr(Release_type, null)
+							@if(release.has(Release_note)) {
+								&nbsp;(@release.get(Release_note))
+							}
+						</div>
+						<div class="table">
+							@for(ibProp:releaseConcept.getInfoboxProperties()) {
+								@if(
+									!ibProp.getProperty().equals(Release_type)
+									&& !ibProp.getProperty().equals(Release_note)
+									&& ibProp.isPresentIn(release)
+								) {
+									<div class="key">@ibProp.toInfoboxLabel(release)</div>
+									<div>@ibProp.toInfoboxDisplay(run.getWiki(), release)</div>
+								}
+							}
+						</div>
+					}
+				</div>
+			}}}
+			@if(page.has(Gallery_page)) {
+				<div class="full-width works-by">
+					[[:@page.get(Gallery_page).toFullTitle()|Artwork from this book]]
+				</div>
+			}
+		</div>
+		<div class="infobox-links">
+			<div class="infobox-link plainlinks fa">
+				[[@page.getSubject().toFullTitle()|]]
+			</div>
+		</div>
+	</div>
+	
+	<includeonly>
+	@*Categories based on the properties.*@
+	@if(concept.containsProperty(Errata) && page.has(Errata)) {
+		[[Category:Products with errata]]
+	}
+	@if(concept.containsProperty(Web_enhancement) && page.has(Web_enhancement)) {
+		[[Category:Products with web enhancements]]
+	}
+	@if(concept.containsProperty(Author_all) && page.has(Author_all)) {
+		@for(author:page.get(Author_all)) {
+			[[Category:Works by @run.getWiki().getDisplayTitle(author.toFullTitle())]]
+		}
+	}
+	else if(concept.containsProperty(Author) && page.has(Author)) {
+		@for(author:page.get(Author)) {
+			[[Category:Works by @run.getWiki().getDisplayTitle(author.toFullTitle())]]
+		}
+	}
+	@if(concept.containsProperty(Artist) && page.has(Artist)) {
+		@for(author:page.get(Artist)) {
+			[[Category:Artwork by @run.getWiki().getDisplayTitle(author.toFullTitle())]]
+		}
+	}
+	@if(concept.containsProperty(Director) && page.has(Director)) {
+		@for(author:page.get(Director)) {
+			[[Category:Works by @run.getWiki().getDisplayTitle(author.toFullTitle())]]
+		}
+	}
+	@if(concept.containsProperty(Performer) && page.has(Performer)) {
+		@for(author:page.get(Performer)) {
+			[[Category:Works starring @run.getWiki().getDisplayTitle(author.toFullTitle())]]
+		}
+	}
+	@if(concept.containsProperty(Narrator) && page.has(Narrator)) {
+		@for(author:page.get(Narrator)) {
+			[[Category:Works starring @run.getWiki().getDisplayTitle(author.toFullTitle())]]
+		}
+	}
+	
+	@concept.conceptSpecificCategories(run, page)
+	</includeonly>
+}

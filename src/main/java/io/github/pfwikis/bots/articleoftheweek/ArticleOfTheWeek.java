@@ -68,12 +68,12 @@ public class ArticleOfTheWeek extends SimpleBot {
 
 	private static Pattern FEATURED_PATTERN = Pattern.compile("\\| *featured *[\\}\\|]");
 	private void addBadge(Candidate article) {
-		var wikiText = run.getWiki().getPageText(article.getTitle());
+		var wikitext = run.getWiki().getPageText(article.getTitle());
 		
-		if(!FEATURED_PATTERN.matcher(wikiText.toLowerCase()).find()) {
+		if(!FEATURED_PATTERN.matcher(wikitext.toLowerCase()).find()) {
 			log.info("Did not find badge");
-			var newText = wikiText.replaceAll("(\\{\\{\\s*Badges\\s*\\|)", "$1featured|");
-			if(newText.equals(wikiText)) {
+			var newText = wikitext.replaceAll("(\\{\\{\\s*Badges\\s*\\|)", "$1featured|");
+			if(newText.equals(wikitext)) {
 				newText = "{{Badges|featured}}"+newText;
 			}
 			run.getWiki().editIfChange(article.getTitle(), newText, "Add featured badge.");
