@@ -101,7 +101,7 @@ public class Assistant extends SimpleBot {
 					run.getWiki().edit(p.getTitle(), txt, "Replace image with new version");
 				}
 			}
-			run.getWiki().delete(oldFile, "Replaced with "+name);
+			run.getWiki().delete(oldFile, "Replaced with [[:"+name+"]]");
 			discord.report(
 				this,
 				"I replaced "
