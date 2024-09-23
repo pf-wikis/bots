@@ -17,8 +17,8 @@
 <noinclude>
 {{Bot created|Bot Infobox Templates|This template is automatically created from [[Created from::@page.getSubject().toFullTitle()]].}}
 This template stores an infobox automatically created from [[@page.getSubject().toFullTitle()]]. It is not meant to be used directly. Instead
-use {{tl|Infobox|@concepts.getFirst().getName()}} or {{tl|Infobox|@concepts.getFirst().getName()|@page.getSubject().toFullTitle()}}.
-This template also add many categories based on the facts to each page it is used in.
+ use {{tl|Infobox|@concepts.getFirst().getName()}} or {{tl|Infobox|@concepts.getFirst().getName()|@page.getSubject().toFullTitle()}}.
+This template also adds many categories based on the facts to each page it is used in.
 </noinclude>
 @for(SConcept concept:concepts) {
 	<div class="infobox @ConceptUtil.cssName(concept)">
