@@ -1,7 +1,9 @@
 package io.github.pfwikis.bots.replacer;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -12,7 +14,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.beust.jcommander.Parameters;
 
-import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.facts.SModel;
@@ -47,7 +48,9 @@ public class Replacer extends SimpleBot {
 				run.getWiki().delete(p, "Remove outdated page");
 		}*/
 		
-		var pages = run.getWiki().getPagesTranscluding("Template:Infobox");
+		var pages = new ArrayList<>(run.getWiki().getPagesTranscluding("Template:Infobox"));
+		int co = 0;
+		Collections.shuffle(pages);
 		for(var p:pages) {
 			
 			var txt = run.getWiki().getPageText(p.getTitle());
@@ -62,6 +65,7 @@ public class Replacer extends SimpleBot {
 					"Simplify infobox usage"
 				);
 			}
+			log.info("{}/{}",co++,pages.size());
 		}
 
 		

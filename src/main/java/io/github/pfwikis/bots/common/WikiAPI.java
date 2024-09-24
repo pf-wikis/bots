@@ -100,15 +100,17 @@ public class WikiAPI {
 		content = content.trim();
 		var oldText = wiki.getPageText(page);
 
-		if(Bot.globalLocalMode && !content.equals(oldText)) {
-			try {
-				var diffOld = oldText.replaceAll("((?=\\[\\[)|<div|\\{\\{#if)", "\n$1");
-				Files.writeString(Path.of("debug/old.html"), diffOld);
-				Files.writeString(Path.of("debug/newForTesting.html"), content);
-				var diffNew = content.replaceAll("((?=\\[\\[)|<div|\\{\\{#if)", "\n$1");
-				Files.writeString(Path.of("debug/new.html"), diffNew);
-			} catch(Exception e) {
-				e.printStackTrace();
+		if(!content.equals(oldText)) {
+			if(Bot.globalLocalMode) {
+				try {
+					var diffOld = oldText.replaceAll("((?=\\[\\[)|<div|\\{\\{#if)", "\n$1");
+					Files.writeString(Path.of("debug/old.html"), diffOld);
+					Files.writeString(Path.of("debug/newForTesting.html"), content);
+					var diffNew = content.replaceAll("((?=\\[\\[)|<div|\\{\\{#if)", "\n$1");
+					Files.writeString(Path.of("debug/new.html"), diffNew);
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
 			}
 			
 			edit(page, content, reason);
