@@ -42,7 +42,7 @@ public class HealthCheck extends Schedulable {
 		test("https://starfinderwiki.com", "starfinderwiki.com");
 	}
 	
-	private static Duration WARNING_PERIOD = Duration.ofDays(7);
+	private static Duration WARNING_PERIOD = Duration.ofDays(20);
 	
 	private void test(String url, String domain) {
 		int tryCount = 1;
