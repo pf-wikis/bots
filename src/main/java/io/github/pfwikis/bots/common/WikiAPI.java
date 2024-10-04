@@ -1,5 +1,6 @@
 package io.github.pfwikis.bots.common;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -103,6 +104,7 @@ public class WikiAPI {
 		if(!content.equals(oldText)) {
 			if(Bot.globalLocalMode) {
 				try {
+					new File("debug").mkdir();
 					var diffOld = oldText.replaceAll("((?=\\[\\[)|<div|\\{\\{#if)", "\n$1");
 					Files.writeString(Path.of("debug/old.html"), diffOld);
 					Files.writeString(Path.of("debug/newForTesting.html"), content);
