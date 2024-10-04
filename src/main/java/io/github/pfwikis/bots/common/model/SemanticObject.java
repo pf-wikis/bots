@@ -19,10 +19,12 @@ public interface SemanticObject {
 	default <T> T get(SProperty<T> prop) {
 		var result = getOr(prop, null);
 		if(result == null)
-			throw new IllegalStateException(prop.getName()+ " has no value");
+			throw new IllegalStateException(prop.getName()+ " has no value for "+internalName());
 		return result;
 	}
 	
+	String internalName();
+
 	default <T> T getOr(SProperty<T> prop, T defaultValue) {
 		var values = getData().stream()
 				.filter(p->p.getProperty().equals(prop.getName().replace(" ", "_")))

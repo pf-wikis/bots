@@ -17,6 +17,14 @@ public class StringHelper {
 		return solver.getLongestCommonSubstring().toString();
 	}
 	
+	public static String pageToTitle(String page) {
+		page = page.replace('_', ' ');
+		if(page.contains("(")) {
+			page = page.replaceFirst(" *\\(.*", "");
+		}
+		return page;
+	}
+	
 	public static String titleToPattern(String title, boolean ignoreFirstLetterCase) {
 		var prefix = "";
 		if(ignoreFirstLetterCase) {

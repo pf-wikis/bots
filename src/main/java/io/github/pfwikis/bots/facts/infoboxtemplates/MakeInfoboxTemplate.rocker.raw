@@ -12,6 +12,7 @@
 @import io.github.pfwikis.bots.facts.model.SInfoboxProperty
 @import io.github.pfwikis.bots.facts.SFactsProperties
 @import io.github.pfwikis.bots.facts.model.SProperty
+@import io.github.pfwikis.bots.utils.StringHelper
 
 @args(SingleRun run, List<SConcept> concepts, SemanticSubject page)
 <noinclude>
@@ -27,7 +28,7 @@ This template also adds many categories based on the facts to each page it is us
 				@page.get(Full_title)
 			}
 			else {
-				@page.get(Name)
+				@page.getOr(Name, StringHelper.pageToTitle(page.getSubject().getTitle()))
 			}
 		</div>
 		@if(page.has(Image)) {

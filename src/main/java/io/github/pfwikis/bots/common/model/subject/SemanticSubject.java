@@ -137,6 +137,11 @@ public class SemanticSubject implements SemanticObject, Comparable<SemanticSubje
 	public int compareTo(SemanticSubject o) {
 		return COMPARATOR.compare(this, o);
 	}
+
+	@Override
+	public String internalName() {
+		return subject.toFullTitle();
+	}
 	
 	
 }

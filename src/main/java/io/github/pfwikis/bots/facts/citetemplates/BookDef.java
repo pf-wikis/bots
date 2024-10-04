@@ -15,13 +15,16 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.fizzed.rocker.RockerContent;
 import com.google.common.collect.DiscreteDomain;
 import com.google.common.collect.Range;
 import com.google.common.collect.TreeRangeMap;
 
+import io.github.fastily.jwiki.core.WParser.WikiText;
 import io.github.pfwikis.bots.common.WikiAPI;
 import io.github.pfwikis.bots.common.model.subject.PageRef;
 import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
+import io.github.pfwikis.bots.utils.StringHelper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -156,5 +159,11 @@ public class BookDef implements BookPart {
 				return BookPart.super.makeAuthors(wiki);
 			return parent.makeAuthors(wiki);
 		}
+	}
+
+	public String getName() {
+		if(subject.has(Name))
+			return subject.get(Name);
+		return StringHelper.pageToTitle(subject.getSubject().getTitle());
 	}
 }

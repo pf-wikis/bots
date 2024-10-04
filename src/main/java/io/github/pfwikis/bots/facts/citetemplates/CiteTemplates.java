@@ -78,6 +78,10 @@ public class CiteTemplates extends SimpleBot implements RunOnPageBot, ScatteredR
 		"Facts/Video game");
 	private void runOnPage(String page) {
 		var subject = run.getWiki().semanticSubject(page);
+		if(!subject.has(Fact_type)) {
+			log.error("{} has no fact type", page);
+			return;
+		}
 		var type = subject.get(Fact_type);
 		
 		if(!TYPES_WITH_CITE.contains(type.getTitle())) return;
