@@ -70,6 +70,10 @@ public enum MWApiCache {
 				if(implMethod.getName().equals("edit") && result instanceof Boolean b && b==false) {
 					throw new IllegalStateException("Failed to edit");
 				}
+				//we want to retry on failed basicGETs
+				if(implMethod.getName().equals("basicGET") && result == null) {
+					throw new IllegalStateException("Failed to basicGET");
+				}
 				return result;
 			} catch(Exception e1) {
 				try {
