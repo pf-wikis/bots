@@ -1,5 +1,6 @@
 @import io.github.pfwikis.bots.common.WikiAPI
 @import static io.github.pfwikis.bots.facts.SFactsProperties.*
+@import static io.github.pfwikis.bots.utils.StringHelper.*
 
 @args(WikiAPI wiki, BookDef book)
 <includeonly>
@@ -12,7 +13,14 @@
 	</span>
 }
 @title => {
-	<span class="title">@if(book.has(Represented_by_page)){[[@book.get(Represented_by_page)|@book.getName()]]}else{@book.getName()}</span>
+	<span class="title">
+		@if(book.has(Represented_by_page)){
+			[[@book.get(Represented_by_page)|@pageToTitle(book.getName())]]
+		}
+		else{
+			[[book.getName()|@pageToTitle(book.getName())]]
+		}
+	</span>
 }
 @pages => {
 	{{#if:{{{show as|}}}|
