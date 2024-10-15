@@ -126,10 +126,9 @@ public abstract class Bot<RUN extends Run> {
 		try {
 			var status = """
 			|-
-			| [[User:%s|%s]] || %s || %s
+			| [[User:%s|%s]] || %s
 			""".formatted(
 				botName, botName,
-				run.getTimestamp().toLocalDate().toString(),
 				!hadError?"<span style=\"color:ForestGreen\">OK</span>":"<span style=\"color:Crimson\">ERROR</span>[[Category:Pages with errors]]"
 			);
 			Consumer<WikiAPI> task = wiki->wiki.editIfChange("User:"+botName+"/Status", status, "Update "+botName+" status");

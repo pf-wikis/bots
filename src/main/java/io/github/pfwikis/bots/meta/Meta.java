@@ -36,7 +36,7 @@ public class Meta extends SimpleBot {
 		==Sub bots==
 		{| class="wikitable" style="margin:auto"
 		|-
-		! Bot Name !! Last run !! Status
+		! Bot Name !! Status
 		%s
 		|}
 		""".formatted(bots);
@@ -78,7 +78,7 @@ public class Meta extends SimpleBot {
 			
 			{| class="wikitable" style="margin:auto"
 			|-
-			! Bot Name !! Last run !! Status
+			! Bot Name !! Status
 			{{User:%s/Status}}
 			|}
 			""".formatted(
