@@ -48,21 +48,18 @@ public class Replacer extends SimpleBot {
 				run.getWiki().delete(p, "Remove outdated page");
 		}*/
 		
-		var pages = new ArrayList<>(run.getWiki().getPagesTranscluding("Template:Infobox"));
+		var pages = new ArrayList<>(run.getWiki().getPagesTranscluding("Template:Infobox/Base"));
 		int co = 0;
-		Collections.shuffle(pages);
 		for(var p:pages) {
 			
 			var txt = run.getWiki().getPageText(p.getTitle());
 			
-			var ntxt = txt.replaceAll("Infobox *\\| *("
-					+Arrays.stream(SModel.CONCEPTS).map(c->c.getName()).collect(Collectors.joining("|"))
-					+")", "Infobox");
+			var ntxt = txt.replaceAll("(image *= *)\\[\\[(File:[^\\]\\|]+).*", "$1$2");
 			if(!ntxt.equals(txt)) {
 				run.getWiki().edit(
 					p.getTitle(),
 					ntxt,
-					"Simplify infobox usage"
+					"Remove widh and other image options from infoboxes"
 				);
 			}
 			log.info("{}/{}",co++,pages.size());

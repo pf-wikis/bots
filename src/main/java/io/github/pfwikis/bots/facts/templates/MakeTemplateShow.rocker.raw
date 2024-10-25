@@ -3,7 +3,7 @@
 @args(String name, SConcept c)
 
 <includeonly>{{#show: Facts:{{{page|}}}
-	@for(prop:c.getProperties()) {
+	@for(prop:c.allProperties()) {
 		|?@prop.getName()@?prop.wikitextToQuery()=@prop.getName()
 	}
 	@for(prop:c.getGeneratedProperties()) {

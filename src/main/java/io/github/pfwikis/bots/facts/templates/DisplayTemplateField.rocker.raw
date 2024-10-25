@@ -1,5 +1,6 @@
 @import io.github.pfwikis.bots.facts.model.SProperty
 @import static io.github.pfwikis.bots.utils.RockerHelper.n
+@import io.github.pfwikis.bots.facts.util.ConceptUtil
 
 @args(SProperty<?> prop, RockerBody content)
 
@@ -9,8 +10,8 @@
 }
 
 
-<div class="facts-display-key">[[@prop.getName()::@@@@@@]]</div>
-<div class="facts-display-value">@n()
+<div class="facts-display-key prop-@ConceptUtil.cssName(prop)">[[@prop.getName()::@@@@@@]]</div>
+<div class="facts-display-value  prop-@ConceptUtil.cssName(prop)">@n()
 	@if(prop.isRequired() && prop.isGenerateWikitextDynamic()) {
 		{{#if:@prop.wikitextToTestIfValue(true)
 			|@content

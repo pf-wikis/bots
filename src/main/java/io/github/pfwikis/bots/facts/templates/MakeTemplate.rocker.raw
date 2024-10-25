@@ -5,7 +5,7 @@
 <noinclude>
 {{Bot created|Bot Facts Master}}
 {{#template_params:
-	@for((i,prop):c.getProperties()) {
+	@for((i,prop):c.allProperties()) {
 		@if(!i.first()){|}@prop.getName() (property=@prop.getName())
 	}
 }}
@@ -30,25 +30,33 @@
 		}
 	</div>
 }
-<div class="facts-display facts-display-@ConceptUtil.cssName(c)">
-	@for(prop:c.getProperties()) {
-		@DisplayTemplateField.template(prop) -> {
-			@prop.wikitextToDisplayFact()
-			@prop.wikitextBeforeStoringFact()
-			{{#set:@prop.getName()=@prop.wikitextToStoreFact()}}
+<div class="facts-display concept-@ConceptUtil.cssName(c)">
+	@for(g:c.getPropertyGroups()) {
+		<div class="facts-display-group group-@ConceptUtil.cssName(g)">
+			<div class="facts-display-group-label">@g.getName()</div>
+			<div class="facts-display-group-content">
+			@for(prop:g.getProperties()) {
+				@DisplayTemplateField.template(prop) -> {
+					@prop.wikitextToDisplayFact()
+					@prop.wikitextBeforeStoringFact()
+					{{#set:@prop.getName()=@prop.wikitextToStoreFact()}}
+				}
+			}
+			</div>
+		</div>
+	}
+	<div class="facts-display-group facts-display-group-automatic-properties">
+		<div class="facts-display-group-label">Automatic properties</div>
+		<div class="facts-display-group-content">
+		@for(gen:c.getGeneratedProperties()) {
+			@DisplayTemplateField.template(gen) -> {
+				@gen.wikitextToDisplayFact()
+				@gen.wikitextBeforeStoringFact()
+				{{#set:@gen.getName()=@gen.wikitextToStoreFact()}}
+			}
 		}
-	}
-</div>
-
-<h3>Automatic properties</h3>
-<div class="facts-display facts-display-@ConceptUtil.cssName(c)">
-@for(gen:c.getGeneratedProperties()) {
-	@DisplayTemplateField.template(gen) -> {
-		@gen.wikitextToDisplayFact()
-		@gen.wikitextBeforeStoringFact()
-		{{#set:@gen.getName()=@gen.wikitextToStoreFact()}}
-	}
-}
+		</div>
+	</div>
 </div>
 <div class="facts-subforms">
 	@for(sub:c.getSubConcepts()) {

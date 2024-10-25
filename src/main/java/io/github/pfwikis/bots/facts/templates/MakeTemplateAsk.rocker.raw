@@ -3,7 +3,7 @@
 @args(String name, SConcept c)
 
 <includeonly>{{#ask: [[Fact type::Template:Facts/@name]]{{{query|}}}
-	@for(prop:c.getProperties()) {
+	@for(prop:c.allProperties()) {
 		|?@prop.getName()@?prop.wikitextToQuery()=@prop.getName()
 	}
 	@for(prop:c.getGeneratedProperties()) {

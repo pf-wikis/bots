@@ -82,45 +82,71 @@ import io.github.pfwikis.bots.common.model.subject.PageRef;
 import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
 import io.github.pfwikis.bots.facts.model.SConcept;
 import io.github.pfwikis.bots.facts.model.SInfoboxProperty;
+import io.github.pfwikis.bots.facts.model.SPropertyGroup;
+import io.github.pfwikis.bots.facts.model.SPropertyGroup.SPropertyGroupBuilder;
 import lombok.RequiredArgsConstructor;
 
 public class SModel {
+	
+	private final static SPropertyGroupBuilder BLURB_FIELDS = SPropertyGroup.builder()
+			.name("Blurb")
+			.properties(		
+				Blurb_heading,
+				Blurb_text,
+				Blurb_text_extras,
+				Blurb_quotee
+			);
+	
+	private static final SPropertyGroupBuilder BASIC_FIELDS = SPropertyGroup.builder()
+			.name("Basic")
+			.properties(
+				Name,
+				Full_title,
+				Represented_by_page,
+				Image
+			);
 
 	public static final SConcept BOOK = SConcept.builder()
 		.name("Book")
 		.pluralName("Books")
 		.properties(
-			Name,
-			Full_title,
-			Represented_by_page,
-			Book_type,
-			Image,
-			Rule_system,
-			Primary_author,
-			Author,
-			Artist,
-			Narrator,
-			Publisher,
-			Series,
-			Follows,
-			Precedes,
-			Website,
-			Pubcode,
-			Serialized,
-			Pages,
-			Runtime,
-			Chapters,
-			Gallery,
-			Awards,
-			Errata,
-			Web_enhancement,
-			Level_range_start,
-			Level_range_end,
-			Location,
-			Blurb_heading,
-			Blurb_text,
-			Blurb_text_extras,
-			Blurb_quotee
+			BASIC_FIELDS,
+			SPropertyGroup.builder()
+				.name("Contributors")
+				.properties(
+					Primary_author,
+					Author,
+					Artist,
+					Narrator,
+					Publisher
+				),
+			SPropertyGroup.builder()
+				.name("Book")
+				.properties(
+					Book_type,
+					Rule_system,
+					Series,
+					Follows,
+					Precedes,
+					Website,
+					Pubcode,
+					Serialized,
+					Pages,
+					Runtime,
+					Chapters,
+					Gallery,
+					Awards,
+					Errata,
+					Web_enhancement
+				),
+			SPropertyGroup.builder()
+				.name("Adventure")
+				.properties(
+					Level_range_start,
+					Level_range_end,
+					Location
+				),
+			BLURB_FIELDS
 		)
 		.infoboxProperties(
 			SInfoboxProperty.from(Primary_author)
@@ -148,24 +174,32 @@ public class SModel {
 				.name("Section")
 				.pluralName("Sections")
 				.properties(
-					Name,
-					Is_subsection,
-					Author,
-					On_page,
-					To_page,
-					Description
+					SPropertyGroup.builder()
+						.name("")
+						.properties(
+							Name,
+							Is_subsection,
+							Author,
+							On_page,
+							To_page,
+							Description
+						)
 				),
 			SConcept.builder()
 				.name("Release")
 				.pluralName("Releases")
 				.properties(
-					Release_type,
-					Release_note,
-					Release_date,
-					Isbn,
-					Pages,
-					Rule_system,
-					Price
+					SPropertyGroup.builder()
+						.name("")
+						.properties(
+							Release_type,
+							Release_note,
+							Release_date,
+							Isbn,
+							Pages,
+							Rule_system,
+							Price
+						)
 				)
 				.infoboxProperties(
 					SInfoboxProperty.from(Release_date)
@@ -287,33 +321,35 @@ public class SModel {
 			.name("Accessory")
 			.pluralName("Accessories")
 			.properties(
-				Name,
-				Full_title,
-				Represented_by_page,
-				Accessory_type,
-				Image,
-				Release_date,
-				Website,
-				Author,
-				Artist,
-				Publisher,
-				Pubcode,
-				Isbn,
-				Price,
-				Quantity,
-				Material,
-				Rule_system,
-				Series,
-				Follows,
-				Precedes,
-				Awards,
-				Errata,
-				Web_enhancement,
-				Gallery,
-				Blurb_heading,
-				Blurb_text,
-				Blurb_text_extras,
-				Blurb_quotee
+				BASIC_FIELDS,
+				SPropertyGroup.builder()
+					.name("Contributors")
+					.properties(
+						Author,
+						Artist,
+						Publisher
+					),
+				SPropertyGroup.builder()
+					.name("Accessory")
+					.properties(
+						Accessory_type,
+						Release_date,
+						Website,
+						Pubcode,
+						Isbn,
+						Price,
+						Quantity,
+						Material,
+						Rule_system,
+						Series,
+						Follows,
+						Precedes,
+						Awards,
+						Errata,
+						Web_enhancement,
+						Gallery
+					),
+				BLURB_FIELDS
 			)
 			.infoboxProperties(
 				Author,
@@ -353,32 +389,34 @@ public class SModel {
 			.name("Map")
 			.pluralName("Maps")
 			.properties(
-				Name,
-				Full_title,
-				Represented_by_page,
-				Map_type,
-				Website,
-				Pubcode,
-				Image,
-				Gallery,
-				Artist,
-				Publisher,
-				Price,
-				Release_date,
-				Region,
-				Dimensions,
-				Quantity,
-				Isbn,
-				Pages,
-				Rule_system,
-				Series,
-				Follows,
-				Precedes,
-				Awards,
-				Blurb_heading,
-				Blurb_text,
-				Blurb_text_extras,
-				Blurb_quotee
+				BASIC_FIELDS,
+				SPropertyGroup.builder()
+					.name("Contributors")
+					.properties(
+						Artist,
+						Publisher
+					),
+				SPropertyGroup.builder()
+					.name("Map")
+					.properties(
+						Map_type,
+						Website,
+						Pubcode,
+						Gallery,
+						Price,
+						Release_date,
+						Region,
+						Dimensions,
+						Quantity,
+						Isbn,
+						Pages,
+						Rule_system,
+						Series,
+						Follows,
+						Precedes,
+						Awards
+					),
+				BLURB_FIELDS
 			)
 			.infoboxProperties(
 				Artist,
@@ -423,29 +461,31 @@ public class SModel {
 			.name("Miniatures")
 			.pluralName("Miniatures")
 			.properties(
-				Name,
-				Full_title,
-				Represented_by_page,
-				Miniatures_type,
-				Website,
-				Pubcode,
-				Image,
-				Gallery,
-				Author,
-				Publisher,
-				Price,
-				Release_date,
-				Isbn,
-				Quantity,
-				Series,
-				Follows,
-				Precedes,
-				Awards,
-				Artist,
-				Blurb_heading,
-				Blurb_text,
-				Blurb_text_extras,
-				Blurb_quotee
+				BASIC_FIELDS,
+				SPropertyGroup.builder()
+					.name("Contributors")
+					.properties(
+						Artist,
+						Author,
+						Publisher
+					),
+				SPropertyGroup.builder()
+					.name("Miniatures")
+					.properties(
+						Miniatures_type,
+						Website,
+						Pubcode,
+						Gallery,
+						Price,
+						Release_date,
+						Isbn,
+						Quantity,
+						Series,
+						Follows,
+						Precedes,
+						Awards
+					),
+				BLURB_FIELDS
 			)
 			.infoboxProperties(
 				Author,
@@ -476,30 +516,32 @@ public class SModel {
 			.name("Audio")
 			.pluralName("Audio")
 			.properties(
-				Name,
-				Full_title,
-				Represented_by_page,
-				Audio_type,
-				Website,
-				Pubcode,
-				Image,
-				Author,
-				Director,
-				Performer,
-				Publisher,
-				Price,
-				Release_date,
-				Discs,
-				Runtime,
-				Isbn,
-				Series,
-				Follows,
-				Precedes,
-				Location,
-				Blurb_heading,
-				Blurb_text,
-				Blurb_text_extras,
-				Blurb_quotee
+				BASIC_FIELDS,
+				SPropertyGroup.builder()
+					.name("Contributors")
+					.properties(
+						Author,
+						Director,
+						Performer,
+						Publisher
+					),
+				SPropertyGroup.builder()
+					.name("Audio")
+					.properties(
+						Audio_type,
+						Website,
+						Pubcode,
+						Price,
+						Release_date,
+						Discs,
+						Runtime,
+						Isbn,
+						Series,
+						Follows,
+						Precedes,
+						Location
+					),
+				BLURB_FIELDS
 			)
 			.infoboxProperties(
 				Author,
@@ -533,33 +575,36 @@ public class SModel {
 			.name("Video game")
 			.pluralName("Video games")
 			.properties(
-				Name,
-				Full_title,
-				Represented_by_page,
-				Video_game_type,
-				Image,
-				Genre,
-				Modes,
-				Developer,
-				Publisher,
-				Director,
-				Producer,
-				Designer,
-				Artist,
-				Writer,
-				Composer,
-				Programmer,
-				Engine,
-				Platforms,
-				Price,
-				Release_date,
-				Follows,
-				Precedes,
-				Location,
-				Blurb_heading,
-				Blurb_text,
-				Blurb_text_extras,
-				Blurb_quotee
+				BASIC_FIELDS,
+				SPropertyGroup.builder()
+					.name("Contributors")
+					.properties(
+						Developer,
+						Director,
+						Producer,
+						Designer,
+						Artist,
+						Writer,
+						Composer,
+						Programmer,
+						Publisher
+					),
+				SPropertyGroup.builder()
+					.name("Video game")
+					.properties(
+						Video_game_type,
+						Genre,
+						Modes,
+						
+						Engine,
+						Platforms,
+						Price,
+						Release_date,
+						Follows,
+						Precedes,
+						Location
+					),
+				BLURB_FIELDS
 			)
 			.infoboxProperties(
 				Genre,
@@ -594,32 +639,34 @@ public class SModel {
 			.name("Deck")
 			.pluralName("Decks")
 			.properties(
-				Name,
-				Full_title,
-				Represented_by_page,
-				Deck_type,
-				Website,
-				Pubcode,
-				Image,
-				Gallery,
-				Author,
-				Artist,
-				Publisher,
-				Price,
-				Release_date,
-				Decksize,
-				Isbn,
-				Rule_system,
-				Series,
-				Follows,
-				Precedes,
-				Awards,
-				Errata,
-				Web_enhancement,
-				Blurb_heading,
-				Blurb_text,
-				Blurb_text_extras,
-				Blurb_quotee
+				BASIC_FIELDS,
+				SPropertyGroup.builder()
+				.name("Contributors")
+				.properties(
+					Author,
+					Artist,
+					Publisher
+				),
+				SPropertyGroup.builder()
+				.name("Deck")
+				.properties(
+					Deck_type,
+					Website,
+					Pubcode,
+					Gallery,
+					Price,
+					Release_date,
+					Decksize,
+					Isbn,
+					Rule_system,
+					Series,
+					Follows,
+					Precedes,
+					Awards,
+					Errata,
+					Web_enhancement
+				),
+				BLURB_FIELDS
 			)
 			.infoboxProperties(
 				Author,
@@ -671,7 +718,6 @@ public class SModel {
 				}
 			})
 		.build();
-	
 	public static final SConcept[] CONCEPTS = {
 		BOOK,
 		ACCESSORY,

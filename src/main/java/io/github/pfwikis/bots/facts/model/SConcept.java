@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.function.BiFunction;
 
 import io.github.pfwikis.bots.common.bots.Run.SingleRun;
-import io.github.pfwikis.bots.common.model.subject.PageRef;
 import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
 import io.github.pfwikis.bots.facts.SFactsProperties;
+import io.github.pfwikis.bots.facts.model.SPropertyGroup.SPropertyGroupBuilder;
 import lombok.Setter;
 import lombok.Value;
 import lombok.experimental.Accessors;
@@ -19,7 +19,7 @@ public class SConcept {
 	
 	String name;
 	String pluralName;
-	List<SProperty<?>> properties;
+	List<SPropertyGroup> propertyGroups;
 	List<SConcept> subConcepts;
 	List<SInfoboxProperty<?>> infoboxProperties;
 	List<SProperty<?>> generatedProperties;
@@ -35,13 +35,13 @@ public class SConcept {
 		private String name;
 		@Setter
 		private String pluralName;
-		private List<SProperty<?>> properties = Collections.emptyList();
+		private List<SPropertyGroup> propertyGroups = Collections.emptyList();
 		private List<SInfoboxProperty<?>> infoboxProperties = Collections.emptyList();
 		private List<SConcept> subConcepts = Collections.emptyList();
 		private BiFunction<SingleRun, SemanticSubject, String> conceptSpecificCategoriesFunction;
 		
-		public Builder properties(SProperty<?>... properties) {
-			this.properties=List.of(properties);
+		public Builder properties(SPropertyGroup.SPropertyGroupBuilder... propertyGroups) {
+			this.propertyGroups=Arrays.stream(propertyGroups).map(SPropertyGroupBuilder::build).toList();
 			return this;
 		}
 		
@@ -73,7 +73,7 @@ public class SConcept {
 			var c = new SConcept(
 				name,
 				pluralName,
-				properties,
+				propertyGroups,
 				subConcepts,
 				infoboxProperties,
 				gens,
@@ -81,12 +81,14 @@ public class SConcept {
 			);
 			
 			gens.add(SFactsProperties.Fact_type.withGenerateWikitext("Template:Facts/"+name));
-			for(var prop:properties) {
-				gens.addAll(prop.generateProperties(c, null));
+			for(var propG:propertyGroups) {
+				for(var prop:propG.getProperties())
+					gens.addAll(prop.generateProperties(c, null));
 			}
 			for(var sub:subConcepts) {
-				for(var prop:sub.properties) {
-					sub.getGeneratedProperties().addAll(prop.generateProperties(sub, c));
+				for(var propG:sub.propertyGroups) {
+					for(var prop:propG.getProperties())
+						sub.getGeneratedProperties().addAll(prop.generateProperties(sub, c));
 				}
 			}
 			
@@ -101,12 +103,19 @@ public class SConcept {
 		}
 		return null;
 	}
+	
+	public Iterable<SProperty<?>> allProperties() {
+		return propertyGroups.stream()
+			.flatMap(pg->pg.getProperties().stream())
+			.toList();
+	}
 
 	public String conceptSpecificCategories(SingleRun run, SemanticSubject subject) {
 		return conceptSpecificCategoriesFunction.apply(run, subject);
 	}
 
 	public boolean containsProperty(SProperty<?> p) {
-		return properties.contains(p) || generatedProperties.contains(p);
+		return propertyGroups.stream().anyMatch(g->g.getProperties().contains(p))
+				|| generatedProperties.contains(p);
 	}
 }

@@ -8,7 +8,7 @@
 <noinclude>
 {{Bot created|Bot Facts Master}}
 {{#template_params:
-	@for((i,prop):c.getProperties()) {
+	@for((i,prop):c.allProperties()) {
 		@if(!i.first()){|}
 		@prop.getName() (property=@prop.getName())
 	}
@@ -41,10 +41,17 @@
 				@**@ facts-display-subsection-{{{Is subsection|No}}}@*<-important space*@
 			}
 	 ">
-		@for(prop:c.getProperties()) {
-			@DisplayTemplateField.template(prop) -> {
-				@prop.wikitextToDisplayFact()
-			}
+		@for(g:c.getPropertyGroups()) {
+			<div class="facts-display-group facts-display-group-@ConceptUtil.cssName(g)">
+				<div class="facts-display-group-label">@g.getName()</div>
+				<div class="facts-display-group-content">
+				@for(prop:g.getProperties()) {
+					@DisplayTemplateField.template(prop) -> {
+						@prop.wikitextToDisplayFact()
+					}
+				}
+				</div>
+			</div>
 		}
 	</div>[[Category:Facts about @parent.getName() @c.getPluralName()]]
 }}
@@ -54,12 +61,12 @@
 
 @*Only store the properties if this template is transcluded into another root page.*@
 {{#ifeq:{{SUBPAGENAME}}|@c.getPluralName()||
-	@for(prop:c.getProperties()) {
+	@for(prop:c.allProperties()) {
 		@prop.wikitextBeforeStoringFact()
 	}
 	{{#subobject:
 		|Fact type=Template:Facts/@parent.getName()/@c.getName()
-		@for(prop:c.getProperties()) {
+		@for(prop:c.allProperties()) {
 			|@prop.getName()=@prop.wikitextToStoreFact()
 		}
 		|@@sortkey={{#counter: @c.getName()-counter | pad length=3 }}
