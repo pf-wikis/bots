@@ -18,7 +18,7 @@ This is the ''@name'' form. To create a page with this form, see [[:Category:Fac
 			<div class="facts-form-group-content">
 			@for(prop:g.getProperties()) {
 				<div class="facts-form-prop prop-@ConceptUtil.cssName(prop) prop-type-@ConceptUtil.cssName(prop.getFactType().getId())">
-					<div class="facts-form-key prop-@ConceptUtil.cssName(prop) prop-type-@ConceptUtil.cssName(prop.getFactType().getId()) @if(prop.getFactType().equals(BOOLEAN)){inline}">
+					<div class="facts-form-key prop-@ConceptUtil.cssName(prop) prop-type-@ConceptUtil.cssName(prop.getFactType().getId())">
 						@prop.getName()
 					</div>
 					<div class="facts-form-value prop-@ConceptUtil.cssName(prop) prop-type-@ConceptUtil.cssName(prop.getFactType().getId())">
