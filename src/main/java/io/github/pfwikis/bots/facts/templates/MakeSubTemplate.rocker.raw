@@ -42,7 +42,7 @@
 			}
 	 ">
 		@for(g:c.getPropertyGroups()) {
-			<div class="facts-display-group facts-display-group-@ConceptUtil.cssName(g)">
+			<div class="facts-display-group group-@ConceptUtil.cssName(g)">
 				<div class="facts-display-group-label">@g.getName()</div>
 				<div class="facts-display-group-content">
 				@for(prop:g.getProperties()) {

@@ -45,7 +45,7 @@
 			</div>
 		</div>
 	}
-	<div class="facts-display-group facts-display-group-automatic-properties">
+	<div class="facts-display-group group-automatic-properties">
 		<div class="facts-display-group-label">Automatic properties</div>
 		<div class="facts-display-group-content">
 		@for(gen:c.getGeneratedProperties()) {
