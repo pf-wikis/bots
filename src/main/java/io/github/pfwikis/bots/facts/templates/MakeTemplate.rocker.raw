@@ -57,9 +57,10 @@
 		}
 		</div>
 	</div>
-	@*Copy properties from main page*@
+	@*Copy some properties from main page*@
 	{{#show:
 		{{{Represented by page|{{ROOTPAGENAME}}}}}
+		|?Has reference to=Has reference to
 		|limit=1000
 		|link=none
 		|format=plainlist
