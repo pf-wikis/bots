@@ -57,6 +57,18 @@
 		}
 		</div>
 	</div>
+	@*Copy properties from main page*@
+	{{#show:
+		{{{Represented by page|{{ROOTPAGENAME}}}}}
+		|limit=1000
+		|link=none
+		|format=plainlist
+		|template=Copy properties
+		|named args=yes
+		|valuesep=;
+		|searchlabel=
+		|default=
+	}}
 </div>
 <div class="facts-subforms">
 	@for(sub:c.getSubConcepts()) {
