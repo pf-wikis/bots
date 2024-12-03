@@ -86,40 +86,40 @@ public class TemplateStyles extends SimpleBot {
 	
 	private static final String SHARED = """
 	.mixin-hlist() {
-	    margin: 0;
-	    display: flex;
-	    flex-wrap: wrap;
-	    justify-content: center;
-	    column-gap: 1.2em;
-	    > li {
-	        display: block;
-	        position: relative;
+		margin: 0;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		column-gap: 1.2em;
+		> li {
+			display: block;
+			position: relative;
 	
-	        &+li::before {
-	            content: "·";
-	            position: absolute;
-	            left: -.6em;
-	            font-weight: bold;
-	            color: @black;
-	            transform: translateX(-50%);
-	        }
-	    }
+			&+li::before {
+				content: "·";
+				position: absolute;
+				left: -.6em;
+				font-weight: bold;
+				color: @black;
+				transform: translateX(-50%);
+			}
+		}
 	}
 
 	.mixin-floating-box() {
-    		background-color: @article-color;
-    		box-shadow: 0 0 .3rem .1rem rgba(0,0,0,0.3);
-    		border: 1px solid @menu-border-color-thick;
-    		font-size: 0.9em;
-    		color: @black;
+			background-color: @article-color;
+			box-shadow: 0 0 .3rem .1rem rgba(0,0,0,0.3);
+			border: 1px solid @menu-border-color-thick;
+			font-size: 0.9em;
+			color: @black;
 	}
 	
 	.clearfix() {
-	    &::after {
-	        clear: both;
-	        content: '';
-	        display: block;
-	    }
+		&::after {
+			clear: both;
+			content: '';
+			display: block;
+		}
 	}
 
 	@full-width: ~"(min-width: 1000px)";
