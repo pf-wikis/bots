@@ -2,11 +2,13 @@ package io.github.pfwikis.bots.templatestyles;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.EnumMap;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.beust.jcommander.Parameters;
@@ -23,53 +25,86 @@ public class TemplateStyles extends SimpleBot {
 	public TemplateStyles() {
 		super("template-styles", "Bot Template Styles");
 	}
+	
+	
+	private static record Entry(String page, String className) {}
 
 	@Override
 	public void run(RunContext ctx) throws IOException {
-		var styles = run.getWiki().getPagesInNamespace("Style");
-		var fullStyle = new StringBuilder();
+		var workDir = new File("outputs/"+run.getServer().getCode()+"/less");
+		workDir.mkdirs();
 		
-		for(var style:styles) {
-			var className = StringUtils.removeStart(style.getTitle(), "Style:")
-					.toLowerCase()
-					.replaceAll("[^a-z0-9]", "-");
-			if(Character.isDigit(className.charAt(0))) className = "template-"+className;
-			var txt = run.getWiki().getPageText(style.getTitle());
-			var result = CONSTANTS.get(run.getServer())+"\n."+className+"{"+txt+"}";
-			
-			var in = File.createTempFile("paizowikis-in-", ".less");
-			Files.writeString(in.toPath(), result);
-			var out = File.createTempFile("paizowikis-out-", ".less");
-			try {
-				int status = new ProcessBuilder(
-						"npx"+(System.getProperty("os.name").contains("Windows")?".cmd":""),
-						"lessc",
-						in.getAbsolutePath(),
-						out.getAbsolutePath()
-					)
-					.inheritIO()
-					.start().waitFor();
-				if(status != 0) {
-					reportException("Failed to compile less from %s/wiki/%s with status %s".formatted(run.getServer().getUrl(), style.getTitle(), status));
-					continue;
+		var styles = run.getWiki().getPagesInNamespace("Style")
+			.stream()
+			.map(p-> new Entry(
+				p.getTitle(),
+				toCssName(p.getTitle())
+			))
+			.toList();
+		
+		//delete files no longer existing
+		Arrays.asList(workDir.listFiles())
+			.forEach(f->{
+				if(styles.stream().noneMatch(s->f.getName().equals(s.className()+".less"))) {
+					FileUtils.deleteQuietly(f);
 				}
-			} catch (InterruptedException e) {
-				throw new RuntimeException(e);
+			});
+		
+		//collect files we want to regenerate
+		var toRegenerate = new HashSet<Entry>();
+		if(ctx.getPage() != null) {
+			toRegenerate.add(new Entry(ctx.getPage(), toCssName(ctx.getPage())));
+		}
+		for(var style:styles) {
+			if(!new File(workDir, style.className+".less").isFile()) {
+				toRegenerate.add(style);
 			}
-			
-			var content = Files.readString(out.toPath());
-			fullStyle
-				.append("\n\n")
-				.append("/*From ")
-				.append(style.getTitle())
-				.append("*/\n")
-				.append(content);
-			log.info("Added {} to styles", style.getTitle());
 		}
 		
-		var result = new File("outputs/"+run.getServer().getCode()+"/templatestyles.css");
-		result.getParentFile().mkdirs();
-		Files.writeString(result.toPath(), fullStyle, StandardCharsets.UTF_8);
+		//generate styles
+		log.info("Regenerating styles for {}", toRegenerate);
+		for(var style:toRegenerate) {
+			var txt = run.getWiki().getPageText(style.page());
+			var code = "/*From "+style.page()+"*/\n"+CONSTANTS.get(getWiki())+"."+style.className()+"{\n"+txt+"\n}";
+			var result = compile(code, style.page());
+			if(result != null)
+				FileUtils.moveFile(result, new File(workDir, style.className+".less"));
+		}
+		
+		//merge
+		var result = compile(
+			styles.stream().map(s->"@import (optional) \""+workDir.getAbsolutePath()+"/"+s.className+".less\";").collect(Collectors.joining("\n")),
+			"root"
+		);
+		var finalResult = new File("outputs/"+run.getServer().getCode()+"/templatestyles.css");
+		FileUtils.deleteQuietly(finalResult);
+		FileUtils.moveFile(result, finalResult);
+	}
+
+	private File compile(String less, String source) {
+		try {
+			var in = File.createTempFile("paizowikis-in-", ".less");
+			Files.writeString(in.toPath(), less);
+			var out = File.createTempFile("paizowikis-out-", ".less");
+			int status = new ProcessBuilder(
+					"npx"+(System.getProperty("os.name").contains("Windows")?".cmd":""),
+					"lessc",
+					in.getAbsolutePath(),
+					out.getAbsolutePath()
+				)
+				.inheritIO()
+				.start().waitFor();
+			FileUtils.deleteQuietly(in);
+			if(status != 0) {
+				reportException("Failed to compile less from %s/wiki/%s with status %s".formatted(run.getServer().getUrl(), source, status));
+				FileUtils.deleteQuietly(out);
+				return null;
+			}
+			return out;
+			
+		} catch (InterruptedException | IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
@@ -82,6 +117,14 @@ public class TemplateStyles extends SimpleBot {
 			%s
 			</syntaxhighlight>
 			""".formatted(CONSTANTS.get(run.getServer()));
+	}
+	
+	private String toCssName(String name) {
+		var className = StringUtils.removeStart(name, "Style:")
+			.toLowerCase()
+			.replaceAll("[^a-z0-9]", "-");
+		if(Character.isDigit(className.charAt(0))) className = "template-"+className;
+		return className;
 	}
 	
 	private static final String SHARED = """

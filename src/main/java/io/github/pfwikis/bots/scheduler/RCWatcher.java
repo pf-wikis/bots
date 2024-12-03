@@ -91,7 +91,7 @@ public class RCWatcher extends Schedulable {
 			p.scheduleOnce(p.scheduleableBot(wiki, discord, botInfoboxTemplates, localCtx), changeTime);
 		}
 		if(changedPage.startsWith("Style:")) {
-			p.scheduleOnce(p.scheduleableBot(wiki, discord, botTemplateStyles), changeTime);
+			p.scheduleOnce(p.scheduleableBot(wiki, discord, botTemplateStyles, ctx), changeTime);
 		}
 		if(wiki == Wiki.PF) {
 			p.scheduleOnce(p.scheduleableBot(discord, botPageSyncer, ctx), changeTime);
