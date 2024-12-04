@@ -3,7 +3,6 @@ package io.github.pfwikis.bots.templatestyles;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
@@ -56,6 +55,9 @@ public class TemplateStyles extends SimpleBot {
 		if(ctx.getPage() != null) {
 			toRegenerate.add(new Entry(ctx.getPage(), toCssName(ctx.getPage())));
 		}
+		else {
+			toRegenerate.addAll(styles);
+		}
 		for(var style:styles) {
 			if(!new File(workDir, style.className+".less").isFile()) {
 				toRegenerate.add(style);
@@ -68,8 +70,10 @@ public class TemplateStyles extends SimpleBot {
 			var txt = run.getWiki().getPageText(style.page());
 			var code = "/*From "+style.page()+"*/\n"+CONSTANTS.get(getWiki())+"."+style.className()+"{\n"+txt+"\n}";
 			var result = compile(code, style.page());
-			if(result != null)
-				FileUtils.moveFile(result, new File(workDir, style.className+".less"), StandardCopyOption.REPLACE_EXISTING);
+			if(result != null) {
+				move(result, new File(workDir, style.className+".less"));
+				
+			};
 		}
 		
 		//merge
@@ -78,7 +82,12 @@ public class TemplateStyles extends SimpleBot {
 			"root"
 		);
 		var finalResult = new File("outputs/"+run.getServer().getCode()+"/templatestyles.css");
-		FileUtils.moveFile(result, finalResult, StandardCopyOption.REPLACE_EXISTING);
+		move(result, finalResult);
+	}
+
+	private static void move(File src, File target) throws IOException {
+		FileUtils.deleteQuietly(target);
+		FileUtils.moveFile(src, target);
 	}
 
 	private File compile(String less, String source) {
