@@ -378,10 +378,15 @@ public class SFactsProperties {
 		.setDescription("Links to all the web enhancements belonging to this product.");
 	public static final SProperty<String> Website = new SProperty<>(
 		"Website",
-		SFactTypes.STRING)
+		SFactTypes.URL)
 		.setFormNote("The URL of the product's official page on the publisher's website.")
 		.setAutocompleteDisabled(true)
 		.setDescription("An URL that is strongly linked to this entity. E.g. the Paizo page for a book.");
+	public static final SProperty<String> Website_name = new SProperty<>(
+		"Website name",
+		SFactTypes.URL)
+		.setFormNote("This should be a simple name for the general website, not the specific url.")
+		.setDescription("The name of the website referenced.");
 	public static final SProperty<List<PageRef>> Writer = new SProperty<>(
 		"Writer",
 		SFactTypes.PAGE_LIST)

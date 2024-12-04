@@ -1,8 +1,10 @@
 package io.github.pfwikis.bots.facts.model;
 
+import static io.github.pfwikis.bots.facts.SUtilProperties.Order;
+import static io.github.pfwikis.bots.facts.SUtilProperties.Ordered_value;
+
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -13,8 +15,6 @@ import com.google.common.collect.Lists;
 import io.github.pfwikis.bots.common.WikiAPI;
 import io.github.pfwikis.bots.common.model.subject.PageRef;
 import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
-
-import static io.github.pfwikis.bots.facts.SUtilProperties.*;
 
 public class SFactTypes {
 	public static final SFactType<String> STRING = new SFactType<>(
@@ -28,6 +28,17 @@ public class SFactTypes {
 			if(prop.isAutocompleteDisabled())
 				return "|input type=text";
 			return "|input type=combobox";
+		}
+	};
+	public static final SFactType<String> URL = new SFactType<>(
+			"URL",
+			SMWPropertyType.URL,
+			"$v"
+	) {
+
+		@Override
+		protected String configureFormField(SProperty<?> prop) {
+			return "|input type=text";
 		}
 	};
 	public static final SFactType<String> ISBN = new SFactType<>(

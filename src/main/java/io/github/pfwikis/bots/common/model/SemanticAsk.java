@@ -103,6 +103,15 @@ public class SemanticAsk {
 		@JsonProperty("Created from")
 		private Result createdFrom;
 		private List<JsonNode> value = Collections.emptyList();
+		
+		@JsonProperty("Web author")
+		private String webAuthor;
+		@JsonProperty("Web date")
+		private String webDate;
+		@JsonProperty("Web url")
+		private String webUrl;
+		@JsonProperty("Page")
+		private String page;
 	}
 	
 	@Data

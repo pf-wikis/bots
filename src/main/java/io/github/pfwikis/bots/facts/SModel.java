@@ -64,7 +64,7 @@ import static io.github.pfwikis.bots.facts.SFactsProperties.Series;
 import static io.github.pfwikis.bots.facts.SFactsProperties.To_page;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Video_game_type;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Web_enhancement;
-import static io.github.pfwikis.bots.facts.SFactsProperties.Website;
+import static io.github.pfwikis.bots.facts.SFactsProperties.*;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Writer;
 
 import java.util.ArrayList;
@@ -718,6 +718,23 @@ public class SModel {
 				}
 			})
 		.build();
+	
+	public static final SConcept WEB_CITATION = SConcept.builder()
+		.name("Web citation")
+		.pluralName("Web citation")
+		.properties(
+			SPropertyGroup.builder()
+				.name("")
+				.properties(
+					Name,
+					Full_title,
+					Author,
+					Website,
+					Website_name,
+					Release_date
+				)
+		)
+		.build();
 	public static final SConcept[] CONCEPTS = {
 		BOOK,
 		ACCESSORY,
@@ -725,7 +742,8 @@ public class SModel {
 		MINIATURES,
 		AUDIO,
 		VIDEO_GAME,
-		DECK
+		DECK,
+		WEB_CITATION
 	};
 	
 	@RequiredArgsConstructor
