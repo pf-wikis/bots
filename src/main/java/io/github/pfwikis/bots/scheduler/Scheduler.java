@@ -30,6 +30,7 @@ import io.github.pfwikis.bots.maintenance.Maintenance;
 import io.github.pfwikis.bots.meta.Meta;
 import io.github.pfwikis.bots.newsfeedreader.NewsFeedReader;
 import io.github.pfwikis.bots.scheduler.Schedulable.SchedulableBot;
+import io.github.pfwikis.bots.templatestyles.TemplateStyles;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -76,6 +77,7 @@ public class Scheduler {
 				);
 				schedule(scheduleableBot(wiki, discord, new NewsFeedReader()), Duration.ofHours(1));
 				schedule(scheduleableBot(wiki, discord, new Maintenance()), Duration.ofDays(7));
+				scheduleOnce(scheduleableBot(wiki, discord, new TemplateStyles()));
 			}
 			
 			worker(discord);

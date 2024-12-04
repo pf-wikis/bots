@@ -3,6 +3,7 @@ package io.github.pfwikis.bots.templatestyles;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
@@ -68,7 +69,7 @@ public class TemplateStyles extends SimpleBot {
 			var code = "/*From "+style.page()+"*/\n"+CONSTANTS.get(getWiki())+"."+style.className()+"{\n"+txt+"\n}";
 			var result = compile(code, style.page());
 			if(result != null)
-				FileUtils.moveFile(result, new File(workDir, style.className+".less"));
+				FileUtils.moveFile(result, new File(workDir, style.className+".less"), StandardCopyOption.REPLACE_EXISTING);
 		}
 		
 		//merge
@@ -77,8 +78,7 @@ public class TemplateStyles extends SimpleBot {
 			"root"
 		);
 		var finalResult = new File("outputs/"+run.getServer().getCode()+"/templatestyles.css");
-		FileUtils.deleteQuietly(finalResult);
-		FileUtils.moveFile(result, finalResult);
+		FileUtils.moveFile(result, finalResult, StandardCopyOption.REPLACE_EXISTING);
 	}
 
 	private File compile(String less, String source) {
