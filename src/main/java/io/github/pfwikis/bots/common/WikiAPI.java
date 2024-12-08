@@ -22,7 +22,9 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.StreamReadFeature;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -192,7 +194,10 @@ public class WikiAPI {
 		).tokens().get(token+"token"));
 	}
 	
-	private static final ObjectMapper JACKSON = new ObjectMapper()
+	private static final ObjectMapper JACKSON = new ObjectMapper(JsonFactory
+			.builder()
+			.enable(StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION)
+			.build())
 		.findAndRegisterModules()
 		.registerModule(new JavaTimeModule())
 		.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
@@ -460,7 +465,7 @@ public class WikiAPI {
 
 	public ArrayList<Result> semanticAsk(String query) {
 		var results = new ArrayList<SemanticAsk.Result>();
-		var response = get(SemanticAsk.class, "ask", "api_version", "3", "query", query+"|limit=5000");
+		var response = get(SemanticAsk.class, "ask", "api_version", "3", "query", query+"|limit=1000");
 		response.getQuery().getResults().stream().flatMap(e->e.values().stream()).forEach(results::add);
 		int lastOffset = Integer.MIN_VALUE;
 		while(response.getQueryContinueOffset() != null) {
@@ -469,7 +474,7 @@ public class WikiAPI {
 				throw new IllegalStateException("Offset changed from "+lastOffset+" to "+response.getQueryContinueOffset());
 			}
 			lastOffset = response.getQueryContinueOffset();
-			response = get(SemanticAsk.class, "ask", "api_version", "3", "query", query+"|limit=5000|offset="+response.getQueryContinueOffset());
+			response = get(SemanticAsk.class, "ask", "api_version", "3", "query", query+"|limit=1000|offset="+response.getQueryContinueOffset());
 			response.getQuery().getResults().stream().flatMap(e->e.values().stream()).forEach(results::add);
 		}
 		return results;

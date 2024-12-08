@@ -111,7 +111,7 @@ public class SemanticAsk {
 		@JsonProperty("Web url")
 		private String webUrl;
 		@JsonProperty("Page")
-		private String page;
+		private Result page;
 	}
 	
 	@Data

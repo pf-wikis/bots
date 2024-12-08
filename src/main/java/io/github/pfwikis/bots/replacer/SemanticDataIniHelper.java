@@ -247,10 +247,12 @@ public class SemanticDataIniHelper {
 		"MMMM dd, yyyy",
 		"MMMM d, yyyy",
 		"MMMM yyyy",
-		"yyyy"
+		"yyyy",
+		"dd MMMM yyyy",
+		"d MMMM yyyy"
 	).stream().map(v->DateTimeFormatter.ofPattern(v, Locale.US)).toList();
 	private static final DateTimeFormatter TARGET_FORMAT = DateTimeFormatter.ofPattern("uuuu[-MM[-dd]]", Locale.US);
-	private String parseDate(String value) {
+	public static String parseDate(String value) {
 		for(var format:FORMATS) {
 			try {
 				var info = format.parse(value);

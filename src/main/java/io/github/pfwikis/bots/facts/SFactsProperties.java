@@ -41,11 +41,6 @@ public class SFactsProperties {
 		SFactTypes.STRING)
 		.setAutocompleteDisabled(true)
 		.setDescription("Any awards this product has won.");
-	public static final SProperty<String> Blurb = new SProperty<>(
-		"Blurb",
-		SFactTypes.MULTILINE_WIKITEXT)
-		.setAutocompleteDisabled(true)
-		.setDescription("A short description of this adventure, book or other product.");
 	public static final SProperty<String> Blurb_heading = new SProperty<>(
 		"Blurb heading",
 		SFactTypes.STRING)
@@ -384,7 +379,7 @@ public class SFactsProperties {
 		.setDescription("An URL that is strongly linked to this entity. E.g. the Paizo page for a book.");
 	public static final SProperty<String> Website_name = new SProperty<>(
 		"Website name",
-		SFactTypes.URL)
+		SFactTypes.STRING)
 		.setFormNote("This should be a simple name for the general website, not the specific url.")
 		.setDescription("The name of the website referenced.");
 	public static final SProperty<List<PageRef>> Writer = new SProperty<>(

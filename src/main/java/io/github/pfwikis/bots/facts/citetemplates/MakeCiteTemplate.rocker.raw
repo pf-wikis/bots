@@ -17,8 +17,11 @@
 		@if(book.has(Represented_by_page)){
 			[[@book.get(Represented_by_page)|@pageToTitle(book.getName())]]
 		}
-		else{
-			[[book.getName()|@pageToTitle(book.getName())]]
+		else if(book.has(Website)) {
+			[@book.get(Website) @book.getName()]
+		}
+		else {
+			[[@book.getName()|@pageToTitle(book.getName())]]
 		}
 	</span>
 }
@@ -49,6 +52,9 @@
 			@if(!i.first()){, }@pub.toWikiLink(wiki)
 		}
 		</span>
+	}
+	else if(book.has(Website_name)) {
+		<span class="website-name">@book.get(Website_name)</span>
 	}
 }
 
@@ -102,7 +108,7 @@
 }
 @*space after this is important*@ @title
 @pages. @publisher
-@if(book.has(Publisher)) {, }else { }
+@if(book.has(Publisher) || book.has(Website_name)) {, }else { }
 @year</cite>
 
 {{#ifeq:{{{1|}}}|??|[[Category:Articles with question-mark page citations]]}}
@@ -161,8 +167,10 @@ This template should not be edited directly. To change the contents, please edit
 	}
 	else {
 		@for(sub:s.getSubSections()) {
-			<syntaxhighlight lang="wikitext">{{Cite/@book.getFactsPage()|@sub.get(On_page)@if(sub.getEndPage()!=null){|@sub.getEndPage()}}}</syntaxhighlight>
-			{{Cite/@book.getFactsPage()|@sub.get(On_page)@if(sub.getEndPage()!=null){|@sub.getEndPage()}}}<br><br>
+			@if(s.has(On_page)) {
+				<syntaxhighlight lang="wikitext">{{Cite/@book.getFactsPage()|@sub.get(On_page)@if(sub.getEndPage()!=null){|@sub.getEndPage()}}}</syntaxhighlight>
+				{{Cite/@book.getFactsPage()|@sub.get(On_page)@if(sub.getEndPage()!=null){|@sub.getEndPage()}}}<br><br>
+			}
 		}
 	}
 }

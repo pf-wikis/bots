@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -46,8 +47,6 @@ public class CiteTemplates extends SimpleBot implements RunOnPageBot, ScatteredR
 		}
 		else {
 			for(var s:createScatterShards()) {
-				if(s.page.compareTo("Facts:Giant Hunter's Handbook")<0)
-					continue;
 				try {
 					runOnPage(s.page);
 				} catch(Exception e) {
@@ -75,7 +74,8 @@ public class CiteTemplates extends SimpleBot implements RunOnPageBot, ScatteredR
 		"Facts/Book",
 		"Facts/Map",
 		"Facts/Deck",
-		"Facts/Video game");
+		"Facts/Video game",
+		"Facts/Web citation");
 	private void runOnPage(String page) {
 		var subject = run.getWiki().semanticSubject(page);
 		if(!subject.has(Fact_type)) {
@@ -187,10 +187,9 @@ public class CiteTemplates extends SimpleBot implements RunOnPageBot, ScatteredR
 	public List<Shard> createScatterShards() {
 		var shards = new ArrayList<>(run.getWiki().semanticAsk(
 			"[[Fact type::"
-				+ "Template:Facts/Book"
-				+ "||Template:Facts/Map"
-				+ "||Template:Facts/Deck"
-				+ "||Template:Facts/Video game"
+				+ TYPES_WITH_CITE.stream()
+					.map(v->"Template:"+v)
+					.collect(Collectors.joining("||"))
 			+ "]]")
 			.stream()
 			.map(p->p.getPage())
