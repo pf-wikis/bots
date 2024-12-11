@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -38,18 +39,24 @@ public class NewsFeedReader extends SimpleBot {
 		
 	}
 	
+	public static List<Item> collectFeed(Wiki server, String url, int max) {
+		RssReader rssReader = new RssReader();
+		return Retry.times(
+			()->rssReader.read(url)
+				.filter(i->filterByWiki(server, i))
+				.limit(max)
+				.toList(),
+			5,
+			30
+		);
+	}
+	
 	private String collectFeed(String title, String url) {
 		try {
-			RssReader rssReader = new RssReader();
-			var items = Retry.times(
-				()->rssReader.read(url)
-					.filter(i->filterByWiki(i))
-					.limit(3)
-					.map(this::renderEntry)
-					.toList(),
-				5,
-				30
-			);
+			var items = collectFeed(run.getServer(), url, 3)
+				.stream()
+				.map(this::renderEntry)
+				.toList();
 			
 			return """
 			<div class="content-box news-feeds">
@@ -73,8 +80,8 @@ public class NewsFeedReader extends SimpleBot {
 		"<a href=\"https://paizo.com/community/blog/tags/starfinderRoleplayingGame\">Starfinder Roleplaying Game</a>"
 	};
 
-	private boolean filterByWiki(Item entry) {
-		if(run.getServer() == Wiki.SF) {
+	private static boolean filterByWiki(Wiki server, Item entry) {
+		if(server == Wiki.SF) {
 			if(
 				StringUtils.containsAny(entry.getDescription().get(), PF_TAGS)
 				&& !StringUtils.containsAny(entry.getDescription().get(), SF_TAGS)

@@ -29,6 +29,7 @@ import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 public class Discord implements Closeable {
 	
 	private static long CHANNEL_BOT_ACTIVITY = 1176658356551811105L;
+	private static long CHANNEL_BLOG_WATCH = 1287958801584099380L;
 	private static long CHANNEL_ADMINS = 886300705281941514L;
 	
 	private JDA jda;
@@ -133,6 +134,18 @@ public class Discord implements Closeable {
 			init();
 			jda.getTextChannelById(CHANNEL_BOT_ACTIVITY)
 				.sendMessage(messageHeader(bot).append(msg).toString())
+				.queue();
+		} catch(Exception e) {
+			reportException(bot, e);
+		}
+	}
+	
+	public void reportToBlogWatch(Bot<?> bot, String msg, boolean suppressEmbeds) {
+		try {
+			init();
+			jda.getTextChannelById(CHANNEL_BLOG_WATCH)
+				.sendMessage(messageHeader(bot).append(msg).toString())
+				.setSuppressEmbeds(suppressEmbeds)
 				.queue();
 		} catch(Exception e) {
 			reportException(bot, e);
