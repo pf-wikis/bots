@@ -1,6 +1,8 @@
 package io.github.pfwikis.bots.common;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -15,6 +17,7 @@ import io.github.pfwikis.bots.common.model.QueryPageQuery;
 import io.github.pfwikis.bots.common.model.QueryResponse;
 import io.github.pfwikis.bots.common.model.QueryTokens;
 import io.github.pfwikis.bots.common.model.RecentChanges;
+import io.github.pfwikis.bots.common.model.RecentChanges.RecentChange;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -22,11 +25,19 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class Query<T> {
 
-	public static final Query<RecentChanges> LIST_RECENT_CHANGES = new Query<>(
+	public static final Query<RecentChanges> LIST_RECENT_CHANGES = new Query.WithContinue<>(
 		RecentChanges.class,
 		"list",
-		"recentchanges"
-	);
+		"recentchanges",
+		"rccontinue"
+	) {
+		public RecentChanges mergeResults(RecentChanges a, RecentChanges b) {
+			var l = new ArrayList<RecentChange>();
+			l.addAll(List.of(a.recentchanges()));
+			l.addAll(List.of(b.recentchanges()));
+			return new RecentChanges(l.toArray(RecentChange[]::new));
+		};
+	};
 
 	public static final Query<AllpagesQuery> LIST_ALL_PAGES = new Query.WithContinue<>(
 		AllpagesQuery.class,
