@@ -44,6 +44,7 @@ public class BookDef implements BookPart {
 	@Builder.Default
 	private List<SectionDef> sections = new ArrayList<>();
 	private Integer releaseYear;
+	private boolean webCitation;
 	
 	private Map<String, List<Range<Integer>>> makeRanges(Function<BookPart, String> makeValue) {
 		var bookValue = makeValue.apply(this);

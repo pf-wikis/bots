@@ -94,6 +94,7 @@ public class CiteTemplates extends SimpleBot implements RunOnPageBot, ScatteredR
 					?null
 					:Integer.parseInt(subject.get(Release_year))
 			)
+			.webCitation(subject.get(Fact_type).toFullTitle().equals("Template:Facts/Web citation"))
 			.build();
 		
 		var rawSections = subject.getSubObjects("Facts/Book/Section");
@@ -186,7 +187,7 @@ public class CiteTemplates extends SimpleBot implements RunOnPageBot, ScatteredR
 	@Override
 	public List<Shard> createScatterShards() {
 		var shards = new ArrayList<>(run.getWiki().semanticAsk(
-			"[[Fact type::"
+			"[[Facts:+]][[Fact type::"
 				+ TYPES_WITH_CITE.stream()
 					.map(v->"Template:"+v)
 					.collect(Collectors.joining("||"))

@@ -64,7 +64,7 @@ public class Downloader {
 	);
 	
 	public void start() throws IOException {
-		var books = wiki.semanticAsk("[[Fact type::Template:Facts/Book]]|?Website");
+		var books = wiki.semanticAsk("[[Facts:+]][[Fact type::Template:Facts/Book]]|?Website");
 		for(var book:books) {
 			log.info("Checking {}", book.getPage());
 			if(book.getPrintouts() == null || book.getPrintouts().getWebsite() == null) continue;
