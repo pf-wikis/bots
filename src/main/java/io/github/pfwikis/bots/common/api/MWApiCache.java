@@ -121,13 +121,4 @@ public enum MWApiCache {
 			throw new IllegalStateException("Could not login", last);
 		}
 	}
-	 
-	
-	
-	/*
-	 
-	
-	 
-	 */
-
 }

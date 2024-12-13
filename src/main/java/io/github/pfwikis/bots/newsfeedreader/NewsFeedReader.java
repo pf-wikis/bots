@@ -6,6 +6,7 @@ import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
@@ -39,13 +40,10 @@ public class NewsFeedReader extends SimpleBot {
 		
 	}
 	
-	public static List<Item> collectFeed(Wiki server, String url, int max) {
+	public static Stream<Item> collectFeed(String url) {
 		RssReader rssReader = new RssReader();
 		return Retry.times(
-			()->rssReader.read(url)
-				.filter(i->filterByWiki(server, i))
-				.limit(max)
-				.toList(),
+			()->rssReader.read(url),
 			5,
 			30
 		);
@@ -53,8 +51,9 @@ public class NewsFeedReader extends SimpleBot {
 	
 	private String collectFeed(String title, String url) {
 		try {
-			var items = collectFeed(run.getServer(), url, 3)
-				.stream()
+			var items = collectFeed(url)
+				.filter(i->filterByWiki(run.getServer(), i))
+				.limit(3)
 				.map(this::renderEntry)
 				.toList();
 			
@@ -79,20 +78,28 @@ public class NewsFeedReader extends SimpleBot {
 		"<a href=\"https://paizo.com/community/blog/tags/starfinder\">Starfinder</a>",
 		"<a href=\"https://paizo.com/community/blog/tags/starfinderRoleplayingGame\">Starfinder Roleplaying Game</a>"
 	};
+	
+	public static boolean isTaggedRelevant(Wiki server, Item entry) {
+		if(server == Wiki.SF) {
+			return StringUtils.containsAny(entry.getDescription().get(), SF_TAGS);
+		}
+		else
+			return StringUtils.containsAny(entry.getDescription().get(), PF_TAGS);
+	}
 
 	private static boolean filterByWiki(Wiki server, Item entry) {
 		if(server == Wiki.SF) {
 			if(
-				StringUtils.containsAny(entry.getDescription().get(), PF_TAGS)
-				&& !StringUtils.containsAny(entry.getDescription().get(), SF_TAGS)
+				isTaggedRelevant(Wiki.PF, entry)
+				&& !isTaggedRelevant(Wiki.SF, entry)
 			) {
 				return false;
 			}
 		}
 		else {
 			if(
-				StringUtils.containsAny(entry.getDescription().get(), SF_TAGS)
-				&& !StringUtils.containsAny(entry.getDescription().get(), PF_TAGS)
+				isTaggedRelevant(Wiki.SF, entry)
+				&& !isTaggedRelevant(Wiki.PF, entry)
 			) {
 				return false;
 			}
