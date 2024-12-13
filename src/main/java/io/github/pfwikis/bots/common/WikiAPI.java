@@ -97,6 +97,7 @@ public class WikiAPI {
 		if(!wiki.edit(page, content, reason)) {
 			throw new RuntimeException("Failed to edit page "+page);
 		}
+		server.storeInCache(CacheId.PAGE_EXISTS, page, true);
 	}
 
 	public boolean editIfChange(String page, String content, String reason) {
@@ -118,8 +119,10 @@ public class WikiAPI {
 			}
 			
 			edit(page, content, reason);
+			server.storeInCache(CacheId.PAGE_EXISTS, page, true);
 			return true;
 		}
+		server.storeInCache(CacheId.PAGE_EXISTS, page, true);
 		return false;
 	}
 
@@ -400,7 +403,11 @@ public class WikiAPI {
 	}
 	
 	public boolean delete(String page, String reason) {
-		return wiki.delete(page, reason);
+		if(wiki.delete(page, reason)) {
+			server.storeInCache(CacheId.PAGE_EXISTS, page, false);
+			return true;
+		}
+		return false;
 	}
 
 	public List<Page> getPagesInCategory(String category, String namespace) {

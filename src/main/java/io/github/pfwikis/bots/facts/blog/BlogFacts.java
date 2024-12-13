@@ -65,7 +65,7 @@ public class BlogFacts extends SimpleBot {
 				""".formatted(
 					entry.getTitle().map(String::trim).orElse(""),
 					id.get().toLowerCase(),
-					OffsetDateTime.parse(entry.getPubDate().get()).toString()
+					OffsetDateTime.parse(entry.getPubDate().get()).toLocalDate().toString()
 				),
 				"A new blog post was released"
 			);
