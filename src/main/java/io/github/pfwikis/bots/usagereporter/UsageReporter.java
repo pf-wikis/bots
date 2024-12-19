@@ -59,8 +59,6 @@ public class UsageReporter extends SimpleBot {
 			"==Last 7 days==\n"
 			+"* [["+reportPage()+"/Top Pages|Top Pages]]\n"
 			+"* [["+reportPage()+"/Top Search Term|Top Search Term]]\n"
-			+"* [["+reportPage()+"/Top Categories|Top Categories]]\n"
-			+"* [["+reportPage()+"/Top Appealing Categories|Top Appealing Categories]]\n"
 			+"* [["+reportPage()+"/Outlinks|Outlinks]]\n"
 			+"* [["+reportPage()+"/Referrers|Referrers]]\n",
 			"Update top pages data"
@@ -135,61 +133,11 @@ public class UsageReporter extends SimpleBot {
 	}
 	
 	private void topCategories() throws Exception {
-		var all = matomos(MatomoPage.class,
-			"method", "Actions.getPageUrls",
-			"period", "range",
-			"date", WEEK_RANGE
-		).get(0);
-		
-		var results = matomos(MatomoEvent.class,
-			"method", "Events.getNameFromActionId",
-			"period", "range",
-			"date", WEEK_RANGE,
-			"idSubtable", "1"
-		);
-		results.removeIf(r->"Others".equals(r.getLabel()));
-		
-		var txt = "This shows the percentage of page views in a category. It does not "
-				+ "incorporate category hierarchies yet. That means a pageview of [[Dwarf]] "
-				+ "would count for [[:Category:Dwarf]], but not [[:Category:Races]].\n"
-				+ MWTable.makeTable(
-				results,
-				List.of(
-						"Category",
-						"Percentage of pageviews"
-				),
-				r->"[[:Category:"+r.getLabel().replace('_', ' ')+"]]",
-				r->"%.1f%%".formatted(100*((double)r.getVisits())/all.getVisits())
-		);
-		run.getWiki().edit(reportPage()+"/Top Categories", bot()+txt, "Update reporting pages data");
+		run.getWiki().delete(reportPage()+"/Top Categories", "No longer in use");
 	}
 	
 	private void topResolvedCategories() throws Exception {
-		var results = matomos(MatomoEvent.class,
-			"method", "Events.getNameFromActionId",
-			"period", "range",
-			"date", WEEK_RANGE,
-			"idSubtable", "1"
-		);
-		results.removeIf(r->"Others".equals(r.getLabel()));
-		var resolved = CategoryResolver.resolve(run.getWiki(), results);
-		var sorted = resolved.entrySet().stream().sorted(Comparator.<Entry<String>, Integer>comparing(Entry::getCount).reversed()).toList();
-		
-		var txt = "This shows how important every category is for page views. It does "
-				+ "incorporate category hierarchies. That means a pageview of [[Dwarf]] "
-				+ "would count as a [[:Category:Dwarf]] and a [[:Category:Races]] view. "
-				+ "A single page view can count as multiple visits of the same category, which "
-				+ "is why this value is only given as an appeal score.\n"
-				+ MWTable.makeTable(
-				sorted,
-				List.of(
-						"Category",
-						"Appeal"
-				),
-				r->"[[:"+r.getElement()+"|"+StringUtils.removeStart(r.getElement(), "Category:")+"]]",
-				r->"%d".formatted(100*r.getCount()/sorted.get(0).getCount())
-		);
-		run.getWiki().edit(reportPage()+"/Top Appealing Categories", bot()+txt, "Update reporting pages data");
+		run.getWiki().delete(reportPage()+"/Top Appealing Categories", "No longer in use");
 	}
 
 	private void outlinks() throws Exception {
