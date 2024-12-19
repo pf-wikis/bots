@@ -3,9 +3,13 @@ package io.github.pfwikis.bots.common.api;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+
+import com.google.common.util.concurrent.Uninterruptibles;
 
 import io.github.fastily.jwiki.core.Wiki;
 import lombok.RequiredArgsConstructor;
@@ -91,7 +95,7 @@ public enum MWApiCache {
 		private void login() {
 			Exception first = null;
 			Exception last = null;
-			for (int tryCount = 0; tryCount < 60; tryCount++) {
+			for (int tryCount = 0; tryCount < 6; tryCount++) {
 				try {
 					var b = new Wiki.Builder().withDomain(key.wiki.getUrl())
 							.withApiEndpoint(HttpUrl.get(key.wiki.getUrl() + "/w/api.php"));
@@ -100,13 +104,24 @@ public enum MWApiCache {
 					}
 					this.wiki = b.build();
 					return;
-				} catch(Exception e) {
+				} catch(SecurityException e) {
 					log.warn(
-						"Login to {} as {} failed: {}\nWill retry",
+						"Login to {} as {} failed: {}\nWill not retry, as this is a SecurityException",
 						key.wiki.getName(),
 						key.name,
 						e.getMessage()
 					);
+					throw new IllegalStateException("Could not login", e);
+				} catch(Exception e) {
+					int sleepTime = tryCount==0?0:10;
+					log.warn(
+						"Login to {} as {} failed: {}\nWill retry after {} seconds",
+						key.wiki.getName(),
+						key.name,
+						e.getMessage(),
+						sleepTime
+					);
+					Uninterruptibles.sleepUninterruptibly(sleepTime, TimeUnit.SECONDS);
 					if(tryCount==0) first = e;
 					last = e;
 				}
