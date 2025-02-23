@@ -32,7 +32,7 @@ public class PageSyncer extends DualBot implements RunOnPageBot {
 				+" pathfinderwiki.com to starfinderwiki.com.";
 	}
 	
-	private static final int[] NAMESPACES = {8,10,14,102,106,128,274,828};
+	private static final int[] NAMESPACES = {0, 8,10,14,102,106,128,274,828};
 
 	@Override
 	public void run(RunContext ctx) throws Exception {
