@@ -103,6 +103,7 @@ public class WikiAPI {
 	public boolean editIfChange(String page, String content, String reason) {
 		content = content.trim();
 		var oldText = wiki.getPageText(page);
+		if(oldText != null) oldText = oldText.trim();
 
 		if(!content.equals(oldText)) {
 			if(Bot.globalLocalMode) {

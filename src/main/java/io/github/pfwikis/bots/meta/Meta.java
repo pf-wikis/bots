@@ -48,9 +48,8 @@ public class Meta extends SimpleBot {
 			log.info("Checking if bot {} needs an account", bot.getBotName());
 			run.withMaster(wiki->{
 				try {
-					if(bot.getBotName().equals("Bot Blog Facts"))
-						log.info("");
 					if(!wiki.accountExists(bot.getBotName())) {
+						bot.setRootPassword(this.getRootPassword());
 						log.info("Creating account for {}", bot.getBotName());
 						wiki.createAccount(bot.getBotName(), bot.getBotPassword());
 						wiki.addRight(bot.getBotName(), "bot|sysop|techadmin", "never");
