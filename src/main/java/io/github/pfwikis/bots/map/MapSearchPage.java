@@ -27,8 +27,7 @@ public class MapSearchPage extends SimpleBot {
 				.append("<noinclude>{{Bot created|").append(this.getBotName()).append("}}\n")
 				.append("This page is a helper for the by name parameter.\n")
 				.append("The full list of entries are:\n<ul>\n");
-		var categories = Jackson.JSON.readValue(new File("E:\\workspace-paizo\\mapping\\frontend\\public\\search.json"), Category[].class);
-		//var categories = Jackson.JSON.readValue(URI.create("https://map.pathfinderwiki.com/search.json").toURL(), Category[].class);
+		var categories = Jackson.JSON.readValue(URI.create("https://map.pathfinderwiki.com/search.json").toURL(), Category[].class);
 		for(var cat:categories) {
 			sb.append("<li>").append(cat.category).append("</li>\n<ul>\n");
 			for(var e:cat.entries) {
