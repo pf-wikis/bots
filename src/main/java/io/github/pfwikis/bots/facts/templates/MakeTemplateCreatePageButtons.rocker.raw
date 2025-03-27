@@ -1,0 +1,43 @@
+@import io.github.pfwikis.bots.facts.model.SConcept
+@import io.github.pfwikis.bots.facts.util.ConceptUtil
+@import static io.github.pfwikis.bots.utils.RockerHelper.n
+
+@args(SConcept[] concepts)
+
+@arg => {{{{1|Facts:{{PAGENAME}}}}}}
+
+<includeonly>
+<div class="facts-helper-create-page-buttons">
+@for(SConcept c:concepts) {
+	{{#formlink:
+		form=@c.getName()
+		|link text=@c.getName()
+		|link type=post button
+		|target=@arg
+		|tooltip=Creates a facts page of type @c.getName() 
+	}}
+}
+</div>
+
+</includeonly><noinclude>
+{{Bot created|Bot Facts Master}}
+This template creates a seriesof butons to start editing a page via a facts form:@n(2)
+{{tl|Facts/Helper/Create page buttons}}@n(2)
+will result in
+{{Facts/Helper/Create page buttons}}
+
+<templatedata>
+{
+	"params": {
+		"1": {
+			"label": "facts page",
+			"description": "The facts page name. Only use this if it differs from the current page.",
+			"type": "wiki-page-name"
+		}
+	},
+	"description": "Shows buttons to edit the page as a facts page",
+	"format": "inline"
+}
+</templatedata>
+[[Category:Synced to starfinderwiki]]
+</noinclude>
