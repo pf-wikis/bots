@@ -68,10 +68,13 @@ import static io.github.pfwikis.bots.facts.SFactsProperties.*;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Writer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -735,19 +738,21 @@ public class SModel {
 				)
 		)
 		.build();
-	public static final SConcept[] CONCEPTS = {
-		BOOK,
-		ACCESSORY,
-		MAP,
-		MINIATURES,
-		AUDIO,
-		VIDEO_GAME,
-		DECK,
-		WEB_CITATION
-	};
+	public static final SConcept[] CONCEPTS = Stream.of(
+			BOOK,
+			ACCESSORY,
+			MAP,
+			MINIATURES,
+			AUDIO,
+			VIDEO_GAME,
+			DECK,
+			WEB_CITATION
+		)
+		.sorted(Comparator.comparing(SConcept::getName))
+		.toArray(SConcept[]::new);
 	
 	@RequiredArgsConstructor
-	private static abstract class Helper implements BiFunction<SingleRun, SemanticSubject, String> {
+	private abstract static class Helper implements BiFunction<SingleRun, SemanticSubject, String> {
 		
 		protected SingleRun run;
 		protected SemanticSubject page;
@@ -787,7 +792,7 @@ public class SModel {
 			this.game = run.getServer().getName();
 			this.series = page.getOr(Series, Collections.emptyList());
 			
-			this.cats = new ArrayList<String>();
+			this.cats = new ArrayList<>();
 			generateCategories();
 			cats = cats.stream().sorted().distinct().toList();
 			if(cats.isEmpty()) return "";

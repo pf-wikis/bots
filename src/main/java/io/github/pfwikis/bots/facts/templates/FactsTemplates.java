@@ -9,6 +9,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.beust.jcommander.Parameters;
 
+import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.facts.SFactsProperties;
@@ -28,6 +29,11 @@ public class FactsTemplates extends SimpleBot {
 	@Override
 	public void run(RunContext ctx) throws IOException {
 		var concepts = SModel.CONCEPTS;
+		
+		
+		if(run.getServer()==Wiki.PF) {
+			make(run.getWiki(), "Template:Facts/Helper/Create page buttons", MakeTemplateCreatePageButtons.template(concepts));
+		}
 		
 		handlePropertyDefinitions();
 		

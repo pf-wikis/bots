@@ -108,7 +108,7 @@ public class PageSyncer extends DualBot implements RunOnPageBot {
         if((!page.startsWith("Module:") || page.endsWith("/doc")) && !page.startsWith("Style:")) {
             targetTxt = "<noinclude><div class=\"banner\">"
                 + "This page is automatically synced from [https://pathfinderwiki.com/wiki/{{FULLPAGENAMEE}} this] pathfinderwiki page. "
-                + "Do not edit it here.</div></noinclude>"
+                + "Do not edit it here.</div></noinclude>\n"
                 + targetTxt;
         }
 
