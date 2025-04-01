@@ -392,6 +392,26 @@ public class SFactsProperties {
 		SFactTypes.BOOLEAN)
 		.setDescription("Marks this section as a subsection of the previous section.")
 		.setDefaultValue("No");
+	public static final SProperty<Temporal> Event_date = new SProperty<>(
+		"Event date",
+		SFactTypes.DATE)
+		.setDescription("The date an Event occured on.");
+	public static final SProperty<Temporal> Event_end_date = new SProperty<>(
+		"Event end date",
+		SFactTypes.DATE)
+		.setDescription("The date an Event ended on if it had a duration.");
+	public static final SProperty<String> Event_description = new SProperty<>(
+		"Event description",
+		SFactTypes.MULTILINE_WIKITEXT)
+		.setDescription("The date an Event ended on if it had a duration.");
+	public static final SProperty<String> Event_keyword = new SProperty<>(
+		"Event keyword",
+		SFactTypes.STRING)
+		.setDescription("A keyword associated with an event used for selecting certain events.");
+	public static final SProperty<String> Event_source = new SProperty<>(
+		"Event source",
+		SFactTypes.STRING)
+		.setDescription("A citation footnote where the specific date used is source from.");
 	
 	private static final Map<String, SProperty<?>> ALL_PROPERTIES;
 	static {

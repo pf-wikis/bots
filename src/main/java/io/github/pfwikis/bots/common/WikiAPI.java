@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -27,8 +29,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.StreamReadFeature;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.google.common.util.concurrent.Uninterruptibles;
 
 import io.github.fastily.jwiki.core.NS;
 import io.github.fastily.jwiki.dwrap.Revision;
@@ -49,6 +53,7 @@ import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
 import io.github.pfwikis.bots.utils.Jackson;
 import io.github.pfwikis.bots.utils.SimpleCache.CacheId;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.Response;
 
 @Slf4j
 public class WikiAPI {
@@ -239,16 +244,46 @@ public class WikiAPI {
 	}
 	
 	private <T> T get(JavaType type, String action, String... params) {
-		params = ArrayUtils.addAll(params,
+		var fParams = ArrayUtils.addAll(params,
 			"format", "json",
 			"utf8", "1",
 			"formatversion", "2"
 		);
-		var response = wiki.basicGET(action, params);
-		try (var in = response.body().byteStream()) {
-			return JACKSON.readValue(in, type);
-		} catch (Exception e) {
-			throw new RuntimeException("Failed wiki "+action+" with "+Arrays.toString(params), e);
+		var result = basicRequest(()->wiki.basicGET(action, fParams));
+		try {
+			return JACKSON.treeToValue(result, type);
+		} catch (JsonProcessingException | IllegalArgumentException e) {
+			throw new RuntimeException("Failed to parse JSON response. Response:\n"+result, e);
+		}
+	}
+	
+	private JsonNode basicRequest(Supplier<Response> r) {
+		try {
+			var resp = r.get();
+			
+			while(resp.code() == 503) {
+				log.info("Sleeping due to rate limits");
+				Uninterruptibles.sleepUninterruptibly(1, TimeUnit.SECONDS);
+				resp = r.get();
+			}
+			
+			var body = resp.body().bytes();
+			
+			if(!resp.isSuccessful()) {
+				throw new RuntimeException("HTTP status code '"+resp.code()+"' was thrown. Response:\n"+new String(body));
+			}
+			
+			try {
+				var res = JACKSON.readTree(body);
+				if(res.has("errors")) {
+					throw new RuntimeException("Mediawiki returned error. Response:\n"+res.toPrettyString());
+				}
+				return res;
+			} catch(Exception e) {
+				throw new RuntimeException("Failed to parse JSON response. Response:\n"+new String(body), e);
+			}
+		} catch(Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -441,7 +476,7 @@ public class WikiAPI {
 	}
 
 	public void protect(String title, String protections, String reason, String token) {
-		wiki.basicPOST("protect", new HashMap<>(Map.of(
+		basicRequest(()->wiki.basicPOST("protect", new HashMap<>(Map.of(
 				"format", "json",
 				"title", title,
 				"protections", protections,
@@ -449,13 +484,13 @@ public class WikiAPI {
 				"token", token,
 				"utf8", "1",
 				"formatversion", "2"
-		)));
+		))));
 	}
 
 	public void setContentModel(String title, String model) throws IOException {
 		String token = requestToken("csrf");
 		
-		var resp = wiki.basicPOST(
+		basicRequest(()->wiki.basicPOST(
 			"changecontentmodel", new HashMap<>(Map.of(
 			"format", "json",
 			"utf8", "1",
@@ -464,11 +499,7 @@ public class WikiAPI {
 			"model", model,
 			"token", token,
 			"summary", "Change contentmodel to JSON"
-		)));
-		var json = resp.body().string();
-		if(json.contains("\"error\"")) {
-			throw new IllegalStateException("Could not set contentmodel of "+title+". Response was:\n"+json);
-		}
+		))));
 	}
 
 	public ArrayList<Result> semanticAsk(String query) {

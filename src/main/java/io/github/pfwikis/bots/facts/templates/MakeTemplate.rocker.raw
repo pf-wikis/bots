@@ -16,11 +16,11 @@
 		You can cite this entity by using {{tl|Ref|{{PAGENAME}}}} or {{tl|Cite/{{PAGENAME}}}}.
 	</div>
 }}
-{{#ifexist:Template:Facts/Infoboxes/{{FULLPAGENAME}}|
+@if(c.getInfoboxProperties()!=null && !c.getInfoboxProperties().isEmpty()) {
 	<div class="citethis">
-		The infobox for this entity can be used via {{tl|Infobox|@c.getName()|{{PAGENAME}}}} or just {{tl|Infobox|@c.getName()}} on the page <code>{{PAGENAME}}</code>.
+		The infobox for this entity can be used via {{tl|Infobox|{{PAGENAME}}}} or just {{tl|Infobox}} on the page <code>{{PAGENAME}}</code>.
 	</div>
-}}
+}
 
 @if(!c.getSubConcepts().isEmpty()) {
 	<div class="facts-display-header">

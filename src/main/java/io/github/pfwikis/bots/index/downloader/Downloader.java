@@ -88,9 +88,10 @@ public class Downloader {
 	}
 	
 	private DownloadInfo checkDownloadPage(Result book, String article, File tmpDir) throws IOException {
-		DownloadInfo info = new DownloadInfo(article);
-		
 		String url = book.getPrintouts().getWebsite();
+		DownloadInfo info = new DownloadInfo(article, url);
+		
+		
 		if(!url.startsWith("https://paizo.com/products/")) return info.withNoFileReason("not paizo url: "+url);
 		
 		var doc = jsoup(url);
@@ -169,6 +170,7 @@ public class Downloader {
 	@AllArgsConstructor
 	public static class DownloadInfo {
 		private final String article;
+		private final String url;
 		private OffsetDateTime lastUpdated;
 		private String noFileReason;
 	}
@@ -207,8 +209,6 @@ public class Downloader {
 				//if no downloadlink we have to update
 				if(!first)
 					Uninterruptibles.sleepUninterruptibly(5, TimeUnit.SECONDS);
-				if(updateLink.startsWith("https://downloads.paizo.com/"))
-					System.out.println();
 				e = jsoup(updateLink);
 				first = false;
 			} catch(Exception ex) {

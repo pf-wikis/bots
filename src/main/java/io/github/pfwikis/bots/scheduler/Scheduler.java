@@ -6,6 +6,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
@@ -31,9 +32,11 @@ import io.github.pfwikis.bots.maintenance.Maintenance;
 import io.github.pfwikis.bots.map.MapSearchPage;
 import io.github.pfwikis.bots.meta.Meta;
 import io.github.pfwikis.bots.newsfeedreader.NewsFeedReader;
+import io.github.pfwikis.bots.rest.RestServer;
 import io.github.pfwikis.bots.scheduler.Schedulable.SchedulableBot;
 import io.github.pfwikis.bots.templatestyles.TemplateStyles;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -50,10 +53,13 @@ public class Scheduler {
 	@Parameter(names = "--matomoToken")
 	protected String matomoToken;
 	
+	private Discord discord;
+	
 	private PriorityBlockingQueue<Task> tasks = new PriorityBlockingQueue<>();
 	
 	public void start() throws Exception {
-		try(var discord = new Discord(discordToken)) {
+		try(var d = new Discord(discordToken)) {
+			this.discord = d;
 			for(var wiki : Wiki.values()) {
 				wiki.setMasterPassword(rootPassword);
 				try {
@@ -84,41 +90,60 @@ public class Scheduler {
 				scheduleOnce(scheduleableBot(wiki, discord, new TemplateStyles()));
 			}
 			
-			worker(discord);
+			var worker = new Worker(discord);
+			Thread.ofVirtual().start(worker);
+			RestServer.start(this);
+			Runtime.getRuntime().addShutdownHook(Thread.ofVirtual().unstarted(()-> {
+				RestServer.stop();
+				worker.stop();
+			}));
 		}
 	}
 	
-	private void worker(Discord discord) {
-		var thread = Thread.currentThread();
-		thread.setName("Scheduler Worker");
-		while(true) {
-			var task = Uninterruptibles.takeUninterruptibly(tasks);
-			String name = task.getSchedulable().getName();
-			try {
-				var waitDuration = Duration.between(Instant.now(), task.time).truncatedTo(ChronoUnit.SECONDS);
-				if(waitDuration.isPositive()) {
-					log.info("Sleeping for {}", DurationFormatUtils.formatDurationWords(waitDuration.toMillis(), true,  true));
-					Uninterruptibles.sleepUninterruptibly(waitDuration.toSeconds(), TimeUnit.SECONDS);
+	@RequiredArgsConstructor
+	private class Worker implements Runnable {
+		
+		private final Discord discord;
+		private final AtomicBoolean stop = new AtomicBoolean(false);
+
+		@Override
+		public void run() {
+			var thread = Thread.currentThread();
+			thread.setName("Scheduler Worker");
+			while(!stop.get()) {
+				var task = Uninterruptibles.takeUninterruptibly(tasks);
+				String name = task.getSchedulable().getName();
+				try {
+					var waitDuration = Duration.between(Instant.now(), task.time).truncatedTo(ChronoUnit.SECONDS);
+					if(waitDuration.isPositive()) {
+						log.info("Sleeping for {}", DurationFormatUtils.formatDurationWords(waitDuration.toMillis(), true,  true));
+						Uninterruptibles.sleepUninterruptibly(waitDuration.toSeconds(), TimeUnit.SECONDS);
+					}
+					log.info("Executing {}", name);
+					thread.setName(name);
+					task.run();
+				} catch(Exception e) {
+					log.error("Failed to execute job {}", name, e);
+					if(discord != null)
+						discord.report("""
+						**Bots Error**
+						```java
+						{}
+						```
+						""".replace("{}", ExceptionUtils.getStackTrace(e)));
+				} finally {
+					thread.setName("Scheduler Worker");
 				}
-				log.info("Executing {}", name);
-				thread.setName(name);
-				task.run();
-			} catch(Exception e) {
-				log.error("Failed to execute job {}", name, e);
-				if(discord != null)
-					discord.report("""
-					**Bots Error**
-					```java
-					{}
-					```
-					""".replace("{}", ExceptionUtils.getStackTrace(e)));
-			} finally {
-				thread.setName("Scheduler Worker");
 			}
 		}
+
+		public void stop() {
+			stop.set(true);
+		}
 	}
+
 	
-	private void initBot(Wiki wiki, Discord discord, SimpleBot bot) {
+	public void initBot(Wiki wiki, Discord discord, SimpleBot bot) {
 		bot.setRootPassword(wiki.getMasterPassword());
 		var sr = new SingleRun(wiki, wiki.getMasterAccount(), wiki.getMasterPassword());
 		sr.setWiki(WikiAPI.create(wiki, bot.getBotName(), bot.getBotPassword()));

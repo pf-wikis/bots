@@ -15,12 +15,6 @@
 @import io.github.pfwikis.bots.utils.StringHelper
 
 @args(SingleRun run, List<SConcept> concepts, SemanticSubject page)
-<noinclude>
-{{Bot created|Bot Infobox Templates|This template is automatically created from [[Created from::@page.getSubject().toFullTitle()]].}}
-This template stores an infobox automatically created from [[@page.getSubject().toFullTitle()]]. It is not meant to be used directly. Instead
- use {{tl|Infobox}} or {{tl|Infobox|@page.getSubject().toFullTitle()}}.
-This template also adds many categories based on the facts to each page it is used in.
-</noinclude>
 @for(SConcept concept:concepts) {
 	<div class="infobox @ConceptUtil.cssName(concept)">
 		<div class="name">
@@ -109,8 +103,7 @@ This template also adds many categories based on the facts to each page it is us
 			</div>
 		</div>
 	</div>
-	
-	<includeonly>
+
 	@*Categories based on the properties.*@
 	@if(concept.containsProperty(Errata) && page.has(Errata)) {
 		[[Category:Products with errata]]
@@ -150,5 +143,4 @@ This template also adds many categories based on the facts to each page it is us
 	}
 	
 	@concept.conceptSpecificCategories(run, page)
-	</includeonly>
 }
