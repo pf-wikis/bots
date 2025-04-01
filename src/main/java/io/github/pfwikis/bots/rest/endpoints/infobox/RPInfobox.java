@@ -17,21 +17,24 @@ public class RPInfobox extends RPEndpoint<DefaultRPParam> {
 
 	@Override
 	public RPResult handle(RestProviderBot bot, DefaultRPParam param) throws Exception {
-		var subject = bot.getRun().getWiki().semanticSubject(param.getFactsPage());
-		
-		var concepts = Arrays.stream(SModel.CONCEPTS)
-			.filter(c->c.getInfoboxProperties()!=null && !c.getInfoboxProperties().isEmpty())
-			.filter(subject::hasConcept)
-			.toList();
-		
 		String cnt = "{{Error|Empty concepts}}";
-		if(!concepts.isEmpty()) {
-			cnt = RockerHelper.makeWikitext(MakeInfoboxTemplate.template(bot.getRun(), concepts, subject));
+		if(param.validate()) {
+			var subject = bot.getRun().getWiki().semanticSubject(param.getFactsPage());
+			
+			var concepts = Arrays.stream(SModel.CONCEPTS)
+				.filter(c->c.getInfoboxProperties()!=null && !c.getInfoboxProperties().isEmpty())
+				.filter(subject::hasConcept)
+				.toList();
+			
+			
+			if(!concepts.isEmpty()) {
+				cnt = RockerHelper.makeWikitext(MakeInfoboxTemplate.template(bot.getRun(), concepts, subject));
+			}
 		}
 		
 		return new RPResult(
 			List.of(new RPBlock(RPBlockType.WIKITEXT, cnt)),
-			List.of("Facts:The Burning of Greensteeples")
+			List.of(param.getFactsPage())
 		);
 	}
 }

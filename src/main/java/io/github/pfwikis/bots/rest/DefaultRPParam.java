@@ -5,4 +5,8 @@ import lombok.Data;
 @Data
 public class DefaultRPParam {
 	private String factsPage;
+
+	public boolean validate() {
+		return factsPage != null && factsPage.startsWith("Facts:");
+	}
 }
