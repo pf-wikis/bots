@@ -1,6 +1,8 @@
 package io.github.pfwikis.bots.rest.endpoints.timeline;
 
 import java.time.temporal.ChronoField;
+import java.time.temporal.Temporal;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -47,9 +49,9 @@ public class RPTimeline extends RPEndpoint<RPTimelineParam> {
 					""".formatted(
 						e.toPage(),
 						e.getPrintouts().name(),
-						SFactTypes.DATE.toInfoboxDisplay(null, e.getPrintouts().date().getRaw())
+						formatDate(e.getPrintouts().date().getRaw())
 							+ (e.getPrintouts().endDate()!=null
-								?("–"+SFactTypes.DATE.toInfoboxDisplay(null, e.getPrintouts().endDate().getRaw()))
+								?("–"+formatDate(e.getPrintouts().endDate().getRaw()))
 								:""
 							),
 						Optional.ofNullable(e.getPrintouts().description()).orElse("")
@@ -58,28 +60,27 @@ public class RPTimeline extends RPEndpoint<RPTimelineParam> {
 			))
 			.toList();
 		
-
-		var json = Jackson.JSON.writeValueAsString(tlEvents);
 		var id = "timeline-"+UUID.randomUUID().toString();
-		var script = """
-		<script type="text/javascript">
-			if (!window.hasOwnProperty('modernTimeline')) {window.modernTimeline = {};}
-			window.modernTimeline["%s"] = {
-				events: %s,
-				options: {
-					duration: 0
-				}
-			};
-		</script>
-		""".formatted(id, json);
-		
 		return RPResult.builder()
 			.block(new RPBlock(RPBlockType.HTML, "<div id=\"%s\" class=\"timeline\" style=\"height:500px\"></div>".formatted(id)))
 			.dependsOn(events.stream().map(e->e.toPage()).distinct().toList())
-			.headItem(script)
+			.data(Map.of("id", id, "events", tlEvents))
 			.build();
 	}
 	
+	private String formatDate(Temporal t) {
+		var date = "{{Golariondate|year=%s|month=%s|day=%s}}".formatted(
+			t.get(ChronoField.YEAR),
+			t.isSupported(ChronoField.MONTH_OF_YEAR)?t.get(ChronoField.MONTH_OF_YEAR):"",
+			t.isSupported(ChronoField.DAY_OF_MONTH)?t.get(ChronoField.DAY_OF_MONTH):""
+		);
+		
+		if(t.isSupported(ChronoField.HOUR_OF_DAY) && t.isSupported(ChronoField.MINUTE_OF_HOUR)) {
+			date+=" at "+t.get(ChronoField.HOUR_OF_DAY)+":"+t.get(ChronoField.MINUTE_OF_HOUR);
+		}
+		return date;
+	}
+
 	private static record TimelineDate(
 		Integer year,
 		Integer month,

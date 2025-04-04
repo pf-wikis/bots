@@ -88,5 +88,6 @@ public abstract class RPEndpoint<T> implements Route {
 		@Singular("dependency")
 		private List<String> dependsOn;
 		private String headItem;
+		private Object data;
 	}
 }
