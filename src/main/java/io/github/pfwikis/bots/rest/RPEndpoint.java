@@ -1,16 +1,22 @@
 package io.github.pfwikis.bots.rest;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+
+import org.apache.commons.lang3.StringUtils;
 
 import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.scheduler.Scheduler;
 import io.github.pfwikis.bots.utils.Jackson;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.Singular;
 import lombok.extern.slf4j.Slf4j;
 import spark.Request;
 import spark.Response;
@@ -52,10 +58,35 @@ public abstract class RPEndpoint<T> implements Route {
 		
 	}
 	
+	protected RPResult error(String factsPage, String cause, String... extraCategories) {
+		var sb = new StringBuilder()
+				.append("{{Error|")
+				.append(cause)
+				.append("}}");
+		for(var cat:extraCategories) {
+			sb.append("[[").append(StringUtils.prependIfMissing(cat, "Category")).append("]]");
+		}
+		return RPResult.builder()
+			.block(new RPBlock(RPBlockType.WIKITEXT, sb.toString()))
+			.dependsOn(factsPage!=null?List.of(factsPage):List.of())
+			.build();
+	}
+	
 	public static enum RPBlockType {
 		WIKITEXT,
 		HTML;
 	}
 	public static record RPBlock(RPBlockType type, String value) {}
-	public static record RPResult(List<RPBlock> blocks, List<String> dependsOn) {}
+	
+	@Builder
+	@Getter @Setter
+	public static class RPResult {
+		@Builder.Default
+		private UUID uuid = UUID.randomUUID();
+		@Singular
+		private List<RPBlock> blocks;
+		@Singular("dependency")
+		private List<String> dependsOn;
+		private String headItem;
+	}
 }

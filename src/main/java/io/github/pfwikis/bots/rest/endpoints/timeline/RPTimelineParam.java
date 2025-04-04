@@ -14,9 +14,9 @@ public class RPTimelineParam {
 			.or(inRange('A', 'Z'))
 			.precomputed();
 	
-	private String tag;
+	private String keyword;
 	
 	public boolean validate() {
-		return StringUtils.isNotBlank(tag) && VALID.matchesAllOf(tag);
+		return StringUtils.isNotBlank(keyword) && VALID.matchesAllOf(keyword);
 	}
 }

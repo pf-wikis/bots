@@ -25,6 +25,7 @@ import com.google.common.util.concurrent.Uninterruptibles;
 
 import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.WikiAPI;
+import io.github.pfwikis.bots.common.model.SemanticAsk.Printouts;
 import io.github.pfwikis.bots.common.model.SemanticAsk.Result;
 import io.github.pfwikis.bots.utils.Jackson;
 import io.github.pfwikis.bots.utils.Retry;
@@ -80,14 +81,14 @@ public class Downloader {
 		}
 	}
 	
-	private void checkDownload(Result book, String article, File dir) throws IOException {
+	private void checkDownload(Result<Printouts> book, String article, File dir) throws IOException {
 		var tmpDir = Files.createTempDirectory("paizo-downloader-").toFile();
 		var info = checkDownloadPage(book, article, tmpDir);
 		Jackson.YAML.writeValue(new File(tmpDir, "info.yaml"), info);
 		FileUtils.moveDirectory(tmpDir, dir);
 	}
 	
-	private DownloadInfo checkDownloadPage(Result book, String article, File tmpDir) throws IOException {
+	private DownloadInfo checkDownloadPage(Result<Printouts> book, String article, File tmpDir) throws IOException {
 		String url = book.getPrintouts().getWebsite();
 		DownloadInfo info = new DownloadInfo(article, url);
 		
