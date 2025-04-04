@@ -17,23 +17,23 @@ public class RPInfobox extends RPEndpoint<DefaultRPParam> {
 
 	@Override
 	public RPResult handle(RestProviderBot bot, DefaultRPParam param) throws Exception {
-		String cnt = "{{Error|Empty concepts}}";
-		if(param.validate()) {
-			var subject = bot.getRun().getWiki().semanticSubject(param.getFactsPage());
+		if(!param.validate()) {
+			return error(param.getFactsPage(), "Invalid arguments");
+		}
+		var subject = bot.getRun().getWiki().semanticSubject(param.getFactsPage());
+		
+		var concepts = Arrays.stream(SModel.CONCEPTS)
+			.filter(c->c.getInfoboxProperties()!=null && !c.getInfoboxProperties().isEmpty())
+			.filter(subject::hasConcept)
+			.toList();
 			
-			var concepts = Arrays.stream(SModel.CONCEPTS)
-				.filter(c->c.getInfoboxProperties()!=null && !c.getInfoboxProperties().isEmpty())
-				.filter(subject::hasConcept)
-				.toList();
 			
-			
-			if(!concepts.isEmpty()) {
-				cnt = RockerHelper.makeWikitext(MakeInfoboxTemplate.template(bot.getRun(), concepts, subject));
-			}
+		if(concepts.isEmpty()) {
+			return error(param.getFactsPage(), "No infobox concept on factspage");
 		}
 		
 		return new RPResult(
-			List.of(new RPBlock(RPBlockType.WIKITEXT, cnt)),
+			List.of(new RPBlock(RPBlockType.WIKITEXT, RockerHelper.makeWikitext(MakeInfoboxTemplate.template(bot.getRun(), concepts, subject)))),
 			List.of(param.getFactsPage())
 		);
 	}

@@ -13,8 +13,8 @@ import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.model.LogEventsQuery.LogEvent;
 import io.github.pfwikis.bots.common.model.RecentChanges.RecentChange;
-import io.github.pfwikis.bots.facts.citetemplates.CiteTemplates;
 import io.github.pfwikis.bots.pagesyncer.PageSyncer;
+import io.github.pfwikis.bots.rest.endpoints.citetemplate.RPCiteTemplate;
 import io.github.pfwikis.bots.templatestyles.TemplateStyles;
 import lombok.extern.slf4j.Slf4j;
 
@@ -71,7 +71,7 @@ public class RCWatcher extends Schedulable {
 	}
 	
 	
-	private CiteTemplates botCiteTemplates = new CiteTemplates();
+	private RPCiteTemplate botCiteTemplates = new RPCiteTemplate();
 	private TemplateStyles botTemplateStyles = new TemplateStyles();
 	private PageSyncer botPageSyncer = new PageSyncer();
 	

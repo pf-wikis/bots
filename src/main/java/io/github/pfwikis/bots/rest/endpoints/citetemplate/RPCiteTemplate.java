@@ -1,4 +1,4 @@
-package io.github.pfwikis.bots.facts.citetemplates;
+package io.github.pfwikis.bots.rest.endpoints.citetemplate;
 
 import static io.github.pfwikis.bots.facts.SFactsProperties.Author;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Author_all;
@@ -26,48 +26,23 @@ import io.github.pfwikis.bots.common.bots.ScatteredRunnableBot;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.common.model.subject.PageRef;
 import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
-import io.github.pfwikis.bots.facts.citetemplates.BookDef.SectionDef;
+import io.github.pfwikis.bots.facts.citetemplates.MakeCiteTemplate;
+import io.github.pfwikis.bots.rest.DefaultRPParam;
+import io.github.pfwikis.bots.rest.RPEndpoint;
+import io.github.pfwikis.bots.rest.RestProviderBot;
+import io.github.pfwikis.bots.rest.RPEndpoint.RPBlock;
+import io.github.pfwikis.bots.rest.RPEndpoint.RPBlockType;
+import io.github.pfwikis.bots.rest.RPEndpoint.RPResult;
+import io.github.pfwikis.bots.rest.endpoints.citetemplate.BookDef.SectionDef;
 import io.github.pfwikis.bots.utils.RockerHelper;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Parameters
-public class CiteTemplates extends SimpleBot implements RunOnPageBot, ScatteredRunnableBot<CiteTemplates.Shard> {
+public class RPCiteTemplate extends RPEndpoint<RPCiteParam> {
 
-	public CiteTemplates() {
-		super("cite-templates", "Bot Cite Templates");
-	}
-	
-	@Override
-	public void run(RunContext ctx) {
-		if(ctx.getScatterShard() instanceof Shard shard)
-			runOnShard(shard);
-		else if(ctx.getPage() != null) {
-			runOnPage(ctx.getPage());
-		}
-		else {
-			for(var s:createScatterShards()) {
-				try {
-					runOnPage(s.page);
-				} catch(Exception e) {
-					log.error("Failed to process page {}", s.page, e);
-				}
-			}
-		}
-	}
-	
-	private void runOnShard(Shard shard) {
-		if(shard.first()) {
-			run.getWiki().editIfChange("Template:Cite", """
-				{{Bot created|Bot Cite Templates}}
-				<noinclude>
-				{{Documentation}}
-				[[Category:Citation templates]]
-				</noinclude><includeonly><span class="error mw-ext-cite-error">Cite error: {{tl|Cite}} should not be used directly.[[Category:Pages with errors]]</span></includeonly>
-				""", "Update from bot update.");
-			}
-				
-			runOnPage(shard.page());
+	public RPCiteTemplate() {
+		super(RPCiteParam.class, "citetemplate");
 	}
 	
 	private static Set<String> TYPES_WITH_CITE = Set.of(
@@ -76,18 +51,33 @@ public class CiteTemplates extends SimpleBot implements RunOnPageBot, ScatteredR
 		"Facts/Deck",
 		"Facts/Video game",
 		"Facts/Web citation");
-	private void runOnPage(String page) {
-		var subject = run.getWiki().semanticSubject(page);
+	
+	@Override
+	public RPResult handle(RestProviderBot bot, RPCiteParam param) throws Exception {
+		if(!param.validate()) {
+			return error(param.getFactsPage(), "Invalid arguments");
+		}
+		
+		BookDef bookDef = fromCacheOrCalc(bot, param);
+		
+		return new RPResult(
+			List.of(new RPBlock(RPBlockType.WIKITEXT, RockerHelper.makeWikitext(MakeCiteTemplate.template(bot.getRun().getWiki(), bookDef)))),
+			List.of(param.getFactsPage())
+		);
+	}	
+	
+	private BookDef fromCacheOrCalc(RestProviderBot bot, RPCiteParam param) {
+		var subject = bot.getRun().getWiki().semanticSubject(param.getFactsPage());
 		if(!subject.has(Fact_type)) {
-			log.error("{} has no fact type", page);
-			return;
+			throw new IllegalArgumentException("Page is no facts page");
 		}
 		var type = subject.get(Fact_type);
+		if(!TYPES_WITH_CITE.contains(type.getTitle())) {
+			throw new IllegalArgumentException("Facts page is of a non-citable type");
+		}
 		
-		if(!TYPES_WITH_CITE.contains(type.getTitle())) return;
-		
-		var bookDef = BookDef.builder()
-			.factsPage(StringUtils.removeStart(page, "Facts:"))
+		BookDef bookDef = BookDef.builder()
+			.factsPage(StringUtils.removeStart(param.getFactsPage(), "Facts:"))
 			.subject(subject)
 			.authors(sortAuthors(subject))
 			.releaseYear("unknown".equals(subject.get(Release_year))
@@ -120,11 +110,9 @@ public class CiteTemplates extends SimpleBot implements RunOnPageBot, ScatteredR
 			}
 		}
 		calcPageRanges(bookDef.getSections(), null);
-		
-		var template = MakeCiteTemplate.template(run.getWiki(), bookDef);
-		RockerHelper.make(run.getWiki(), "Template:Cite/"+bookDef.getFactsPage(), template);
+		return bookDef;
 	}
-	
+
 	private List<PageRef> sortAuthors(SemanticSubject subject) {
 		List<PageRef> result = new ArrayList<>();
 		subject.getOr(Primary_author, Collections.emptyList()).stream()
@@ -200,5 +188,7 @@ public class CiteTemplates extends SimpleBot implements RunOnPageBot, ScatteredR
 			.toList());
 		shards.set(0, new Shard(shards.get(0).page(), true));
 		return shards;
-	}	
+	}
+
+	
 }

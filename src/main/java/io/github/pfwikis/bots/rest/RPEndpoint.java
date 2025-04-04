@@ -5,7 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import io.github.pfwikis.bots.common.Wiki;
+import io.github.pfwikis.bots.rest.RPEndpoint.RPBlock;
+import io.github.pfwikis.bots.rest.RPEndpoint.RPBlockType;
+import io.github.pfwikis.bots.rest.RPEndpoint.RPResult;
 import io.github.pfwikis.bots.scheduler.Scheduler;
 import io.github.pfwikis.bots.utils.Jackson;
 import lombok.Getter;
@@ -50,6 +55,20 @@ public abstract class RPEndpoint<T> implements Route {
 			return null;
 		}
 		
+	}
+	
+	protected RPResult error(String factsPage, String cause, String... extraCategories) {
+		var sb = new StringBuilder()
+				.append("{{Error|")
+				.append(cause)
+				.append("}}");
+		for(var cat:extraCategories) {
+			sb.append("[[").append(StringUtils.prependIfMissing(cat, "Category")).append("]]");
+		}
+		return new RPResult(
+			List.of(new RPBlock(RPBlockType.WIKITEXT, sb.toString())),
+			List.of(factsPage)
+		);
 	}
 	
 	public static enum RPBlockType {

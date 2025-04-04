@@ -1,4 +1,4 @@
-package io.github.pfwikis.bots.facts.citetemplates;
+package io.github.pfwikis.bots.rest.endpoints.citetemplate;
 
 import static io.github.pfwikis.bots.facts.SFactsProperties.Artist;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Name;

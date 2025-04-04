@@ -1,4 +1,4 @@
-package io.github.pfwikis.bots.facts.citetemplates;
+package io.github.pfwikis.bots.rest.endpoints.citetemplate;
 
 import java.util.List;
 import java.util.Map;
