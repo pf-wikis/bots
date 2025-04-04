@@ -14,6 +14,7 @@ import spark.Spark;
 public class RestServer {
 	public static void start(Scheduler scheduler) {
 		Spark.port(8765);
+		Spark.threadPool(5); //limit number of threads as to bot bombard the wiki
 		for(var wiki:Wiki.values()) {
 			for(var endpoint : findAllEndpoints()) {
 				endpoint.setWiki(wiki);
