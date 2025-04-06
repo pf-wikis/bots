@@ -12,6 +12,7 @@ import lombok.Data;
 public class RPTimelineParam {
 	private final static CharMatcher VALID = inRange('a', 'z')
 			.or(inRange('A', 'Z'))
+			.or(CharMatcher.anyOf("; -_"))
 			.precomputed();
 	
 	private String keyword;

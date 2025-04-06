@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
+
 import io.github.pfwikis.bots.common.model.SemanticAsk.WikiDate;
 import io.github.pfwikis.bots.facts.model.SFactTypes;
 import io.github.pfwikis.bots.rest.RPEndpoint;
@@ -23,14 +25,22 @@ public class RPTimeline extends RPEndpoint<RPTimelineParam> {
 		if(!param.validate()) {
 			return error(null, "Invalid arguments to infobox");
 		}
-		var events = bot.getRun().getWiki().semanticAsk(Printouts.class, "[[Event date::+]][[Fact type::Template:Event]][[Event keyword::"+param.getKeyword()+"]]"
-				+"""
-				|?Name=name
-				|?Event date#ISO=date
-				|?Event end date#ISO=endDate
-				|?Event description=description
-				|?Event source=source
-				""", 500);
+		var query = new StringBuilder("[[Event date::+]][[Fact type::Template:Event]]");
+		for(var p:StringUtils.split(param.getKeyword(), ';')) {
+			query
+				.append("[[Event keyword::")
+				.append(p.trim())
+				.append("]]");
+		}
+		query.append("""
+			|?Name=name
+			|?Event date#ISO=date
+			|?Event end date#ISO=endDate
+			|?Event description=description
+			|?Event source=source
+		""");
+		
+		var events = bot.getRun().getWiki().semanticAsk(Printouts.class, query.toString(), 500);
 			
 		if(events.isEmpty()) return error(null, "No events with the given keyword.");
 		
@@ -41,44 +51,91 @@ public class RPTimeline extends RPEndpoint<RPTimelineParam> {
 				new TimelineText(
 					e.getPrintouts().name(),
 					"""
-					<div class="timeline-text">
-						<h4 class="timeline-header">[[%s|%s]]</h4>
-						<div class="timeline-dates">%s</div>
-						<div class="timeline-description">%s</div>
-					</div>
+					<h4 class="timeline-header">[[%s|%s]]<ref>%s</ref></h4>
+					<div class="timeline-dates">%s</div>
+					<div class="timeline-description">%s</div>
 					""".formatted(
 						e.toPage(),
 						e.getPrintouts().name(),
+						e.getPrintouts().source(),
 						formatDate(e.getPrintouts().date().getRaw())
 							+ (e.getPrintouts().endDate()!=null
-								?("–"+formatDate(e.getPrintouts().endDate().getRaw()))
+								?(" – "+formatDate(e.getPrintouts().endDate().getRaw()))
 								:""
 							),
 						Optional.ofNullable(e.getPrintouts().description()).orElse("")
-					)
+					).trim()
 				)
 			))
 			.toList();
 		
 		var id = "timeline-"+UUID.randomUUID().toString();
 		return RPResult.builder()
-			.block(new RPBlock(RPBlockType.HTML, "<div id=\"%s\" class=\"timeline\" style=\"height:500px\"></div>".formatted(id)))
+			.block(new RPBlock(RPBlockType.HTML, "<div id=\"%s\" class=\"timeline\"></div>".formatted(id)))
 			.dependsOn(events.stream().map(e->e.toPage()).distinct().toList())
 			.data(Map.of("id", id, "events", tlEvents))
 			.build();
 	}
 	
 	private String formatDate(Temporal t) {
-		var date = "{{Golariondate|year=%s|month=%s|day=%s}}".formatted(
-			t.get(ChronoField.YEAR),
-			t.isSupported(ChronoField.MONTH_OF_YEAR)?t.get(ChronoField.MONTH_OF_YEAR):"",
-			t.isSupported(ChronoField.DAY_OF_MONTH)?t.get(ChronoField.DAY_OF_MONTH):""
-		);
+		var sb = new StringBuilder();
 		
-		if(t.isSupported(ChronoField.HOUR_OF_DAY) && t.isSupported(ChronoField.MINUTE_OF_HOUR)) {
-			date+=" at "+t.get(ChronoField.HOUR_OF_DAY)+":"+t.get(ChronoField.MINUTE_OF_HOUR);
+		
+		
+		if(t.isSupported(ChronoField.DAY_OF_WEEK)) {
+			sb
+				.append("[[")
+				.append(
+					switch(t.get(ChronoField.DAY_OF_WEEK)) {
+						case 1 -> "Moonday";
+						case 2 -> "Toilday";
+						case 3 -> "Wealday";
+						case 4 -> "Oathday";
+						case 5 -> "Fireday";
+						case 6 -> "Starday";
+						case 7 -> "Sunday";
+						default -> throw new IllegalArgumentException("Day of week "+t.get(ChronoField.DAY_OF_WEEK));
+					}
+				)
+				.append("]], ");
 		}
-		return date;
+		
+		if(t.isSupported(ChronoField.MONTH_OF_YEAR)) {
+			sb
+			.append("[[")
+			.append(
+				switch(t.get(ChronoField.MONTH_OF_YEAR)) {
+					case  1 -> "Abadius";
+					case  2 -> "Calistril";
+					case  3 -> "Pharast";
+					case  4 -> "Gozran";
+					case  5 -> "Desnus";
+					case  6 -> "Sarenith";
+					case  7 -> "Erastus";
+					case  8 -> "Arodus";
+					case  9 -> "Rova";
+					case 10 -> "Lamashan";
+					case 11 -> "Neth";
+					case 12 -> "Kuthona";
+					default -> throw new IllegalArgumentException("Month of year "+t.get(ChronoField.MONTH_OF_YEAR));
+				}
+			)
+			.append("]]");
+		}
+		
+		if(t.isSupported(ChronoField.DAY_OF_MONTH)) {
+			sb
+			.append(" ")
+			.append("%02d".formatted(t.get(ChronoField.DAY_OF_MONTH)));
+		}
+		if(!sb.isEmpty())
+			sb.append(", ");
+		sb
+			.append("[[")
+			.append(t.get(ChronoField.YEAR))
+			.append(" AR]]");
+
+		return "<time datetime=\""+t.toString()+"\">"+sb.toString()+"</time>";
 	}
 
 	private static record TimelineDate(
