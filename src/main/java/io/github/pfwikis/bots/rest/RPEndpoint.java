@@ -38,15 +38,16 @@ public abstract class RPEndpoint<T> implements Route {
 	
 	public String handle(Request request, Response response) throws Exception {
 		var bot = new RestProviderBot();
+		T param = null;
 		try {
 			scheduler.initBot(wiki, scheduler.getDiscord(), bot);
-			T param = Jackson.JSON.readValue(request.bodyAsBytes(), parameterType);
+			param = Jackson.JSON.readValue(request.bodyAsBytes(), parameterType);
 			log.info("Requesting {} with param {}", endpoint, param);
 			var res = handle(bot, param);
 			return Jackson.JSON.writeValueAsString(res);
 		} catch(Exception e) {
 			response.status(500);
-			log.error("Failed to execute {}", endpoint, e);
+			log.error("Failed to execute {} on {}", endpoint, param, e);
 			if(bot.getDiscord() == null) return null;
 			Instant nextLog = DISCORD_LOCKS.computeIfAbsent(this.getClass(), c->Instant.MIN);
 			if(nextLog.isBefore(Instant.now())) {
