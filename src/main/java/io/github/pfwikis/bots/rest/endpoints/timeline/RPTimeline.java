@@ -51,13 +51,13 @@ public class RPTimeline extends RPEndpoint<RPTimelineParam> {
 				new TimelineText(
 					e.getPrintouts().name(),
 					"""
-					<h4 class="timeline-header">[[%s|%s]]<ref>%s</ref></h4>
+					<h4 class="timeline-header">[[%s|%s]]%s</h4>
 					<div class="timeline-dates">%s</div>
 					<div class="timeline-description">%s</div>
 					""".formatted(
 						e.toPage(),
 						e.getPrintouts().name(),
-						e.getPrintouts().source(),
+						Optional.ofNullable(e.getPrintouts().source()).map("<ref>%s</ref>"::formatted).orElse(""),
 						formatDate(e.getPrintouts().date().getRaw())
 							+ (e.getPrintouts().endDate()!=null
 								?(" – "+formatDate(e.getPrintouts().endDate().getRaw()))
