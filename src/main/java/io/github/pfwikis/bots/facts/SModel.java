@@ -15,12 +15,15 @@ import static io.github.pfwikis.bots.facts.SFactsProperties.Chapters;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Composer;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Deck_type;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Decksize;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Golarion_date;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Golarion_end_date;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Description;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Designer;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Developer;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Dimensions;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Director;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Discs;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Editor;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Engine;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Errata;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Follows;
@@ -50,6 +53,7 @@ import static io.github.pfwikis.bots.facts.SFactsProperties.Producer;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Programmer;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Pubcode;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Publisher;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Includes_work;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Quantity;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Region;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Release_date;
@@ -117,6 +121,7 @@ public class SModel {
 			SPropertyGroup.builder()
 				.name("Contributors")
 				.properties(
+					Editor,
 					Primary_author,
 					Author,
 					Artist,
@@ -137,6 +142,7 @@ public class SModel {
 					Pages,
 					Runtime,
 					Chapters,
+					Includes_work,
 					Gallery,
 					Awards,
 					Errata,
@@ -149,9 +155,16 @@ public class SModel {
 					Level_range_end,
 					Location
 				),
+			SPropertyGroup.builder()
+				.name("Fiction")
+				.properties(
+					Golarion_date,
+					Golarion_end_date
+				),
 			BLURB_FIELDS
 		)
 		.infoboxProperties(
+			Editor,
 			SInfoboxProperty.from(Primary_author)
 				.label("Author")
 				.fallback(Author)
@@ -165,6 +178,9 @@ public class SModel {
 				.label("Rule set")
 				.build(),
 			Chapters,
+			SInfoboxProperty.from(Includes_work)
+				.label("Includes")
+				.build(),
 			Series,
 			Follows,
 			Precedes,
