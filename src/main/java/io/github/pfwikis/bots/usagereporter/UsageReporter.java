@@ -216,7 +216,7 @@ public class UsageReporter extends SimpleBot {
 		results.removeIf(r->r.getVisits() < 3);
 		
 		
-		var txt = "This shows the most searched for terms on the wiki.\n"
+		var txt = "This shows the most searched for terms on the wiki. The numbers are based on the last 7 days.\n"
 				+ MWTable.makeTable(
 				results,
 				List.of(
