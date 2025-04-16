@@ -70,13 +70,15 @@ public class NewsFeedReader extends SimpleBot {
 	}
 	
 	private final static String[] PF_TAGS = {
-		"<a href=\"https://paizo.com/community/blog/tags/pathfinder\">Pathfinder</a>",
-		"<a href=\"https://paizo.com/community/blog/tags/pathfinderRoleplayingGame\">Pathfinder Roleplaying Game</a>"
+		"https://paizo.com/community/blog/tags/pathfinder",
+		"https://paizo.com/community/blog/tags/pathfinderRoleplayingGame",
+		"https://paizo.com/community/blog/tags/pathfinderSociety"
 	};
 	
 	private final static String[] SF_TAGS = {
-		"<a href=\"https://paizo.com/community/blog/tags/starfinder\">Starfinder</a>",
-		"<a href=\"https://paizo.com/community/blog/tags/starfinderRoleplayingGame\">Starfinder Roleplaying Game</a>"
+		"https://paizo.com/community/blog/tags/starfinder",
+		"https://paizo.com/community/blog/tags/starfinderRoleplayingGame",
+		"https://paizo.com/community/blog/tags/starfinderSociety"
 	};
 	
 	public static boolean isTaggedRelevant(Wiki server, Item entry) {
