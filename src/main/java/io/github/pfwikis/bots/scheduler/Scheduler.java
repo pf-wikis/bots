@@ -35,6 +35,7 @@ import io.github.pfwikis.bots.newsfeedreader.NewsFeedReader;
 import io.github.pfwikis.bots.rest.RestServer;
 import io.github.pfwikis.bots.scheduler.Schedulable.SchedulableBot;
 import io.github.pfwikis.bots.templatestyles.TemplateStyles;
+import io.github.pfwikis.bots.usagereporter.UsageReporter;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -87,6 +88,7 @@ public class Scheduler {
 				schedule(scheduleableBot(wiki, discord, new NewsFeedReader()), Duration.ofHours(3));
 				schedule(scheduleableBot(wiki, discord, new MapSearchPage()), Duration.ofDays(1));
 				schedule(scheduleableBot(wiki, discord, new Maintenance()), Duration.ofDays(7));
+				schedule(scheduleableBot(wiki, discord, new UsageReporter()), Duration.ofDays(1));
 				scheduleOnce(scheduleableBot(wiki, discord, new TemplateStyles()));
 			}
 			
