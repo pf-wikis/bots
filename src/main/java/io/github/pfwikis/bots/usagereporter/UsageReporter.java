@@ -213,6 +213,8 @@ public class UsageReporter extends SimpleBot {
 				.toList();
 			
 			var txt = "This shows websites people go to from the pathfinderwiki through a link on the wiki.\n"
+					+ "These values are calculated daily over the last seven days.\n"
+					+ "The numbers are based on voluntary tracking, so they are not absolute numbers but a representative selection.\n"
 					+ MWTable.makeTable(
 					summed,
 					List.of(
@@ -244,6 +246,8 @@ public class UsageReporter extends SimpleBot {
 		results.removeIf(r->"Others".equals(r.getLabel()));
 		
 		var txt = "This shows the most visited pages, how many distinct people visited them, and how long they stayed on average.\n"
+				+"These values are calculated daily over the last seven days.\n"
+				+"The numbers are based on voluntary tracking, so they are not absolute numbers but a representative selection.\n"
 				+MWTable.makeTable(
 				results,
 				List.of(
@@ -269,7 +273,9 @@ public class UsageReporter extends SimpleBot {
 		results.removeIf(r->r.getVisits() < 3);
 		
 		
-		var txt = "This shows the most searched for terms on the wiki. The numbers are based on the last 7 days.\n"
+		var txt = "This shows the most searched for terms on the wiki.\n"
+				+ "These values are calculated daily over the last seven days.\n"
+				+ "These numbers currently include partial searches!\n"
 				+ MWTable.makeTable(
 				results,
 				List.of(
