@@ -118,7 +118,11 @@ public class Scheduler {
 				try {
 					var waitDuration = Duration.between(Instant.now(), task.time).truncatedTo(ChronoUnit.SECONDS);
 					if(waitDuration.isPositive()) {
-						log.info("Sleeping for {}", DurationFormatUtils.formatDurationWords(waitDuration.toMillis(), true,  true));
+						log.info(
+							"Sleeping for {} in wait of task {}",
+							DurationFormatUtils.formatDurationWords(waitDuration.toMillis(), true,  true),
+							name
+						);
 						Uninterruptibles.sleepUninterruptibly(waitDuration.toSeconds(), TimeUnit.SECONDS);
 					}
 					log.info("Executing {}", name);
@@ -152,6 +156,9 @@ public class Scheduler {
 		
 		bot.setDiscord(discord);
 		bot.setLocalMode(localMode);
+		if(bot instanceof UsageReporter ur) {
+			ur.setMatomoToken(matomoToken);
+		}
 		bot.setRun(sr);
 	}
 	

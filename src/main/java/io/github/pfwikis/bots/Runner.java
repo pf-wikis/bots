@@ -2,6 +2,7 @@ package io.github.pfwikis.bots;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.MissingCommandException;
@@ -16,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 public class Runner {
 
 	public static void main(String[] args) throws Exception {
+		Locale.setDefault(Locale.ROOT);
 		var commands = JCommander.newBuilder();
 		commands.addCommand("scheduler", new Scheduler());
 		for(var bot : Runner.getAllBots()) {

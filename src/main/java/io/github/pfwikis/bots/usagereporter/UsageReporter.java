@@ -33,11 +33,13 @@ import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.utils.Jackson;
 import io.github.pfwikis.bots.utils.MWTable;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jfree.data.time.Day;
 
 @Slf4j
+@Setter
 @Parameters
 public class UsageReporter extends SimpleBot {
 	
@@ -62,6 +64,9 @@ public class UsageReporter extends SimpleBot {
 
 	@Override
 	public void run(RunContext ctx) throws Exception {
+		if(StringUtils.isBlank(matomoToken)) {
+			throw new IllegalArgumentException("Missing matomo token");
+		}
 		chart();
 		referrer();
 		topPages();

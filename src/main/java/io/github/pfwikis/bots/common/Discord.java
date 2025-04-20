@@ -1,7 +1,10 @@
 package io.github.pfwikis.bots.common;
 
+import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -21,6 +24,7 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.utils.FileUpload;
 import net.dv8tion.jda.api.utils.MarkdownUtil;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 
@@ -79,14 +83,16 @@ public class Discord implements Closeable {
 
 	public void reportException(Bot<?> bot, Exception e) {
 		var trace = ExceptionUtils.getStackTrace(e);
+		String fullTrace = null;
 		//limit because discord only allows 2k characters
 		if(trace.length()>1000) {
+			fullTrace = trace;
 			trace=trace.substring(0,1000)+"\n…";
 		}
-		reportException(bot, trace);
+		reportException(bot, trace, fullTrace);
 	}
 	
-	public void reportException(Bot<?> bot, String txt) {
+	public void reportException(Bot<?> bot, String txt, String fullTrace) {
 		try {
 			var msg = messageHeader(bot)
 				.append("**Error**\n")
@@ -119,8 +125,14 @@ public class Discord implements Closeable {
 				old.delete().queue();
 			});
 			
+			var msgData = new MessageCreateBuilder()
+				.addContent(msg+(counter.get()>1?"\nx "+counter.get():""));
+			if(fullTrace != null) {
+				msgData.addFiles(FileUpload.fromStreamSupplier("tace.log", ()->new ByteArrayInputStream(fullTrace.getBytes(StandardCharsets.UTF_8))));
+			}
+			
 			jda.getTextChannelById(CHANNEL_BOT_ACTIVITY)
-				.sendMessage(msg+(counter.get()>1?"\nx "+counter.get():""))
+				.sendMessage(msgData.build())
 				.queue();
 		} catch(Exception e2) {
 			log.error("Failed to report error to discord", e2);
