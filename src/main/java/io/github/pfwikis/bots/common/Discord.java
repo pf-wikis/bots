@@ -83,7 +83,13 @@ public class Discord implements Closeable {
 
 	public void reportException(Bot<?> bot, Exception e) {
 		var trace = ExceptionUtils.getStackTrace(e);
-		reportException(bot, trace);
+		String fullTrace = null;
+		//limit because discord only allows 2k characters
+		if(trace.length()>1000) {
+			fullTrace = trace;
+			trace=Optional.ofNullable(e.getMessage()).orElse("No message");
+		}
+		reportException(bot, trace, fullTrace);
 	}
 	
 	public void reportException(Bot<?> bot, String txt) {
