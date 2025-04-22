@@ -92,7 +92,7 @@ public class UsageReporter extends SimpleBot {
 	private void chart() {
 		try {
 			List<Pair<LocalDate, Long>> data = new ArrayList<>();
-			var lastMonday = LocalDate.now();
+			var lastMonday = LocalDate.now().minusDays(1);
 			for(int i=0;i<366;i++) {
 				var date = lastMonday.minusDays(i);
 				var result = matomo(true, MatomoValue.class,
