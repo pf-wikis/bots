@@ -2,6 +2,8 @@ package io.github.pfwikis.bots.scheduler;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalTime;
+import java.time.temporal.TemporalAdjusters;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -2,6 +2,9 @@ package io.github.pfwikis.bots.scheduler;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.concurrent.PriorityBlockingQueue;
@@ -87,10 +90,10 @@ public class Scheduler {
 				);
 				schedule(scheduleableBot(wiki, discord, new BlogFacts()), Duration.ofHours(3));
 				schedule(scheduleableBot(wiki, discord, new NewsFeedReader()), Duration.ofHours(3));
-				schedule(scheduleableBot(wiki, discord, new MapSearchPage()), Duration.ofDays(1));
-				schedule(scheduleableBot(wiki, discord, new Maintenance()), Duration.ofDays(7));
-				schedule(scheduleableBot(wiki, discord, new UsageReporter()), Duration.ofDays(1));
-				schedule(scheduleableBot(wiki, discord, new AssistantTaskGiver()), Duration.ofDays(1), Instant.now().plus(Duration.ofHours(8)));
+				schedule(scheduleableBot(wiki, discord, new MapSearchPage()), Duration.ofDays(1), LocalTime.of(12, 00));
+				schedule(scheduleableBot(wiki, discord, new Maintenance()), Duration.ofDays(7), LocalTime.of(13, 00));
+				schedule(scheduleableBot(wiki, discord, new UsageReporter()), Duration.ofDays(1), LocalTime.of(14, 00));
+				schedule(scheduleableBot(wiki, discord, new AssistantTaskGiver()), Duration.ofDays(1), LocalTime.of(15, 00));
 				scheduleOnce(scheduleableBot(wiki, discord, new TemplateStyles()));
 			}
 			
@@ -250,6 +253,15 @@ public class Scheduler {
 	
 	public void schedule(Schedulable schedulable, Duration sleepBetweenRuns) {
 		schedule(schedulable, sleepBetweenRuns, Instant.now());
+	}
+	
+	public void schedule(Schedulable schedulable, Duration sleepBetweenRuns, LocalTime runTime) {
+		var now = Instant.now().plusSeconds(10);
+		var firstRun = LocalDate.now().atTime(runTime).toInstant(ZoneOffset.UTC);
+		if(firstRun.isBefore(now)) {
+			firstRun = firstRun.plus(Duration.ofDays(1));
+		}
+		schedule(schedulable, sleepBetweenRuns, firstRun);
 	}
 	
 	public void schedule(Schedulable schedulable, Duration sleepBetweenRuns, Instant firstRun) {
