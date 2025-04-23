@@ -16,6 +16,7 @@ import com.beust.jcommander.Parameters;
 import com.google.common.util.concurrent.Uninterruptibles;
 
 import io.github.pfwikis.bots.Runner;
+import io.github.pfwikis.bots.assistant.AssistantTaskGiver;
 import io.github.pfwikis.bots.common.Discord;
 import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.WikiAPI;
@@ -89,6 +90,7 @@ public class Scheduler {
 				schedule(scheduleableBot(wiki, discord, new MapSearchPage()), Duration.ofDays(1));
 				schedule(scheduleableBot(wiki, discord, new Maintenance()), Duration.ofDays(7));
 				schedule(scheduleableBot(wiki, discord, new UsageReporter()), Duration.ofDays(1));
+				schedule(scheduleableBot(wiki, discord, new AssistantTaskGiver()), Duration.ofDays(1), Instant.now().plus(Duration.ofHours(8)));
 				scheduleOnce(scheduleableBot(wiki, discord, new TemplateStyles()));
 			}
 			

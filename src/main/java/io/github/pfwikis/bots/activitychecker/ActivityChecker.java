@@ -42,12 +42,12 @@ public class ActivityChecker extends SimpleBot {
 		if(oldAdmins.size() > 1) {
 			var list = oldAdmins.stream().map(u->Discord.wikiLink(run.getServer(), u.getName(), "/wiki/User:"+u.getName())).collect(Collectors.joining(", "));
 			discord.reportToAdmins(this, "<@171724557248364544> the admins "+list
-			+" have been inactive for more than 6 months and should lose their privileges.");
+			+" have been inactive for more than 6 months and should lose their privileges.", false);
 		}
 		else if(oldAdmins.size() == 1) {
 			var u = oldAdmins.get(0);
 			discord.reportToAdmins(this, "<@171724557248364544> the admin "+Discord.wikiLink(run.getServer(), u.getName(), "/wiki/User:"+u.getName())
-			+" has been inactive for more than 6 months and should lose their privileges.");
+			+" has been inactive for more than 6 months and should lose their privileges.", false);
 		}
 	}
 	

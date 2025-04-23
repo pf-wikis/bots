@@ -31,11 +31,19 @@ public class Assistant extends SimpleBot {
 	@Override
 	public String getDescription() {
 		return """
+		This bot is meant to directly interact with humans. It has multiple tasks:
+		
+		== Giving tasks to humans ==
+		
+		This bot might give tasks to its human handlers via Discord.
+		
+		== Reacting to tasks ==
+				
 		This bot executes the tasks given to it via the [https://github.com/pf-wikis/bots/issues/new/choose tasks page].
 		It is meant to start automized tasks with manually given parameters.
 		The tasks it understands are:
 		
-		===replaceImage===
+		=== replaceImage ===
 		This task is used to replace images with better version, that have a different extension.
 		This job uploads a new image with the same name as the given old image, but a new extension. It copies the description
 		from the original file. It then replaces every usage of the original file with the new file and then deletes the original
