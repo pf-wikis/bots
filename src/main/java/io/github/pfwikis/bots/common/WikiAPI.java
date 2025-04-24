@@ -98,6 +98,10 @@ public class WikiAPI {
 	public ArrayList<Revision> getRevisions(String title, Duration timeRange) {
 		return wiki.getRevisions(title, 0, false, Instant.now().minus(timeRange).truncatedTo(ChronoUnit.SECONDS), null);
 	}
+	
+	public void purge(List<String> pages) {
+		wiki.purge(pages.toArray(String[]::new));
+	}
 
 	public void edit(String page, String content, String reason) {
 		if(!wiki.edit(page, content, reason)) {

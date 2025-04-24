@@ -48,7 +48,6 @@ public class AssistantTaskGiver extends SimpleBot {
 
 	@Override
 	public void run(RunContext ctx) throws Exception {
-		if(run.getServer()==Wiki.PF) return;
 		var cats = run.getWiki().semanticAsk(Object.class, "[[:Category:+]][[Subcategory of::Category:Pages with errors]]")
 			.stream()
 			.map(c->c.getPage())
