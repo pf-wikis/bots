@@ -79,7 +79,7 @@ public class BlogFacts extends SimpleBot {
 			run.getWiki().edit(
 				page,
 				"""
-				{{Facts/Web citation|
+				{{Facts/Web citation
 				|Name=%s
 				|Author=
 				|Website=https://paizo.com/community/blog/%s

@@ -30,6 +30,7 @@
 		}
 	</div>
 }
+{{#validateParameters:}}
 <div class="facts-display concept-@ConceptUtil.cssName(c)">
 	@for(g:c.getPropertyGroups()) {
 		<div class="facts-display-group group-@ConceptUtil.cssName(g)">
@@ -84,3 +85,6 @@
 </div>
 [[Category:Facts about @c.getPluralName()]]
 </includeonly>
+<noinclude>
+	<templatedata>@c.generateTemplateData()</templateData>
+</noinclude>

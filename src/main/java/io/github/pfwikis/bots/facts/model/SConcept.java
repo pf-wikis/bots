@@ -4,12 +4,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.tuple.Pair;
+
+import com.beust.jcommander.internal.Maps;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.Lists;
 
 import io.github.pfwikis.bots.common.bots.Run.SingleRun;
 import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
 import io.github.pfwikis.bots.facts.SFactsProperties;
 import io.github.pfwikis.bots.facts.model.SPropertyGroup.SPropertyGroupBuilder;
+import io.github.pfwikis.bots.utils.Jackson;
 import lombok.Setter;
 import lombok.Value;
 import lombok.experimental.Accessors;
@@ -117,5 +127,25 @@ public class SConcept {
 	public boolean containsProperty(SProperty<?> p) {
 		return propertyGroups.stream().anyMatch(g->g.getProperties().contains(p))
 				|| generatedProperties.contains(p);
+	}
+
+	public String generateTemplateData() throws JsonProcessingException {
+		var props = Lists.newArrayList(this.allProperties()).stream()
+				//.filter(p->p.getGenerateWikitext() == null)
+				.toList();
+		var params = props.stream()
+			.map(p-> Pair.of(p.getName(), new ObjectNode(Jackson.JSON.getNodeFactory())
+				.put("required", p.isRequired())
+				.put("description", p.getDescription())
+				.put("default", p.getDefaultValue())
+				.put("type", p.getFactType().toTemplateDataType())
+			))
+			.collect(Collectors.toMap(Pair::getLeft, Pair::getRight));
+		
+		var paramOrder = props.stream().map(p->p.getName()).toList();
+		return Jackson.JSON.writeValueAsString(Map.of(
+				"params", params,
+				"paramOrder", paramOrder,
+				"format", "block"));
 	}
 }
