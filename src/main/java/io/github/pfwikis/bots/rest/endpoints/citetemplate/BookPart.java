@@ -15,23 +15,23 @@ public interface BookPart {
 	SemanticSubject getSubject();
 	List<PageRef> getAuthors();
 	
-	default String makeAuthors(WikiAPI wiki) {
-		var result = formatAuthors(wiki, getAuthors());
+	default String makeAuthors() {
+		var result = formatAuthors(getAuthors());
 		if(result == null)
 			return "Unknown author";
 		return result;
 	}
 
-	default String formatAuthors(WikiAPI wiki, List<PageRef> authors) {
+	default String formatAuthors(List<PageRef> authors) {
 		if(authors == null || authors.isEmpty())
 			return null;
 		if(authors.size() == 1) {
-			return authors.get(0).toWikiLink(wiki);
+			return authors.get(0).toWikiLink();
 		}
 		if(authors.size() == 2) {
-			return authors.get(0).toWikiLink(wiki)+" & "+authors.get(1).toWikiLink(wiki);
+			return authors.get(0).toWikiLink()+" & "+authors.get(1).toWikiLink();
 		}
-		return authors.get(0).toWikiLink(wiki)+", et al";
+		return authors.get(0).toWikiLink()+", et al";
 	}
 
 	

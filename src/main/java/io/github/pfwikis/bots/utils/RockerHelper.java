@@ -1,6 +1,7 @@
 package io.github.pfwikis.bots.utils;
 
 import com.fizzed.rocker.RockerModel;
+import com.google.common.base.CharMatcher;
 
 import io.github.pfwikis.bots.common.WikiAPI;
 

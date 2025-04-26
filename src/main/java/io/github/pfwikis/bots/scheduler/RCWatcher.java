@@ -71,7 +71,6 @@ public class RCWatcher extends Schedulable {
 	}
 	
 	
-	private RPCiteTemplate botCiteTemplates = new RPCiteTemplate();
 	private TemplateStyles botTemplateStyles = new TemplateStyles();
 	private PageSyncer botPageSyncer = new PageSyncer();
 	
@@ -79,13 +78,14 @@ public class RCWatcher extends Schedulable {
 		log.info("RC in {}", changedPage);
 		var ctx = RunContext.builder().page(changedPage).build();
 		if(changedPage.startsWith("Facts:")) {
-			var title = changedPage;
+			/*var title = changedPage;
 			//special handling since those never contain facts themselves but feed their parent page
+			
 			title = StringUtils.removeEnd(title, "/Releases");
 			title = StringUtils.removeEnd(title, "/Sections");
 			var localCtx = RunContext.builder().page(title).build();
-			
-			p.scheduleOnce(p.scheduleableBot(wiki, discord, botCiteTemplates, localCtx), changeTime);
+			*/
+			//once we created infoboxes and cite templates here
 		}
 		if(changedPage.startsWith("Style:")) {
 			p.scheduleOnce(p.scheduleableBot(wiki, discord, botTemplateStyles, ctx), changeTime);

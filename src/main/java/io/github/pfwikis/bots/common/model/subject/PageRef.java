@@ -55,7 +55,12 @@ public class PageRef {
 		return toFullTitle();
 	}
 
+	/**Creates a wikilink with resolved displayname*/
 	public String toWikiLink(WikiAPI wiki) {
 		return wiki.toWikiLink(this.toFullTitle());
+	}
+	
+	public String toWikiLink() {
+		return "[["+(ns==14?":":"")+this.toFullTitle()+"]]";
 	}
 }

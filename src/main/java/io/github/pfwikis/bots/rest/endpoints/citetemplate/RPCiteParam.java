@@ -2,16 +2,21 @@ package io.github.pfwikis.bots.rest.endpoints.citetemplate;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.common.primitives.Ints;
+
 import lombok.Data;
 
 @Data
 public class RPCiteParam {
 	private String factsPage;
+	private Integer intLocation;
 	private String location;
 	private String endPage;
 	private String showAs;
 
 	public boolean validate() {
+		if(location!=null)
+			intLocation=Ints.tryParse(location);
 		return factsPage != null && factsPage.startsWith("Facts:");
 	}
 

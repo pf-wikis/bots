@@ -14,25 +14,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.beust.jcommander.Parameters;
 
-import io.github.pfwikis.bots.common.bots.RunContext;
-import io.github.pfwikis.bots.common.bots.RunOnPageBot;
-import io.github.pfwikis.bots.common.bots.ScatteredRunnableBot;
-import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.common.model.subject.PageRef;
 import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
-import io.github.pfwikis.bots.facts.citetemplates.MakeCiteTemplate;
-import io.github.pfwikis.bots.rest.DefaultRPParam;
 import io.github.pfwikis.bots.rest.RPEndpoint;
 import io.github.pfwikis.bots.rest.RestProviderBot;
-import io.github.pfwikis.bots.rest.RPEndpoint.RPBlock;
-import io.github.pfwikis.bots.rest.RPEndpoint.RPBlockType;
-import io.github.pfwikis.bots.rest.RPEndpoint.RPResult;
 import io.github.pfwikis.bots.rest.endpoints.citetemplate.BookDef.SectionDef;
 import io.github.pfwikis.bots.utils.RockerHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -60,10 +50,10 @@ public class RPCiteTemplate extends RPEndpoint<RPCiteParam> {
 		
 		BookDef bookDef = fromCacheOrCalc(bot, param);
 		
-		return new RPResult(
-			List.of(new RPBlock(RPBlockType.WIKITEXT, RockerHelper.makeWikitext(MakeCiteTemplate.template(bot.getRun().getWiki(), bookDef)))),
-			List.of(param.getFactsPage())
-		);
+		return RPResult.builder()
+			.block(new RPBlock(RPBlockType.WIKITEXT, RockerHelper.makeWikitext(MakeCitation.template(bookDef, param))))
+			.dependency(param.getFactsPage())
+			.build();
 	}	
 	
 	private BookDef fromCacheOrCalc(RestProviderBot bot, RPCiteParam param) {
@@ -162,33 +152,4 @@ public class RPCiteTemplate extends RPEndpoint<RPCiteParam> {
 			calcPageRanges(sect.getSubSections(), sect.getEndPage());
 		}
 	}
-
-	@Override
-	public String getDescription() {
-		return
-			"""
-			This bot creates {{tl|Cite}} templates for all books with a facts page.
-			""";
-	}
-	
-	public static record Shard(String page, boolean first) {}
-	@Override
-	public List<Shard> createScatterShards() {
-		var shards = new ArrayList<>(run.getWiki().semanticAsk(
-			"[[Facts:+]][[Fact type::"
-				+ TYPES_WITH_CITE.stream()
-					.map(v->"Template:"+v)
-					.collect(Collectors.joining("||"))
-			+ "]]")
-			.stream()
-			.map(p->p.getPage())
-			.filter(p->!p.endsWith("/Releases"))
-			.filter(p->!p.endsWith("/Sections"))
-			.map(p->new Shard(p, false))
-			.toList());
-		shards.set(0, new Shard(shards.get(0).page(), true));
-		return shards;
-	}
-
-	
 }

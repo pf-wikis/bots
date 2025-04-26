@@ -15,13 +15,11 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.fizzed.rocker.RockerContent;
 import com.google.common.collect.DiscreteDomain;
 import com.google.common.collect.Range;
+import com.google.common.collect.RangeMap;
 import com.google.common.collect.TreeRangeMap;
 
-import io.github.fastily.jwiki.core.WParser.WikiText;
-import io.github.pfwikis.bots.common.WikiAPI;
 import io.github.pfwikis.bots.common.model.subject.PageRef;
 import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
 import io.github.pfwikis.bots.utils.StringHelper;
@@ -46,7 +44,8 @@ public class BookDef implements BookPart {
 	private Integer releaseYear;
 	private boolean webCitation;
 	
-	private Map<String, List<Range<Integer>>> makeRanges(Function<BookPart, String> makeValue) {
+	private RangeMap<Integer, String> makeRanges(Function<BookPart, String> makeValue) {
+		
 		var bookValue = makeValue.apply(this);
 		var ranges = TreeRangeMap.<Integer, String>create();
 		ranges.put(Range.<Integer>all(), makeValue.apply(this));
@@ -73,49 +72,32 @@ public class BookDef implements BookPart {
 			}
 		}
 		
-		var result = ranges.asMapOfRanges().entrySet()
-			.stream()
-			.collect(
-				Collectors.groupingBy(
-					e->e.getValue(),
-					Collectors.mapping(e->e.getKey(), Collectors.toList())
-				)
-			);
-		//sort just to make the templates easier to read
-		result.values().forEach(e->Collections.sort(e, RANGE_COMP));
-		var sortedResult = new LinkedHashMap<String, List<Range<Integer>>>();
-		result.entrySet()
-			.stream()
-			.sorted(Comparator.<Entry<String, List<Range<Integer>>>,Range<Integer>>comparing(e->e.getValue().get(0), RANGE_COMP))
-			.forEachOrdered(e->sortedResult.put(e.getKey(), e.getValue()));
-		return sortedResult;
+		return ranges;
 	}
 	
-	private static final Comparator<Range<Integer>> RANGE_COMP = Comparator.<Range<Integer>, Boolean>comparing(Range::hasLowerBound).thenComparing(Range::lowerEndpoint);
-
-	public Map<String, List<Range<Integer>>> makeAuthorPageRanges(WikiAPI wiki) {
-		return makeRanges(bp->bp.makeAuthors(wiki));
+	public RangeMap<Integer, String> makeAuthorPageRanges() {
+		return makeRanges(bp->bp.makeAuthors());
 	}
 
 	@Override
-	public String makeAuthors(WikiAPI wiki) {
-		var result = formatAuthors(wiki, getAuthors());
+	public String makeAuthors() {
+		var result = formatAuthors(getAuthors());
 		if(result == null)
-			result = formatAuthors(wiki, getOr(Artist, null));
+			result = formatAuthors(getOr(Artist, null));
 		if(result == null)
 			return "Unknown author";
 		return result;
 	}
 	
-	public Map<String, List<Range<Integer>>> makeArticlePageRanges() {
+	public RangeMap<Integer, String> makeArticlePageRanges() {
 		return makeRanges(bp-> {
 			if(bp instanceof SectionDef sec) return sec.get(Name);
 			return ""; 
 		});
 	}
 	
-	public Map<String, String> makeAuthorSpecialCases(WikiAPI wiki) {
-		return makeSpecialCases(bp->bp.makeAuthors(wiki));
+	public Map<String, String> makeAuthorSpecialCases() {
+		return makeSpecialCases(bp->bp.makeAuthors());
 	}
 	
 	public Map<String, String> makeArticleSpecialCases() {
@@ -155,10 +137,10 @@ public class BookDef implements BookPart {
 		private List<SectionDef> subSections = new ArrayList<>();
 		
 		@Override
-		public String makeAuthors(WikiAPI wiki) {
+		public String makeAuthors() {
 			if(authors != null && !authors.isEmpty())
-				return BookPart.super.makeAuthors(wiki);
-			return parent.makeAuthors(wiki);
+				return BookPart.super.makeAuthors();
+			return parent.makeAuthors();
 		}
 	}
 
