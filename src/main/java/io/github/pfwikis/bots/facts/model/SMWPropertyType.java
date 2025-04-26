@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NumericNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 
+import io.github.pfwikis.bots.common.model.SemanticAsk.WikiDate;
 import io.github.pfwikis.bots.common.model.subject.PageRef;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -52,14 +53,7 @@ public enum SMWPropertyType {
 	) {
 		@Override
 		public Temporal convertToJava(JsonNode v) {
-			var parts = Arrays.stream(v.textValue().split("/")).mapToInt(Integer::parseInt).toArray();
-			return switch(parts.length) {
-				case 2 -> Year.of(parts[1]);
-				case 3 -> YearMonth.of(parts[1], parts[2]);
-				case 4 -> LocalDate.of(parts[1], parts[2], parts[3]);
-				case 8 -> LocalDateTime.of(parts[1], parts[2], parts[3], parts[4], parts[5], parts[6]);
-				default -> throw new IllegalStateException("Unhandled date format for "+v);
-			};
+			return WikiDate.parseRaw(v.textValue());
 		}
 	},
     EMAIL(

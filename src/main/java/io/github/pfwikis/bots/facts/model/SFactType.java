@@ -22,6 +22,7 @@ public abstract class SFactType<JType> {
 	private final JavaType javaType = findType();
 	@Getter
 	private final SMWPropertyType propertyType;
+	private final String templateDataType;
 	private final String displayFactWikitext;
 	
 	private JavaType findType() {
@@ -67,4 +68,8 @@ public abstract class SFactType<JType> {
 	}
 
 	protected abstract String configureFormField(SProperty<?> prop);
+
+	public String toTemplateDataType() {
+		return templateDataType;
+	}
 }

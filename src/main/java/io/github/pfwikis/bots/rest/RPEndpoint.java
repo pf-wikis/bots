@@ -1,9 +1,13 @@
 package io.github.pfwikis.bots.rest;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+
+import org.apache.commons.lang3.StringUtils;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -13,9 +17,11 @@ import io.github.pfwikis.bots.rest.RPEndpoint.RPBlockType;
 import io.github.pfwikis.bots.rest.RPEndpoint.RPResult;
 import io.github.pfwikis.bots.scheduler.Scheduler;
 import io.github.pfwikis.bots.utils.Jackson;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.Singular;
 import lombok.extern.slf4j.Slf4j;
 import spark.Request;
 import spark.Response;
@@ -37,15 +43,16 @@ public abstract class RPEndpoint<T> implements Route {
 	
 	public String handle(Request request, Response response) throws Exception {
 		var bot = new RestProviderBot();
+		T param = null;
 		try {
 			scheduler.initBot(wiki, scheduler.getDiscord(), bot);
-			T param = Jackson.JSON.readValue(request.bodyAsBytes(), parameterType);
+			param = Jackson.JSON.readValue(request.bodyAsBytes(), parameterType);
 			log.info("Requesting {} with param {}", endpoint, param);
 			var res = handle(bot, param);
 			return Jackson.JSON.writeValueAsString(res);
 		} catch(Exception e) {
 			response.status(500);
-			log.error("Failed to execute {}", endpoint, e);
+			log.error("Failed to execute {} on {}", endpoint, param, e);
 			if(bot.getDiscord() == null) return null;
 			Instant nextLog = DISCORD_LOCKS.computeIfAbsent(this.getClass(), c->Instant.MIN);
 			if(nextLog.isBefore(Instant.now())) {
@@ -65,10 +72,10 @@ public abstract class RPEndpoint<T> implements Route {
 		for(var cat:extraCategories) {
 			sb.append("[[").append(StringUtils.prependIfMissing(cat, "Category")).append("]]");
 		}
-		return new RPResult(
-			List.of(new RPBlock(RPBlockType.WIKITEXT, sb.toString())),
-			List.of(factsPage)
-		);
+		return RPResult.builder()
+			.block(new RPBlock(RPBlockType.WIKITEXT, sb.toString()))
+			.dependsOn(factsPage!=null?List.of(factsPage):List.of())
+			.build();
 	}
 	
 	public static enum RPBlockType {
@@ -76,5 +83,17 @@ public abstract class RPEndpoint<T> implements Route {
 		HTML;
 	}
 	public static record RPBlock(RPBlockType type, String value) {}
-	public static record RPResult(List<RPBlock> blocks, List<String> dependsOn) {}
+	
+	@Builder
+	@Getter @Setter
+	public static class RPResult {
+		@Builder.Default
+		private UUID uuid = UUID.randomUUID();
+		@Singular
+		private List<RPBlock> blocks;
+		@Singular("dependency")
+		private List<String> dependsOn;
+		private String headItem;
+		private Object data;
+	}
 }

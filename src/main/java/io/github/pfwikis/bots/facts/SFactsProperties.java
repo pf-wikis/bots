@@ -22,6 +22,11 @@ public class SFactsProperties {
 		SFactTypes.PAGE_LIST)
 		.setSuggestValuesFrom("Category:Artists")
 		.setDescription("An artist that worked on this book or product.");
+	public static final SProperty<List<PageRef>> Editor = new SProperty<>(
+		"Editor",
+		SFactTypes.PAGE_LIST)
+		.setSuggestValuesFrom("Category:Real-world people")
+		.setDescription("The editor, if this is a collection (e.g. an anthology).");
 	public static final SProperty<String> Audio_type = new SProperty<>(
 		"Audio type",
 		SFactTypes.STRING)
@@ -163,6 +168,19 @@ public class SFactsProperties {
 		"Genre",
 		SFactTypes.STRING)
 		.setDescription("The genre of this product.");
+	public static final SProperty<Temporal> Golarion_date = new SProperty<>(
+		"Golarion date",
+		SFactTypes.DATE)
+		.setDescription("The AT time this work of fiction is set in.");
+	public static final SProperty<Temporal> Golarion_end_date = new SProperty<>(
+		"Golarion end date",
+		SFactTypes.DATE)
+		.setDescription("The AT time this work of fiction is set in.")
+		.setFormNote("Only fill this if it is different from the start date.");
+	public static final SProperty<List<PageRef>> Includes_work = new SProperty<>(
+		"Includes work",
+		SFactTypes.PAGE_LIST)
+		.setDescription("Other works that are included in this collection.");
 	public static final SProperty<PageRef> Image = new SProperty<>(
 		"Image",
 		SFactTypes.IMAGE)

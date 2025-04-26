@@ -1,6 +1,13 @@
 package io.github.pfwikis.bots.common.model;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Year;
+import java.time.YearMonth;
+import java.time.temporal.Temporal;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -8,46 +15,58 @@ import java.util.Map;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.BeanProperty;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.deser.ContextualDeserializer;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import com.fasterxml.jackson.databind.jsontype.TypeDeserializer;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TreeTraversingParser;
+import com.fasterxml.jackson.databind.util.StdConverter;
 import com.google.common.collect.Lists;
 
 import io.github.pfwikis.bots.facts.model.SMWPropertyType;
 import io.github.pfwikis.bots.facts.model.SFactType;
 import io.github.pfwikis.bots.utils.Jackson;
 import io.github.pfwikis.bots.utils.MWJsonHelper;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-public class SemanticAsk {
+public class SemanticAsk<T> {
 
 	@JsonProperty("query-continue-offset")
 	private Integer queryContinueOffset;
-	private Query query;
+	private Query<T> query;
 	
 	@Data
-	public static class Query {
-		private List<Map<String, Result>> results;
+	public static class Query<T> {
+		private List<Map<String, Result<T>>> results;
 	}
 	
 	@Data
-	public static class Result {
+	public static class Result<T> {
 		@JsonProperty("fulltext")
 		private String page;
         private String fullurl;
         private int namespace;
         @JsonDeserialize(using = PrintoutsDeserializer.class)
-        private Printouts printouts;
+        private T printouts;
         private String exists;
+
+		public String toPage() {
+			return page.replaceFirst(" *#.*", "");
+		}
 	}
 	
 	@Data
@@ -77,13 +96,13 @@ public class SemanticAsk {
 		@JsonProperty("To page")
 		private String toPage;
 		@JsonProperty("Artist")
-		private List<Result> artists = Collections.emptyList();
+		private List<Result<Printouts>> artists = Collections.emptyList();
 		@JsonProperty("Author")
-		private List<Result> authors = Collections.emptyList();
+		private List<Result<Printouts>> authors = Collections.emptyList();
 		@JsonProperty("Author all")
-		private List<Result> allAuthors = Collections.emptyList();
+		private List<Result<Printouts>> allAuthors = Collections.emptyList();
 		@JsonProperty("Primary author")
-		private List<Result> primaryAuthors = Collections.emptyList();
+		private List<Result<Printouts>> primaryAuthors = Collections.emptyList();
 		@JsonProperty("Author ordered")
 		private List<Ordered> authorsOrdered = Collections.emptyList();
 		@JsonProperty("Primary author ordered")
@@ -93,7 +112,7 @@ public class SemanticAsk {
 		@JsonProperty("Isbn")
 		private String isbn;
 		@JsonProperty("Publisher")
-		private List<Result> publisher = Collections.emptyList();
+		private List<Result<Printouts>> publisher = Collections.emptyList();
 		@JsonProperty("Is subsection")
 		@JsonDeserialize(converter = MWJsonHelper.BooleanConverter.class)
 		private Boolean isSubsection;
@@ -101,7 +120,7 @@ public class SemanticAsk {
 		@JsonDeserialize(converter = MWJsonHelper.BooleanConverter.class)
 		private Boolean disableAutocomplete;
 		@JsonProperty("Created from")
-		private Result createdFrom;
+		private Result<Printouts> createdFrom;
 		private List<JsonNode> value = Collections.emptyList();
 		
 		@JsonProperty("Web author")
@@ -111,21 +130,48 @@ public class SemanticAsk {
 		@JsonProperty("Web url")
 		private String webUrl;
 		@JsonProperty("Page")
-		private Result page;
+		private Result<Printouts> page;
 	}
 	
 	@Data
 	public static class Ordered implements Comparable<Ordered> {
 		@JsonProperty("Author")
-		private Labeled<Result> author;
+		private Labeled<Result<Printouts>> author;
 		@JsonProperty("Primary author")
-		private Labeled<Result> primaryAuthor;
+		private Labeled<Result<Printouts>> primaryAuthor;
 		@JsonProperty("Order")
 		private Labeled<Integer> order;
 		
 		@Override
 		public int compareTo(Ordered o) {
 			return Objects.compare(order.getValue(), o.order.getValue(), Integer::compare);
+		}
+	}
+	
+	@Data
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class WikiDate {
+		private JsonNode timestamp;
+		@JsonDeserialize(converter = WikiRawDateToTemporalConverter.class)
+		private Temporal raw;
+
+		public static Temporal parseRaw(String v) {
+			var parts = Arrays.stream(v.split("/")).mapToInt(Integer::parseInt).toArray();
+			return switch(parts.length) {
+				case 2 -> Year.of(parts[1]);
+				case 3 -> YearMonth.of(parts[1], parts[2]);
+				case 4 -> LocalDate.of(parts[1], parts[2], parts[3]);
+				case 8 -> LocalDateTime.of(parts[1], parts[2], parts[3], parts[4], parts[5], parts[6]);
+				default -> throw new IllegalStateException("Unhandled date format for "+v);
+			};
+		}
+	}
+	
+	public static class WikiRawDateToTemporalConverter extends StdConverter<String, Temporal> {
+		@Override
+		public Temporal convert(String value) {
+			return WikiDate.parseRaw(value);
 		}
 	}
 	
@@ -140,17 +186,27 @@ public class SemanticAsk {
 		}
 	}
 	
-	public static class PrintoutsDeserializer extends StdDeserializer<Printouts> {
+	public static class PrintoutsDeserializer<T> extends StdDeserializer<T> implements ContextualDeserializer {
 
-		protected PrintoutsDeserializer() {
-			super(Jackson.JSON.getTypeFactory().constructSimpleType(Printouts.class, new JavaType[0]));
+		protected PrintoutsDeserializer(JavaType wrapperType) {
+			super(wrapperType);
 		}
-
+		
+		protected PrintoutsDeserializer() {
+			super(Object.class);
+		}
+		
 		@Override
-		public Printouts deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
+	    public PrintoutsDeserializer<T> createContextual(DeserializationContext ctxt, BeanProperty property) {
+	        return new PrintoutsDeserializer<T>(property.getType());
+	    }
+		
+		@Override
+		public T deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
 			JsonNode node = p.readValueAsTree();
-			if(node.isArray() && node.size() == 0)
-				return new Printouts();
+			if(node.isArray() && node.size() == 0) {
+				node = ctxt.getNodeFactory().objectNode();
+			}
 			var n = (ObjectNode) node;
 			var fields = Lists.newArrayList(n.fieldNames());
 			fields.forEach(f->{
@@ -165,7 +221,7 @@ public class SemanticAsk {
 			});
 			var subParser = new TreeTraversingParser(node);
 			subParser.nextToken();
-			return (Printouts)ctxt.findRootValueDeserializer(this.getValueType()).deserialize(subParser, ctxt);
+			return (T)ctxt.findRootValueDeserializer(this.getValueType()).deserialize(subParser, ctxt);
 		}
 		
 	}

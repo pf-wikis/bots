@@ -20,6 +20,7 @@ public class SFactTypes {
 	public static final SFactType<String> STRING = new SFactType<>(
 			"STRING",
 			SMWPropertyType.TEXT,
+			"string",
 			"$v"
 	) {
 
@@ -33,6 +34,7 @@ public class SFactTypes {
 	public static final SFactType<String> URL = new SFactType<>(
 			"URL",
 			SMWPropertyType.URL,
+			"url",
 			"$v"
 	) {
 
@@ -44,6 +46,7 @@ public class SFactTypes {
 	public static final SFactType<String> ISBN = new SFactType<>(
 			"ISBN",
 			SMWPropertyType.TEXT,
+			"string",
 			"$v"
 	) {
 		@Override
@@ -59,6 +62,7 @@ public class SFactTypes {
 	public static final SFactType<PageRef> PAGE = new SFactType<>(
 			"PAGE",
 			SMWPropertyType.PAGE,
+			"wiki-page-name",
 			"[[:$v]]"
 	) {
 		@Override
@@ -74,6 +78,7 @@ public class SFactTypes {
 	public static final SFactType<List<PageRef>> PAGE_LIST = new SFactType<>(
 			"PAGE_LIST",
 			SMWPropertyType.PAGE,
+			"string",
 			"{{#arraymap:$v|;|~|{{a|~}}}}"
 	) {
 		@Override
@@ -116,6 +121,7 @@ public class SFactTypes {
 	public static final SFactType<List<PageRef>> PAGE_LIST_ORDERED = new SFactType<>(
 			"PAGE_LIST_ORDERED",
 			SMWPropertyType.PAGE,
+			"string",
 			"{{#arraymap:$v|;|~|{{a|~}}}}"
 	) {
 		@Override
@@ -155,6 +161,7 @@ public class SFactTypes {
 	public static final SFactType<String> MULTILINE_WIKITEXT = new SFactType<>(
 			"MULTILINE_WIKITEXT",
 			SMWPropertyType.TEXT,
+			"content",
 			"$v"
 	) {
 
@@ -166,6 +173,7 @@ public class SFactTypes {
 	public static final SFactType<PageRef> IMAGE = new SFactType<>(
 			"IMAGE",
 			SMWPropertyType.PAGE,
+			"wiki-file-name",
 			"[[File:$v|250px]]"
 	) {
 		@Override
@@ -181,6 +189,7 @@ public class SFactTypes {
 	public static final SFactType<Integer> INTEGER = new SFactType<>(
 			"INTEGER",
 			SMWPropertyType.NUMBER,
+			"number",
 			"$v"
 	) {
 
@@ -192,6 +201,7 @@ public class SFactTypes {
 	public static final SFactType<Boolean> BOOLEAN = new SFactType<>(
 			"BOOLEAN",
 			SMWPropertyType.BOOLEAN,
+			"text",
 			"$v"
 	) {
 
@@ -203,6 +213,7 @@ public class SFactTypes {
 	public static final SFactType<Temporal> DATE = new SFactType<>(
 			"DATE",
 			SMWPropertyType.DATE,
+			"date",
 			"$v"
 	) {
 		@Override

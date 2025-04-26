@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.util.StdConverter;
 
+import io.github.pfwikis.bots.common.model.JsonModel;
 import io.github.pfwikis.bots.common.model.SemanticObject;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Fact_type;
 import io.github.pfwikis.bots.facts.model.SConcept;
@@ -20,7 +21,7 @@ import lombok.Data;
 import lombok.Setter;
 
 @Data
-public class SemanticSubject implements SemanticObject, Comparable<SemanticSubject> {
+public class SemanticSubject extends JsonModel implements SemanticObject, Comparable<SemanticSubject> {
 	
 	private PageRef subject;
 	private List<Property> data;
@@ -47,10 +48,11 @@ public class SemanticSubject implements SemanticObject, Comparable<SemanticSubje
 	public static class Root extends SemanticSubject {
 		@JsonProperty("sobj")
 		private List<SemanticSubject> replacingObject = new ArrayList<>();
+		
 	}
 	
 	@Setter
-	public static class Container {
+	public static class Container extends JsonModel {
 		private Root query;
 
 		public SemanticSubject postProcess() {

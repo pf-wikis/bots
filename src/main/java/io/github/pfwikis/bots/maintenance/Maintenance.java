@@ -92,7 +92,7 @@ public class Maintenance extends SimpleBot {
 			var generated = r.getPage();
 			var from = r.getPrintouts().getCreatedFrom();
 			
-			if(from.getExists().equals("") && !run.getWiki().pageExists(from.getPage())) {
+			if(from != null && from.getExists().equals("") && !run.getWiki().pageExists(from.getPage())) {
 				run.getWiki().delete(generated, "Source [["+from.getPage()+"]] was deleted.");
 			}
 		});

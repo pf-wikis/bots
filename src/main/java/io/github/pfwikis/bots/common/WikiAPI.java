@@ -47,6 +47,7 @@ import io.github.pfwikis.bots.common.model.QueryPageQuery.QPPage;
 import io.github.pfwikis.bots.common.model.QueryResponse;
 import io.github.pfwikis.bots.common.model.RecentChanges.RecentChange;
 import io.github.pfwikis.bots.common.model.SemanticAsk;
+import io.github.pfwikis.bots.common.model.SemanticAsk.Printouts;
 import io.github.pfwikis.bots.common.model.SemanticAsk.Result;
 import io.github.pfwikis.bots.common.model.subject.PageRef;
 import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
@@ -96,6 +97,10 @@ public class WikiAPI {
 	
 	public ArrayList<Revision> getRevisions(String title, Duration timeRange) {
 		return wiki.getRevisions(title, 0, false, Instant.now().minus(timeRange).truncatedTo(ChronoUnit.SECONDS), null);
+	}
+	
+	public void purge(List<String> pages) {
+		wiki.purge(pages.toArray(String[]::new));
 	}
 
 	public void edit(String page, String content, String reason) {
@@ -501,10 +506,33 @@ public class WikiAPI {
 			"summary", "Change contentmodel to JSON"
 		))));
 	}
+	
+	
+	private static final Map<Class<?>, JavaType> PRINTOUT_TYPES = new HashMap<>();
+	private static JavaType printoutType(Class<?>cl) {
+		return PRINTOUT_TYPES.computeIfAbsent(cl, 
+				t->Jackson.JSON.getTypeFactory().constructSimpleType(
+						SemanticAsk.class,
+						new JavaType[] {Jackson.JSON.getTypeFactory().constructType(t)}
+				)
+		);
+	}
+	public <T> List<Result<T>> semanticAsk(Class<T> printoutType, String query, int limit) {
+		var response = this.<SemanticAsk<T>>get(
+			printoutType(printoutType),
+			"ask", "api_version", "3", "query", query+"|limit="+limit);
+		return response.getQuery().getResults().stream().flatMap(e->e.values().stream()).toList();
+	}
 
-	public ArrayList<Result> semanticAsk(String query) {
-		var results = new ArrayList<SemanticAsk.Result>();
-		var response = get(SemanticAsk.class, "ask", "api_version", "3", "query", query+"|limit=1000");
+	public List<Result<Printouts>> semanticAsk(String query) {
+		return semanticAsk(Printouts.class, query);
+	}
+
+	public <T> List<Result<T>> semanticAsk(Class<T> printoutType, String query) {
+		var jt = printoutType(printoutType);
+		var results = new ArrayList<SemanticAsk.Result<T>>();
+		var response = this.<SemanticAsk<T>>get(jt,
+				"ask", "api_version", "3", "query", query+"|limit=1000");
 		response.getQuery().getResults().stream().flatMap(e->e.values().stream()).forEach(results::add);
 		int lastOffset = Integer.MIN_VALUE;
 		while(response.getQueryContinueOffset() != null) {
@@ -513,7 +541,7 @@ public class WikiAPI {
 				throw new IllegalStateException("Offset changed from "+lastOffset+" to "+response.getQueryContinueOffset());
 			}
 			lastOffset = response.getQueryContinueOffset();
-			response = get(SemanticAsk.class, "ask", "api_version", "3", "query", query+"|limit=1000|offset="+response.getQueryContinueOffset());
+			response = this.<SemanticAsk<T>>get(jt, "ask", "api_version", "3", "query", query+"|limit=1000|offset="+response.getQueryContinueOffset());
 			response.getQuery().getResults().stream().flatMap(e->e.values().stream()).forEach(results::add);
 		}
 		return results;
