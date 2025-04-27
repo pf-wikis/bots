@@ -1,8 +1,9 @@
 @import io.github.pfwikis.bots.facts.model.SConcept
 @import io.github.pfwikis.bots.facts.util.ConceptUtil
 @import static io.github.pfwikis.bots.utils.RockerHelper.n
+@import java.util.List
 
-@args(SConcept[] concepts)
+@args(List<SConcept> concepts)
 
 @arg => {{{{1|Facts:{{PAGENAME}}}}}}
 

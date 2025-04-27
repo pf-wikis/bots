@@ -28,7 +28,7 @@ public class FactsTemplates extends SimpleBot {
 
 	@Override
 	public void run(RunContext ctx) throws IOException {
-		var concepts = SModel.CONCEPTS;
+		var concepts = SModel.getConcepts(run.getServer());
 		
 		
 		if(run.getServer()==Wiki.PF) {
@@ -96,7 +96,7 @@ public class FactsTemplates extends SimpleBot {
 			sb.append("\n* [[Property:$p]]".replace("$p", p.getName()));
 		}
 		sb.append("\nIt creates the following facts related pages:");
-		for(var c:SModel.CONCEPTS) {
+		for(var c:SModel.getConcepts(run.getServer())) {
 			sb.append("\n")
 			.append(
 				"""
