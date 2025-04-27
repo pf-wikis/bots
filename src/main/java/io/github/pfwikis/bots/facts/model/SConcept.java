@@ -133,19 +133,18 @@ public class SConcept {
 		var props = Lists.newArrayList(this.allProperties()).stream()
 				//.filter(p->p.getGenerateWikitext() == null)
 				.toList();
-		var params = props.stream()
-			.map(p-> Pair.of(p.getName(), new ObjectNode(Jackson.JSON.getNodeFactory())
+		var params = new ObjectNode(Jackson.JSON.getNodeFactory());
+		props.forEach(p->params.set(p.getName(), new ObjectNode(Jackson.JSON.getNodeFactory())
 				.put("required", p.isRequired())
 				.put("description", p.getDescription())
 				.put("default", p.getDefaultValue())
 				.put("type", p.getFactType().toTemplateDataType())
-			))
-			.collect(Collectors.toMap(Pair::getLeft, Pair::getRight));
+			));
 		
 		var paramOrder = props.stream().map(p->p.getName()).toList();
-		return Jackson.JSON.writeValueAsString(Map.of(
-				"params", params,
-				"paramOrder", paramOrder,
-				"format", "block"));
+		return Jackson.JSON.writeValueAsString(new ObjectNode(Jackson.JSON.getNodeFactory())
+			.<ObjectNode>set("params", params)
+			.<ObjectNode>set("paramOrder", Jackson.JSON.valueToTree(paramOrder))
+			.put("format", "block"));
 	}
 }

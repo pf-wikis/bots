@@ -115,6 +115,10 @@ public class SFactsProperties {
 		"Dimensions",
 		SFactTypes.STRING)
 		.setDescription("How big the product is.");
+	public static final SProperty<String> Grid = new SProperty<>(
+		"Grid",
+		SFactTypes.STRING)
+		.setDescription("The type of grid used in this product.");
 	public static final SProperty<List<PageRef>> Director = new SProperty<>(
 		"Director",
 		SFactTypes.PAGE_LIST)

@@ -30,6 +30,7 @@ import static io.github.pfwikis.bots.facts.SFactsProperties.Follows;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Full_title;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Gallery;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Genre;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Grid;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Image;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Is_subsection;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Isbn;
@@ -75,6 +76,7 @@ import static io.github.pfwikis.bots.facts.SFactsProperties.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -84,7 +86,9 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 
 import com.beust.jcommander.Strings;
+import com.google.common.collect.Lists;
 
+import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.bots.Run.SingleRun;
 import io.github.pfwikis.bots.common.model.subject.PageRef;
 import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
@@ -113,7 +117,7 @@ public class SModel {
 				Image
 			);
 
-	public static final SConcept BOOK = SConcept.builder()
+	private static final SConcept BOOK = SConcept.builder()
 		.name("Book")
 		.pluralName("Books")
 		.properties(
@@ -332,7 +336,7 @@ public class SModel {
 			}
 		}))
 		.build();
-	public static final SConcept ACCESSORY = SConcept.builder()
+	private static final SConcept ACCESSORY = SConcept.builder()
 			.name("Accessory")
 			.pluralName("Accessories")
 			.properties(
@@ -396,17 +400,36 @@ public class SModel {
 				c.ifMatchingSeries(c.game+" Book Tabs", c.game+" Book Tabs");
 			}))
 		.build();
-	public static final SConcept MAP = SConcept.builder()
+	private static final SConcept MAP_SF;
+	private static final SConcept MAP_PF;
+	static {
+		var contributors = SPropertyGroup.builder()
+			.name("Contributors")
+			.properties(
+				Artist,
+				Publisher
+			);
+		var base = SConcept.builder()
 			.name("Map")
 			.pluralName("Maps")
-			.properties(
+			.conceptSpecificCategoriesFunction(helper((Ctx c) -> {
+				c.addCats(c.ifYear("{} accessories"));
+				c.addCats("Accessories");
+				
+				c.addCats(switch(c.page.getOr(Map_type, "") ) {
+					case "Poster Map Folio" -> "Poster Map Folios"; 
+					case "Flip-Mat" -> c.game+" Flip-Mats"; 
+					case "Map tiles" -> c.game+" Flip-Tiles"; 
+					case "Map Pack" -> c.game+" Map Packs"; 
+					default -> List.of();
+				});
+				
+				c.ifMatchingSeries(c.game+" Campaign Setting", c.game+" Campaign Setting");
+				c.page.getOr(Region, Collections.emptyList()).forEach(r->c.addCats("Images of "+c.run.getWiki().getDisplayTitle(r.toFullTitle())));
+			}));
+		MAP_PF = base.properties(
 				BASIC_FIELDS,
-				SPropertyGroup.builder()
-					.name("Contributors")
-					.properties(
-						Artist,
-						Publisher
-					),
+				contributors,
 				SPropertyGroup.builder()
 					.name("Map")
 					.properties(
@@ -449,23 +472,57 @@ public class SModel {
 				Precedes,
 				Awards
 			)
-		.conceptSpecificCategoriesFunction(helper((Ctx c) -> {
-			c.addCats(c.ifYear("{} accessories"));
-			c.addCats("Accessories");
-			
-			c.addCats(switch(c.page.getOr(Map_type, "") ) {
-				case "Poster Map Folio" -> "Poster Map Folios"; 
-				case "Flip-Mat" -> c.game+" Flip-Mats"; 
-				case "Map tiles" -> c.game+" Flip-Tiles"; 
-				case "Map Pack" -> c.game+" Map Packs"; 
-				default -> List.of();
-			});
-			
-			c.ifMatchingSeries(c.game+" Campaign Setting", c.game+" Campaign Setting");
-			c.page.getOr(Region, Collections.emptyList()).forEach(r->c.addCats("Images of "+c.run.getWiki().getDisplayTitle(r.toFullTitle())));
-		}))
-		.build();
-	public static final SConcept MINIATURES = SConcept.builder()
+			.build();
+		MAP_SF = base.properties(
+				BASIC_FIELDS,
+				contributors,
+				SPropertyGroup.builder()
+					.name("Map")
+					.properties(
+						Map_type,
+						Website,
+						Pubcode,
+						Gallery,
+						Price,
+						Release_date,
+						Region,
+						Dimensions,
+						Grid,
+						Quantity,
+						Isbn,
+						Pages,
+						Rule_system,
+						Series,
+						Follows,
+						Precedes,
+						Awards
+					),
+				BLURB_FIELDS
+			)
+			.infoboxProperties(
+				Artist,
+				Publisher,
+				Price,
+				Release_date,
+				Region,
+				Dimensions,
+				Grid,
+				Quantity,
+				SInfoboxProperty.from(Isbn)
+					.label("ISBN")
+					.build(),
+				Pages,
+				SInfoboxProperty.from(Rule_system)
+					.label("Rule set")
+					.build(),
+				Series,
+				Follows,
+				Precedes,
+				Awards
+			)
+			.build();
+	}
+	private static final SConcept MINIATURES = SConcept.builder()
 			.name("Miniatures")
 			.pluralName("Miniatures")
 			.properties(
@@ -517,7 +574,7 @@ public class SModel {
 				c.ifMatchingSeries(c.game+" Paper Minis", c.game+" Paper Minis");
 			}))
 		.build();
-	public static final SConcept AUDIO = SConcept.builder()
+	private static final SConcept AUDIO = SConcept.builder()
 			.name("Audio")
 			.pluralName("Audio")
 			.properties(
@@ -573,7 +630,7 @@ public class SModel {
 				});
 			}))
 		.build();
-	public static final SConcept VIDEO_GAME = SConcept.builder()
+	private static final SConcept VIDEO_GAME = SConcept.builder()
 			.name("Video game")
 			.pluralName("Video games")
 			.properties(
@@ -634,7 +691,7 @@ public class SModel {
 				});
 			}))
 		.build();
-	public static final SConcept DECK = SConcept.builder()
+	private static final SConcept DECK = SConcept.builder()
 			.name("Deck")
 			.pluralName("Decks")
 			.properties(
@@ -715,7 +772,7 @@ public class SModel {
 			}))
 		.build();
 	
-	public static final SConcept WEB_CITATION = SConcept.builder()
+	private static final SConcept WEB_CITATION = SConcept.builder()
 		.name("Web citation")
 		.pluralName("Web citation")
 		.properties(
@@ -731,18 +788,35 @@ public class SModel {
 				)
 		)
 		.build();
-	public static final SConcept[] CONCEPTS = Stream.of(
+	private static final EnumMap<Wiki, List<SConcept>> CONCEPTS;
+	static {
+		CONCEPTS = new EnumMap<>(Wiki.class);
+		CONCEPTS.put(Wiki.PF, Lists.newArrayList(
 			BOOK,
 			ACCESSORY,
-			MAP,
+			MAP_PF,
 			MINIATURES,
 			AUDIO,
 			VIDEO_GAME,
 			DECK,
 			WEB_CITATION
-		)
-		.sorted(Comparator.comparing(SConcept::getName))
-		.toArray(SConcept[]::new);
+		));
+		CONCEPTS.put(Wiki.SF, Lists.newArrayList(
+			BOOK,
+			ACCESSORY,
+			MAP_SF,
+			MINIATURES,
+			AUDIO,
+			VIDEO_GAME,
+			DECK,
+			WEB_CITATION
+		));
+		CONCEPTS.values().forEach(l->Collections.sort(l, Comparator.comparing(SConcept::getName)));
+	}
+	
+	public static List<SConcept> getConcepts(Wiki server) {
+		return CONCEPTS.get(server);
+	}
 
 	private static BiFunction<SingleRun, SemanticSubject, String> helper(Consumer<Ctx> func) {
 		return (SingleRun run, SemanticSubject page) -> {

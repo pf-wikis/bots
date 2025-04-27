@@ -1,13 +1,14 @@
 @import io.github.pfwikis.bots.facts.model.SConcept
 @import io.github.pfwikis.bots.facts.util.ConceptUtil
 @import static io.github.pfwikis.bots.utils.RockerHelper.n
+@import java.util.List
 
-@args(SConcept[] concepts)
+@args(List<SConcept> concepts)
 
 @arg => {{{{1|Facts:{{PAGENAME}}}}}}
 
 <includeonly>
-<div class="facts-helper-create-page-buttons">
+{{#validateParameters:}}<div class="facts-helper-create-page-buttons">
 @for(SConcept c:concepts) {
 	{{#formlink:
 		form=@c.getName()

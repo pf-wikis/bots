@@ -21,7 +21,7 @@ public class RPInfobox extends RPEndpoint<RPInfoboxParam> {
 		
 		var subject = param.getData().postProcess();
 			
-		var concepts = Arrays.stream(SModel.CONCEPTS)
+		var concepts = SModel.getConcepts(bot.getRun().getServer()).stream()
 			.filter(c->c.getInfoboxProperties()!=null && !c.getInfoboxProperties().isEmpty())
 			.filter(subject::hasConcept)
 			.toList();
