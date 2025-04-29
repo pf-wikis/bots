@@ -2,7 +2,7 @@
 
 @args(String name, SConcept c)
 
-<includeonly>{{#validateParameters:}}{{#ask: [[Fact type::Template:Facts/@name]]{{{query|}}}
+<includeonly>{{Validate parameters}}{{#ask: [[Fact type::Template:Facts/@name]]{{{query|}}}
 	@for(prop:c.allProperties()) {
 		|?@prop.getName()@?prop.wikitextToQuery()=@prop.getName()
 	}

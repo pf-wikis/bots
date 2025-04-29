@@ -8,7 +8,7 @@
 @arg => {{{{1|Facts:{{PAGENAME}}}}}}
 
 <includeonly>
-{{#validateParameters:}}<div class="facts-helper-create-page-buttons">
+{{Validate parameters}}<div class="facts-helper-create-page-buttons">
 @for(SConcept c:concepts) {
 	{{#formlink:
 		form=@c.getName()

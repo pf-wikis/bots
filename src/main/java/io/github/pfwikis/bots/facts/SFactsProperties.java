@@ -303,6 +303,10 @@ public class SFactsProperties {
 		SFactTypes.PAGE_LIST)
 		.setSuggestValuesFrom("Category:Locations")
 		.setDescription("The region shown on this map.");
+	public static final SProperty<Integer> Year = new SProperty<>(
+		"Year",
+		SFactTypes.INTEGER)
+		.setDescription("A numeric year when something happened.");
 	public static final SProperty<String> Release_date_precision = new SProperty<>(
 		"Release date precision",
 		SFactTypes.STRING)

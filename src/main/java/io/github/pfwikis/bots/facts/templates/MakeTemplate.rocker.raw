@@ -30,7 +30,7 @@
 		}
 	</div>
 }
-{{#validateParameters:}}
+{{Validate parameters}}
 <div class="facts-display concept-@ConceptUtil.cssName(c)">
 	@for(g:c.getPropertyGroups()) {
 		<div class="facts-display-group group-@ConceptUtil.cssName(g)">

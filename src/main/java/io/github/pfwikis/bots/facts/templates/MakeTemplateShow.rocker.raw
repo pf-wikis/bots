@@ -2,7 +2,7 @@
 
 @args(String name, SConcept c)
 
-<includeonly>{{#validateParameters:}}{{#show: Facts:{{{page|}}}
+<includeonly>{{Validate parameters}}{{#show: Facts:{{{page|}}}
 	@for(prop:c.allProperties()) {
 		|?@prop.getName()@?prop.wikitextToQuery()=@prop.getName()
 	}
