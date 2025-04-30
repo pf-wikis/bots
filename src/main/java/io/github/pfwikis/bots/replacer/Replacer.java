@@ -24,12 +24,6 @@ public class Replacer extends SimpleBot {
 
 	@Override
 	public void run(RunContext ctx) throws IOException {	
-			
-				);
-				if(!txt.equals(ntxt)) {
-					run.getWiki().edit(using.getTitle(), ntxt, "Replace Cite template with new usage");
-				}
-			}*/
-		}
+
 	}
 }
