@@ -15,7 +15,7 @@
 	@if(prop.isRequired() && prop.isGenerateWikitextDynamic()) {
 		{{#if:@prop.wikitextToTestIfValue(true)
 			|@content
-			|[[Category:Pages with errors]]{{#info: @prop.getName() is required!|error}}
+			|{{Error|<code>@prop.getName()</code> is a required parameter}}
 		}}
 	}
 	else {

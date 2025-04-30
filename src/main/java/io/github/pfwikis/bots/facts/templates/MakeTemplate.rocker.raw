@@ -11,11 +11,9 @@
 }}
 [[Category:Facts templates]]
 </noinclude><includeonly><div class="facts">
-{{#ifexist:Template:Cite/{{PAGENAME}}|
-	<div class="citethis">
-		You can cite this entity by using {{tl|Ref|{{PAGENAME}}}} or {{tl|Cite/{{PAGENAME}}}}.
-	</div>
-}}
+<div class="citethis">
+	You can cite this entity by using {{tl|Ref|{{PAGENAME}}}} or {{tl|Cite|{{PAGENAME}}}}.
+</div>
 @if(c.getInfoboxProperties()!=null && !c.getInfoboxProperties().isEmpty()) {
 	<div class="citethis">
 		The infobox for this entity can be used via {{tl|Infobox|{{PAGENAME}}}} or just {{tl|Infobox}} on the page <code>{{PAGENAME}}</code>.

@@ -61,12 +61,6 @@ public class Maintenance extends SimpleBot {
 							.replaceAll("(?s)(\\{\\{\\s*)"+fromTitlePattern+"(\\s*[\\|\\}])", "$1"+toTitle+"$2")
 							.replaceAll("(?s)(\\{\\{\\s*tl\\s*\\|)"+fromTitlePattern+"(\\s*[\\|\\}])", "$1"+toTitle+"$2");
 					}
-					//special case: citation templates
-					if(from.startsWith("Template:Cite/")) {
-						ntxt = ntxt.replaceAll(
-							"(\\{\\{ *(Cite|Ref) *\\| *)"+StringHelper.titleToPattern(from.substring(14), false)+"( *[\\|\\}])",
-							"$1"+to.substring(14)+"$3");
-					}
 					//special case: image Files can be used via the Image: ns
 					if(from.startsWith("File:")) {
 						ntxt = ntxt.replaceAll(fromTitlePattern, toTitle);
