@@ -22,11 +22,13 @@ import org.apache.commons.lang3.StringUtils;
 import com.beust.jcommander.Parameters;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.util.concurrent.UncheckedExecutionException;
 
 import io.github.pfwikis.bots.common.model.subject.PageRef;
 import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
 import io.github.pfwikis.bots.rest.RPEndpoint;
 import io.github.pfwikis.bots.rest.RestProviderBot;
+import io.github.pfwikis.bots.rest.SafeException;
 import io.github.pfwikis.bots.rest.endpoints.citetemplate.model.BookDef;
 import io.github.pfwikis.bots.rest.endpoints.citetemplate.model.SectionDef;
 import io.github.pfwikis.bots.utils.RockerHelper;
@@ -45,12 +47,7 @@ public class RPCiteTemplate extends RPEndpoint<RPCiteParam> {
 		super(RPCiteParam.class, "cite");
 	}
 	
-	private static Set<String> TYPES_WITH_CITE = Set.of(
-		"Facts/Book",
-		"Facts/Map",
-		"Facts/Deck",
-		"Facts/Video game",
-		"Facts/Web citation");
+	
 	
 	@Override
 	public RPResult handle(RestProviderBot bot, RPCiteParam param) throws Exception {
@@ -71,11 +68,11 @@ public class RPCiteTemplate extends RPEndpoint<RPCiteParam> {
 			var subject = param.getSemanticSubject().postProcess();
 			//var subject = bot.getRun().getWiki().semanticSubject(param.getFactsPage());
 			if(!subject.has(Fact_type)) {
-				throw new IllegalArgumentException("Page is no facts page");
+				throw new SafeException(param.getFactsPage(), param.getFactsPage()+" does not have facts");
 			}
 			var type = subject.get(Fact_type);
-			if(!TYPES_WITH_CITE.contains(type.getTitle())) {
-				throw new IllegalArgumentException("Facts page is of a non-citable type");
+			if(!CiteUtil.isCiteable(type)) {
+				throw new SafeException(param.getFactsPage(), param.getFactsPage()+"is of the non-citable type "+type.getTitle());
 			}
 			
 			BookDef bookDef = BookDef.builder()

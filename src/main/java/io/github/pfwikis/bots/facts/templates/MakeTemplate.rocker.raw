@@ -1,5 +1,6 @@
 @import io.github.pfwikis.bots.facts.model.SConcept
 @import io.github.pfwikis.bots.facts.util.ConceptUtil
+@import io.github.pfwikis.bots.rest.endpoints.citetemplate.CiteUtil
 
 @args(SConcept c)
 <noinclude>
@@ -11,9 +12,11 @@
 }}
 [[Category:Facts templates]]
 </noinclude><includeonly><div class="facts">
-<div class="citethis">
-	You can cite this entity by using {{tl|Ref|{{PAGENAME}}}} or {{tl|Cite|{{PAGENAME}}}}.
-</div>
+@if(CiteUtil.isCiteable(c)) {
+	<div class="citethis">
+		You can cite this entity by using {{tl|Ref|{{PAGENAME}}}} or {{tl|Cite|{{PAGENAME}}}}.
+	</div>
+}
 @if(c.getInfoboxProperties()!=null && !c.getInfoboxProperties().isEmpty()) {
 	<div class="citethis">
 		The infobox for this entity can be used via {{tl|Infobox|{{PAGENAME}}}} or just {{tl|Infobox}} on the page <code>{{PAGENAME}}</code>.

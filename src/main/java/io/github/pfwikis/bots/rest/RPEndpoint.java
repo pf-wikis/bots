@@ -45,11 +45,23 @@ public abstract class RPEndpoint<T> implements Route {
 		var bot = new RestProviderBot();
 		T param = null;
 		try {
-			scheduler.initBot(wiki, scheduler.getDiscord(), bot);
-			param = Jackson.JSON.readValue(request.bodyAsBytes(), parameterType);
-			log.info("Requesting {} with param {}", endpoint, param);
-			var res = handle(bot, param);
-			return Jackson.JSON.writeValueAsString(res);
+			try {
+				scheduler.initBot(wiki, scheduler.getDiscord(), bot);
+				param = Jackson.JSON.readValue(request.bodyAsBytes(), parameterType);
+				log.info("Requesting {} with param {}", endpoint, param);
+				var res = handle(bot, param);
+				return Jackson.JSON.writeValueAsString(res);
+			} catch(Exception e) {
+				Throwable potentiallySafe = e;
+				//see if there is a safe messag ein the cause stack to return
+				while(potentiallySafe!=null) {
+					if(potentiallySafe instanceof SafeException se) {
+						return Jackson.JSON.writeValueAsString(error(se.getFactsPage(), e.getMessage()));
+					}
+					potentiallySafe = potentiallySafe.getCause();
+				}
+				throw e;
+			}
 		} catch(Exception e) {
 			response.status(500);
 			log.error("Failed to execute {} on {}", endpoint, param, e);
