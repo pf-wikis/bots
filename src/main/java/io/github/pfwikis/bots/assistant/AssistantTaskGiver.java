@@ -63,7 +63,7 @@ public class AssistantTaskGiver extends SimpleBot {
 		
 		var sb = new StringBuilder()
 			.append("I have a new task for you human people. There are a number of pages that need fixing. Please and thank you!\n");
-		for(var p:res) {
+		for(var p:res.subList(0, Math.min(res.size(), 10))) {
 			var errors = new HashSet<>(cats);
 			errors.retainAll(p.getPrintouts().getCategories().stream().map(c->c.getPage()).toList());
 			sb
@@ -80,6 +80,12 @@ public class AssistantTaskGiver extends SimpleBot {
 						.collect(Collectors.joining(", ")));
 			}
 			sb.append("\n");
+		}
+		if(res.size()>10) {
+			sb.append("... and ")
+				.append(res.size()-10)
+				.append(" more in ")
+				.append(Discord.wikiLink(run.getServer(), "Pages with errors", "/wiki/Category:Pages_with_errors"));
 		}
 		log.info("New human task:\n{}", sb);
 		discord.reportToTalkChannel(run.getServer(), this, sb.toString(), true);
