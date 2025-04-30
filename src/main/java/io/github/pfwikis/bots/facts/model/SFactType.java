@@ -42,7 +42,7 @@ public abstract class SFactType<JType> {
 		return v;
 	}
 	
-	public String toInfoboxDisplay(WikiAPI wiki, JType v) {
+	public String toInfoboxDisplay(JType v) {
 		return v.toString();
 	}
 

@@ -293,7 +293,7 @@ public class SModel {
 					"Comics", c.ifYear("{} comics"),
 					"Fiction", c.ifYear("{} fiction"),
 					c.series.stream().map(s->s.getTitle()+" comics").toList(),
-					c.page.get(Author_all).stream().map(a->c.run.getWiki().getDisplayTitle(a.toFullTitle())).map(a->"Comics by "+a).toList()
+					c.page.get(Author_all).stream().map(a->a.toDisplayTitleWikitext()).map(a->"Comics by "+a).toList()
 				);
 				case "Short Fiction" -> List.of("Fiction", c.ifYear("{} fiction"));
 				default -> List.of();
@@ -425,7 +425,7 @@ public class SModel {
 				});
 				
 				c.ifMatchingSeries(c.game+" Campaign Setting", c.game+" Campaign Setting");
-				c.page.getOr(Region, Collections.emptyList()).forEach(r->c.addCats("Images of "+c.run.getWiki().getDisplayTitle(r.toFullTitle())));
+				c.page.getOr(Region, Collections.emptyList()).forEach(r->c.addCats("Images of "+r.toDisplayTitleWikitext()));
 			}));
 		MAP_PF = base.properties(
 				BASIC_FIELDS,
@@ -818,9 +818,9 @@ public class SModel {
 		return CONCEPTS.get(server);
 	}
 
-	private static BiFunction<SingleRun, SemanticSubject, String> helper(Consumer<Ctx> func) {
-		return (SingleRun run, SemanticSubject page) -> {
-			var ctx = new Ctx(run, page);
+	private static BiFunction<Wiki, SemanticSubject, String> helper(Consumer<Ctx> func) {
+		return (Wiki wiki, SemanticSubject page) -> {
+			var ctx = new Ctx(wiki, page);
 			func.accept(ctx);
 			var cats = ctx.cats.stream().sorted().distinct().toList();
 			if(cats.isEmpty()) return "";
@@ -832,16 +832,14 @@ public class SModel {
 	}
 	
 	private static class Ctx {
-		protected SingleRun run;
 		protected SemanticSubject page;
 		private List<String> cats;
 		protected String game;
 		protected List<PageRef> series;
 		
-		public Ctx(SingleRun run, SemanticSubject page) {
-			this.run = run;
+		public Ctx(Wiki wiki, SemanticSubject page) {
 			this.page = page;
-			this.game = run.getServer().getName();
+			this.game = wiki.getName();
 			this.series = page.getOr(Series, Collections.emptyList());
 			this.cats = new ArrayList<>();
 		}

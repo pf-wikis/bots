@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -15,6 +16,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 
+import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.bots.Run.SingleRun;
 import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
 import io.github.pfwikis.bots.facts.SFactsProperties;
@@ -33,7 +35,7 @@ public class SConcept {
 	List<SConcept> subConcepts;
 	List<SInfoboxProperty<?>> infoboxProperties;
 	List<SProperty<?>> generatedProperties;
-	BiFunction<SingleRun, SemanticSubject, String> conceptSpecificCategoriesFunction;
+	BiFunction<Wiki, SemanticSubject, String> conceptSpecificCategoriesFunction;
 	
 	public static Builder builder() {
 		return new Builder();
@@ -48,7 +50,7 @@ public class SConcept {
 		private List<SPropertyGroup> propertyGroups = Collections.emptyList();
 		private List<SInfoboxProperty<?>> infoboxProperties = Collections.emptyList();
 		private List<SConcept> subConcepts = Collections.emptyList();
-		private BiFunction<SingleRun, SemanticSubject, String> conceptSpecificCategoriesFunction;
+		private BiFunction<Wiki, SemanticSubject, String> conceptSpecificCategoriesFunction;
 		
 		public Builder properties(SPropertyGroup.SPropertyGroupBuilder... propertyGroups) {
 			this.propertyGroups=Arrays.stream(propertyGroups).map(SPropertyGroupBuilder::build).toList();
@@ -72,7 +74,7 @@ public class SConcept {
 			return this;
 		}
 		
-		public Builder conceptSpecificCategoriesFunction(BiFunction<SingleRun, SemanticSubject, String> cscf) {
+		public Builder conceptSpecificCategoriesFunction(BiFunction<Wiki, SemanticSubject, String> cscf) {
 			this.conceptSpecificCategoriesFunction = cscf;
 			return this;
 		}
@@ -120,8 +122,8 @@ public class SConcept {
 			.toList();
 	}
 
-	public String conceptSpecificCategories(SingleRun run, SemanticSubject subject) {
-		return conceptSpecificCategoriesFunction.apply(run, subject);
+	public String conceptSpecificCategories(Wiki wiki, SemanticSubject subject) {
+		return conceptSpecificCategoriesFunction.apply(wiki, subject);
 	}
 
 	public boolean containsProperty(SProperty<?> p) {

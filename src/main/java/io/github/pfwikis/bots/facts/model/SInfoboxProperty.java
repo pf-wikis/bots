@@ -18,8 +18,8 @@ public class SInfoboxProperty<JType> {
 	private String label;
 	private SProperty<JType> fallback;
 
-	public String toInfoboxDisplay(WikiAPI wiki, SemanticSubject s) {
-		return property.getFactType().toInfoboxDisplay(wiki, getValue(s));
+	public String toInfoboxDisplay(SemanticSubject s) {
+		return property.getFactType().toInfoboxDisplay(getValue(s));
 	}
 	
 	private JType getValue(SemanticSubject s) {

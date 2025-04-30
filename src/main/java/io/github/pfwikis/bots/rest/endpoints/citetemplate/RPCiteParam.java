@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.primitives.Ints;
 
+import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
 import lombok.Data;
 
 @Data
@@ -13,11 +14,12 @@ public class RPCiteParam {
 	private String location;
 	private String endPage;
 	private String showAs;
+	private SemanticSubject.Container semanticSubject;
 
 	public boolean validate() {
 		if(location!=null)
 			intLocation=Ints.tryParse(location);
-		return factsPage != null && factsPage.startsWith("Facts:");
+		return factsPage != null && factsPage.startsWith("Facts:") && semanticSubject != null;
 	}
 
 	public boolean hasLocation() {

@@ -53,7 +53,7 @@ public abstract class RPEndpoint<T> implements Route {
 		} catch(Exception e) {
 			response.status(500);
 			log.error("Failed to execute {} on {}", endpoint, param, e);
-			if(bot.getDiscord() == null) return null;
+			if(bot.getDiscord() == null || scheduler.isLocalMode()) return null;
 			Instant nextLog = DISCORD_LOCKS.computeIfAbsent(this.getClass(), c->Instant.MIN);
 			if(nextLog.isBefore(Instant.now())) {
 				DISCORD_LOCKS.put(this.getClass(), Instant.now());

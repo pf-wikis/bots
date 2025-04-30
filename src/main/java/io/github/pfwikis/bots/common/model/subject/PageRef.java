@@ -63,4 +63,8 @@ public class PageRef {
 	public String toWikiLink() {
 		return "[["+(ns==14?":":"")+this.toFullTitle()+"]]";
 	}
+	
+	public String toDisplayTitleWikitext() {
+		return "{{#getdisplaytitle:"+this.toFullTitle()+"}}";
+	}
 }

@@ -50,7 +50,7 @@ public class SFactTypes {
 			"$v"
 	) {
 		@Override
-		public String toInfoboxDisplay(WikiAPI wiki, String v) {
+		public String toInfoboxDisplay(String v) {
 			return "[[Special:BookSources/"+v+"|"+v+"]]";
 		}
 
@@ -66,8 +66,8 @@ public class SFactTypes {
 			"[[:$v]]"
 	) {
 		@Override
-		public String toInfoboxDisplay(WikiAPI wiki, PageRef v) {
-			return v.toWikiLink(wiki);
+		public String toInfoboxDisplay(PageRef v) {
+			return v.toWikiLink();
 		}
 
 		@Override
@@ -87,8 +87,8 @@ public class SFactTypes {
 		}
 		
 		@Override
-		public String toInfoboxDisplay(WikiAPI wiki, List<PageRef> v) {
-			var values = Lists.transform(v, e->PAGE.toInfoboxDisplay(wiki, e));
+		public String toInfoboxDisplay(List<PageRef> v) {
+			var values = Lists.transform(v, e->PAGE.toInfoboxDisplay(e));
 			if(values.size() == 0)
 				return "";
 			if(values.size() == 1)
@@ -125,8 +125,8 @@ public class SFactTypes {
 			"{{#arraymap:$v|;|~|{{a|~}}}}"
 	) {
 		@Override
-		public String toInfoboxDisplay(WikiAPI wiki, List<PageRef> v) {
-			return PAGE_LIST.toInfoboxDisplay(wiki, v);
+		public String toInfoboxDisplay(List<PageRef> v) {
+			return PAGE_LIST.toInfoboxDisplay(v);
 		}
 		
 		@Override
@@ -231,7 +231,7 @@ public class SFactTypes {
 				.ofPattern("[MMMM [dd, ]]yyyy")
 				.localizedBy(Locale.ENGLISH);
 		
-		public String toInfoboxDisplay(WikiAPI wiki, Temporal v) {
+		public String toInfoboxDisplay(Temporal v) {
 			return "<time datetime=\""+v+"\">"+US_FORMAT.format(v)+"</time>";
 		}
 	};

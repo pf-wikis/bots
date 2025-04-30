@@ -4,7 +4,6 @@
 @import java.util.List
 @import io.github.pfwikis.bots.common.model.subject.SemanticSubject
 @import io.github.pfwikis.bots.facts.model.SConcept
-@import io.github.pfwikis.bots.common.bots.Run.SingleRun
 @import static java.util.Comparator.*
 @import java.time.LocalDate
 @import io.github.pfwikis.bots.utils.TemporalComparator
@@ -13,8 +12,9 @@
 @import io.github.pfwikis.bots.facts.SFactsProperties
 @import io.github.pfwikis.bots.facts.model.SProperty
 @import io.github.pfwikis.bots.utils.StringHelper
+@import io.github.pfwikis.bots.common.Wiki
 
-@args(SingleRun run, List<SConcept> concepts, SemanticSubject page)
+@args(Wiki wiki, List<SConcept> concepts, SemanticSubject page)
 @for(SConcept concept:concepts) {
 	<div class="infobox @ConceptUtil.cssName(concept)">
 		<div class="name">
@@ -26,12 +26,9 @@
 			}
 		</div>
 		@if(page.has(Image)) {
-			@with(boolean imageExists = run.getWiki().pageExists(page.get(Image))) {
-				@*to create a wanted image and react to uploaded files*@
-				@if(!imageExists) {@{@{#ifexist:File:@page.get(Image).getTitle()|}
+			{{#ifexist:File:@page.get(Image).getTitle()|
 				<div class="image">[[File:@page.get(Image).getTitle()|250px|Cover Image|class=not-lazy]]</div>
-				@if(!imageExists)  {@}@}}
-			}
+			}}
 		}
 		@if(page.has(Website)) {
 			<div class="website">
@@ -53,7 +50,7 @@
 						@ibProp.toInfoboxLabel(page)
 					</div>
 					<div>
-						@ibProp.toInfoboxDisplay(run.getWiki(), page)
+						@ibProp.toInfoboxDisplay(page)
 					</div>
 				}
 			}
@@ -84,7 +81,7 @@
 									&& ibProp.isPresentIn(release)
 								) {
 									<div class="key">@ibProp.toInfoboxLabel(release)</div>
-									<div>@ibProp.toInfoboxDisplay(run.getWiki(), release)</div>
+									<div>@ibProp.toInfoboxDisplay(release)</div>
 								}
 							}
 						</div>
@@ -113,34 +110,34 @@
 	}
 	@if(concept.containsProperty(Author_all) && page.has(Author_all)) {
 		@for(author:page.get(Author_all)) {
-			[[Category:Works by @run.getWiki().getDisplayTitle(author.toFullTitle())]]
+			[[Category:Works by @author.toDisplayTitleWikitext()]]
 		}
 	}
 	else if(concept.containsProperty(Author) && page.has(Author)) {
 		@for(author:page.get(Author)) {
-			[[Category:Works by @run.getWiki().getDisplayTitle(author.toFullTitle())]]
+			[[Category:Works by @author.toDisplayTitleWikitext()]]
 		}
 	}
 	@if(concept.containsProperty(Artist) && page.has(Artist)) {
 		@for(author:page.get(Artist)) {
-			[[Category:Artwork by @run.getWiki().getDisplayTitle(author.toFullTitle())]]
+			[[Category:Artwork by @author.toDisplayTitleWikitext()]]
 		}
 	}
 	@if(concept.containsProperty(Director) && page.has(Director)) {
 		@for(author:page.get(Director)) {
-			[[Category:Works by @run.getWiki().getDisplayTitle(author.toFullTitle())]]
+			[[Category:Works by @author.toDisplayTitleWikitext()]]
 		}
 	}
 	@if(concept.containsProperty(Performer) && page.has(Performer)) {
 		@for(author:page.get(Performer)) {
-			[[Category:Works starring @run.getWiki().getDisplayTitle(author.toFullTitle())]]
+			[[Category:Works starring @author.toDisplayTitleWikitext()]]
 		}
 	}
 	@if(concept.containsProperty(Narrator) && page.has(Narrator)) {
 		@for(author:page.get(Narrator)) {
-			[[Category:Works starring @run.getWiki().getDisplayTitle(author.toFullTitle())]]
+			[[Category:Works starring @author.toDisplayTitleWikitext()]]
 		}
 	}
 	
-	@concept.conceptSpecificCategories(run, page)
+	@concept.conceptSpecificCategories(wiki, page)
 }

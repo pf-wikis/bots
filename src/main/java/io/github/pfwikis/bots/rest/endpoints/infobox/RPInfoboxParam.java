@@ -6,9 +6,9 @@ import lombok.Data;
 @Data
 public class RPInfoboxParam {
 	private String factsPage;
-	private SemanticSubject.Container data;
+	private SemanticSubject.Container semanticSubject;
 
 	public boolean validate() {
-		return factsPage != null && factsPage.startsWith("Facts:") && data != null;
+		return factsPage != null && factsPage.startsWith("Facts:") && semanticSubject != null;
 	}
 }

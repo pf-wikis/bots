@@ -9,30 +9,40 @@ import static io.github.pfwikis.bots.facts.SFactsProperties.Primary_author;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Release_year;
 import static io.github.pfwikis.bots.facts.SFactsProperties.To_page;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.beust.jcommander.Parameters;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 
 import io.github.pfwikis.bots.common.model.subject.PageRef;
 import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
 import io.github.pfwikis.bots.rest.RPEndpoint;
 import io.github.pfwikis.bots.rest.RestProviderBot;
-import io.github.pfwikis.bots.rest.endpoints.citetemplate.BookDef.SectionDef;
+import io.github.pfwikis.bots.rest.endpoints.citetemplate.model.BookDef;
+import io.github.pfwikis.bots.rest.endpoints.citetemplate.model.SectionDef;
 import io.github.pfwikis.bots.utils.RockerHelper;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Parameters
 public class RPCiteTemplate extends RPEndpoint<RPCiteParam> {
+	
+	private final Cache<String, BookDef> cache = CacheBuilder.newBuilder()
+			.expireAfterWrite(Duration.ofHours(1))
+			.maximumSize(10_000)
+			.build();
 
 	public RPCiteTemplate() {
-		super(RPCiteParam.class, "citetemplate");
+		super(RPCiteParam.class, "cite");
 	}
 	
 	private static Set<String> TYPES_WITH_CITE = Set.of(
@@ -56,51 +66,54 @@ public class RPCiteTemplate extends RPEndpoint<RPCiteParam> {
 			.build();
 	}	
 	
-	private BookDef fromCacheOrCalc(RestProviderBot bot, RPCiteParam param) {
-		var subject = bot.getRun().getWiki().semanticSubject(param.getFactsPage());
-		if(!subject.has(Fact_type)) {
-			throw new IllegalArgumentException("Page is no facts page");
-		}
-		var type = subject.get(Fact_type);
-		if(!TYPES_WITH_CITE.contains(type.getTitle())) {
-			throw new IllegalArgumentException("Facts page is of a non-citable type");
-		}
-		
-		BookDef bookDef = BookDef.builder()
-			.factsPage(StringUtils.removeStart(param.getFactsPage(), "Facts:"))
-			.subject(subject)
-			.authors(sortAuthors(subject))
-			.releaseYear("unknown".equals(subject.get(Release_year))
-					?null
-					:Integer.parseInt(subject.get(Release_year))
-			)
-			.webCitation(subject.get(Fact_type).toFullTitle().equals("Template:Facts/Web citation"))
-			.build();
-		
-		var rawSections = subject.getSubObjects("Facts/Book/Section");
-		bookDef.getSections().addAll(rawSections.stream()
-			.map(s-> new SectionDef(
-				bookDef,
-				s,
-				null,
-				sortAuthors(s),
-				Boolean.TRUE.equals(s.getOr(Is_subsection, Boolean.FALSE)),
-				Collections.emptyList()
-			))
-			.toList());
-		
-		for(int i=1;i<bookDef.getSections().size();i++) {
-			if(bookDef.getSections().get(i).isSubsection()) {
-				var prev = bookDef.getSections().get(i-1);
-				var sect = bookDef.getSections().remove(i);
-				sect.setParent(prev);
-				prev.setSubSections(new ArrayList<>(prev.getSubSections()));
-				prev.getSubSections().add(sect);
-				i--;
+	private BookDef fromCacheOrCalc(RestProviderBot bot, RPCiteParam param) throws ExecutionException {
+		return cache.get(param.getFactsPage(), ()-> {
+			var subject = param.getSemanticSubject().postProcess();
+			//var subject = bot.getRun().getWiki().semanticSubject(param.getFactsPage());
+			if(!subject.has(Fact_type)) {
+				throw new IllegalArgumentException("Page is no facts page");
 			}
-		}
-		calcPageRanges(bookDef.getSections(), null);
-		return bookDef;
+			var type = subject.get(Fact_type);
+			if(!TYPES_WITH_CITE.contains(type.getTitle())) {
+				throw new IllegalArgumentException("Facts page is of a non-citable type");
+			}
+			
+			BookDef bookDef = BookDef.builder()
+				.factsPage(StringUtils.removeStart(param.getFactsPage(), "Facts:"))
+				.subject(subject)
+				.authors(sortAuthors(subject))
+				.releaseYear("unknown".equals(subject.get(Release_year))
+						?null
+						:Integer.parseInt(subject.get(Release_year))
+				)
+				.webCitation(subject.get(Fact_type).toFullTitle().equals("Template:Facts/Web citation"))
+				.build();
+			
+			var rawSections = subject.getSubObjects("Facts/Book/Section");
+			bookDef.getSections().addAll(rawSections.stream()
+				.map(s-> new SectionDef(
+					bookDef,
+					s,
+					null,
+					sortAuthors(s),
+					Boolean.TRUE.equals(s.getOr(Is_subsection, Boolean.FALSE)),
+					Collections.emptyList()
+				))
+				.toList());
+			
+			for(int i=1;i<bookDef.getSections().size();i++) {
+				if(bookDef.getSections().get(i).isSubsection()) {
+					var prev = bookDef.getSections().get(i-1);
+					var sect = bookDef.getSections().remove(i);
+					sect.setParent(prev);
+					prev.setSubSections(new ArrayList<>(prev.getSubSections()));
+					prev.getSubSections().add(sect);
+					i--;
+				}
+			}
+			calcPageRanges(bookDef.getSections(), null);
+			return bookDef;
+		});
 	}
 
 	private List<PageRef> sortAuthors(SemanticSubject subject) {

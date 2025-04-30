@@ -6,6 +6,7 @@
 @import static java.nio.charset.StandardCharsets.UTF_8
 @import org.apache.commons.lang3.StringUtils
 @import com.google.common.primitives.Ints
+@import io.github.pfwikis.bots.rest.endpoints.citetemplate.model.BookDef
 
 @args(BookDef book, RPCiteParam param)
 
@@ -69,21 +70,21 @@
 <cite class="cite">
 @***************** author ***************@
 <span class="authors">
-@with(authorRanges = book.makeAuthorPageRanges()) {
-	@with(authorCases = book.makeAuthorSpecialCases()) {
+@with(authorRanges = book.getAuthorPageRanges()) {
+	@with(authorCases = book.getAuthorSpecialCases()) {
 		@if(param.getIntLocation() != null) {
 			@?authorRanges.get(param.getIntLocation())
 		}
 		else {
-			@authorCases.getOrDefault(param.getLocation(), book.makeAuthors())
+			@authorCases.getOrDefault(param.getLocation(), book.getAuthorsString())
 		}
 	}
 }
 </span>
 .@*important space*@ @*important space end*@
 @***************** article ***************@
-@with(articleRanges = book.makeArticlePageRanges()) {
-	@with(articleCases = book.makeArticleSpecialCases()) {
+@with(articleRanges = book.getArticlePageRanges()) {
+	@with(articleCases = book.getArticleSpecialCases()) {
 		@if(param.getIntLocation() != null && articleRanges.get(param.getIntLocation())!=null) {
 			<span class="article">“
 			@articleRanges.get(param.getIntLocation())

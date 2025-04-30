@@ -1,7 +1,5 @@
 package io.github.pfwikis.bots.rest.endpoints.infobox;
 
-import java.util.Arrays;
-
 import io.github.pfwikis.bots.facts.SModel;
 import io.github.pfwikis.bots.rest.RPEndpoint;
 import io.github.pfwikis.bots.rest.RestProviderBot;
@@ -19,7 +17,7 @@ public class RPInfobox extends RPEndpoint<RPInfoboxParam> {
 			return error(param.getFactsPage(), "Invalid arguments to infobox");
 		}
 		
-		var subject = param.getData().postProcess();
+		var subject = param.getSemanticSubject().postProcess();
 			
 		var concepts = SModel.getConcepts(bot.getRun().getServer()).stream()
 			.filter(c->c.getInfoboxProperties()!=null && !c.getInfoboxProperties().isEmpty())
@@ -30,7 +28,7 @@ public class RPInfobox extends RPEndpoint<RPInfoboxParam> {
 		if(concepts.isEmpty()) return error(param.getFactsPage(), "No infobox available based on the facts.");
 		
 		return RPResult.builder()
-			.block(new RPBlock(RPBlockType.WIKITEXT, RockerHelper.makeWikitext(MakeInfoboxTemplate.template(bot.getRun(), concepts, subject))))
+			.block(new RPBlock(RPBlockType.WIKITEXT, RockerHelper.makeWikitext(MakeInfoboxTemplate.template(bot.getRun().getServer(), concepts, subject))))
 			.dependency(param.getFactsPage())
 			.build();
 	}
