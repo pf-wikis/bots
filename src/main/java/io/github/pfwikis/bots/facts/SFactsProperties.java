@@ -271,6 +271,7 @@ public class SFactsProperties {
 			};
 		}
 		.setSuggestValuesFrom("Category:Authors")
+		.setFormNote("Only set this if there are authors on the cover and they are different from <code>Authors</code>")
 		.setDescription("This entity was written by the given Person. This property can appear multiple times to indicate multiple authors. Compared to the Author property this should be credited on the cover page.");
 	public static final SProperty<List<PageRef>> Producer = new SProperty<>(
 		"Producer",
