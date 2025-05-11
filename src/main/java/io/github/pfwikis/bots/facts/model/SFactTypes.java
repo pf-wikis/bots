@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -156,6 +157,29 @@ public class SFactTypes {
 				.sorted()
 				.map(p->p.getRight())
 				.toList();
+		};
+	};
+	public static final SFactType<List<String>> TRAITS = new SFactType<>(
+			"TRAITS",
+			SMWPropertyType.TEXT,
+			"string",
+			"{{#arraymap:$v|;|~|{{2eTrait|~}}}}"
+	) {
+		@Override
+		public String wikitextToStoreFact(SProperty<List<String>> p, String v) {
+			return v+"|+sep=;";
+		}
+		
+		@Override
+		public String toInfoboxDisplay(List<String> v) {
+			return "<div class=\"pf2e-trait-container\">"
+				+ v.stream().map(t->"{{2eTrait|"+t+"}}").collect(Collectors.joining(""))
+				+ "</div>";
+		}
+
+		@Override
+		protected String configureFormField(SProperty<?> prop) {
+			return "|input type=tokens|delimiter=;";
 		};
 	};
 	public static final SFactType<String> MULTILINE_WIKITEXT = new SFactType<>(

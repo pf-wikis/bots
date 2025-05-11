@@ -98,7 +98,7 @@ public class Scheduler {
 			}
 			
 			var worker = new Worker(discord);
-			Thread.ofVirtual().start(worker);
+			//Thread.ofVirtual().start(worker);
 			RestServer.start(this);
 			Runtime.getRuntime().addShutdownHook(Thread.ofVirtual().unstarted(()-> {
 				RestServer.stop();

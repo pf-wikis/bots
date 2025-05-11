@@ -389,6 +389,10 @@ public class SFactsProperties {
 		"To page",
 		SFactTypes.INTEGER)
 		.setDescription("Can only be used together with On page to give a full page range for the entity.");
+	public static final SProperty<List<String>> Traits = new SProperty<>(
+		"Traits",
+		SFactTypes.TRAITS)
+		.setDescription("A list of the 2e traits attached to this entity.");
 	public static final SProperty<String> Video_game_type = new SProperty<>(
 		"Video game type",
 		SFactTypes.STRING)

@@ -67,6 +67,7 @@ import static io.github.pfwikis.bots.facts.SFactsProperties.Runtime;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Serialized;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Series;
 import static io.github.pfwikis.bots.facts.SFactsProperties.To_page;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Traits;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Video_game_type;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Web_enhancement;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Website;
@@ -81,7 +82,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -89,7 +89,6 @@ import com.beust.jcommander.Strings;
 import com.google.common.collect.Lists;
 
 import io.github.pfwikis.bots.common.Wiki;
-import io.github.pfwikis.bots.common.bots.Run.SingleRun;
 import io.github.pfwikis.bots.common.model.subject.PageRef;
 import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
 import io.github.pfwikis.bots.facts.model.SConcept;
@@ -108,7 +107,7 @@ public class SModel {
 				Blurb_quotee
 			);
 	
-	private static final SPropertyGroupBuilder BASIC_FIELDS = SPropertyGroup.builder()
+	private static final SPropertyGroupBuilder BASIC_PRODUCT_FIELDS = SPropertyGroup.builder()
 			.name("Basic")
 			.properties(
 				Name,
@@ -121,7 +120,7 @@ public class SModel {
 		.name("Book")
 		.pluralName("Books")
 		.properties(
-			BASIC_FIELDS,
+			BASIC_PRODUCT_FIELDS,
 			SPropertyGroup.builder()
 				.name("Contributors")
 				.properties(
@@ -340,7 +339,7 @@ public class SModel {
 			.name("Accessory")
 			.pluralName("Accessories")
 			.properties(
-				BASIC_FIELDS,
+				BASIC_PRODUCT_FIELDS,
 				SPropertyGroup.builder()
 					.name("Contributors")
 					.properties(
@@ -428,7 +427,7 @@ public class SModel {
 				c.page.getOr(Region, Collections.emptyList()).forEach(r->c.addCats("Images of "+r.toDisplayTitleWikitext()));
 			}));
 		MAP_PF = base.properties(
-				BASIC_FIELDS,
+				BASIC_PRODUCT_FIELDS,
 				contributors,
 				SPropertyGroup.builder()
 					.name("Map")
@@ -474,7 +473,7 @@ public class SModel {
 			)
 			.build();
 		MAP_SF = base.properties(
-				BASIC_FIELDS,
+				BASIC_PRODUCT_FIELDS,
 				contributors,
 				SPropertyGroup.builder()
 					.name("Map")
@@ -526,7 +525,7 @@ public class SModel {
 			.name("Miniatures")
 			.pluralName("Miniatures")
 			.properties(
-				BASIC_FIELDS,
+				BASIC_PRODUCT_FIELDS,
 				SPropertyGroup.builder()
 					.name("Contributors")
 					.properties(
@@ -578,7 +577,7 @@ public class SModel {
 			.name("Audio")
 			.pluralName("Audio")
 			.properties(
-				BASIC_FIELDS,
+				BASIC_PRODUCT_FIELDS,
 				SPropertyGroup.builder()
 					.name("Contributors")
 					.properties(
@@ -634,7 +633,7 @@ public class SModel {
 			.name("Video game")
 			.pluralName("Video games")
 			.properties(
-				BASIC_FIELDS,
+				BASIC_PRODUCT_FIELDS,
 				SPropertyGroup.builder()
 					.name("Contributors")
 					.properties(
@@ -695,7 +694,7 @@ public class SModel {
 			.name("Deck")
 			.pluralName("Decks")
 			.properties(
-				BASIC_FIELDS,
+				BASIC_PRODUCT_FIELDS,
 				SPropertyGroup.builder()
 				.name("Contributors")
 				.properties(
@@ -772,6 +771,31 @@ public class SModel {
 			}))
 		.build();
 	
+	private static final SConcept ORGANIZATION = SConcept.builder()
+		.name("Organization")
+		.pluralName("Organizations")
+		.properties(
+			SPropertyGroup.builder()
+				.name("Basic")
+				.properties(
+					Name.withDefaultValue("{{PAGENAME}}"),
+					Traits,
+					Represented_by_page,
+					Image
+				)
+		)
+		.infoboxProperties(
+			Traits
+		)
+		.conceptSpecificCategoriesFunction((Wiki wiki, SemanticSubject page) ->  {
+			var sb = new StringBuilder();
+			for(var t:page.get(Traits)) {
+				sb.append("{{2eTrait/AutoCategory|trait=").append(t).append("|suffix=organizations}}");
+			}
+			return sb.toString();
+		})
+		.build();
+	
 	private static final SConcept WEB_CITATION = SConcept.builder()
 		.name("Web citation")
 		.pluralName("Web citation")
@@ -799,7 +823,8 @@ public class SModel {
 			AUDIO,
 			VIDEO_GAME,
 			DECK,
-			WEB_CITATION
+			WEB_CITATION,
+			ORGANIZATION
 		));
 		CONCEPTS.put(Wiki.SF, Lists.newArrayList(
 			BOOK,
@@ -809,7 +834,8 @@ public class SModel {
 			AUDIO,
 			VIDEO_GAME,
 			DECK,
-			WEB_CITATION
+			WEB_CITATION,
+			ORGANIZATION
 		));
 		CONCEPTS.values().forEach(l->Collections.sort(l, Comparator.comparing(SConcept::getName)));
 	}
