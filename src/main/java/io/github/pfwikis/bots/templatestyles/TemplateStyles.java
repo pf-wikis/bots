@@ -174,9 +174,11 @@ public class TemplateStyles extends SimpleBot {
 		}
 	}
 
-	@full-width: ~"(min-width: 1000px)";
-	@min-small-width: ~"(min-width:720px)";
-	@min-tiny-width: ~"(min-width:480px)";
+	.media-s(@c) {@media (max-width: 559px) {@c();}}
+	.media-m(@c) {@media (min-width: 560px) and (max-width: 999px) {@c();}}
+	.media-l(@c) {@media (min-width: 1000px) {@c();}}
+	.media-sm(@c) {@media (max-width: 999px) {@c();}}
+	.media-ml(@c) {@media (min-width: 560px) {@c();}}
 	""";
 	
 	private static final Map<Wiki,String> CONSTANTS = Map.of(
