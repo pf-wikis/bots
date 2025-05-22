@@ -6,6 +6,7 @@ import static io.github.pfwikis.bots.facts.SFactsProperties.Audio_type;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Author;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Author_all;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Awards;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Main_book;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Blurb_heading;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Blurb_quotee;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Blurb_text;
@@ -788,6 +789,21 @@ public class SModel {
 				)
 		)
 		.build();
+	
+	private static final SConcept ADVENTURE_PATH = SConcept.builder()
+		.name("Adventure path")
+		.pluralName("Adventure paths")
+		.properties(
+			BASIC_FIELDS,
+			SPropertyGroup.builder()
+				.name("Adventure Path")
+				.properties(
+					Main_book
+				),
+			BLURB_FIELDS
+		)
+		.build();
+	
 	private static final EnumMap<Wiki, List<SConcept>> CONCEPTS;
 	static {
 		CONCEPTS = new EnumMap<>(Wiki.class);
@@ -799,7 +815,8 @@ public class SModel {
 			AUDIO,
 			VIDEO_GAME,
 			DECK,
-			WEB_CITATION
+			WEB_CITATION,
+			ADVENTURE_PATH
 		));
 		CONCEPTS.put(Wiki.SF, Lists.newArrayList(
 			BOOK,
@@ -809,7 +826,8 @@ public class SModel {
 			AUDIO,
 			VIDEO_GAME,
 			DECK,
-			WEB_CITATION
+			WEB_CITATION,
+			ADVENTURE_PATH
 		));
 		CONCEPTS.values().forEach(l->Collections.sort(l, Comparator.comparing(SConcept::getName)));
 	}

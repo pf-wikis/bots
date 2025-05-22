@@ -36,8 +36,6 @@ This is the ''@name'' form. To create a page with this form, see [[:Category:Fac
 			</div>
 		</div>
 	}
-	<div class="facts-form-key">Free text</div>
-	<div class="facts-form-value">{{{standard input|free text|autogrow|editor=visualeditor}}}</div>
 </div>
 {{{end template}}}
 </includeonly>

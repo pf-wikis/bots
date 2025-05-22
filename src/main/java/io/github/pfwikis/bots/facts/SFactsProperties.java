@@ -124,6 +124,33 @@ public class SFactsProperties {
 		SFactTypes.PAGE_LIST)
 		.setSuggestValuesFrom("Category:Real-world people")
 		.setDescription("The directory working on this product.");
+	public static final SProperty<List<PageRef>> Main_book = new SProperty<>(
+		"Main book",
+		SFactTypes.PAGE_LIST) {
+			public List<SProperty<?>> generateProperties(SConcept c, SConcept parent) {
+				var date = "{{#if:{{{Main book|}}}|{{#ask:{{#arraymap:"
+						+ "{{{Main book|}}}|;|§|[[§]]|\\sOR\\s}}"
+						+ "|?Release date#"
+						+ "|limit=1"
+						+ "|sort=Release date"
+						+ "|format=plainlist"
+						+ "|searchlabel="
+						+ "|mainlabel=-"
+						+ "|default="
+						+ "|headers=hide"
+						+ "}}|}}";
+				return List.of(
+					Release_date.withGenerateWikitext(date),
+					Release_date_sort.withGenerateWikitext(
+						date.replace("?Release date#", "?Release date sort#")
+							.replace("|headers=hide}}|}}", "|headers=hide}}|9999-01-01}}")
+					)
+				);
+			}
+		}
+		.setSuggestValuesFrom("Category:Facts about Books")
+		.setDescription("The main books that make up this Adventure Path.")
+		.setFormNote("List the Facts pages here.");
 	public static final SProperty<String> Discs = new SProperty<>(
 		"Discs",
 		SFactTypes.STRING)
@@ -308,11 +335,11 @@ public class SFactsProperties {
 		"Year",
 		SFactTypes.INTEGER)
 		.setDescription("A numeric year when something happened.");
-	public static final SProperty<String> Release_date_precision = new SProperty<>(
-		"Release date precision",
-		SFactTypes.STRING)
-		.setGenerateWikitext("{{#invoke:Dates|precision|{{{Release date|}}}}}")
-		.setDescription("Automatically generated property that says how precise a given date was.");
+	public static final SProperty<Temporal> Release_date_sort = new SProperty<>(
+		"Release date sort",
+		SFactTypes.DATE)
+		.setGenerateWikitext("{{#if:{{{Release date|}}}|{{{Release date|}}}|9999-01-01}}")
+		.setDescription("Automatically generated property that stores the release date or 9999-01-01 if there is none. Used for sorting");
 	public static final SProperty<String> Release_year = new SProperty<>(
 		"Release year",
 		SFactTypes.STRING)
@@ -324,23 +351,20 @@ public class SFactsProperties {
 		SFactTypes.DATE) {
 			public List<SProperty<?>> generateProperties(SConcept c, SConcept parent) {
 				if(parent != null) {
-					Function<String, String> first = f->"{{#ask:[[-Has subobject::{{FULLPAGENAME}}]][[Release date::+]]|?Release date#"+f+"=|sort=Release date|limit=1|order=ASC|mainlabel=-|searchlabel=}}";
+					var date = "{{#ask:[[-Has subobject::{{FULLPAGENAME}}]][[Release date::+]]|?Release date#ISO-P=|sort=Release date|limit=1|order=ASC|mainlabel=-|searchlabel=|default=}}";
 					parent.getGeneratedProperties().addAll(List.of(
 						Release_year.withGenerateWikitext(
-							Release_year.getGenerateWikitext().replace("{{{Release date|}}}", first.apply("-F[Y]"))
+							date.replace("#ISO-P", "#-F[Y]").replace("|default=}}", "|default=unknown}}")
 						),
-						Release_date.withGenerateWikitext(first.apply("ISO-P")),
-						Release_date_precision.withGenerateWikitext(
-							Release_date_precision.getGenerateWikitext().replace(
-								"{{{Release date|}}}",
-								first.apply("ISO-P")
-							)
+						Release_date.withGenerateWikitext(date),
+						Release_date_sort.withGenerateWikitext(
+							date.replace("|default=}}", "|default=9999-01-01}}")
 						)
 					));
 				}
 				
 				return List.of(
-					Release_date_precision,
+					Release_date_sort,
 					Release_year
 				);
 			};

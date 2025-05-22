@@ -77,4 +77,8 @@ public class PseudoParser {
 	public void trim() {
 		txt = txt.strip();
 	}
+
+	public String getRemainingText() {
+		return txt;
+	}
 }

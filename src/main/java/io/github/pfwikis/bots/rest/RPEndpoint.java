@@ -56,7 +56,10 @@ public abstract class RPEndpoint<T> implements Route {
 				//see if there is a safe messag ein the cause stack to return
 				while(potentiallySafe!=null) {
 					if(potentiallySafe instanceof SafeException se) {
-						return Jackson.JSON.writeValueAsString(error(se.getFactsPage(), e.getMessage()));
+						return Jackson.JSON.writeValueAsString(error(
+							se.getFactsPage(),
+							StringUtils.removeStart(e.getMessage(), SafeException.class.getName()+": ")
+						));
 					}
 					potentiallySafe = potentiallySafe.getCause();
 				}
