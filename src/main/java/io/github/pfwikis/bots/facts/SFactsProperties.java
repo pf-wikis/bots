@@ -97,6 +97,10 @@ public class SFactsProperties {
 		"Board game type",
 		SFactTypes.STRING)
 		.setDescription("The type of board game of this product.");
+	public static final SProperty<String> Number_of_players = new SProperty<>(
+		"Number of players",
+		SFactTypes.STRING)
+		.setDescription("The number of players as a number or range.");
 	public static final SProperty<String> Decksize = new SProperty<>(
 		"Decksize",
 		SFactTypes.STRING)

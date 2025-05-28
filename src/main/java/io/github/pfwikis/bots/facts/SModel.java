@@ -12,6 +12,7 @@ import static io.github.pfwikis.bots.facts.SFactsProperties.Blurb_quotee;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Blurb_text;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Blurb_text_extras;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Board_game_type;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Number_of_players;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Book_type;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Chapters;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Composer;
@@ -790,6 +791,7 @@ public class SModel {
 			.name("Boardgame")
 			.properties(
 				Board_game_type,
+				Number_of_players,
 				Website,
 				Pubcode,
 				Gallery,
@@ -809,6 +811,7 @@ public class SModel {
 			Author,
 			Artist,
 			Publisher,
+			Number_of_players,
 			Price,
 			Release_date,
 			SInfoboxProperty.from(Isbn)
