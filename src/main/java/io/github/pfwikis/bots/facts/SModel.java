@@ -11,6 +11,7 @@ import static io.github.pfwikis.bots.facts.SFactsProperties.Blurb_heading;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Blurb_quotee;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Blurb_text;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Blurb_text_extras;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Board_game_type;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Book_type;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Chapters;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Composer;
@@ -773,6 +774,62 @@ public class SModel {
 			}))
 		.build();
 	
+	private static final SConcept BOARD_GAME = SConcept.builder()
+		.name("Board game")
+		.pluralName("Board games")
+		.properties(
+			BASIC_FIELDS,
+			SPropertyGroup.builder()
+			.name("Contributors")
+			.properties(
+				Author,
+				Artist,
+				Publisher
+			),
+			SPropertyGroup.builder()
+			.name("Boardgame")
+			.properties(
+				Board_game_type,
+				Website,
+				Pubcode,
+				Gallery,
+				Price,
+				Release_date,
+				Isbn,
+				Series,
+				Follows,
+				Precedes,
+				Awards,
+				Errata,
+				Web_enhancement
+			),
+			BLURB_FIELDS
+		)
+		.infoboxProperties(
+			Author,
+			Artist,
+			Publisher,
+			Price,
+			Release_date,
+			SInfoboxProperty.from(Isbn)
+				.label("ISBN")
+				.build(),
+			Series,
+			Follows,
+			Precedes,
+			Awards,
+			Errata,
+			Web_enhancement
+		)
+		.conceptSpecificCategoriesFunction(helper((Ctx c) -> {
+			c.addCats("Board games");
+			c.addCats(c.ifYear("{} board games"));
+			if(c.page.getOr(Publisher, Collections.emptyList()).stream().noneMatch(p->p.getTitle().equals("Paizo Inc."))) {
+				c.addCats("Licensed board games");
+			}
+		}))
+		.build();
+	
 	private static final SConcept WEB_CITATION = SConcept.builder()
 		.name("Web citation")
 		.pluralName("Web citation")
@@ -816,7 +873,8 @@ public class SModel {
 			VIDEO_GAME,
 			DECK,
 			WEB_CITATION,
-			ADVENTURE_PATH
+			ADVENTURE_PATH,
+			BOARD_GAME
 		));
 		CONCEPTS.put(Wiki.SF, Lists.newArrayList(
 			BOOK,
@@ -827,7 +885,8 @@ public class SModel {
 			VIDEO_GAME,
 			DECK,
 			WEB_CITATION,
-			ADVENTURE_PATH
+			ADVENTURE_PATH,
+			BOARD_GAME
 		));
 		CONCEPTS.values().forEach(l->Collections.sort(l, Comparator.comparing(SConcept::getName)));
 	}
