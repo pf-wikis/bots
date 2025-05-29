@@ -783,7 +783,7 @@ public class SModel {
 			SPropertyGroup.builder()
 			.name("Contributors")
 			.properties(
-				Author,
+				Designer,
 				Artist,
 				Publisher
 			),
@@ -808,7 +808,7 @@ public class SModel {
 			BLURB_FIELDS
 		)
 		.infoboxProperties(
-			Author,
+			Designer,
 			Artist,
 			Publisher,
 			Number_of_players,
