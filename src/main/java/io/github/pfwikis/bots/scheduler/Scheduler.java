@@ -33,6 +33,7 @@ import io.github.pfwikis.bots.facts.master.PropertyStatistics;
 import io.github.pfwikis.bots.facts.templates.FactsTemplates;
 import io.github.pfwikis.bots.healthcheck.HealthCheck;
 import io.github.pfwikis.bots.maintenance.Maintenance;
+import io.github.pfwikis.bots.map.MapCheckLinksWithoutArticles;
 import io.github.pfwikis.bots.map.MapSearchPage;
 import io.github.pfwikis.bots.meta.Meta;
 import io.github.pfwikis.bots.newsfeedreader.NewsFeedReader;
@@ -96,6 +97,7 @@ public class Scheduler {
 				schedule(scheduleableBot(wiki, discord, new AssistantTaskGiver()), Duration.ofDays(1), LocalTime.of(15, 00));
 				scheduleOnce(scheduleableBot(wiki, discord, new TemplateStyles()));
 			}
+			schedule(scheduleableBot(Wiki.PF, discord, new MapCheckLinksWithoutArticles()), Duration.ofDays(1), LocalTime.of(16, 00));
 			
 			var worker = new Worker(discord);
 			Thread.ofVirtual().start(worker);
