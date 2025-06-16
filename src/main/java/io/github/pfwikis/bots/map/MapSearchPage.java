@@ -61,7 +61,7 @@ public class MapSearchPage extends SimpleBot {
 		return """
 		This bot is keeping an up to date list of all named areas on golarion that are available on the map.
 		It creates the page [[Template:DisplayMap/Search]] for this.
-		""".formatted(run.getServer().getName());
+		""";
 	}
 
 	record Category(String category, List<Result> entries) {}
