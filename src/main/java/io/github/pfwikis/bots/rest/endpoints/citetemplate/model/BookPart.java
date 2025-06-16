@@ -26,12 +26,12 @@ public abstract class BookPart {
 		if(authors == null || authors.isEmpty())
 			return null;
 		if(authors.size() == 1) {
-			return authors.get(0).toWikiLink();
+			return authors.get(0).toWikiLink(false);
 		}
 		if(authors.size() == 2) {
-			return authors.get(0).toWikiLink()+" & "+authors.get(1).toWikiLink();
+			return authors.get(0).toWikiLink(false)+" & "+authors.get(1).toWikiLink(false);
 		}
-		return authors.get(0).toWikiLink()+", et al";
+		return authors.get(0).toWikiLink(false)+", et al";
 	}
 
 	

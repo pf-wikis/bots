@@ -60,8 +60,18 @@ public class PageRef {
 		return wiki.toWikiLink(this.toFullTitle());
 	}
 	
-	public String toWikiLink() {
-		return "[["+(ns==14?":":"")+this.toFullTitle()+"]]";
+	public String toWikiLink(boolean withNamespacePrefix) {
+		var sb = new StringBuilder()
+				.append("[[");
+		if(ns==14)
+			sb.append(":"); //for Category links
+		sb.append(this.toFullTitle());
+		if(!withNamespacePrefix) {
+			sb.append("|");
+			sb.append(this.getTitle());
+		}
+		sb.append("]]");
+		return sb.toString();
 	}
 	
 	public String toDisplayTitleWikitext() {

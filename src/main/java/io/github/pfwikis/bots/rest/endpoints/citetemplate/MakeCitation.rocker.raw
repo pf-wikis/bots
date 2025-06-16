@@ -58,7 +58,7 @@
 	@if(book.has(Publisher)) {
 		<span class="publisher">
 		@for((i,pub):book.get(Publisher)){
-			@if(!i.first()){, }@pub.toWikiLink()
+			@if(!i.first()){, }@pub.toWikiLink(false)
 		}
 		</span>
 	}

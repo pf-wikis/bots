@@ -67,7 +67,7 @@ public class SFactTypes {
 	) {
 		@Override
 		public String toInfoboxDisplay(PageRef v) {
-			return v.toWikiLink();
+			return v.toWikiLink(false);
 		}
 
 		@Override
@@ -95,7 +95,7 @@ public class SFactTypes {
 				return values.getFirst();
 			if(values.size() == 2)
 				return values.getFirst()
-					+ " and "
+					+ ", and "
 					+ values.getLast();
 			var sb = new StringBuilder();
 			for(int i=0;i<values.size()-1;i++) {
