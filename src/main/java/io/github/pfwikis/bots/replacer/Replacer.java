@@ -36,48 +36,40 @@ public class Replacer extends SimpleBot {
 
 	@Override
 	public void run(RunContext ctx) throws IOException {
-		var map = new EnumMap<Wiki, Map<String, String>>(Wiki.class);
-		map.put(Wiki.SF, ImmutableMap.<String, String>builder()
-			.put("Year of Scoured Stars", "Season 1 scenarios")
-			.put("Year of a Thousand Bites", "Season 2 scenarios")
-			.put("Year of Exploration's Edge", "Season 3 scenarios")
-			.put("Year of the Data Scourge", "Season 4 scenarios")
-			.put("Year of Redemption's Rise", "Season 5 scenarios")
-			.put("Year of Fortune's Fall", "Season 6 scenarios")
-			.put("Year of Era's End", "Season 7 scenarios")
-			.build());
-		map.put(Wiki.PF, ImmutableMap.<String, String>builder()
-			.put("Season 0", "Season 0 scenarios")
-			.put("Season 1", "Season 1 scenarios")
-			.put("Year of the Shadow Lodge", "Season 2 scenarios")
-			.put("Year of the Ruby Phoenix", "Season 3 scenarios")
-			.put("Year of the Risen Rune", "Season 4 scenarios")
-			.put("Year of the Demon", "Season 5 scenarios")
-			.put("Year of the Sky Key", "Season 6 scenarios")
-			.put("Year of the Serpent", "Season 7 scenarios")
-			.put("Year of the Stolen Storm", "Season 8 scenarios")
-			.put("Year of Factions' Favor", "Season 9 scenarios")
-			.put("Season of the Ten", "Season 10 scenarios")
-			.put("Year of the Open Road", "Season 1 (2E) scenarios")
-			.put("Year of Corruption's Reach", "Season 2 (2E) scenarios")
-			.put("Year of Shattered Sanctuaries", "Season 3 (2E) scenarios")
-			.put("Year of Boundless Wonder", "Season 4 (2E) scenarios")
-			.put("Year of Unfettered Exploration", "Season 5 (2E) scenarios")
-			.put("Year of Immortal Influence", "Season 6 (2E) scenarios")
-			.put("Year of Battle's Spark", "Season 7 (2E) scenarios")
-			.build());
-				
-		for(var e:map.get(run.getServer()).entrySet()) {
-			run.getWiki().editIfChange(
-					"Facts:"+e.getKey(),
-					"""
-					{{Facts/Series
-					|Name=Year of Shattered Sanctuaries
-					|Member category=Category:%s
-					}}
-					""".formatted(e.getValue()),
-					"Create facts for Series"
-			);
+		var game = run.getServer().getName();
+		var map = ImmutableMap.<String, String>builder()
+				.put(game+" Cards", game+" Cards")
+				.put(game+" Adventure Card Game", game+" Adventure Card Game")
+				.put(game+" Accessories", game+" Accessories")
+				.put(game+" Pawns", game+" Pawns")
+				.put(game+" Battles", game+" Battles")
+				.put(game+" Paper Minis", game+" Paper Minis")
+				.put(game+" Campaign Setting", game+" Campaign Setting")
+				.put(game+" Terrain", game+" Terrain")
+				.put(game+" Book Tabs", game+" Book Tabs")
+				.put(game+" Roleplaying Game", game+" RPG")
+				.put(game+" Player Companion", game+" Player Companion")
+				.put("Lost Omens", game+" Lost Omens")
+				.put(game+" Modules", game+" Modules")
+				.put(game+" Adventure", game+" Adventure")
+				.put(game+" Tales", game+" Tales")
+				.put(game+"'s Journal (series)", game+"'s Journal")
+				.build();
+		
+		for(var e:map.entrySet()) {
+			var series = e.getKey();
+			if(run.getWiki().pageExists(series)) {
+				run.getWiki().editIfChange(
+						"Facts:"+e.getKey(),
+						"""
+						{{Facts/Series
+						|Name=%s
+						|Member category=Category:%s
+						}}
+						""".formatted(series, e.getValue()),
+						"Create facts for Series"
+				);
+			}
 		}
 	}
 	

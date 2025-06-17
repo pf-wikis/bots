@@ -36,7 +36,13 @@ public class ACContext {
 		return concept.containsProperty(prop) && 
 			(subject == null || subject.has(prop));
 	}
-
 	
-
+	public boolean hasUnset(SProperty<?> prop) {
+		return concept.containsProperty(prop) && 
+			(subject == null || !subject.has(prop));
+	}
+	
+	public boolean has(SConcept concept) {
+		return this.concept.equals(concept);
+	}
 }

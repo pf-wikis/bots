@@ -316,16 +316,6 @@ public class SModel {
 			}
 			
 			
-			c.ifMatchingSeries(c.game+" Roleplaying Game", c.game+" RPG");
-			c.ifMatchingSeries(c.game+" Player Companion", c.game+" Player Companion");
-			c.ifMatchingSeries(c.game+" Campaign Setting", c.game+" Campaign Setting");
-			c.ifMatchingSeries("Lost Omens", c.game+" Lost Omens");
-			c.ifMatchingSeries(c.game+" Modules", c.game+" Modules");
-			c.ifMatchingSeries(c.game+" Adventure", c.game+" Adventure");
-			c.ifMatchingSeries(c.game+" Tales", c.game+" Tales");
-			c.ifMatchingSeries(c.game+"'s Journal (series)", c.game+"'s Journal");
-			
-			
 			if(Set.of("Novel", "Short Fiction", "Novella").contains(bookType)) {
 				if(c.page.has(Serialized) && !c.page.get(Serialized).isBlank()) {
 					c.addCats("Serial fiction");
@@ -391,10 +381,6 @@ public class SModel {
 			.conceptSpecificCategoriesFunction(helper((Ctx c) -> {
 				c.addCats("Accessories");
 				c.addCats(c.ifYear("{} accessories"));
-				
-				c.ifMatchingSeries(c.game+" Accessories", c.game+" Accessories");
-				c.ifMatchingSeries(c.game+" Terrain", c.game+" Terrain");
-				c.ifMatchingSeries(c.game+" Book Tabs", c.game+" Book Tabs");
 			}))
 		.build();
 	private static final SConcept MAP_SF;
@@ -421,7 +407,7 @@ public class SModel {
 					default -> List.of();
 				});
 				
-				c.ifMatchingSeries(c.game+" Campaign Setting", c.game+" Campaign Setting");
+				
 				c.page.getOr(Region, Collections.emptyList()).forEach(r->c.addCats("Images of "+r.toDisplayTitleWikitext()));
 			}));
 		MAP_PF = base.properties(
@@ -566,9 +552,6 @@ public class SModel {
 			.conceptSpecificCategoriesFunction(helper((Ctx c) -> {
 				c.addCats("Miniatures");
 				c.addCats(c.ifYear("{} miniatures"));
-				c.ifMatchingSeries(c.game+" Pawns", c.game+" Pawns");
-				c.ifMatchingSeries(c.game+" Battles", c.game+" Battles");
-				c.ifMatchingSeries(c.game+" Paper Minis", c.game+" Paper Minis");
 			}))
 		.build();
 	private static final SConcept AUDIO = SConcept.builder()
@@ -763,13 +746,11 @@ public class SModel {
 				if("PACG".equals(c.page.getOr(Rule_system, ""))) {
 					 c.addCats("Pathfinder Adventure Card Game");
 				}
-				c.ifMatchingSeries(c.game+" Cards", c.game+" Cards");
-				c.ifMatchingSeries(c.game+" Adventure Card Game", c.game+" Adventure Card Game");
-				c.ifMatchingSeries(c.game+" Accessories", c.game+" Accessories");
+				
 			}))
 		.build();
 	
-	private static final SConcept BOARD_GAME = SConcept.builder()
+	public static final SConcept BOARD_GAME = SConcept.builder()
 		.name("Board game")
 		.pluralName("Board games")
 		.properties(
@@ -818,13 +799,6 @@ public class SModel {
 			Errata,
 			Web_enhancement
 		)
-		.conceptSpecificCategoriesFunction(helper((Ctx c) -> {
-			c.addCats("Board games");
-			c.addCats(c.ifYear("{} board games"));
-			if(c.page.getOr(Publisher, Collections.emptyList()).stream().noneMatch(p->p.getTitle().equals("Paizo Inc."))) {
-				c.addCats("Licensed board games");
-			}
-		}))
 		.build();
 	
 	private static final SConcept WEB_CITATION = SConcept.builder()
@@ -938,13 +912,7 @@ public class SModel {
 				return pattern.replace("{}", page.get(Release_year).toString());
 			return List.of();
 		}
-		
-		protected void ifMatchingSeries(String seriesKey, String cat) {
-			if(series.stream().anyMatch(s->s.getTitle().equals(seriesKey))) {
-				addCats(cat);
-			}
-		}
-		
+
 		public void addCats(Object obj) {
 			if(obj instanceof String str) {
 				cats.add(str);

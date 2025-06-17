@@ -1,5 +1,7 @@
 package io.github.pfwikis.bots.rest.endpoints.infobox.autocategorization;
 
+import static io.github.pfwikis.bots.facts.SFactsProperties.Release_year;
+
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -13,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 public class ACRule {
 	
 	@NonNull
-	private Function<ACContext, String> doc;
+	private Function<ACContext, RuleDoc> doc;
 	@NonNull
 	private Consumer<ACContext> function;
 	
@@ -34,4 +36,13 @@ public class ACRule {
 		};
 		return this;
 	}
+
+	public static ACRule ifYear(String category) {
+		return new ACRule(
+			ctx-> new RuleDoc("Category:"+category.replace("{}", "YEAR"), "if [[Release year::@@@]] is set"),
+			ctx-> ctx.addCategory(category.replace("{}", ctx.getSubject().get(Release_year).toString()))
+		).onlyIf(ctx->ctx.has(Release_year));
+	}
+	
+	public static record RuleDoc(String category, String explanation) {}
 }

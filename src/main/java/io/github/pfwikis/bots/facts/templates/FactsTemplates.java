@@ -32,7 +32,7 @@ public class FactsTemplates extends SimpleBot {
 		run.getWiki().editIfChange(
 			run.getServer().getWikiNamespace()+":Automatic categorization",
 			"{{Bot created|"+botName+"}}"
-			+"{{tl|Infobox}} adds automatic categories based on the facts.\n\n"
+			+"{{tl|Infobox}} adds automatic categories based on the facts. This page explains what categories are added. The list is not exhaustive yet.\n\n"
 			+AutoCategorizer.generateDocs(run.getServer(), run.getWiki().getSeries2Category()),
 			"Update auto categorization documentation"
 		);
