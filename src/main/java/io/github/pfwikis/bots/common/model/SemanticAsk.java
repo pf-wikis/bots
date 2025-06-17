@@ -1,7 +1,6 @@
 package io.github.pfwikis.bots.common.model;
 
 import java.io.IOException;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Year;
@@ -9,34 +8,28 @@ import java.time.YearMonth;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.BeanProperty;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.deser.ContextualDeserializer;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import com.fasterxml.jackson.databind.jsontype.TypeDeserializer;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TreeTraversingParser;
 import com.fasterxml.jackson.databind.util.StdConverter;
 import com.google.common.collect.Lists;
 
-import io.github.pfwikis.bots.facts.model.SMWPropertyType;
 import io.github.pfwikis.bots.facts.model.SFactType;
-import io.github.pfwikis.bots.utils.Jackson;
+import io.github.pfwikis.bots.facts.model.SMWPropertyType;
 import io.github.pfwikis.bots.utils.MWJsonHelper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -76,7 +69,7 @@ public class SemanticAsk<T> {
 		@JsonProperty("Has type")
 		private SMWPropertyType hasType;
 		@JsonProperty("Has fact type")
-		private SFactType hasFactType;
+		private SFactType<?> hasFactType;
 		@JsonProperty("Has fact display format")
 		private String hasFactDisplayFormat;
 		@JsonProperty("Has fact note")
@@ -88,7 +81,7 @@ public class SemanticAsk<T> {
 		@JsonProperty("Name")
 		private String name;
 		@JsonProperty("Represented by page")
-		private Result representedByPage;
+		private Result<?> representedByPage;
 		@JsonProperty("Release year")
 		private String releaseYear;
 		@JsonProperty("On page")
@@ -201,6 +194,7 @@ public class SemanticAsk<T> {
 	        return new PrintoutsDeserializer<T>(property.getType());
 	    }
 		
+		@SuppressWarnings("unchecked")
 		@Override
 		public T deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
 			JsonNode node = p.readValueAsTree();
