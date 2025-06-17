@@ -5,8 +5,6 @@ import static io.github.pfwikis.bots.utils.RockerHelper.make;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.beust.jcommander.Parameters;
 
 import io.github.pfwikis.bots.common.Wiki;
@@ -16,6 +14,7 @@ import io.github.pfwikis.bots.facts.SFactsProperties;
 import io.github.pfwikis.bots.facts.SModel;
 import io.github.pfwikis.bots.facts.model.SConcept;
 import io.github.pfwikis.bots.facts.model.SProperty;
+import io.github.pfwikis.bots.rest.endpoints.infobox.autocategorization.AutoCategorizer;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -30,6 +29,13 @@ public class FactsTemplates extends SimpleBot {
 	public void run(RunContext ctx) throws IOException {
 		var concepts = SModel.getConcepts(run.getServer());
 		
+		run.getWiki().editIfChange(
+			run.getServer().getWikiNamespace()+":Automatic categorization",
+			"{{Bot created|"+botName+"}}"
+			+"{{tl|Infobox}} adds automatic categories based on the facts.\n\n"
+			+AutoCategorizer.generateDocs(run.getServer(), run.getWiki().getSeries2Category()),
+			"Update auto categorization documentation"
+		);
 		
 		if(run.getServer()==Wiki.PF) {
 			make(run.getWiki(), "Template:Facts/Helper/Create page buttons", MakeTemplateCreatePageButtons.template(concepts));

@@ -42,6 +42,7 @@ import static io.github.pfwikis.bots.facts.SFactsProperties.Level_range_start;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Location;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Map_type;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Material;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Member_category;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Miniatures_type;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Modes;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Name;
@@ -84,7 +85,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -92,7 +92,6 @@ import com.beust.jcommander.Strings;
 import com.google.common.collect.Lists;
 
 import io.github.pfwikis.bots.common.Wiki;
-import io.github.pfwikis.bots.common.bots.Run.SingleRun;
 import io.github.pfwikis.bots.common.model.subject.PageRef;
 import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
 import io.github.pfwikis.bots.facts.model.SConcept;
@@ -306,11 +305,6 @@ public class SModel {
 			
 			if((c.game+" Society scenario").equals(bookType)) {
 				c.addCats(c.game+" Society scenarios");
-				c.series.forEach(s-> {
-					if(s.getTitle().startsWith("Season ")) {
-						c.addCats(StringUtils.appendIfMissing(s.getTitle(), " scenarios"));
-					}
-				});
 			}
 			if((c.game+" Society (2E) scenario").equals(bookType)) {
 				c.addCats(c.game+" Society (2E) scenarios");
@@ -863,6 +857,19 @@ public class SModel {
 			BLURB_FIELDS
 		)
 		.build();
+
+	private static final SConcept SERIES = SConcept.builder()
+		.name("Series")
+		.pluralName("Series")
+		.properties(
+			BASIC_FIELDS,
+			SPropertyGroup.builder()
+				.name("Series")
+				.properties(
+					Member_category
+				)
+		)
+		.build();
 	
 	private static final EnumMap<Wiki, List<SConcept>> CONCEPTS;
 	static {
@@ -877,6 +884,7 @@ public class SModel {
 			DECK,
 			WEB_CITATION,
 			ADVENTURE_PATH,
+			SERIES,
 			BOARD_GAME
 		));
 		CONCEPTS.put(Wiki.SF, Lists.newArrayList(
@@ -889,6 +897,7 @@ public class SModel {
 			DECK,
 			WEB_CITATION,
 			ADVENTURE_PATH,
+			SERIES,
 			BOARD_GAME
 		));
 		CONCEPTS.values().forEach(l->Collections.sort(l, Comparator.comparing(SConcept::getName)));

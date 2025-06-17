@@ -35,6 +35,8 @@ public class SimpleCache<T> {
 	public static enum CacheId {
 		PAGE_EXISTS,
 		DISPLAY_TITLE,
-		RESOLVED_REDIRECT, REPLACER_RESOLVE
+		RESOLVED_REDIRECT,
+		REPLACER_RESOLVE,
+		SERIES_2_CATEGORY
 	}
 }

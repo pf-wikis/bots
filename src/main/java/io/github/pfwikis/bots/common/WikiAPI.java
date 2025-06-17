@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.Uninterruptibles;
 
 import io.github.fastily.jwiki.core.NS;
@@ -608,5 +609,21 @@ public class WikiAPI {
 
 	public String withoutNamespace(String title) {
 		return wiki.nss(title);
+	}
+
+	private record Series2CategoryPrintouts(Result<?> series, Result<?> category) {}
+	public Map<String, String> getSeries2Category() {
+		return server
+			.cache(CacheId.SERIES_2_CATEGORY, "", () -> {
+				var res = semanticAsk(Series2CategoryPrintouts.class, "[[Fact type::Template:Facts/Series]][[Member category::+]]|?Represented by page=series|?Member category=category");
+				var b = ImmutableMap.<String, String>builder();
+				for(var r:res) {
+					b.put(
+							r.getPrintouts().series().getPage(),
+							r.getPrintouts().category().getPage()
+					);
+				}
+				return b.build();
+			});
 	}
 }

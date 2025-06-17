@@ -2,6 +2,7 @@
 @import static org.apache.commons.lang3.StringUtils.startsWith
 @import java.util.Set
 @import java.util.List
+@import java.util.Map
 @import io.github.pfwikis.bots.common.model.subject.SemanticSubject
 @import io.github.pfwikis.bots.facts.model.SConcept
 @import static java.util.Comparator.*
@@ -13,8 +14,9 @@
 @import io.github.pfwikis.bots.facts.model.SProperty
 @import io.github.pfwikis.bots.utils.StringHelper
 @import io.github.pfwikis.bots.common.Wiki
+@import io.github.pfwikis.bots.rest.endpoints.infobox.autocategorization.AutoCategorizer
 
-@args(Wiki wiki, List<SConcept> concepts, SemanticSubject page)
+@args(Wiki wiki, List<SConcept> concepts, SemanticSubject page, Map<String, String> series2Category)
 @for(SConcept concept:concepts) {
 	<div class="infobox @ConceptUtil.cssName(concept)">
 		<div class="name">
@@ -101,43 +103,7 @@
 		</div>
 	</div>
 
-	@*Categories based on the properties.*@
-	@if(concept.containsProperty(Errata) && page.has(Errata)) {
-		[[Category:Products with errata]]
-	}
-	@if(concept.containsProperty(Web_enhancement) && page.has(Web_enhancement)) {
-		[[Category:Products with web enhancements]]
-	}
-	@if(concept.containsProperty(Author_all) && page.has(Author_all)) {
-		@for(author:page.get(Author_all)) {
-			[[Category:Works by @author.toDisplayTitleWikitext()]]
-		}
-	}
-	else if(concept.containsProperty(Author) && page.has(Author)) {
-		@for(author:page.get(Author)) {
-			[[Category:Works by @author.toDisplayTitleWikitext()]]
-		}
-	}
-	@if(concept.containsProperty(Artist) && page.has(Artist)) {
-		@for(author:page.get(Artist)) {
-			[[Category:Artwork by @author.toDisplayTitleWikitext()]]
-		}
-	}
-	@if(concept.containsProperty(Director) && page.has(Director)) {
-		@for(author:page.get(Director)) {
-			[[Category:Works by @author.toDisplayTitleWikitext()]]
-		}
-	}
-	@if(concept.containsProperty(Performer) && page.has(Performer)) {
-		@for(author:page.get(Performer)) {
-			[[Category:Works starring @author.toDisplayTitleWikitext()]]
-		}
-	}
-	@if(concept.containsProperty(Narrator) && page.has(Narrator)) {
-		@for(author:page.get(Narrator)) {
-			[[Category:Works starring @author.toDisplayTitleWikitext()]]
-		}
-	}
+	@AutoCategorizer.categoriesWikitext(concept, page, series2Category)
 	
 	@concept.conceptSpecificCategories(wiki, page)
 }

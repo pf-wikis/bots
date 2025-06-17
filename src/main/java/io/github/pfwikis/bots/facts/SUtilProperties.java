@@ -1,14 +1,11 @@
 package io.github.pfwikis.bots.facts;
 import java.lang.reflect.Modifier;
-import java.time.temporal.Temporal;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 import io.github.pfwikis.bots.common.model.subject.PageRef;
-import io.github.pfwikis.bots.facts.model.SConcept;
 import io.github.pfwikis.bots.facts.model.SFactTypes;
 import io.github.pfwikis.bots.facts.model.SProperty;
 
@@ -21,6 +18,7 @@ public class SUtilProperties {
 			"Order",
 			SFactTypes.INTEGER)
 			.setDescription("The order value of an ordered list entry.");
+	
 
 	private static final Map<String, SProperty<?>> ALL_PROPERTIES;
 	static {

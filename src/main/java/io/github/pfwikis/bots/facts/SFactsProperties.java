@@ -1,11 +1,11 @@
 package io.github.pfwikis.bots.facts;
+
 import java.lang.reflect.Modifier;
 import java.time.temporal.Temporal;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 import io.github.pfwikis.bots.common.model.subject.PageRef;
 import io.github.pfwikis.bots.facts.model.SConcept;
@@ -159,6 +159,11 @@ public class SFactsProperties {
 		.setSuggestValuesFrom("Category:Facts about Books")
 		.setDescription("The main books that make up this Adventure Path.")
 		.setFormNote("List the Facts pages here.");
+	public static final SProperty<PageRef> Member_category = new SProperty<>(
+		"Member category",
+		SFactTypes.PAGE)
+		.setDescription("The category that collects members of this series.")
+		.setRequired(true);
 	public static final SProperty<String> Discs = new SProperty<>(
 		"Discs",
 		SFactTypes.STRING)

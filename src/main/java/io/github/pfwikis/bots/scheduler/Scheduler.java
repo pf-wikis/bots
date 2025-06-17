@@ -82,7 +82,7 @@ public class Scheduler {
 			schedule(new HealthCheck(discord), Duration.ofHours(24));
 			for(var wiki : Wiki.values()) {
 				scheduleOnce(scheduleableBot(wiki, discord, new Meta()));
-				scheduleOnce(scheduleableBot(wiki, discord, new FactsTemplates()));
+				schedule(scheduleableBot(wiki, discord, new FactsTemplates()), Duration.ofDays(7));
 				planScatter(wiki, discord, new PropertyStatistics(), Duration.ofHours(24), Duration.ofDays(1));
 				
 				schedule(
