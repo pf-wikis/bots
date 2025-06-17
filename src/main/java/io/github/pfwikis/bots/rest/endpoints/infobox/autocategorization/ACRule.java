@@ -9,7 +9,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor(staticName = "rule")
+@RequiredArgsConstructor
 public class ACRule {
 	
 	@NonNull

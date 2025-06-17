@@ -9,7 +9,6 @@ import static io.github.pfwikis.bots.facts.SFactsProperties.Narrator;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Performer;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Series;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Web_enhancement;
-import static io.github.pfwikis.bots.rest.endpoints.infobox.autocategorization.ACRule.rule;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -30,17 +29,17 @@ public enum AutoCategorizer {
 	private List<ACRule> rules = new ArrayList<>();
 	
 	private AutoCategorizer() {
-		rules.add(rule(
+		rules.add(new ACRule(
 				ctx-> "if [[Errata::@@@]] is set: add [[:Category:Products with errata]]",
 				ctx-> ctx.addCategory("Products with errata")
 			).onlyIf(ctx->ctx.has(Errata)));
 		
-		rules.add(rule(
+		rules.add(new ACRule(
 				ctx-> "if [[Web enhancement::@@@]] is set: add [[:Category:Products with web enhancements]]",
 				ctx-> ctx.addCategory("Products with web enhancements")
 			).onlyIf(ctx->ctx.has(Web_enhancement)));
 		
-		rules.add(rule(
+		rules.add(new ACRule(
 				ctx-> "add <code>Category:Works by AUTHOR</code> for each [[Author_all::@@@]]",
 				ctx-> {
 					for(var e:ctx.getSubject().get(Author_all))
@@ -48,7 +47,7 @@ public enum AutoCategorizer {
 				}
 			).onlyIf(ctx->ctx.has(Author_all)));
 		
-		rules.add(rule(
+		rules.add(new ACRule(
 				ctx-> "add <code>Category:Works by AUTHOR</code> for each [[Author::@@@]]",
 				ctx-> {
 					for(var e:ctx.getSubject().get(Author))
@@ -56,7 +55,7 @@ public enum AutoCategorizer {
 				}
 			).onlyIf(ctx->ctx.has(Author)));
 		
-		rules.add(rule(
+		rules.add(new ACRule(
 				ctx-> "add <code>Category:Artwork by ARTIST</code> for each [[Artist::@@@]]",
 				ctx-> {
 					for(var e:ctx.getSubject().get(Artist))
@@ -64,7 +63,7 @@ public enum AutoCategorizer {
 				}
 			).onlyIf(ctx->ctx.has(Artist)));
 		
-		rules.add(rule(
+		rules.add(new ACRule(
 				ctx-> "add <code>Category:Works by DIRECTOR</code> for each [[Director::@@@]]",
 				ctx-> {
 					for(var e:ctx.getSubject().get(Director))
@@ -72,7 +71,7 @@ public enum AutoCategorizer {
 				}
 			).onlyIf(ctx->ctx.has(Director)));
 		
-		rules.add(rule(
+		rules.add(new ACRule(
 				ctx-> "add <code>Category:Works starring PERFORMER</code> for each [[Performer::@@@]]",
 				ctx-> {
 					for(var e:ctx.getSubject().get(Performer))
@@ -80,7 +79,7 @@ public enum AutoCategorizer {
 				}
 			).onlyIf(ctx->ctx.has(Performer)));
 		
-		rules.add(rule(
+		rules.add(new ACRule(
 				ctx-> "add <code>Category:Works starring NARRATOR</code> for each [[Narrator::@@@]]",
 				ctx-> {
 					for(var e:ctx.getSubject().get(Narrator))
@@ -88,7 +87,7 @@ public enum AutoCategorizer {
 				}
 			).onlyIf(ctx->ctx.has(Narrator)));
 		
-		rules.add(rule(
+		rules.add(new ACRule(
 				ctx-> "add the category for each [[Series::@@@]], that the <code>SERIES</code> is the {{tl|Main}} article of (see [[#Details|Details]])",
 				ctx-> {
 					for(var e:ctx.getSubject().get(Series)) {
