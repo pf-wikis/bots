@@ -152,6 +152,7 @@ public class SFactTypes {
 		public List<PageRef> convertToJava(List<Object> values) {
 			return values.stream()
 				.map(SemanticSubject.class::cast)
+				.filter(ss->ss.has(Order) && ss.has(Ordered_value))
 				.map(ss->Pair.of(ss.get(Order), ss.get(Ordered_value)))
 				.sorted()
 				.map(p->p.getRight())
