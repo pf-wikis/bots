@@ -79,7 +79,6 @@ import static io.github.pfwikis.bots.facts.SFactsProperties.Writer;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Set;
@@ -591,7 +590,7 @@ public class SModel {
 				});
 			}))
 		.build();
-	private static final SConcept VIDEO_GAME = SConcept.builder()
+	public static final SConcept VIDEO_GAME = SConcept.builder()
 			.name("Video game")
 			.pluralName("Video games")
 			.properties(
@@ -645,14 +644,8 @@ public class SModel {
 				Follows,
 				Precedes
 			)
-			.conceptSpecificCategoriesFunction(helper((Ctx c) -> {
-				c.addCats(switch(c.page.getOr(Video_game_type, "") ) {
-					case "Computer RPG" -> "RPG video games";
-					default -> "video games";
-				});
-			}))
 		.build();
-	private static final SConcept DECK = SConcept.builder()
+	public static final SConcept DECK = SConcept.builder()
 			.name("Deck")
 			.pluralName("Decks")
 			.properties(
@@ -705,30 +698,6 @@ public class SModel {
 				Errata,
 				Web_enhancement
 			)
-			.conceptSpecificCategoriesFunction(helper((Ctx c) -> {
-				c.addCats(switch(c.page.getOr(Deck_type, "") ) {
-					//Adventure Card Game categories
-					case "Base Set" -> List.of("Base sets", "Card games", c.ifYear("{} card games"));
-					case "Adventure Deck" -> List.of("Adventure decks", "Card games", c.ifYear("{} card games"));
-					case "Class Deck" -> List.of("Class decks", "Card games", c.ifYear("{} card games"));
-					case "Character Add-On Deck" -> List.of("Character add-on decks", "Card games", c.ifYear("{} card games"));
-					//cards categories
-					case "Item Cards " -> List.of("Item cards", "Accessories", c.ifYear("{} accessories"));
-					case "Face Cards " -> List.of("Face cards", "Accessories", c.ifYear("{} accessories"));
-					case "Spell Cards " -> List.of("Spell cards", "Accessories", c.ifYear("{} accessories"));
-					case "Campaign Cards " -> List.of("Campaign cards", "Accessories", c.ifYear("{} accessories"));
-					case "GameMastery Cards " -> List.of("Accessories", c.ifYear("{} accessories"));
-					case "Cards " -> List.of("Accessories", c.ifYear("{} accessories"));
-					//else
-					case "Card game" -> List.of("Card games", c.ifYear("{} card games"));
-					default -> List.of("Decks", c.ifYear("{} decks"));
-				});
-				
-				if("PACG".equals(c.page.getOr(Rule_system, ""))) {
-					 c.addCats("Pathfinder Adventure Card Game");
-				}
-				
-			}))
 		.build();
 	
 	public static final SConcept BOARD_GAME = SConcept.builder()
