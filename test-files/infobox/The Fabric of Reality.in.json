@@ -1,0 +1,551 @@
+{
+    "factsPage": "Facts:The Fabric of Reality",
+    "semanticSubject": {
+        "query": {
+            "subject": "The_Fabric_of_Reality#128##",
+            "data": [
+                {
+                    "property": "Artist",
+                    "dataitem": [
+                        {
+                            "type": 9,
+                            "item": "Fernanda_Suarez#0##"
+                        },
+                        {
+                            "type": 9,
+                            "item": "Corey_Macourek#0##"
+                        },
+                        {
+                            "type": 9,
+                            "item": "Yong_Yi_Lee#0##"
+                        },
+                        {
+                            "type": 9,
+                            "item": "Sean_Macdonald#0##"
+                        }
+                    ]
+                },
+                {
+                    "property": "Author",
+                    "dataitem": [
+                        {
+                            "type": 9,
+                            "item": "The_Fabric_of_Reality#128##_99377c17e2b2547af24ddf44786e1f73"
+                        }
+                    ]
+                },
+                {
+                    "property": "Author_all",
+                    "dataitem": [
+                        {
+                            "type": 9,
+                            "item": "Tom_Phillips#0##"
+                        }
+                    ]
+                },
+                {
+                    "property": "Book_type",
+                    "dataitem": [
+                        {
+                            "type": 2,
+                            "item": "Pathfinder Society scenario"
+                        }
+                    ]
+                },
+                {
+                    "property": "Fact_type",
+                    "dataitem": [
+                        {
+                            "type": 9,
+                            "item": "Facts/Book#10##"
+                        }
+                    ]
+                },
+                {
+                    "property": "Follows",
+                    "dataitem": [
+                        {
+                            "type": 9,
+                            "item": "The_Cyphermage_Dilemma#0##"
+                        }
+                    ]
+                },
+                {
+                    "property": "Full_title",
+                    "dataitem": [
+                        {
+                            "type": 2,
+                            "item": "Pathfinder&nbsp;Society&nbsp;Scenario&nbsp;#4-16: The Fabric of Reality"
+                        }
+                    ]
+                },
+                {
+                    "property": "Gallery_page",
+                    "dataitem": [
+                        {
+                            "type": 9,
+                            "item": "Artwork_from_The_Fabric_of_Reality#14##"
+                        }
+                    ]
+                },
+                {
+                    "property": "Has_reference_to",
+                    "dataitem": [
+                        {
+                            "type": 9,
+                            "item": "Shadow_Lodge_(faction)#0##"
+                        },
+                        {
+                            "type": 9,
+                            "item": "Silver_Crusade_(faction)#0##"
+                        },
+                        {
+                            "type": 9,
+                            "item": "Lantern_Lodge_(faction)#0##"
+                        },
+                        {
+                            "type": 9,
+                            "item": "Sczarni_(faction)#0##"
+                        },
+                        {
+                            "type": 9,
+                            "item": "Grand_Lodge_(faction)#0##"
+                        },
+                        {
+                            "type": 9,
+                            "item": "Amanandar#0##"
+                        },
+                        {
+                            "type": 9,
+                            "item": "Aspis_Consortium#0##"
+                        },
+                        {
+                            "type": 9,
+                            "item": "Aaqir_al'Hakam#0##"
+                        },
+                        {
+                            "type": 9,
+                            "item": "Hao_Jin_Tapestry#0##"
+                        },
+                        {
+                            "type": 9,
+                            "item": "Aram_Zey#0##"
+                        },
+                        {
+                            "type": 9,
+                            "item": "Takaral#0##"
+                        },
+                        {
+                            "type": 9,
+                            "item": "Plane_of_Air#0##"
+                        },
+                        {
+                            "type": 9,
+                            "item": "Janderhoff#0##"
+                        },
+                        {
+                            "type": 9,
+                            "item": "Shenmen#0##"
+                        },
+                        {
+                            "type": 9,
+                            "item": "Amara_Li#0##"
+                        },
+                        {
+                            "type": 9,
+                            "item": "Abysium#0##"
+                        },
+                        {
+                            "type": 9,
+                            "item": "Ascalar_Vruul#0##"
+                        },
+                        {
+                            "type": 9,
+                            "item": "Goka#0##"
+                        },
+                        {
+                            "type": 9,
+                            "item": "Golden_League#0##"
+                        },
+                        {
+                            "type": 9,
+                            "item": "Hao_Jin#0##"
+                        },
+                        {
+                            "type": 9,
+                            "item": "Riddleport#0##"
+                        },
+                        {
+                            "type": 9,
+                            "item": "Ruby_Phoenix_Tournament#0##"
+                        },
+                        {
+                            "type": 9,
+                            "item": "Kuga_Setsuna#0##"
+                        }
+                    ]
+                },
+                {
+                    "property": "Image",
+                    "dataitem": [
+                        {
+                            "type": 9,
+                            "item": "Fabric_of_Reality.jpg#6##"
+                        }
+                    ]
+                },
+                {
+                    "property": "Name",
+                    "dataitem": [
+                        {
+                            "type": 2,
+                            "item": "The Fabric of Reality"
+                        }
+                    ]
+                },
+                {
+                    "property": "Precedes",
+                    "dataitem": [
+                        {
+                            "type": 9,
+                            "item": "Tower_of_the_Ironwood_Watch#0##"
+                        }
+                    ]
+                },
+                {
+                    "property": "Primary_author",
+                    "dataitem": [
+                        {
+                            "type": 9,
+                            "item": "The_Fabric_of_Reality#128##_99377c17e2b2547af24ddf44786e1f73"
+                        }
+                    ]
+                },
+                {
+                    "property": "Pubcode",
+                    "dataitem": [
+                        {
+                            "type": 2,
+                            "item": "PZOPSS0416"
+                        }
+                    ]
+                },
+                {
+                    "property": "Publisher",
+                    "dataitem": [
+                        {
+                            "type": 9,
+                            "item": "Paizo_Inc.#0##"
+                        }
+                    ]
+                },
+                {
+                    "property": "Release_date",
+                    "dataitem": [
+                        {
+                            "type": 6,
+                            "item": "1/2013/2"
+                        }
+                    ]
+                },
+                {
+                    "property": "Release_date_precision",
+                    "dataitem": [
+                        {
+                            "type": 2,
+                            "item": "month"
+                        }
+                    ]
+                },
+                {
+                    "property": "Release_year",
+                    "dataitem": [
+                        {
+                            "type": 2,
+                            "item": "2013"
+                        }
+                    ]
+                },
+                {
+                    "property": "Represented_by_page",
+                    "dataitem": [
+                        {
+                            "type": 9,
+                            "item": "The_Fabric_of_Reality#0##"
+                        }
+                    ]
+                },
+                {
+                    "property": "Rule_system",
+                    "dataitem": [
+                        {
+                            "type": 2,
+                            "item": "PFRPG"
+                        }
+                    ]
+                },
+                {
+                    "property": "Series",
+                    "dataitem": [
+                        {
+                            "type": 9,
+                            "item": "Season_4_scenarios#14##"
+                        },
+                        {
+                            "type": 9,
+                            "item": "Pathfinder_Society_Roleplaying_Guild#0##"
+                        }
+                    ]
+                },
+                {
+                    "property": "Website",
+                    "dataitem": [
+                        {
+                            "type": 5,
+                            "item": "https://paizo.com/products/btpy8v0n"
+                        }
+                    ]
+                },
+                {
+                    "property": "_ASK",
+                    "dataitem": [
+                        {
+                            "type": 9,
+                            "item": "The_Fabric_of_Reality#128##_QUERY31ddfa3bd9fee0dd05f1dfea4a8a512c"
+                        },
+                        {
+                            "type": 9,
+                            "item": "The_Fabric_of_Reality#128##_QUERY9add9a954b897a89792720a7b840550a"
+                        }
+                    ]
+                },
+                {
+                    "property": "_INST",
+                    "dataitem": [
+                        {
+                            "type": 9,
+                            "item": "Facts_about_Books#14##"
+                        }
+                    ]
+                },
+                {
+                    "property": "_MDAT",
+                    "dataitem": [
+                        {
+                            "type": 6,
+                            "item": "1/2024/9/13/15/45/49/0"
+                        }
+                    ]
+                },
+                {
+                    "property": "_SKEY",
+                    "dataitem": [
+                        {
+                            "type": 2,
+                            "item": "The Fabric of Reality"
+                        }
+                    ]
+                },
+                {
+                    "property": "_SOBJ",
+                    "dataitem": [
+                        {
+                            "type": 9,
+                            "item": "The_Fabric_of_Reality#128##_c184849a573c925cd8ec08f2d36b264f"
+                        }
+                    ]
+                }
+            ],
+            "sobj": [
+                {
+                    "subject": "The_Fabric_of_Reality#128##_99377c17e2b2547af24ddf44786e1f73",
+                    "data": [
+                        {
+                            "property": "Order",
+                            "dataitem": [
+                                {
+                                    "type": 1,
+                                    "item": "2"
+                                }
+                            ]
+                        },
+                        {
+                            "property": "Ordered_value",
+                            "dataitem": [
+                                {
+                                    "type": 9,
+                                    "item": "Tom_Phillips#0##"
+                                }
+                            ]
+                        },
+                        {
+                            "property": "_SKEY",
+                            "dataitem": [
+                                {
+                                    "type": 2,
+                                    "item": "The Fabric of Reality#Tom Phillips;2"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "subject": "The_Fabric_of_Reality#128##_QUERY31ddfa3bd9fee0dd05f1dfea4a8a512c",
+                    "data": [
+                        {
+                            "property": "_ASKDE",
+                            "dataitem": [
+                                {
+                                    "type": 1,
+                                    "item": "1"
+                                }
+                            ]
+                        },
+                        {
+                            "property": "_ASKFO",
+                            "dataitem": [
+                                {
+                                    "type": 2,
+                                    "item": "plainlist"
+                                }
+                            ]
+                        },
+                        {
+                            "property": "_ASKSI",
+                            "dataitem": [
+                                {
+                                    "type": 1,
+                                    "item": "3"
+                                }
+                            ]
+                        },
+                        {
+                            "property": "_ASKST",
+                            "dataitem": [
+                                {
+                                    "type": 2,
+                                    "item": "[[-Has subobject::Facts:The Fabric of Reality]] [[Release date::+]]"
+                                }
+                            ]
+                        },
+                        {
+                            "property": "_SKEY",
+                            "dataitem": [
+                                {
+                                    "type": 2,
+                                    "item": "The Fabric of Reality# QUERY31ddfa3bd9fee0dd05f1dfea4a8a512c"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "subject": "The_Fabric_of_Reality#128##_QUERY9add9a954b897a89792720a7b840550a",
+                    "data": [
+                        {
+                            "property": "_ASKDE",
+                            "dataitem": [
+                                {
+                                    "type": 1,
+                                    "item": "0"
+                                }
+                            ]
+                        },
+                        {
+                            "property": "_ASKFO",
+                            "dataitem": [
+                                {
+                                    "type": 2,
+                                    "item": "plainlist"
+                                }
+                            ]
+                        },
+                        {
+                            "property": "_ASKSI",
+                            "dataitem": [
+                                {
+                                    "type": 1,
+                                    "item": "1"
+                                }
+                            ]
+                        },
+                        {
+                            "property": "_ASKST",
+                            "dataitem": [
+                                {
+                                    "type": 2,
+                                    "item": "[[:The Fabric of Reality]]"
+                                }
+                            ]
+                        },
+                        {
+                            "property": "_SKEY",
+                            "dataitem": [
+                                {
+                                    "type": 2,
+                                    "item": "The Fabric of Reality# QUERY9add9a954b897a89792720a7b840550a"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "subject": "The_Fabric_of_Reality#128##_c184849a573c925cd8ec08f2d36b264f",
+                    "data": [
+                        {
+                            "property": "Fact_type",
+                            "dataitem": [
+                                {
+                                    "type": 9,
+                                    "item": "Facts/Book/Release#10##"
+                                }
+                            ]
+                        },
+                        {
+                            "property": "Price",
+                            "dataitem": [
+                                {
+                                    "type": 2,
+                                    "item": "$3.99"
+                                }
+                            ]
+                        },
+                        {
+                            "property": "Release_date",
+                            "dataitem": [
+                                {
+                                    "type": 6,
+                                    "item": "1/2013/2"
+                                }
+                            ]
+                        },
+                        {
+                            "property": "Release_type",
+                            "dataitem": [
+                                {
+                                    "type": 2,
+                                    "item": "PDF"
+                                }
+                            ]
+                        },
+                        {
+                            "property": "_SKEY",
+                            "dataitem": [
+                                {
+                                    "type": 2,
+                                    "item": "002"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "serializer": "SMW\\Serializers\\SemanticDataSerializer",
+            "version": 2
+        },
+        "meta": {
+            "type": "subject"
+        },
+        "_type": "assoc"
+    }
+}

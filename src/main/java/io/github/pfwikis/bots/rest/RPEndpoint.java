@@ -1,7 +1,6 @@
 package io.github.pfwikis.bots.rest;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,12 +8,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 
-import org.apache.commons.lang3.StringUtils;
-
 import io.github.pfwikis.bots.common.Wiki;
-import io.github.pfwikis.bots.rest.RPEndpoint.RPBlock;
-import io.github.pfwikis.bots.rest.RPEndpoint.RPBlockType;
-import io.github.pfwikis.bots.rest.RPEndpoint.RPResult;
 import io.github.pfwikis.bots.scheduler.Scheduler;
 import io.github.pfwikis.bots.utils.Jackson;
 import lombok.Builder;
@@ -47,7 +41,8 @@ public abstract class RPEndpoint<T> implements Route {
 		try {
 			try {
 				scheduler.initBot(wiki, scheduler.getDiscord(), bot);
-				param = Jackson.JSON.readValue(request.bodyAsBytes(), parameterType);
+				var bytes = request.bodyAsBytes();
+				param = Jackson.JSON.readValue(bytes, parameterType);
 				log.info("Requesting {} with param {}", endpoint, param);
 				var res = handle(bot, param);
 				return Jackson.JSON.writeValueAsString(res);

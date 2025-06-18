@@ -58,6 +58,8 @@ public class Scheduler {
 	protected boolean localMode;
 	@Parameter(names = "--matomoToken")
 	protected String matomoToken;
+	@Parameter(names = "--restOnly")
+	protected boolean restOnly;
 	
 	private Discord discord;
 	
@@ -100,7 +102,8 @@ public class Scheduler {
 			schedule(scheduleableBot(Wiki.PF, discord, new MapCheckLinksWithoutArticles()), Duration.ofDays(1), LocalTime.of(16, 00));
 			
 			var worker = new Worker(discord);
-			Thread.ofVirtual().start(worker);
+			if(!restOnly)
+				Thread.ofVirtual().start(worker);
 			RestServer.start(this);
 			Runtime.getRuntime().addShutdownHook(Thread.ofVirtual().unstarted(()-> {
 				RestServer.stop();

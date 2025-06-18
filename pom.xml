@@ -13,6 +13,20 @@
 		<lombok.version>1.18.38</lombok.version>
 	</properties>
 
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.junit</groupId>
+				<artifactId>junit-bom</artifactId>
+				<version>5.13.1</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+
 	<dependencies>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -142,6 +156,23 @@
 			<artifactId>httpclient5</artifactId>
 			<version>5.5</version>
 		</dependency>
+		<dependency>
+	        <groupId>org.junit.jupiter</groupId>
+	        <artifactId>junit-jupiter</artifactId>
+	        <scope>test</scope>
+	    </dependency>
+	    <dependency>
+		    <groupId>org.assertj</groupId>
+		    <artifactId>assertj-core</artifactId>
+		    <version>[3.0.0,5.0.0)</version>
+		    <scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+		    <artifactId>mockito-core</artifactId>
+		    <version>[5.0.0,6.0.0)</version>
+		    <scope>test</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -204,6 +235,10 @@
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
+			<plugin>
+	            <artifactId>maven-surefire-plugin</artifactId>
+	            <version>3.5.3</version>
+	        </plugin>
 		</plugins>
 	</build>
 </project>
