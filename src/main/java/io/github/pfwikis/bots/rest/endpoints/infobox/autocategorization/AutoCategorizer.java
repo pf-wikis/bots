@@ -5,9 +5,11 @@ import static io.github.pfwikis.bots.facts.SFactsProperties.Author;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Author_all;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Director;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Errata;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Map_type;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Narrator;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Performer;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Publisher;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Region;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Release_year;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Series;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Web_enhancement;
@@ -40,14 +42,53 @@ public enum AutoCategorizer {
 	private AutoCategorizer() {
 		addGenericRules();
 		addBoardgameRules();
+		addAccessoryRules();
+		addMapRules();
 	}
 	
+	void addMapRules() {
+		int index = rules.size();
+		rules.add(new ACRule(
+				ctx-> new RuleDoc("[[:Category:Accessories]]", "always"),
+				ctx-> ctx.addCategory("Accessories")
+			));
+		rules.add(ACRule.ifYear("{} accessories"));
+		
+		rules.add(new ACRule(
+				ctx-> new RuleDoc("Category:Images of REGION", "for each [[Region::@@@]]"),
+				ctx-> ctx.getSubject()
+					.getOr(Region, Collections.emptyList())
+					.forEach(r->ctx.addCategory("Images of "+r.toDisplayTitleWikitext()))
+			).onlyIf(ctx->ctx.has(Region)));
+		
+		rules.add(ACRule.ifMatch(Map_type, "Poster Map Folio", ctx->"Poster Map Folios"));
+		rules.add(ACRule.ifMatch(Map_type, "Flip-Mat", ctx->ctx.getWiki().getName()+" Flip-Mats"));
+		rules.add(ACRule.ifMatch(Map_type, "Map tiles", ctx->ctx.getWiki().getName()+" Flip-Tiles"));
+		rules.add(ACRule.ifMatch(Map_type, "Map Pack", ctx->ctx.getWiki().getName()+" Map Packs"));
+		
+		for(;index<rules.size();index++) {
+			rules.set(index, rules.get(index).onlyIf(ctx->ctx.has(MAP_PF) || ctx.has(MAP_SF)));
+		}
+	}
+
+	void addAccessoryRules() {
+		int index = rules.size();
+		rules.add(new ACRule(
+				ctx-> new RuleDoc("[[:Category:Accessories]]", "always"),
+				ctx-> ctx.addCategory("Accessories")
+			));
+		rules.add(ACRule.ifYear("{} accessories"));
+		for(;index<rules.size();index++) {
+			rules.set(index, rules.get(index).onlyIf(ctx->ctx.has(ACCESSORY)));
+		}
+	}
+
 	void addBoardgameRules() {
 		int index = rules.size();
 		rules.add(new ACRule(
-				ctx-> new RuleDoc("[[:Category:Board games]]", "if [[Release year::@@@]] is '''not''' set"),
+				ctx-> new RuleDoc("[[:Category:Board games]]", "always"),
 				ctx-> ctx.addCategory("Board games")
-			).onlyIf(ctx->ctx.hasUnset(Release_year)));
+			));
 		rules.add(ACRule.ifYear("{} board games"));
 		rules.add(new ACRule(
 				ctx-> new RuleDoc("[[:Category:Licensed board games]]", "if [[Publisher::@@@]] does not contain [[Paizo Inc.]]"),
@@ -136,8 +177,8 @@ public enum AutoCategorizer {
 		
 	}
 
-	public static String categoriesWikitext(SConcept concept, SemanticSubject subject, Map<String, String> series2Category) {
-		var ctx = new ACContext(concept, subject, series2Category);
+	public static String categoriesWikitext(Wiki wiki, SConcept concept, SemanticSubject subject, Map<String, String> series2Category) {
+		var ctx = new ACContext(wiki, concept, subject, series2Category);
 		for(var r:INSTANCE.rules) {
 			r.getFunction().accept(ctx);
 		}
@@ -147,7 +188,7 @@ public enum AutoCategorizer {
 	public static String generateDocs(Wiki server, Map<String, String> series2Category) {
 		var sb = new StringBuilder();
 		for(var concept : SModel.getConcepts(server).stream().sorted(Comparator.comparing(SConcept::getName)).toList()) {
-			var ctx = new ACContext(concept, null, series2Category);
+			var ctx = new ACContext(server, concept, null, series2Category);
 			
 			sb.append("===").append(concept.getPluralName()).append("===\n");
 			var ruleDocs = INSTANCE.rules
@@ -158,17 +199,17 @@ public enum AutoCategorizer {
 				.toList();
 			
 			if(ruleDocs.isEmpty()) {
-				sb.append("No automatic categories yet.\n");
+				sb.append("No automatic categories yet.");
 			}
 			else {
-				sb.append("<table class=\"wikitable\"><tr><th>Category added</th><th>rules</th></tr>");
+				sb.append("<table class=\"wikitable\">\n<tr><th>Category added</th><th>rules</th></tr>\n");
 				
 				ruleDocs.forEach(rd->sb
 						.append("<tr><td><code>")
 						.append(rd.category())
 						.append("</code></td><td>")
 						.append(rd.explanation())
-						.append("</tr>"));
+						.append("</tr>\n"));
 				sb.append("</table>");
 			}
 			sb.append("\n\n");
@@ -176,8 +217,8 @@ public enum AutoCategorizer {
 		sb
 			.append("===Details===\n")
 			.append("====Series ⇒ Category====\n")
-			.append("<table class=\"wikitable\">")
-			.append("<tr><th>Series</th><th>Resulting categories</th></tr>");
+			.append("<table class=\"wikitable\">\n")
+			.append("<tr><th>Series</th><th>Resulting categories</th></tr>\n");
 		
 		series2Category.entrySet()
 			.stream()
@@ -187,7 +228,7 @@ public enum AutoCategorizer {
 				.append(e.getKey())
 				.append("]]</td><td>[[:")
 				.append(e.getValue())
-				.append("]]</td></tr>")
+				.append("]]</td></tr>\n")
 			);
 		
 		sb.append("</table>");

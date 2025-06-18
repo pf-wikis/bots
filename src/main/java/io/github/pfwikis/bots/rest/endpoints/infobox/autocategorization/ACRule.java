@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import io.github.pfwikis.bots.facts.model.SProperty;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,16 @@ public class ACRule {
 			ctx-> new RuleDoc("Category:"+category.replace("{}", "YEAR"), "if [[Release year::@@@]] is set"),
 			ctx-> ctx.addCategory(category.replace("{}", ctx.getSubject().get(Release_year).toString()))
 		).onlyIf(ctx->ctx.has(Release_year));
+	}
+	
+	public static ACRule ifMatch(SProperty<String> prop, String value, Function<ACContext, String> categoryName) {
+		return new ACRule(
+			ctx-> new RuleDoc("Category:"+categoryName.apply(ctx), "if [["+prop.getName()+"::@@@]] is exactly <code>"+value+"</code>"),
+			ctx-> {
+				if(ctx.getSubject().getOr(prop, "").equals(value))
+					ctx.addCategory(categoryName.apply(ctx));
+			}
+		).onlyIf(ctx->ctx.has(prop));
 	}
 	
 	public static record RuleDoc(String category, String explanation) {}

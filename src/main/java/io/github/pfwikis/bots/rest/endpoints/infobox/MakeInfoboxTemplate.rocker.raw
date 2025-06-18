@@ -103,7 +103,7 @@
 		</div>
 	</div>
 
-	@AutoCategorizer.categoriesWikitext(concept, page, series2Category)
+	@AutoCategorizer.categoriesWikitext(wiki, concept, page, series2Category)
 	
 	@concept.conceptSpecificCategories(wiki, page)
 }

@@ -323,7 +323,7 @@ public class SModel {
 			}
 		}))
 		.build();
-	private static final SConcept ACCESSORY = SConcept.builder()
+	public static final SConcept ACCESSORY = SConcept.builder()
 			.name("Accessory")
 			.pluralName("Accessories")
 			.properties(
@@ -378,13 +378,9 @@ public class SModel {
 				Errata,
 				Web_enhancement
 			)
-			.conceptSpecificCategoriesFunction(helper((Ctx c) -> {
-				c.addCats("Accessories");
-				c.addCats(c.ifYear("{} accessories"));
-			}))
 		.build();
-	private static final SConcept MAP_SF;
-	private static final SConcept MAP_PF;
+	public static final SConcept MAP_SF;
+	public static final SConcept MAP_PF;
 	static {
 		var contributors = SPropertyGroup.builder()
 			.name("Contributors")
@@ -394,22 +390,7 @@ public class SModel {
 			);
 		var base = SConcept.builder()
 			.name("Map")
-			.pluralName("Maps")
-			.conceptSpecificCategoriesFunction(helper((Ctx c) -> {
-				c.addCats(c.ifYear("{} accessories"));
-				c.addCats("Accessories");
-				
-				c.addCats(switch(c.page.getOr(Map_type, "") ) {
-					case "Poster Map Folio" -> "Poster Map Folios"; 
-					case "Flip-Mat" -> c.game+" Flip-Mats"; 
-					case "Map tiles" -> c.game+" Flip-Tiles"; 
-					case "Map Pack" -> c.game+" Map Packs"; 
-					default -> List.of();
-				});
-				
-				
-				c.page.getOr(Region, Collections.emptyList()).forEach(r->c.addCats("Images of "+r.toDisplayTitleWikitext()));
-			}));
+			.pluralName("Maps");
 		MAP_PF = base.properties(
 				BASIC_FIELDS,
 				contributors,
@@ -874,7 +855,6 @@ public class SModel {
 			SERIES,
 			BOARD_GAME
 		));
-		CONCEPTS.values().forEach(l->Collections.sort(l, Comparator.comparing(SConcept::getName)));
 	}
 	
 	public static List<SConcept> getConcepts(Wiki server) {
