@@ -123,6 +123,8 @@ public class SConcept {
 	}
 
 	public String conceptSpecificCategories(Wiki wiki, SemanticSubject subject) {
+		if(conceptSpecificCategoriesFunction == null)
+			return "";
 		return conceptSpecificCategoriesFunction.apply(wiki, subject);
 	}
 
