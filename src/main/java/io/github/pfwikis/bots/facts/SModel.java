@@ -485,7 +485,7 @@ public class SModel {
 			)
 			.build();
 	}
-	private static final SConcept MINIATURES = SConcept.builder()
+	public static final SConcept MINIATURES = SConcept.builder()
 			.name("Miniatures")
 			.pluralName("Miniatures")
 			.properties(
@@ -529,10 +529,6 @@ public class SModel {
 				Precedes,
 				Awards
 			)
-			.conceptSpecificCategoriesFunction(helper((Ctx c) -> {
-				c.addCats("Miniatures");
-				c.addCats(c.ifYear("{} miniatures"));
-			}))
 		.build();
 	private static final SConcept AUDIO = SConcept.builder()
 			.name("Audio")

@@ -20,7 +20,7 @@ import static io.github.pfwikis.bots.facts.SModel.BOARD_GAME;
 import static io.github.pfwikis.bots.facts.SModel.DECK;
 import static io.github.pfwikis.bots.facts.SModel.MAP_PF;
 import static io.github.pfwikis.bots.facts.SModel.MAP_SF;
-import static io.github.pfwikis.bots.facts.SModel.VIDEO_GAME;
+import static io.github.pfwikis.bots.facts.SModel.*;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -47,8 +47,18 @@ public enum AutoCategorizer {
 		addAccessoryRules(rules.group(ctx->ctx.has(ACCESSORY)));
 		addVideoGameRules(rules.group(ctx->ctx.has(VIDEO_GAME)));
 		addMapRules(rules.group(ctx->ctx.has(MAP_PF) || ctx.has(MAP_SF)));
+		addMiniatureRules(rules.group(ctx->ctx.has(MINIATURES)));
 	}
 	
+	void addMiniatureRules(ACGroup g) {
+		g.rule(
+				ctx-> "[[:Category:Miniatures]]",
+				ctx-> "always",
+				ctx-> ctx.addCategory("Miniatures")
+			);
+		g.ifYearRule("{} miniatures");
+	}
+
 	void addDeckRules(ACGroup g) {
 		g.ifMatchRule(Rule_system, "PACG", "Pathfinder Adventure Card Game");
 		
