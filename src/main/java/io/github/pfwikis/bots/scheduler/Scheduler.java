@@ -29,6 +29,7 @@ import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.ScatteredRunnableBot;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.facts.blog.BlogFacts;
+import io.github.pfwikis.bots.facts.makecategories.MakeCategories;
 import io.github.pfwikis.bots.facts.master.PropertyStatistics;
 import io.github.pfwikis.bots.facts.templates.FactsTemplates;
 import io.github.pfwikis.bots.healthcheck.HealthCheck;
@@ -97,6 +98,7 @@ public class Scheduler {
 				schedule(scheduleableBot(wiki, discord, new Maintenance()), Duration.ofDays(7), LocalTime.of(13, 00));
 				schedule(scheduleableBot(wiki, discord, new UsageReporter()), Duration.ofDays(1), LocalTime.of(14, 00));
 				schedule(scheduleableBot(wiki, discord, new AssistantTaskGiver()), Duration.ofDays(1), LocalTime.of(15, 00));
+				schedule(scheduleableBot(wiki, discord, new MakeCategories()), Duration.ofDays(1), LocalTime.of(16, 00));
 				scheduleOnce(scheduleableBot(wiki, discord, new TemplateStyles()));
 			}
 			schedule(scheduleableBot(Wiki.PF, discord, new MapCheckLinksWithoutArticles()), Duration.ofDays(1), LocalTime.of(16, 00));
