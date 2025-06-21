@@ -1,6 +1,7 @@
 package io.github.pfwikis.bots.map;
 
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 import io.github.pfwikis.bots.common.Discord;
 import io.github.pfwikis.bots.common.Wiki;
@@ -38,7 +39,7 @@ public class MapCheckLinksWithoutArticles extends SimpleBot {
 				+"that seem to have an article now. The map location should be moved to the articles.\n%s"
 				.formatted(links.stream().map(l->"* %s\n".formatted(
 					Discord.wikiLink(run.getServer(), l.title(), "/wiki/"+l.title())
-				)))
+				)).collect(Collectors.joining()))
 			);
 		}
 	}
