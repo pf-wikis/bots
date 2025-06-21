@@ -82,12 +82,11 @@ public enum AutoCategorizer {
 			wg.ifMatchRule(Book_type, "Adventure Path compilation", wiki.getName()+" Adventure Path");
 			wg.ifMatchRule(Book_type, wiki.getName()+" Quest", wiki.getName()+" Quests");
 			wg.ifMatchRule(Book_type, wiki.getName()+" Bounty", wiki.getName()+" Bounties");
-			wg.ifMatchRule(Book_type, wiki.getName()+" Quest (2E)", wiki.getName()+" Quests (2E)");
 			wg.ifMatchRule(Book_type, wiki.getName()+" One-Shot", wiki.getName()+" One-Shots");
 			wg.ifMatchRule(Book_type, wiki.getName()+" Society Adventure Card Guild Adventure", wiki.getName()+" Society Adventure Card Guild scenarios");
 			wg.ifMatchRule(Book_type, "Adventure Path issue", wiki.getName()+" Adventure Path");
-			wg.ifMatchRule(Book_type, wiki.getName()+" Society scenario", wiki.getName()+" Society scenario");
-			wg.ifMatchRule(Book_type, wiki.getName()+" Society (2E) scenario", wiki.getName()+" Society (2E) scenarios");
+			wg.ifMatchRule(Book_type, wiki.getName()+" Society scenario", wiki.getName()+" Society scenarios");
+			wg.ifMatchRule(Book_type, wiki.getName()+" Society (2E) scenario", wiki.getName()+" Society (2E) scenarioss");
 
 			var adventureGroup = wg.group(
 					ctx->ctx.getSubject()==null || sAdventureTypes.contains(ctx.getSubject().getOr(Book_type, "")),

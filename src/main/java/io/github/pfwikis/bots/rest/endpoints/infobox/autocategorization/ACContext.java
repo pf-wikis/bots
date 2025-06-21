@@ -29,6 +29,7 @@ public class ACContext {
 	
 	public String categoriesWikitext() {
 		return categories.stream()
+			.sorted()
 			.map(c->"[["+c+"]]")
 			.collect(Collectors.joining(""));
 	}
