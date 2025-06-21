@@ -104,6 +104,4 @@
 	</div>
 
 	@AutoCategorizer.categoriesWikitext(wiki, concept, page, series2Category)
-	
-	@concept.conceptSpecificCategories(wiki, page)
 }

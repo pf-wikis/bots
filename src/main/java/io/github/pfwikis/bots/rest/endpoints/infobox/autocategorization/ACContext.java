@@ -46,4 +46,8 @@ public class ACContext {
 	public boolean has(SConcept concept) {
 		return this.concept.equals(concept);
 	}
+
+	public boolean has(Wiki wiki) {
+		return this.wiki==wiki;
+	}
 }

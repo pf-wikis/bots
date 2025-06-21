@@ -118,7 +118,7 @@ public class SModel {
 				Image
 			);
 
-	private static final SConcept BOOK = SConcept.builder()
+	public static final SConcept BOOK = SConcept.builder()
 		.name("Book")
 		.pluralName("Books")
 		.properties(
@@ -239,88 +239,6 @@ public class SModel {
 					Price
 				)
 		)
-		.conceptSpecificCategoriesFunction(helper((Ctx c) -> {
-			var bookType = c.page.getOr(Book_type, "");
-			var isAdventure = false;
-			if(Set.of(
-					"Adventure",
-					"Adventure Path issue",
-					c.game+" Society scenario",
-					c.game+" Society (2E) scenario",
-					c.game+" Bounty",
-					c.game+" Quest",
-					c.game+" Quest (2E)",
-					c.game+" One-Shot",
-					c.game+" Society Adventure Card Guild Adventure"
-			).contains(bookType)) {
-				c.addCats("Adventures");
-				c.addCats(c.ifYear("{} adventures"));
-				isAdventure = true;
-			}
-			
-			String categoryWord = isAdventure?"adventures":"sourcebooks";
-			c.addCats(switch(c.page.getOr(Rule_system, "")) {
-				case "PFRPG" -> "PFRPG "+categoryWord;
-				case "PF2",
-					"Pathfinder Playtest"
-					->"PFRPG 2E "+categoryWord;
-				case "D&D 3.5" -> "D&D 3.5 "+categoryWord;
-				case "D&D 5E" -> "D&D 5 "+categoryWord;
-				case "PACG" -> "PACG "+categoryWord;
-				case "OGL" -> "OGL "+categoryWord;
-				case "Savage Worlds" -> "Savage Worlds "+categoryWord;
-				case "SFRPG" -> "SFRPG "+categoryWord;
-				case "SF2 Playtest" -> "SFRPG 2E "+categoryWord;
-				default->List.of();
-			});
-			
-			c.addCats(switch(bookType) {
-				case "Sourcebook" -> List.of("Sourcebooks", c.ifYear("{} sourcebooks"));
-				case "Adventure Path issue" -> c.game+" Adventure Path";
-				case "Adventure Path compilation" -> List.of(c.game+" Adventure Path", "Adventure compilations");
-				case "Pathfinder Quest" -> "Pathfinder Quests";
-				case "Starfinder Quest" -> "Starfinder Quests";
-				case "Pathfinder Bounty" -> "Pathfinder Bounties";
-				case "Starfinder Bounty" -> "Starfinder Bounties";
-				case "Pathfinder Quest (2E)" -> "Pathfinder Quests (2E)";
-				case "Starfinder Quest (2E)" -> "Starfinder Quests (2E)";
-				case "Pathfinder One-Shot" -> "Pathfinder One-Shots";
-				case "Starfinder One-Shot" -> "Starfinder One-Shots";
-				case "Pathfinder Society Adventure Card Guild Adventure" -> "Pathfinder Society Adventure Card Guild scenarios";
-				case "Novel" -> List.of("Novels", "Fiction", c.ifYear("{} fiction"));
-				case "Novella" -> List.of("Novellas", "Fiction", c.ifYear("{} fiction"));
-				case "Periodical" -> List.of("Periodicals", "Fiction", c.ifYear("{} fiction"), c.ifYear("{} periodicals"));
-				case "Comic book" -> List.of(
-					"Comics", c.ifYear("{} comics"),
-					"Fiction", c.ifYear("{} fiction"),
-					c.series.stream().map(s->s.getTitle()+" comics").toList(),
-					c.page.get(Author_all).stream().map(a->a.toDisplayTitleWikitext()).map(a->"Comics by "+a).toList()
-				);
-				case "Short Fiction" -> List.of("Fiction", c.ifYear("{} fiction"));
-				default -> List.of();
-			});
-			
-			
-			
-			if((c.game+" Society scenario").equals(bookType)) {
-				c.addCats(c.game+" Society scenarios");
-			}
-			if((c.game+" Society (2E) scenario").equals(bookType)) {
-				c.addCats(c.game+" Society (2E) scenarios");
-				c.series.forEach(s-> {
-					if(s.getTitle().startsWith("Season ")) {
-						c.addCats(StringUtils.appendIfMissing(s.getTitle()," (2E) scenarios"));
-					}
-				});
-			}
-			
-			
-			if(Set.of("Novel", "Short Fiction", "Novella").contains(bookType)) {
-				if(c.page.has(Serialized) && !c.page.get(Serialized).isBlank()) {
-					c.addCats("Serial fiction");
-				}
-			}
-		}))
 		.build();
 	public static final SConcept ACCESSORY = SConcept.builder()
 			.name("Accessory")
@@ -530,7 +448,7 @@ public class SModel {
 				Awards
 			)
 		.build();
-	private static final SConcept AUDIO = SConcept.builder()
+	public static final SConcept AUDIO = SConcept.builder()
 			.name("Audio")
 			.pluralName("Audio")
 			.properties(
@@ -577,14 +495,6 @@ public class SModel {
 				Follows,
 				Precedes
 			)
-			.conceptSpecificCategoriesFunction(helper((Ctx c) -> {
-				c.addCats(switch(c.page.getOr(Audio_type, "") ) {
-					case "Full-cast Audio Drama" -> List.of("Audio dramas", c.ifYear("{} audio dramas"));
-					case "Soundscape" -> List.of("Soundscapes", c.ifYear("{} soundscapes"));
-					case "Game score", "Soundtrack" -> List.of("Soundtracks", c.ifYear("{} soundtracks"));
-					default -> List.of();
-				});
-			}))
 		.build();
 	public static final SConcept VIDEO_GAME = SConcept.builder()
 			.name("Video game")
@@ -824,49 +734,5 @@ public class SModel {
 	
 	public static List<SConcept> getConcepts(Wiki server) {
 		return CONCEPTS.get(server);
-	}
-
-	private static BiFunction<Wiki, SemanticSubject, String> helper(Consumer<Ctx> func) {
-		return (Wiki wiki, SemanticSubject page) -> {
-			var ctx = new Ctx(wiki, page);
-			func.accept(ctx);
-			var cats = ctx.cats.stream().sorted().distinct().toList();
-			if(cats.isEmpty()) return "";
-			return
-				"[[Category:"
-				+ Strings.join("]][[Category:", cats)
-				+ "]]";
-		};
-	}
-	
-	private static class Ctx {
-		protected SemanticSubject page;
-		private List<String> cats;
-		protected String game;
-		protected List<PageRef> series;
-		
-		public Ctx(Wiki wiki, SemanticSubject page) {
-			this.page = page;
-			this.game = wiki.getName();
-			this.series = page.getOr(Series, Collections.emptyList());
-			this.cats = new ArrayList<>();
-		}
-		
-		protected Object ifYear(String pattern) {
-			if(page.has(Release_year))
-				return pattern.replace("{}", page.get(Release_year).toString());
-			return List.of();
-		}
-
-		public void addCats(Object obj) {
-			if(obj instanceof String str) {
-				cats.add(str);
-			}
-			else if(obj instanceof List<?> l) {
-				l.forEach(this::addCats);
-			}
-			else
-				throw new IllegalStateException("Not a cat "+obj);
-		}
 	}
 }

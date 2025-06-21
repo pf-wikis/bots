@@ -1,8 +1,10 @@
 package io.github.pfwikis.bots.rest.endpoints.infobox.autocategorization;
 
 import static io.github.pfwikis.bots.facts.SFactsProperties.Artist;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Audio_type;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Author;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Author_all;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Book_type;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Deck_type;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Director;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Errata;
@@ -12,21 +14,26 @@ import static io.github.pfwikis.bots.facts.SFactsProperties.Performer;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Publisher;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Region;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Rule_system;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Serialized;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Series;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Video_game_type;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Web_enhancement;
 import static io.github.pfwikis.bots.facts.SModel.ACCESSORY;
+import static io.github.pfwikis.bots.facts.SModel.AUDIO;
 import static io.github.pfwikis.bots.facts.SModel.BOARD_GAME;
+import static io.github.pfwikis.bots.facts.SModel.BOOK;
 import static io.github.pfwikis.bots.facts.SModel.DECK;
 import static io.github.pfwikis.bots.facts.SModel.MAP_PF;
 import static io.github.pfwikis.bots.facts.SModel.MAP_SF;
-import static io.github.pfwikis.bots.facts.SModel.*;
+import static io.github.pfwikis.bots.facts.SModel.MINIATURES;
+import static io.github.pfwikis.bots.facts.SModel.VIDEO_GAME;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
@@ -48,8 +55,127 @@ public enum AutoCategorizer {
 		addVideoGameRules(rules.group(ctx->ctx.has(VIDEO_GAME)));
 		addMapRules(rules.group(ctx->ctx.has(MAP_PF) || ctx.has(MAP_SF)));
 		addMiniatureRules(rules.group(ctx->ctx.has(MINIATURES)));
+		addAudioRules(rules.group(ctx->ctx.has(AUDIO)));
+		addBookRules(rules.group(ctx->ctx.has(BOOK)));
 	}
 	
+	void addBookRules(ACGroup g) {
+		for(var wiki:Wiki.values()) {
+			var wg = g.group(ctx->ctx.has(wiki));
+			
+			var adventureTypes = List.of(
+				"Adventure",
+				"Adventure Path issue",
+				wiki.getName()+" Society scenario",
+				wiki.getName()+" Society (2E) scenario",
+				wiki.getName()+" Bounty",
+				wiki.getName()+" Quest",
+				wiki.getName()+" Quest (2E)",
+				wiki.getName()+" One-Shot",
+				wiki.getName()+" Society Adventure Card Guild Adventure"
+			);
+			var sAdventureTypes = ACGroup.sortedSet(adventureTypes);
+			
+			wg.ifMatchRule(Book_type, adventureTypes, "Adventures");
+			wg.ifYearAndMatchRule(Book_type, adventureTypes, "{} adventures");
+			
+			wg.ifMatchRule(Book_type, "Adventure Path compilation", wiki.getName()+" Adventure Path");
+			wg.ifMatchRule(Book_type, wiki.getName()+" Quest", wiki.getName()+" Quests");
+			wg.ifMatchRule(Book_type, wiki.getName()+" Bounty", wiki.getName()+" Bounties");
+			wg.ifMatchRule(Book_type, wiki.getName()+" Quest (2E)", wiki.getName()+" Quests (2E)");
+			wg.ifMatchRule(Book_type, wiki.getName()+" One-Shot", wiki.getName()+" One-Shots");
+			wg.ifMatchRule(Book_type, wiki.getName()+" Society Adventure Card Guild Adventure", wiki.getName()+" Society Adventure Card Guild scenarios");
+			wg.ifMatchRule(Book_type, "Adventure Path issue", wiki.getName()+" Adventure Path");
+			wg.ifMatchRule(Book_type, wiki.getName()+" Society scenario", wiki.getName()+" Society scenario");
+			wg.ifMatchRule(Book_type, wiki.getName()+" Society (2E) scenario", wiki.getName()+" Society (2E) scenarios");
+
+			var adventureGroup = wg.group(
+					ctx->ctx.getSubject()==null || sAdventureTypes.contains(ctx.getSubject().getOr(Book_type, "")),
+					ctx->" and [[Book type::@@@]] is one of "
+							+ sAdventureTypes.stream().map(v->"<code>"+v+"</code>").collect(Collectors.joining(", "))
+			);
+			var notAdventureGroup = wg.group(
+					ctx->ctx.getSubject()==null || !sAdventureTypes.contains(ctx.getSubject().getOr(Book_type, "")),
+					ctx->" and [[Book type::@@@]] is '''not''' one of "
+							+ sAdventureTypes.stream().map(v->"<code>"+v+"</code>").collect(Collectors.joining(", "))
+			);
+			
+			for(boolean isAdventure:new boolean[] {true, false}) {
+				String categoryWord = isAdventure?"adventures":"sourcebooks";
+				var group = isAdventure?adventureGroup:notAdventureGroup;
+				
+				if(wiki == Wiki.PF) {
+					group.ifMatchRule(Rule_system, "PFRPG", "PFRPG "+categoryWord);
+					group.ifMatchRule(Rule_system, List.of("PF2", "Pathfinder Playtest"), "PFRPG 2E "+categoryWord);
+				}
+				group.ifMatchRule(Rule_system, "D&D 3.5", "D&D 3.5 "+categoryWord);
+				group.ifMatchRule(Rule_system, "D&D 5E", "D&D 5E "+categoryWord);
+				group.ifMatchRule(Rule_system, "PACG", "PACG "+categoryWord);
+				group.ifMatchRule(Rule_system, "OGL", "PACG "+categoryWord);
+				group.ifMatchRule(Rule_system, "Savage Worlds", "Savage Worlds "+categoryWord);
+				if(wiki == Wiki.SF) {
+					group.ifMatchRule(Rule_system, "SFRPG", "SFRPG "+categoryWord);
+					group.ifMatchRule(Rule_system, "SF2 Playtest", "SFRPG 2E "+categoryWord);
+				}
+			}
+		}
+		
+		
+		
+		g.ifMatchRule(Book_type, "Sourcebook", "Sourcebooks");
+		g.ifYearAndMatchRule(Book_type, "Sourcebook", "{} sourcebooks");
+		g.ifMatchRule(Book_type, "Novel", "Novels");
+		g.ifMatchRule(Book_type, "Novel", "Fiction");
+		g.ifYearAndMatchRule(Book_type, List.of("Novel", "Novella", "Periodical", "Comic book", "Short Fiction"), "{} fiction");
+		g.ifMatchRule(Book_type, "Adventure Path compilation", "Adventure compilations");
+		g.ifMatchRule(Book_type, "Novella", "Novellas");
+		g.ifMatchRule(Book_type, "Novella", "Fiction");
+		g.ifMatchRule(Book_type, "Periodical", "Periodicals");
+		g.ifMatchRule(Book_type, "Periodical", "Fiction");
+		g.ifMatchRule(Book_type, "Short Fiction", "Fiction");
+		g.ifMatchRule(Book_type, "Comic book", "Comics");
+		g.ifMatchRule(Book_type, "Comic book", "Fiction");
+		
+		g.ifYearAndMatchRule(Book_type, "Periodical", "{} periodicals");
+		g.ifYearAndMatchRule(Book_type, "Comic book", "{} comics");
+		
+		var comic = g.group(
+				ctx->ctx.getSubject()==null||ctx.getSubject().getOr(Book_type, "").equals("Comic book"),
+				ctx->" and [[Serialized::@@@]] is <code>Comic book</code>"
+		);
+		
+		comic.rule(
+				ctx-> "Category:SERIES comics",
+				ctx-> "for each [[Series::@@@]]",
+				ctx-> {
+					for(var e:ctx.getSubject().get(Series)) {
+						ctx.addCategory(e.getTitle()+" comics");
+					}
+				}
+			).onlyIf(ctx->ctx.has(Series));
+		comic.rule(
+				ctx-> "Category:Comics by AUTHOR",
+				ctx-> "for each [[Author all::@@@]]",
+				ctx-> {
+					for(var e:ctx.getSubject().get(Author_all)) {
+						ctx.addCategory("Comics by "+e.toDisplayTitleWikitext());
+					}
+				}
+			).onlyIf(ctx->ctx.has(Series));
+
+		g.group(ctx->ctx.has(Serialized), ctx->" and [[Serialized::@@@]] is set")
+			.ifMatchRule(Book_type, List.of("Novel", "Short Fiction", "Novella"), "Serial fiction");
+	}
+
+	void addAudioRules(ACGroup g) {
+		g.ifMatchRule(Audio_type, "Full-cast Audio Drama", "Audio dramas");
+		g.ifMatchRule(Audio_type, "Soundscape", "Soundscapes");
+		g.ifMatchRule(Audio_type, List.of("Game score", "Soundtrack"), "Soundtracks");
+		g.ifYearAndMatchRule(Audio_type, "Full-cast Audio Drama", "{} audio dramas");
+		g.ifYearAndMatchRule(Audio_type, "Soundscape", "{} soundscapes");
+		g.ifYearAndMatchRule(Audio_type, List.of("Game score", "Soundtrack"), "{} soundtracks");
+	}
+
 	void addMiniatureRules(ACGroup g) {
 		g.rule(
 				ctx-> "[[:Category:Miniatures]]",
@@ -61,11 +187,10 @@ public enum AutoCategorizer {
 
 	void addDeckRules(ACGroup g) {
 		g.ifMatchRule(Rule_system, "PACG", "Pathfinder Adventure Card Game");
-		
-		g.ifMatchRule(Deck_type, Set.of("Base Set", "Adventure Deck", "Class Deck", "Character Add-On Deck", "Card game"), "{} card games");
-		g.ifMatchRule(Deck_type, Set.of("Item Cards", "Face Cards", "Spell Cards", "Cards"), "{} accessories");
-		g.ifYearAndMatchRule(Deck_type, Set.of("Base Set", "Adventure Deck", "Class Deck", "Character Add-On Deck", "Card game"), "Card games");
-		g.ifYearAndMatchRule(Deck_type, Set.of("Item Cards", "Face Cards", "Spell Cards", "Cards"), "Accessories");
+		g.ifYearAndMatchRule(Deck_type, List.of("Base Set", "Adventure Deck", "Class Deck", "Character Add-On Deck", "Card game"), "{} card games");
+		g.ifYearAndMatchRule(Deck_type, List.of("Item Cards", "Face Cards", "Spell Cards", "Cards"), "{} accessories");
+		g.ifYearAndMatchRule(Deck_type, List.of("Base Set", "Adventure Deck", "Class Deck", "Character Add-On Deck", "Card game"), "Card games");
+		g.ifYearAndMatchRule(Deck_type, List.of("Item Cards", "Face Cards", "Spell Cards", "Cards"), "Accessories");
 		g.ifMatchRule(Deck_type, "Base Set", "Base sets");
 		g.ifMatchRule(Deck_type, "Adventure Deck", "Adventure decks");
 		g.ifMatchRule(Deck_type, "Class Deck", "Class decks");
@@ -73,7 +198,7 @@ public enum AutoCategorizer {
 		g.ifMatchRule(Deck_type, "Item Cards", "Item cards");
 		g.ifMatchRule(Deck_type, "Face Cards", "Face cards");
 		g.ifMatchRule(Deck_type, "Spell Cards", "Spell cards");
-		g.ifNoMatchRule(Deck_type, Set.of("Base Set","Adventure Deck","Class Deck",
+		g.ifNoMatchRule(Deck_type, List.of("Base Set","Adventure Deck","Class Deck",
 				"Character Add-On Deck","Item Cards","Face Cards","Spell Cards",
 				"Campaign Cards","Cards","Card game"),
 				ctx->"Decks");
@@ -82,7 +207,7 @@ public enum AutoCategorizer {
 
 	void addVideoGameRules(ACGroup g) {
 		g.ifMatchRule(Video_game_type, "Computer RPG", ctx->"RPG video games");
-		g.ifNoMatchRule(Video_game_type, Set.of("Computer RPG"), ctx->"Video games");
+		g.ifNoMatchRule(Video_game_type, List.of("Computer RPG"), ctx->"Video games");
 	}
 
 	void addMapRules(ACGroup g) {

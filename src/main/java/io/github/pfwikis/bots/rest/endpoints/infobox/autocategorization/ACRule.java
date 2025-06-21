@@ -1,16 +1,12 @@
 package io.github.pfwikis.bots.rest.endpoints.infobox.autocategorization;
 
-import static io.github.pfwikis.bots.facts.SFactsProperties.Release_year;
 
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import io.github.pfwikis.bots.facts.model.SProperty;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

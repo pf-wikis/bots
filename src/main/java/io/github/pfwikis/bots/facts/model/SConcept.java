@@ -4,21 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.tuple.Pair;
-
-import com.beust.jcommander.internal.Maps;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 
-import io.github.pfwikis.bots.common.Wiki;
-import io.github.pfwikis.bots.common.bots.Run.SingleRun;
-import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
 import io.github.pfwikis.bots.facts.SFactsProperties;
 import io.github.pfwikis.bots.facts.model.SPropertyGroup.SPropertyGroupBuilder;
 import io.github.pfwikis.bots.utils.Jackson;
@@ -35,7 +25,6 @@ public class SConcept {
 	List<SConcept> subConcepts;
 	List<SInfoboxProperty<?>> infoboxProperties;
 	List<SProperty<?>> generatedProperties;
-	BiFunction<Wiki, SemanticSubject, String> conceptSpecificCategoriesFunction;
 	
 	public static Builder builder() {
 		return new Builder();
@@ -50,7 +39,6 @@ public class SConcept {
 		private List<SPropertyGroup> propertyGroups = Collections.emptyList();
 		private List<SInfoboxProperty<?>> infoboxProperties = Collections.emptyList();
 		private List<SConcept> subConcepts = Collections.emptyList();
-		private BiFunction<Wiki, SemanticSubject, String> conceptSpecificCategoriesFunction;
 		
 		public Builder properties(SPropertyGroup.SPropertyGroupBuilder... propertyGroups) {
 			this.propertyGroups=Arrays.stream(propertyGroups).map(SPropertyGroupBuilder::build).toList();
@@ -74,11 +62,6 @@ public class SConcept {
 			return this;
 		}
 		
-		public Builder conceptSpecificCategoriesFunction(BiFunction<Wiki, SemanticSubject, String> cscf) {
-			this.conceptSpecificCategoriesFunction = cscf;
-			return this;
-		}
-		
 		public SConcept build() {
 			var gens = new ArrayList<SProperty<?>>();
 			
@@ -88,8 +71,7 @@ public class SConcept {
 				propertyGroups,
 				subConcepts,
 				infoboxProperties,
-				gens,
-				conceptSpecificCategoriesFunction
+				gens
 			);
 			
 			gens.add(SFactsProperties.Fact_type.withGenerateWikitext("Template:Facts/"+name));
@@ -120,12 +102,6 @@ public class SConcept {
 		return propertyGroups.stream()
 			.flatMap(pg->pg.getProperties().stream())
 			.toList();
-	}
-
-	public String conceptSpecificCategories(Wiki wiki, SemanticSubject subject) {
-		if(conceptSpecificCategoriesFunction == null)
-			return "";
-		return conceptSpecificCategoriesFunction.apply(wiki, subject);
 	}
 
 	public boolean containsProperty(SProperty<?> p) {
