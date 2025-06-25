@@ -32,7 +32,7 @@ public class MakeCategories extends SimpleBot {
 	public void run(RunContext ctx) throws IOException, InterruptedException {
 		var res = run.getWiki().semanticAsk(
 				Print.class,
-				"[[Gallery page::+]]|?Fact type=factType|?Gallery page=gallery|?Represented by page=main"
+				"[[Gallery page::+]][[Represented by page::+]]|?Fact type=factType|?Gallery page=gallery|?Represented by page=main"
 		);
 		
 		for(var r:res) {
