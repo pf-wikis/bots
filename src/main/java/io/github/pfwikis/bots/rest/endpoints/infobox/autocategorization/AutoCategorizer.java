@@ -86,7 +86,7 @@ public enum AutoCategorizer {
 			wg.ifMatchRule(Book_type, wiki.getName()+" Society Adventure Card Guild Adventure", wiki.getName()+" Society Adventure Card Guild scenarios");
 			wg.ifMatchRule(Book_type, "Adventure Path issue", wiki.getName()+" Adventure Path");
 			wg.ifMatchRule(Book_type, wiki.getName()+" Society scenario", wiki.getName()+" Society scenarios");
-			wg.ifMatchRule(Book_type, wiki.getName()+" Society (2E) scenario", wiki.getName()+" Society (2E) scenarioss");
+			wg.ifMatchRule(Book_type, wiki.getName()+" Society (2E) scenario", wiki.getName()+" Society (2E) scenarios");
 
 			var adventureGroup = wg.group(
 					ctx->ctx.getSubject()==null || sAdventureTypes.contains(ctx.getSubject().getOr(Book_type, "")),

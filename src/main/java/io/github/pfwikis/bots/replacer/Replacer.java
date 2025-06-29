@@ -2,9 +2,12 @@ package io.github.pfwikis.bots.replacer;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import com.beust.jcommander.Parameters;
@@ -18,6 +21,7 @@ import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.common.model.Page;
+import io.github.pfwikis.bots.common.model.SemanticAsk.Result;
 import io.github.pfwikis.bots.common.model.subject.PageRef;
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,43 +40,30 @@ public class Replacer extends SimpleBot {
 
 	@Override
 	public void run(RunContext ctx) throws IOException {
-		var game = run.getServer().getName();
-		var map = ImmutableMap.<String, String>builder()
-				.put(game+" Cards", game+" Cards")
-				.put(game+" Adventure Card Game", game+" Adventure Card Game")
-				.put(game+" Accessories", game+" Accessories")
-				.put(game+" Pawns", game+" Pawns")
-				.put(game+" Battles", game+" Battles")
-				.put(game+" Paper Minis", game+" Paper Minis")
-				.put(game+" Campaign Setting", game+" Campaign Setting")
-				.put(game+" Terrain", game+" Terrain")
-				.put(game+" Book Tabs", game+" Book Tabs")
-				.put(game+" Roleplaying Game", game+" RPG")
-				.put(game+" Player Companion", game+" Player Companion")
-				.put("Lost Omens", game+" Lost Omens")
-				.put(game+" Modules", game+" Modules")
-				.put(game+" Adventure", game+" Adventure")
-				.put(game+" Tales", game+" Tales")
-				.put(game+"'s Journal (series)", game+"'s Journal")
-				.build();
+		var fileCats = run.getWiki().semanticAsk(P.class, "[[File:+]]|?Category=category")
+				.stream()
+				.flatMap(r->Optional.ofNullable(r.getPrintouts().category).orElse(Collections.emptyList()).stream())
+				.map(c->c.getPage())
+				.distinct()
+				.toList();
 		
-		for(var e:map.entrySet()) {
-			var series = e.getKey();
-			if(run.getWiki().pageExists(series)) {
-				run.getWiki().editIfChange(
-						"Facts:"+e.getKey(),
-						"""
-						{{Facts/Series
-						|Name=%s
-						|Member category=Category:%s
-						}}
-						""".formatted(series, e.getValue()),
-						"Create facts for Series"
-				);
-			}
+		var mainCats = run.getWiki().semanticAsk(P.class, "[[:+]]|?Category=category")
+				.stream()
+				.flatMap(r->Optional.ofNullable(r.getPrintouts().category).orElse(Collections.emptyList()).stream())
+				.map(c->c.getPage())
+				.distinct()
+				.toList();
+		
+		var matches = new HashSet<String>();
+		matches.addAll(fileCats);
+		matches.retainAll(mainCats);
+		
+		for(var m:matches) {
+			log.info(m);
 		}
+		
 	}
 	
 	public static record Debug(List<String> debug) {}
-	public static record Out(String blurbText, String blurbExtras) {}
+	public static record P(List<Result<?>> category) {}
 }

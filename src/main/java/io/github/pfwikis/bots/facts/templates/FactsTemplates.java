@@ -29,13 +29,7 @@ public class FactsTemplates extends SimpleBot {
 	public void run(RunContext ctx) throws IOException {
 		var concepts = SModel.getConcepts(run.getServer());
 		
-		run.getWiki().editIfChange(
-			run.getServer().getWikiNamespace()+":Automatic categorization",
-			"{{Bot created|"+botName+"}}"
-			+"{{tl|Infobox}} adds automatic categories based on the facts page. This page explains what categories are added.\n\n"
-			+AutoCategorizer.generateDocs(run.getServer(), run.getWiki().getSeries2Category()),
-			"Update auto categorization documentation"
-		);
+		handleAutomaticCategorization();
 		
 		if(run.getServer()==Wiki.PF) {
 			make(run.getWiki(), "Template:Facts/Helper/Create page buttons", MakeTemplateCreatePageButtons.template(concepts));
@@ -48,6 +42,20 @@ public class FactsTemplates extends SimpleBot {
 		}
 	}
 	
+	private void handleAutomaticCategorization() {
+		run.getWiki().editIfChange(
+				run.getServer().getWikiNamespace()+":Automatic categorization",
+				"{{Bot created|"+botName+"}}"
+				+ "{{tl|Infobox}} adds automatic categories based on the facts page. "
+				+ "This page explains what categories are added.\n\n"
+				+ "Changes on this page do not change how the infobox bot works. "
+				+ "The infobox bot needs to change. "
+				+ "Use the discussion page here instead.\n\n"
+				+ AutoCategorizer.generateDocs(run.getServer(), run.getWiki().getSeries2Category()),
+				"Update auto categorization documentation"
+			);
+	}
+
 	private void handlePropertyDefinitions() {
 		var patterns = "This page contains the regex patterns of the facts system:\n"
 			+ SFactsProperties.getAll()
