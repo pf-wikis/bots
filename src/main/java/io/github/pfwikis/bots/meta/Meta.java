@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import com.beust.jcommander.Parameters;
 
 import io.github.pfwikis.bots.Runner;
+import io.github.pfwikis.bots.common.bots.Bot;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import lombok.extern.slf4j.Slf4j;
@@ -84,11 +85,16 @@ public class Meta extends SimpleBot {
 			|}
 			""".formatted(
 				descr,
-				"https://github.com/pf-wikis/bots/tree/main/src/main/java/"+bot.getClass().getName().replace(".", "/")+".java",
+				urlTo(bot.getClass()),
 				bot.getBotName()
 			);
 			
 			run.withMaster(wiki->wiki.editIfChange("User:"+bot.getBotName(), userPage, "Update "+bot.getBotName()+" description"));
 		});
+	}
+
+	public static String urlTo(Class<?> cl) {
+		return "https://github.com/pf-wikis/bots/tree/main/src/main/java/"
+				+cl.getName().replace(".", "/")+".java";
 	}
 }

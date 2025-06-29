@@ -14,6 +14,7 @@ import io.github.pfwikis.bots.facts.SFactsProperties;
 import io.github.pfwikis.bots.facts.SModel;
 import io.github.pfwikis.bots.facts.model.SConcept;
 import io.github.pfwikis.bots.facts.model.SProperty;
+import io.github.pfwikis.bots.meta.Meta;
 import io.github.pfwikis.bots.rest.endpoints.infobox.autocategorization.AutoCategorizer;
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,6 +52,8 @@ public class FactsTemplates extends SimpleBot {
 				+ "Changes on this page do not change how the infobox bot works. "
 				+ "The infobox bot needs to change. "
 				+ "Use the discussion page here instead.\n\n"
+				+ "For reference, the actual code of the autocategorization is ["
+				+ Meta.urlTo(AutoCategorizer.class)+" here].\n\n"
 				+ AutoCategorizer.generateDocs(run.getServer(), run.getWiki().getSeries2Category()),
 				"Update auto categorization documentation"
 			);
