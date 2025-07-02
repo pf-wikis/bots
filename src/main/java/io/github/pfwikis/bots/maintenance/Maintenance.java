@@ -24,8 +24,22 @@ public class Maintenance extends SimpleBot {
 
 	@Override
 	protected void run(RunContext ctx) throws Exception {
+		protectBotCreatedPages();
 		resolveAndRemoveRedirects();
 		removeCreatedPagesWithoutSource();
+	}
+
+	private void protectBotCreatedPages() {
+		
+		for(var p:run.getWiki().getPagesTranscluding("Template:Bot created")) {
+			if(p.getTitle().startsWith("Template:Bot created")) continue;
+			
+			if(!run.getWiki().isProtected(p.getTitle())) {
+				log.info("Protecting {}", p.getTitle());
+				var token=run.getWiki().requestToken("csrf");
+				run.getWiki().protect(p.getTitle(), "edit=sysop|move=sysop", "Bot created page", token);
+			}
+		}
 	}
 
 	private void resolveAndRemoveRedirects() {

@@ -391,7 +391,7 @@ public class WikiAPI {
 	public String getDisplayTitle(String page) {
 		return server.cache(CacheId.DISPLAY_TITLE, page, () -> {
 			var results = query(
-					Query.DISPLAY_TITLE,
+					Query.PAGE_INFO,
 					"titles", page,
 					"inprop", "displaytitle"
 				).getPages();
@@ -480,14 +480,29 @@ public class WikiAPI {
 		}
 		return Arrays.asList(result);
 	}
+	
+	public boolean isProtected(String page) {
+		var results = query(
+				Query.PAGE_INFO,
+				"titles", page,
+				"inprop", "protection"
+			).getPages();
+		
+		if(results.size()!=1) throw new IllegalStateException();
+		
+		var p = results.get(0);
+		if(p.getProtection() == null || p.getProtection().size() == 0)
+			return false;
+		return true;
+	}
 
-	public void protect(String title, String protections, String reason, String token) {
+	public void protect(String title, String protections, String reason, String csrfToken) {
 		basicRequest(()->wiki.basicPOST("protect", new HashMap<>(Map.of(
 				"format", "json",
 				"title", title,
 				"protections", protections,
 				"reason", reason,
-				"token", token,
+				"token", csrfToken,
 				"utf8", "1",
 				"formatversion", "2"
 		))));

@@ -146,7 +146,7 @@ public class Query<T> {
 		}
 	};
 	
-	public static final Query<PageInfoQuery> DISPLAY_TITLE = new Query<>(
+	public static final Query<PageInfoQuery> PAGE_INFO = new Query<>(
 		PageInfoQuery.class, 
 		"prop",
 		"info"
