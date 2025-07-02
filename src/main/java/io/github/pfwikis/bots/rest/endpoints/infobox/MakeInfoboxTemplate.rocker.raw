@@ -45,7 +45,7 @@
 				}
 			}
 			@if(page.getOr(Sanctioned, false)){
-				<div class="sanctioned-logo">
+				<div class="sanctioned-logo @if(wiki==Wiki.PF){pf}else{sf}">
 					[[File:
 						@if(wiki==Wiki.PF){Pathfinder Society symbol.svg}
 						else{Starfinder Society.webp}
