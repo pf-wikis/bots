@@ -18,16 +18,31 @@
 
 @args(Wiki wiki, List<SConcept> concepts, SemanticSubject page, Map<String, String> series2Category)
 @for(SConcept concept:concepts) {
-	<div class="
-		infobox @ConceptUtil.cssName(concept)
-		@if(page.getOr(Sanctioned, false)){@*important space*@ sanctioned}
-	">
+	<div class="infobox @ConceptUtil.cssName(concept)">
 		<div class="name">
 			@if(page.has(Full_title)) {
 				@page.get(Full_title)
 			}
 			else {
 				@page.getOr(Name, StringHelper.pageToTitle(page.getSubject().getTitle()))
+			}
+		</div>
+		@if(page.has(Image)) {
+			{{#ifexist:File:@page.get(Image).getTitle()|
+				<div class="image">[[File:@page.get(Image).getTitle()|250px|Cover Image|class=not-lazy]]</div>
+			}}
+		}
+		@if(page.has(Website)) {
+			<div class="website">
+				[@page.get(Website) @page.getOr(Pubcode, "Publisher's product page")]
+			</div>
+		}
+		<div class="type@if(page.getOr(Sanctioned, false)){@*important space*@ sanctioned}">
+			@concept.getName() @*<-important space*@
+			@with(type = SFactsProperties.get(concept.getName()+" type")) {
+				@if(page.has(type)) {
+					- @((String)page.get(type))
+				}
 			}
 			@if(page.getOr(Sanctioned, false)){
 				<div class="sanctioned-logo">
@@ -41,24 +56,6 @@
 						|This product is sanctioned for Society play.
 					]]
 				</div>
-			}
-		</div>
-		@if(page.has(Image)) {
-			{{#ifexist:File:@page.get(Image).getTitle()|
-				<div class="image">[[File:@page.get(Image).getTitle()|250px|Cover Image|class=not-lazy]]</div>
-			}}
-		}
-		@if(page.has(Website)) {
-			<div class="website">
-				[@page.get(Website) @page.getOr(Pubcode, "Publisher's product page")]
-			</div>
-		}
-		<div class="type">
-			@concept.getName() @*<-important space*@
-			@with(type = SFactsProperties.get(concept.getName()+" type")) {
-				@if(page.has(type)) {
-					- @((String)page.get(type))
-				}
 			}
 		</div>
 		<div class="table">
