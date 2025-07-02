@@ -52,7 +52,7 @@
 						|link=@wiki.getName() Society @*important space*@
 							@if(page.getOr(Rule_system, "").endsWith("F2")) {(second edition)}
 							else{Roleplaying Guild}
-						|20x20px
+						|20x19px
 						|This product is sanctioned for Society play.
 					]]
 				</div>
