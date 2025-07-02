@@ -18,7 +18,10 @@
 
 @args(Wiki wiki, List<SConcept> concepts, SemanticSubject page, Map<String, String> series2Category)
 @for(SConcept concept:concepts) {
-	<div class="infobox @ConceptUtil.cssName(concept) @if(page.getOr(Sanctioned, false)){sanctioned}">
+	<div class="
+		infobox @ConceptUtil.cssName(concept)
+		@if(page.getOr(Sanctioned, false)){@*important space*@ sanctioned}
+	">
 		<div class="name">
 			@if(page.has(Full_title)) {
 				@page.get(Full_title)
