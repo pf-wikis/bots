@@ -4,22 +4,17 @@ import static io.github.pfwikis.bots.facts.SFactsProperties.Accessory_type;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Artist;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Audio_type;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Author;
-import static io.github.pfwikis.bots.facts.SFactsProperties.Author_all;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Awards;
-import static io.github.pfwikis.bots.facts.SFactsProperties.Main_book;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Blurb_heading;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Blurb_quotee;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Blurb_text;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Blurb_text_extras;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Board_game_type;
-import static io.github.pfwikis.bots.facts.SFactsProperties.Number_of_players;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Book_type;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Chapters;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Composer;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Deck_type;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Decksize;
-import static io.github.pfwikis.bots.facts.SFactsProperties.Golarion_date;
-import static io.github.pfwikis.bots.facts.SFactsProperties.Golarion_end_date;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Description;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Designer;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Developer;
@@ -33,13 +28,17 @@ import static io.github.pfwikis.bots.facts.SFactsProperties.Follows;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Full_title;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Gallery;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Genre;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Golarion_date;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Golarion_end_date;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Grid;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Image;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Includes_work;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Is_subsection;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Isbn;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Level_range_end;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Level_range_start;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Location;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Main_book;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Map_type;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Material;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Member_category;
@@ -47,6 +46,7 @@ import static io.github.pfwikis.bots.facts.SFactsProperties.Miniatures_type;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Modes;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Name;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Narrator;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Number_of_players;
 import static io.github.pfwikis.bots.facts.SFactsProperties.On_page;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Pages;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Performer;
@@ -58,18 +58,17 @@ import static io.github.pfwikis.bots.facts.SFactsProperties.Producer;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Programmer;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Pubcode;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Publisher;
-import static io.github.pfwikis.bots.facts.SFactsProperties.Includes_work;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Quantity;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Region;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Release_date;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Release_note;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Release_type;
-import static io.github.pfwikis.bots.facts.SFactsProperties.Release_year;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Represented_by_page;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Rule_system;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Runtime;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Serialized;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Series;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Sanctioned;
 import static io.github.pfwikis.bots.facts.SFactsProperties.To_page;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Video_game_type;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Web_enhancement;
@@ -77,22 +76,12 @@ import static io.github.pfwikis.bots.facts.SFactsProperties.Website;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Website_name;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Writer;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
-import java.util.Set;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
 
-import org.apache.commons.lang3.StringUtils;
-
-import com.beust.jcommander.Strings;
 import com.google.common.collect.Lists;
 
 import io.github.pfwikis.bots.common.Wiki;
-import io.github.pfwikis.bots.common.model.subject.PageRef;
-import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
 import io.github.pfwikis.bots.facts.model.SConcept;
 import io.github.pfwikis.bots.facts.model.SInfoboxProperty;
 import io.github.pfwikis.bots.facts.model.SPropertyGroup;
@@ -158,7 +147,8 @@ public class SModel {
 				.properties(
 					Level_range_start,
 					Level_range_end,
-					Location
+					Location,
+					Sanctioned
 				),
 			SPropertyGroup.builder()
 				.name("Fiction")
@@ -682,7 +672,8 @@ public class SModel {
 			SPropertyGroup.builder()
 				.name("Adventure Path")
 				.properties(
-					Main_book
+					Main_book,
+					Sanctioned
 				),
 			BLURB_FIELDS
 		)

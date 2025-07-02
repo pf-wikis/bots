@@ -18,13 +18,26 @@
 
 @args(Wiki wiki, List<SConcept> concepts, SemanticSubject page, Map<String, String> series2Category)
 @for(SConcept concept:concepts) {
-	<div class="infobox @ConceptUtil.cssName(concept)">
+	<div class="infobox @ConceptUtil.cssName(concept) @if(page.getOr(Sanctioned, false)){sanctioned}">
 		<div class="name">
 			@if(page.has(Full_title)) {
 				@page.get(Full_title)
 			}
 			else {
 				@page.getOr(Name, StringHelper.pageToTitle(page.getSubject().getTitle()))
+			}
+			@if(page.getOr(Sanctioned, false)){
+				<div class="sanctioned-logo">
+					[[File:
+						@if(wiki==Wiki.PF){Pathfinder Society symbol.svg}
+						else{Starfinder Society.webp}
+						|link=@wiki.getName() Society @*important space*@
+							@if(page.getOr(Rule_system, "").endsWith("F2")) {(second edition)}
+							else{Roleplaying Guild}
+						|20x20px
+						|This product is sanctioned for Society play.
+					]]
+				</div>
 			}
 		</div>
 		@if(page.has(Image)) {

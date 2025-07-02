@@ -202,7 +202,7 @@ public class SFactTypes {
 	public static final SFactType<Boolean> BOOLEAN = new SFactType<>(
 			"BOOLEAN",
 			SMWPropertyType.BOOLEAN,
-			"text",
+			"string",
 			"$v"
 	) {
 

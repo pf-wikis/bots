@@ -246,6 +246,10 @@ public class SFactsProperties {
 		"Location",
 		SFactTypes.PAGE_LIST)
 		.setDescription("This adventures features the location in a meaningful way.");
+	public static final SProperty<Boolean> Sanctioned = new SProperty<>(
+		"Sanctioned",
+		SFactTypes.BOOLEAN)
+		.setDescription("This adventures is sanctioned for Society play.");
 	public static final SProperty<String> Map_type = new SProperty<>(
 		"Map type",
 		SFactTypes.STRING)
