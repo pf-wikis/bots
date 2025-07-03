@@ -47,8 +47,7 @@
 			@if(page.has(Sanctioned)){
 				<div class="
 					sanctioned-logo @*imporant space*@
-					@if(page.get(Sanctioned)) {sanctioned}
-					else {unsanctioned}
+					@if(!page.get(Sanctioned)) {unsanctioned}
 				">
 					[[File:
 						@if(wiki==Wiki.PF){Sanctioned symbol.svg}
