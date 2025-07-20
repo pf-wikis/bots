@@ -7,12 +7,12 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.google.common.collect.Lists;
 
-import io.github.pfwikis.bots.common.WikiAPI;
 import io.github.pfwikis.bots.common.model.subject.PageRef;
 import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
 
@@ -151,9 +151,15 @@ public class SFactTypes {
 		
 		public List<PageRef> convertToJava(List<Object> values) {
 			return values.stream()
-				.map(SemanticSubject.class::cast)
-				.filter(ss->ss.has(Order) && ss.has(Ordered_value))
-				.map(ss->Pair.of(ss.get(Order), ss.get(Ordered_value)))
+				.<Pair<Integer, PageRef>>flatMap(o-> {
+					if(o instanceof SemanticSubject ss && ss.has(Order) && ss.has(Ordered_value)) {
+						return Stream.of(Pair.of(ss.get(Order), ss.get(Ordered_value)));
+					}
+					else if(o instanceof PageRef p) {
+						return Stream.of(Pair.of(99, p));
+					}
+					return Stream.empty();
+				})
 				.sorted()
 				.map(p->p.getRight())
 				.toList();
