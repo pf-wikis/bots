@@ -4,6 +4,7 @@ import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.DumperOptions.ScalarStyle;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -14,6 +15,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 public class Jackson {
 
 	public static final ObjectMapper JSON;
+	public static final ObjectMapper JSON_LENIENT;
 	public static final ObjectMapper YAML;
 	static {
 		var dumper = new DumperOptions();
@@ -36,5 +38,8 @@ public class Jackson {
 			.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
 			.registerModule(new JavaTimeModule())
 			.findAndRegisterModules();
+		
+		JSON_LENIENT = JSON
+			.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 	}
 }

@@ -42,7 +42,7 @@ public abstract class RPEndpoint<T> implements Route {
 			try {
 				scheduler.initBot(wiki, scheduler.getDiscord(), bot);
 				var bytes = request.bodyAsBytes();
-				param = Jackson.JSON.readValue(bytes, parameterType);
+				param = Jackson.JSON_LENIENT.readValue(bytes, parameterType);
 				log.info("Requesting {} with param {}", endpoint, param);
 				var res = handle(bot, param);
 				return Jackson.JSON.writeValueAsString(res);
