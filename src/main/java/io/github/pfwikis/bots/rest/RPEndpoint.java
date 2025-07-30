@@ -48,7 +48,7 @@ public abstract class RPEndpoint<T> implements Route {
 				return Jackson.JSON.writeValueAsString(res);
 			} catch(Exception e) {
 				Throwable potentiallySafe = e;
-				//see if there is a safe messag ein the cause stack to return
+				//see if there is a safe message in the cause stack to return
 				while(potentiallySafe!=null) {
 					if(potentiallySafe instanceof SafeException se) {
 						return Jackson.JSON.writeValueAsString(error(

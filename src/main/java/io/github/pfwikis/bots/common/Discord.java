@@ -125,9 +125,6 @@ public class Discord implements Closeable {
 			
 			var counter = new AtomicInteger(1);
 			last30.forEach(old -> {
-				if(old.getContentRaw().contains("Test"))
-					System.out.println("aaa");
-				
 				if(old.getAuthor().getIdLong()!=jda.getSelfUser().getIdLong()) return;
 				if(!old.getContentRaw().startsWith(msg)) return;
 				if(!old.getReactions().isEmpty()) return;
