@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.primitives.Ints;
 
 import io.github.pfwikis.bots.common.WikiAPI;
 import lombok.AccessLevel;
@@ -14,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class PageRef {
+public class PageRef implements Comparable<PageRef> {
 	private final String interwiki;
 	private final int ns;
 	private final String title;
@@ -76,5 +77,13 @@ public class PageRef {
 	
 	public String toDisplayTitleWikitext() {
 		return "{{#getdisplaytitle:"+this.toFullTitle()+"}}";
+	}
+
+	@Override
+	public int compareTo(PageRef o) {
+		int res = Ints.compare(ns, o.ns);
+		if(res != 0)
+			return res;
+		return title.compareTo(o.title);
 	}
 }
