@@ -26,7 +26,7 @@
 {{Bot created|Bot Facts Master}}
 This template allows you to call another template with all the fact properties of a page.
 It then provides all its properties as named parameters and the page it was called on as @*space*@
-<code><nowiki>{{{#userparam}}}</nowiki></code>.
+<wikitext inline>{{{#userparam}}}</wikitext>.
 
 <templatedata>
 {

@@ -641,4 +641,8 @@ public class WikiAPI {
 				return b.build();
 			});
 	}
+
+	public String getPageImage(String page) {
+		return query(Query.PAGE_IMAGES, "titles", page).getPages().get(0).getPageimage();
+	}
 }

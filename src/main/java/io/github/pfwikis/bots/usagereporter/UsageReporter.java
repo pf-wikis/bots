@@ -192,7 +192,7 @@ public class UsageReporter extends SimpleBot {
 						"Referrer",
 						"Avg Daily Visitors"
 				),
-				r->"<code><nowiki>"+r.getKey()+"</nowiki></code>",
+				r->"<wikitext inline>"+r.getKey()+"</wikitext>",
 				r->"%.1f".formatted(r.getValue()/7d)
 		);
 		run.getWiki().edit(reportPage()+"/Referrers", bot()+"\n"+txt, "Update reporting pages data");

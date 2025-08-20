@@ -74,7 +74,7 @@
 		<tr>
 			<td>Default value</td>
 			<td>
-				<syntaxhighlight lang="wikitext" inline>@def</syntaxhighlight>
+				<wikitext inline>@def</wikitext>
 			</td>
 			<td>The value stored if no other value is set.</td>
 		</tr>

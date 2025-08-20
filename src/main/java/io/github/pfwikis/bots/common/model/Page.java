@@ -15,4 +15,5 @@ public class Page {
 	private Page[] categories;
 	private Page[] linkshere;
 	private List<JSONObject> protection;
+	private String pageimage;
 }

@@ -133,6 +133,19 @@ public class Query<T> {
 		}
 	};
 	
+	public static final Query<PageQuery> PAGE_IMAGES = new Query.WithContinue<>(
+		PageQuery.class, 
+		"prop",
+		"pageimages",
+		"picontinue"
+	) {
+		@Override
+		public PageQuery mergeResults(PageQuery a, PageQuery b) {
+			a.getPages().addAll(b.getPages());
+			return a;
+		}
+	};
+	
 	public static final Query<PageQuery> LIST_PAGES_LINKING_TO = new Query.WithContinue<>(
 		PageQuery.class, 
 		"prop",
