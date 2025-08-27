@@ -107,7 +107,7 @@ public class SFactsProperties {
 		.setDescription("The number of cards in this deck.");
 	public static final SProperty<String> Description = new SProperty<>(
 		"Description",
-		SFactTypes.STRING)
+		SFactTypes.MULTILINE_WIKITEXT)
 		.setDescription("A wikitext description of the entity.");
 	public static final SProperty<List<PageRef>> Designer = new SProperty<>(
 		"Designer",

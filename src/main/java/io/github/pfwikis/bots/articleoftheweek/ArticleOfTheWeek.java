@@ -212,9 +212,9 @@ public class ArticleOfTheWeek extends SimpleBot {
 		".noprint",
 		".noexcerpt",
 		".sortkey",
-		"#spoilerWarning",
 		"dl",
-		"figure"
+		"figure",
+		".banner"
 	};
 	private static Document cleanHTML(String html) {
 		var doc = Jsoup.parseBodyFragment(html);

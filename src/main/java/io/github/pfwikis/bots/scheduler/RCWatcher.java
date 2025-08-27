@@ -1,12 +1,12 @@
 package io.github.pfwikis.bots.scheduler;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 
 import io.github.pfwikis.bots.common.Discord;
 import io.github.pfwikis.bots.common.Wiki;
@@ -14,8 +14,8 @@ import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.model.LogEventsQuery.LogEvent;
 import io.github.pfwikis.bots.common.model.RecentChanges.RecentChange;
 import io.github.pfwikis.bots.pagesyncer.PageSyncer;
-import io.github.pfwikis.bots.rest.endpoints.citetemplate.RPCiteTemplate;
 import io.github.pfwikis.bots.templatestyles.TemplateStyles;
+import io.github.pfwikis.bots.utils.Retry;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -39,16 +39,22 @@ public class RCWatcher extends Schedulable {
 	public void execute() {
 		Thread.currentThread().setName(this.toString());
 		
-		loadChanges();
-		
-		for(var change:edits) {
-			handleChange(change.getTitle(), change.getTimestamp());
-		}
-		edits = null;
-		for(var change:moves) {
-			handleChange(change.getParams().getTargetTitle(), change.getTimestamp());
-		}
-		moves=null;
+		Retry.forDuration(() -> {
+				loadChanges();
+				
+				for(var change:edits) {
+					handleChange(change.getTitle(), change.getTimestamp());
+				}
+				edits = null;
+				for(var change:moves) {
+					handleChange(change.getParams().getTargetTitle(), change.getTimestamp());
+				}
+				moves=null;
+				return null;
+			},
+			Duration.ofMinutes(5),
+			10
+		);
 	}
 
 	private void loadChanges() {
