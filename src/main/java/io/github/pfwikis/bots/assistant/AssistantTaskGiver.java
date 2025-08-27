@@ -71,12 +71,13 @@ public class AssistantTaskGiver extends SimpleBot {
 				.append(Discord.wikiLink(run.getServer(), p.getPage(), p.getFullurl()))
 				.append(" for ");
 			if(errors.isEmpty()) {
-				sb.append("unspecified error");
+				sb.append("an uncategorized error, please check the page");
 			}
 			else {
 				sb.append(errors.stream()
 						.map(c->StringUtils.removeStart(c, "Category:"))
 						.map(c->StringUtils.removeStart(c, "Pages "))
+						.map(c->StringUtils.removeStart(c, "with "))
 						.collect(Collectors.joining(", ")));
 			}
 			sb.append("\n");
