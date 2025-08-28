@@ -86,7 +86,7 @@ public class Scheduler {
 			for(var wiki : Wiki.values()) {
 				scheduleOnce(scheduleableBot(wiki, discord, new Meta()));
 				schedule(scheduleableBot(wiki, discord, new FactsTemplates()), Duration.ofDays(7));
-				planScatter(wiki, discord, new PropertyStatistics(), Duration.ofHours(24), Duration.ofDays(1));
+				planScatter(wiki, discord, new PropertyStatistics(), Duration.ofDays(7), Duration.ofDays(7));
 				
 				schedule(
 					new RCWatcher(this, discord, wiki),
