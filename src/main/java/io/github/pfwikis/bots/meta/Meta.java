@@ -3,6 +3,7 @@ package io.github.pfwikis.bots.meta;
 import java.util.stream.Collectors;
 
 import com.beust.jcommander.Parameters;
+import com.google.common.collect.MoreCollectors;
 
 import io.github.pfwikis.bots.Runner;
 import io.github.pfwikis.bots.common.bots.Bot;
@@ -45,28 +46,37 @@ public class Meta extends SimpleBot {
 
 	@Override
 	public void run(RunContext ctx) throws Exception {
-		Runner.getAllBots().forEach(bot-> {
-			log.info("Checking if bot {} needs an account", bot.getBotName());
+		for(var e:Runner.getAllBots()
+				.stream()
+				.collect(Collectors.groupingBy(b->b.getBotName()))
+				.entrySet()) {
+			var name = e.getKey();
+			var bots = e.getValue();
+			
+			log.info("Checking if bot {} needs an account", name);
 			run.withMaster(wiki->{
 				try {
-					if(!wiki.accountExists(bot.getBotName())) {
-						bot.setRootPassword(this.getRootPassword());
-						log.info("Creating account for {}", bot.getBotName());
-						wiki.createAccount(bot.getBotName(), bot.getBotPassword());
-						wiki.addRight(bot.getBotName(), "bot|sysop|techadmin", "never");
+					if(!wiki.accountExists(name)) {
+						bots.getFirst().setRootPassword(this.getRootPassword());
+						log.info("Creating account for {}", name);
+						wiki.createAccount(name, bots.getFirst().getBotPassword());
+						wiki.addRight(name, "bot|sysop|techadmin", "never");
 					}
-				} catch(Exception e) {
-					log.error("Failed to check account {}", bot.getBotName(), e);
+				} catch(Exception ex) {
+					log.error("Failed to check account {}", name, ex);
 					System.exit(-1);
 				}
 			});
 			
+			bots.forEach(b-> {
+				if(b instanceof SimpleBot sb)
+					sb.setRun(run);
+			});
 			
-			if(bot instanceof SimpleBot sb)
-				sb.setRun(run);
-			var descr = bot.getDescription();
+			
+			var descr = bots.getFirst().getDescription();
 			if(descr == null) return;
-			log.info("Updating info for bot {}", bot.getBotName());
+			log.info("Updating info for bot {}", name);
 			var userPage = """
 			{{Bot|Virenerus}}
 			==Description==
@@ -76,7 +86,7 @@ public class Meta extends SimpleBot {
 			
 			This bot is a sub bot of [[User:VirenerusBot|VirenerusBot]].
 			
-			The code for this bot can be found [%s here].
+			The code for this bot can be found %s.
 			
 			{| class="wikitable" style="margin:auto"
 			|-
@@ -85,12 +95,12 @@ public class Meta extends SimpleBot {
 			|}
 			""".formatted(
 				descr,
-				urlTo(bot.getClass()),
-				bot.getBotName()
+				bots.stream().map(b->"["+urlTo(b.getClass())+" here]").collect(Collectors.joining(" and ")),
+				name
 			);
 			
-			run.withMaster(wiki->wiki.editIfChange("User:"+bot.getBotName(), userPage, "Update "+bot.getBotName()+" description"));
-		});
+			run.withMaster(wiki->wiki.editIfChange("User:"+name, userPage, "Update "+name+" description"));
+		}
 	}
 
 	public static String urlTo(Class<?> cl) {
