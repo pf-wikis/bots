@@ -21,11 +21,11 @@ public class SUtilProperties {
 	public static final SProperty<Boolean> Image_is_biographical_portrait = new SProperty<>(
 			"Image is biographical portrait",
 			SFactTypes.BOOLEAN)
-			.setDescription("'yes' for images that are bio portraits. Typically set by {{tl|File}}.");
+			.setDescription("yes for images that are bio portraits. Typically set by File.");
 	public static final SProperty<Boolean> Image_is_from_paizo_store = new SProperty<>(
 			"Image is from paizo store",
 			SFactTypes.BOOLEAN)
-			.setDescription("'yes' for images that are from the paizo store. Typically set by {{tl|Paizo CUP|cover}}.");
+			.setDescription("yes for images that are from the paizo store. Typically set by Paizo CUP.");
 	
 	
 
