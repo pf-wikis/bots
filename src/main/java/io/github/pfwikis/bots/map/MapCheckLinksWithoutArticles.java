@@ -33,13 +33,14 @@ public class MapCheckLinksWithoutArticles extends SimpleBot {
 			.toList();
 		
 		if(!links.isEmpty()) {
-			discord.report(this, 	
+			discord.reportToMapping(this, 	
 				"There are pages on "
 				+"[Map Locations Without Articles](https://pathfinderwiki.com/wiki/PathfinderWiki:Map_Locations_Without_Articles) "
 				+"that seem to have an article now. The map location should be moved to the articles.\n%s"
 				.formatted(links.stream().map(l->"* %s\n".formatted(
 					Discord.wikiLink(run.getServer(), l.title(), "/wiki/"+l.title())
-				)).collect(Collectors.joining()))
+				)).collect(Collectors.joining())),
+				true
 			);
 		}
 	}

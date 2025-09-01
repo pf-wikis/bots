@@ -36,6 +36,7 @@ public class Discord implements Closeable {
 	private static long CHANNEL_BOT_ACTIVITY = 1176658356551811105L;
 	private static long CHANNEL_BLOG_WATCH = 1287958801584099380L;
 	private static long CHANNEL_ADMINS = 886300705281941514L;
+	private static long CHANNEL_MAPPING = 1133657894181671023L;
 	private static long CHANNEL_PF = 702358341443256361L;
 	private static long CHANNEL_SF = 1094469746545672274L;
 	
@@ -169,6 +170,10 @@ public class Discord implements Closeable {
 	
 	public void reportToBlogWatch(Bot<?> bot, String msg, boolean suppressEmbeds) {
 		reportTo(CHANNEL_BLOG_WATCH, bot, messageHeader(bot).append(msg).toString(), suppressEmbeds);
+	}
+	
+	public void reportToMapping(Bot<?> bot, String msg, boolean suppressEmbeds) {
+		reportTo(CHANNEL_MAPPING, bot, messageHeader(bot).append(msg).toString(), suppressEmbeds);
 	}
 	
 	public void reportToAdmins(Bot<?> bot, String msg, boolean suppressEmbeds) {
