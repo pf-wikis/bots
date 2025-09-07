@@ -26,6 +26,10 @@ public class SUtilProperties {
 			"Image is from paizo store",
 			SFactTypes.BOOLEAN)
 			.setDescription("yes for images that are from the paizo store. Typically set by Paizo CUP.");
+	public static final SProperty<String> Tag = new SProperty<>(
+			"Tag",
+			SFactTypes.STRING)
+			.setDescription("This is used as a universal marker.");
 	
 	
 

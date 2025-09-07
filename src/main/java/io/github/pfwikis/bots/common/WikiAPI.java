@@ -462,12 +462,16 @@ public class WikiAPI {
 		).getPages();
 	}
 	
-	public List<Page> getPagesInNamespace(String namespace) {
+	public List<Page> getPagesInNamespace(int namespace) {
 		return query(
 			Query.LIST_ALL_PAGES,
-			"apnamespace", Integer.toString(wiki.getNS(namespace).v),
+			"apnamespace", Integer.toString(namespace),
 			"aplimit", "5000"
 		).getAllpages();
+	}
+	
+	public List<Page> getPagesInNamespace(String namespace) {
+		return getPagesInNamespace(wiki.getNS(namespace).v);
 	}
 	
 	public List<Page> getCategories(String page) {
