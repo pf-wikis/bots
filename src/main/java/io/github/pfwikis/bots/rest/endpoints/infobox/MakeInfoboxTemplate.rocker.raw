@@ -37,7 +37,7 @@
 				[@page.get(Website) @page.getOr(Pubcode, "Publisher's product page")]
 			</div>
 		}
-		<div class="type@if(page.getOr(Sanctioned, false)){@*important space*@ sanctioned}">
+		<div class="type@if(page.has(Sanctioned)){@*important space*@ sanctioned}">
 			@concept.getName() @*<-important space*@
 			@with(type = SFactsProperties.get(concept.getName()+" type")) {
 				@if(page.has(type)) {
