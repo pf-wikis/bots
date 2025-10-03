@@ -369,15 +369,29 @@ public class SFactsProperties {
 			public List<SProperty<?>> generateProperties(SConcept c, SConcept parent) {
 				if(parent != null) {
 					var date = "{{#ask:[[-Has subobject::{{FULLPAGENAME}}]][[Release date::+]]|?Release date#ISO-P=|sort=Release date|limit=1|order=ASC|mainlabel=-|searchlabel=|default=}}";
-					parent.getGeneratedProperties().addAll(List.of(
-						Release_year.withGenerateWikitext(
-							date.replace("#ISO-P", "#-F[Y]").replace("|default=}}", "|default=unknown}}")
-						),
-						Release_date.withGenerateWikitext(date),
-						Release_date_sort.withGenerateWikitext(
-							date.replace("|default=}}", "|default=9999-01-01}}")
-						)
-					));
+					//if serialized we also want to check that
+					if(parent.containsProperty(Serialized)) {
+						parent.getGeneratedProperties().addAll(List.of(
+								Release_year.withGenerateWikitext(
+									date.replace("#ISO-P", "#-F[Y]").replace("|default=}}", "|default={{#rmatch:{{{Serialized|}}}|.*?([0-9]{4}).*|${1}|unknown}}}}")
+								),
+								Release_date.withGenerateWikitext(date.replace("|default=}}", "|default={{#rmatch:{{{Serialized|}}}|.*?([0-9]{4}).*|${1}|}}}}")),
+								Release_date_sort.withGenerateWikitext(
+									date.replace("|default=}}", "|default={{#rmatch:{{{Serialized|}}}|.*?([0-9]{4}).*|${1}|9999}}-01-01}}")
+								)
+							));
+					}
+					else {
+						parent.getGeneratedProperties().addAll(List.of(
+								Release_year.withGenerateWikitext(
+									date.replace("#ISO-P", "#-F[Y]").replace("|default=}}", "|default=unknown}}")
+								),
+								Release_date.withGenerateWikitext(date),
+								Release_date_sort.withGenerateWikitext(
+									date.replace("|default=}}", "|default=9999-01-01}}")
+								)
+							));
+					}
 				}
 				
 				return List.of(
