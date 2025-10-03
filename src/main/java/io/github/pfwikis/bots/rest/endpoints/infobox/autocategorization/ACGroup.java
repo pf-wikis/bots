@@ -67,8 +67,12 @@ public class ACGroup implements ACNode {
 	public ACRule ifYearRule(String category) {
 		return rule(
 				ctx-> "Category:"+category.replace("{}", "YEAR"),
-				ctx-> "if [[Release year::@@@]] is set",
-				ctx-> ctx.addCategory(category.replace("{}", ctx.getSubject().get(Release_year).toString()))
+				ctx-> "if [[Release year::@@@]] is set and not <code>unknown</code>",
+				ctx-> {
+					if(!"unknown".equals(ctx.getSubject().get(Release_year))) {
+						ctx.addCategory(category.replace("{}", ctx.getSubject().get(Release_year).toString()));
+					}
+				}
 			).onlyIf(ctx->ctx.has(Release_year));
 	}
 	
@@ -80,10 +84,10 @@ public class ACGroup implements ACNode {
 		var valueSet = sortedSet(values);
 		return rule(
 				ctx-> "Category:"+category.replace("{}", "YEAR"),
-				ctx-> "if [[Release year::@@@]] is set and [["+prop.getName()+"::@@@]] is "+(valueSet.size()==1?"":"one of ")
+				ctx-> "if [[Release year::@@@]] is set and not <code>unknown</code> and [["+prop.getName()+"::@@@]] is "+(valueSet.size()==1?"":"one of ")
 					+ valueSet.stream().map(v->"<code>"+v+"</code>").collect(Collectors.joining(", ")),
 				ctx-> {
-					if(valueSet.contains(ctx.getSubject().getOr(prop, "")))
+					if(!"unknown".equals(ctx.getSubject().get(Release_year)) && valueSet.contains(ctx.getSubject().getOr(prop, "")))
 						ctx.addCategory(category.replace("{}", ctx.getSubject().get(Release_year).toString()));
 				}
 			).onlyIf(ctx->ctx.has(Release_year));
