@@ -248,7 +248,7 @@ public class SFactsProperties {
 		.setDescription("This adventures features the location in a meaningful way.");
 	public static final SProperty<Boolean> Sanctioned = new SProperty<>(
 		"Sanctioned",
-		SFactTypes.BOOLEAN)
+		SFactTypes.TRINARY)
 		.setDescription("This adventures is sanctioned for Society play.");
 	public static final SProperty<String> Map_type = new SProperty<>(
 		"Map type",

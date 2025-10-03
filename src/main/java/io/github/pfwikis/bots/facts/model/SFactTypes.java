@@ -217,6 +217,18 @@ public class SFactTypes {
 			return "|input type=checkbox";
 		}
 	};
+	public static final SFactType<Boolean> TRINARY = new SFactType<>(
+			"TRINARY",
+			SMWPropertyType.BOOLEAN,
+			"string",
+			"$v"
+	) {
+
+		@Override
+		protected String configureFormField(SProperty<?> prop) {
+			return "|input type=dropdown|values=yes,no";
+		}
+	};
 	public static final SFactType<Temporal> DATE = new SFactType<>(
 			"DATE",
 			SMWPropertyType.DATE,

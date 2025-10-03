@@ -14,6 +14,7 @@ import static io.github.pfwikis.bots.facts.SFactsProperties.Performer;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Publisher;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Region;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Rule_system;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Sanctioned;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Serialized;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Series;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Video_game_type;
@@ -33,6 +34,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.github.pfwikis.bots.common.Wiki;
@@ -87,6 +89,17 @@ public enum AutoCategorizer {
 			wg.ifMatchRule(Book_type, "Adventure Path issue", wiki.getName()+" Adventure Path");
 			wg.ifMatchRule(Book_type, wiki.getName()+" Society scenario", wiki.getName()+" Society scenarios");
 			wg.ifMatchRule(Book_type, wiki.getName()+" Society (2E) scenario", wiki.getName()+" Society (2E) scenarios");
+			wg.rule(
+					ctx-> "[[:Category:Retired "+wiki.getName()+" Society scenarios]]",
+					ctx-> "if [[Sanctioned::@@@]] is <code>no</code> and "
+							+ "[[Book type::@@@]] is <code>"+wiki.getName()+" Society scenario</code> "
+									+ "or <code>"+wiki.getName()+" Society (2E) scenario</code>",
+					ctx-> {
+						if(Set.of(wiki.getName()+" Society scenario", wiki.getName()+" Society (2E) scenario").contains(ctx.getSubject().getOr(Book_type, ""))
+								&& Boolean.FALSE.equals(ctx.getSubject().getOr(Sanctioned, null)))
+							ctx.addCategory("Retired "+wiki.getName()+" Society scenarios");
+					}
+				).onlyIf(ctx->ctx.has(Book_type) && ctx.has(Sanctioned));
 
 			var adventureGroup = wg.group(
 					ctx->ctx.getSubject()==null || sAdventureTypes.contains(ctx.getSubject().getOr(Book_type, "")),
