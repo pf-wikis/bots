@@ -3,13 +3,10 @@ package io.github.pfwikis.bots.usagereporter;
 import java.awt.Color;
 import java.awt.geom.Rectangle2D;
 import java.nio.file.Files;
-import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,8 +17,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.hc.core5.net.URIBuilder;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.svg.SVGGraphics2D;
@@ -35,8 +31,6 @@ import io.github.pfwikis.bots.utils.Jackson;
 import io.github.pfwikis.bots.utils.MWTable;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-
-import org.jfree.data.time.Day;
 
 @Slf4j
 @Setter

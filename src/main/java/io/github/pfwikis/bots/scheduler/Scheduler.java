@@ -96,12 +96,30 @@ public class Scheduler {
 				schedule(scheduleableBot(wiki, discord, new NewsFeedReader()), Duration.ofHours(3));
 				schedule(scheduleableBot(wiki, discord, new MapSearchPage()), Duration.ofDays(1), LocalTime.of(12, 00));
 				schedule(scheduleableBot(wiki, discord, new Maintenance()), Duration.ofDays(7), LocalTime.of(13, 00));
-				schedule(scheduleableBot(wiki, discord, new UsageReporter()), Duration.ofDays(1), LocalTime.of(14, 00));
+				schedule(scheduleableBot(wiki, discord, new UsageReporter()), Duration.ofDays(7), LocalTime.of(14, 00));
 				schedule(scheduleableBot(wiki, discord, new AssistantTaskGiver()), Duration.ofDays(1), LocalTime.of(15, 00));
 				schedule(scheduleableBot(wiki, discord, new MakeCategories()), Duration.ofDays(1), LocalTime.of(16, 00));
 				scheduleOnce(scheduleableBot(wiki, discord, new TemplateStyles()));
 			}
 			schedule(scheduleableBot(Wiki.PF, discord, new MapCheckLinksWithoutArticles()), Duration.ofDays(1), LocalTime.of(16, 00));
+			//print queue from time to time
+			schedule(new Schedulable("print queue") {
+				@Override
+				public void execute() {
+					var sb = new StringBuilder();
+					sb.append("It is now ")
+						.append(Instant.now().toString())
+						.append("\nQueue:\n");
+					tasks.stream()
+						.sorted()
+						.forEach(t->sb
+								.append("\t")
+								.append(t.time.toString())
+								.append("\t")
+								.append(t.schedulable.getName())
+								.append("\n"));
+					log.info(sb.toString());
+				}}, Duration.ofHours(6));
 			
 			var worker = new Worker(discord);
 			if(!restOnly)
@@ -265,7 +283,7 @@ public class Scheduler {
 	public void schedule(Schedulable schedulable, Duration sleepBetweenRuns, LocalTime runTime) {
 		var now = Instant.now().plusSeconds(10);
 		var firstRun = LocalDate.now().atTime(runTime).toInstant(ZoneOffset.UTC);
-		if(firstRun.isBefore(now)) {
+		while(firstRun.isBefore(now)) {
 			firstRun = firstRun.plus(Duration.ofDays(1));
 		}
 		schedule(schedulable, sleepBetweenRuns, firstRun);
