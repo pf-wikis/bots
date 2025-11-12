@@ -94,7 +94,7 @@ public class Scheduler {
 				);
 				//disabled until paizo fixes their page
 				//schedule(scheduleableBot(wiki, discord, new BlogFacts()), Duration.ofHours(3));
-				schedule(scheduleableBot(wiki, discord, new NewsFeedReader()), Duration.ofHours(3));
+				//schedule(scheduleableBot(wiki, discord, new NewsFeedReader()), Duration.ofHours(3));
 				schedule(scheduleableBot(wiki, discord, new MapSearchPage()), Duration.ofDays(1), LocalTime.of(12, 00));
 				schedule(scheduleableBot(wiki, discord, new Maintenance()), Duration.ofDays(7), LocalTime.of(13, 00));
 				schedule(scheduleableBot(wiki, discord, new UsageReporter()), Duration.ofDays(7), LocalTime.of(14, 00));
