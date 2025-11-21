@@ -41,7 +41,7 @@ import lombok.extern.slf4j.Slf4j;
 public class PaizoRetriever extends DualBot {
 	
 	private static final long SLEEP = Duration.ofMillis(250).toMillis();
-	private static final File STATE_FILE = new File("files/crawl/state.yaml");
+	private static final File STATE_FILE = new File("outputs/crawl/state.yaml");
 	private static final String[] ENTRY_SHOP_URLS =  {
 			 "https://store.paizo.com/pathfinder/",
 			"https://store.paizo.com/pathfinder/pathfinder-second-edition/coming-soon/",
