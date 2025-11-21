@@ -1,5 +1,6 @@
 package io.github.pfwikis.bots.meta;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.beust.jcommander.Parameters;
@@ -46,10 +47,11 @@ public class Meta extends SimpleBot {
 
 	@Override
 	public void run(RunContext ctx) throws Exception {
-		for(var e:Runner.getAllBots()
+		var allBots = Runner.getAllBots()
 				.stream()
 				.collect(Collectors.groupingBy(b->b.getBotName()))
-				.entrySet()) {
+				.entrySet();
+		for(var e:allBots) {
 			var name = e.getKey();
 			var bots = e.getValue();
 			
@@ -73,9 +75,7 @@ public class Meta extends SimpleBot {
 					sb.setRun(run);
 			});
 			
-			
-			var descr = bots.getFirst().getDescription();
-			if(descr == null) return;
+			var descr = bots.stream().map(Bot::getDescription).filter(Objects::nonNull).findAny().get();
 			log.info("Updating info for bot {}", name);
 			var userPage = """
 			{{Bot|Virenerus}}

@@ -38,6 +38,7 @@ import io.github.pfwikis.bots.map.MapCheckLinksWithoutArticles;
 import io.github.pfwikis.bots.map.MapSearchPage;
 import io.github.pfwikis.bots.meta.Meta;
 import io.github.pfwikis.bots.newsfeedreader.NewsFeedReader;
+import io.github.pfwikis.bots.paizoretriever.PaizoRetriever;
 import io.github.pfwikis.bots.rest.RestServer;
 import io.github.pfwikis.bots.scheduler.Schedulable.SchedulableBot;
 import io.github.pfwikis.bots.templatestyles.TemplateStyles;
@@ -83,6 +84,7 @@ public class Scheduler {
 			}
 			
 			schedule(new HealthCheck(discord), Duration.ofHours(24));
+			schedule(scheduleableBot(discord, new PaizoRetriever(), new RunContext()), Duration.ofHours(12), LocalTime.of(22, 00));
 			for(var wiki : Wiki.values()) {
 				scheduleOnce(scheduleableBot(wiki, discord, new Meta()));
 				schedule(scheduleableBot(wiki, discord, new FactsTemplates()), Duration.ofDays(7));
@@ -122,8 +124,9 @@ public class Scheduler {
 				}}, Duration.ofHours(6));
 			
 			var worker = new Worker(discord);
-			if(!restOnly)
+			if(!restOnly) {
 				Thread.ofVirtual().start(worker);
+			}
 			RestServer.start(this);
 			Runtime.getRuntime().addShutdownHook(Thread.ofVirtual().unstarted(()-> {
 				RestServer.stop();

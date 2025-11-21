@@ -2,8 +2,13 @@ package io.github.pfwikis.bots.utils;
 
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.DumperOptions.ScalarStyle;
+import org.yaml.snakeyaml.LoaderOptions;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.json.JsonReadFeature;
+import com.fasterxml.jackson.core.util.DefaultIndenter;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -23,11 +28,15 @@ public class Jackson {
 		dumper.setIndentWithIndicator(true);
 		dumper.setSplitLines(false);
 		dumper.setDefaultScalarStyle(ScalarStyle.FOLDED);
+		var loader = new LoaderOptions();
+		loader.setCodePointLimit(Integer.MAX_VALUE);
 		YAML = new ObjectMapper(YAMLFactory
 			.builder()
 			.dumperOptions(dumper)
+			.loaderOptions(loader)
 			.build()
 			.enable(YAMLGenerator.Feature.MINIMIZE_QUOTES)
+			.disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER)
 		)
 		.setDefaultPropertyInclusion(Include.NON_EMPTY)
 		.registerModule(new GuavaModule())

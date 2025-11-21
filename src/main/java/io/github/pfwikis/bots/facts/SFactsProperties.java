@@ -355,7 +355,7 @@ public class SFactsProperties {
 	public static final SProperty<Temporal> Release_date_sort = new SProperty<>(
 		"Release date sort",
 		SFactTypes.DATE)
-		.setGenerateWikitext("{{#if:{{{Release date|}}}|{{{Release date|}}}|9999-01-01}}")
+		.setGenerateWikitext("{{#coalesce:{{{Release date|}}}|9999-01-01}}")
 		.setDescription("Automatically generated property that stores the release date or 9999-01-01 if there is none. Used for sorting");
 	public static final SProperty<String> Release_year = new SProperty<>(
 		"Release year",
@@ -458,7 +458,10 @@ public class SFactsProperties {
 		SFactTypes.URL)
 		.setFormNote("The URL of the product's official page on the publisher's website.")
 		.setAutocompleteDisabled(true)
-		.setDescription("An URL that is strongly linked to this entity. E.g. the Paizo page for a book.");
+		.setDescription("An URL that is strongly linked to this entity. E.g. the Paizo page for a book. "
+				+ "Defaults to a Paizo shop URL if the Pubcode matches one in the store.")
+		.setDefaultValue("{{#coalesce:{{Paizo store|URL|{{{Pubcode}}}}}|{{Paizo store|URL|{{{Pubcode}}}E}}}}")
+		;
 	public static final SProperty<String> Website_name = new SProperty<>(
 		"Website name",
 		SFactTypes.STRING)
