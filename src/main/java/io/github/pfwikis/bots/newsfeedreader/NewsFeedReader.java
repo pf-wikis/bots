@@ -3,6 +3,7 @@ package io.github.pfwikis.bots.newsfeedreader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,6 +11,7 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 import com.apptasticsoftware.rssreader.Item;
 import com.apptasticsoftware.rssreader.RssReader;
@@ -32,9 +34,7 @@ public class NewsFeedReader extends SimpleBot {
 	public void run(RunContext ctx) throws IOException {
 		String pageContent = 
 			"<noinclude>{{Bot created|%s}}</noinclude>".formatted(this.getBotName())
-			+collectFeed("Paizo blog", "https://paizo.com/community/blog&xml=atom")
-			//TODO maybe use https://paizo.com/community/blog/tags/pathfinder&xml=atom
-			+collectFeed("Paizo news", "https://paizo.com/paizo/press&xml=atom");
+			+collectFeed("Paizo blog", "https://paizo.com/blog?feed=rss2");
 		
 		run.getWiki().editIfChange("Template:News feeds", pageContent, "Automatic news feeds update");
 		
@@ -53,55 +53,53 @@ public class NewsFeedReader extends SimpleBot {
 		try {
 			var items = collectFeed(url)
 				.filter(i->filterByWiki(run.getServer(), i))
-				.limit(3)
+				.limit(5)
 				.map(this::renderEntry)
 				.toList();
 			
 			return """
 			<div class="content-box news-feeds">
-				<div class="title">%s</div>
+				<div class="title">Paizo blog</div>
 				<div class="content">%s</div>
 			</div>
-			""".formatted(title, String.join("", items));
+			""".formatted(String.join("", items));
 		} catch(Exception e) {
 			reportException(e);
 			return "";
 		}
 	}
 	
-	private final static String[] PF_TAGS = {
-		"https://paizo.com/community/blog/tags/pathfinder",
-		"https://paizo.com/community/blog/tags/pathfinderRoleplayingGame",
-		"https://paizo.com/community/blog/tags/pathfinderSociety"
-	};
-	
-	private final static String[] SF_TAGS = {
-		"https://paizo.com/community/blog/tags/starfinder",
-		"https://paizo.com/community/blog/tags/starfinderRoleplayingGame",
-		"https://paizo.com/community/blog/tags/starfinderSociety"
-	};
-	
-	public static boolean isTaggedRelevant(Wiki server, Item entry) {
-		if(server == Wiki.SF) {
-			return StringUtils.containsAny(entry.getDescription().get(), SF_TAGS);
+	public static boolean isTaggedRelevant(Wiki server, List<String> tags) {
+		for(var tag:tags) {
+			if(server == Wiki.SF && StringUtils.containsIgnoreCase(tag, "Starfinder"))
+				return true;
+			if(server == Wiki.PF && StringUtils.containsIgnoreCase(tag, "Pathfinder"))
+				return true;
 		}
-		else
-			return StringUtils.containsAny(entry.getDescription().get(), PF_TAGS);
+		return false;
 	}
 
-	private static boolean filterByWiki(Wiki server, Item entry) {
+	private static boolean filterByWiki(Wiki server, Item i) {
+		var tags = List.<String>of();
+		try {
+			var doc = Jsoup.connect(i.getLink().get()).get();
+			tags = getTags(doc);
+		} catch(Exception e) {
+			//can be safely ignored
+		}
+		
 		if(server == Wiki.SF) {
 			if(
-				isTaggedRelevant(Wiki.PF, entry)
-				&& !isTaggedRelevant(Wiki.SF, entry)
+				isTaggedRelevant(Wiki.PF, tags)
+				&& !isTaggedRelevant(Wiki.SF, tags)
 			) {
 				return false;
 			}
 		}
 		else {
 			if(
-				isTaggedRelevant(Wiki.SF, entry)
-				&& !isTaggedRelevant(Wiki.PF, entry)
+				isTaggedRelevant(Wiki.SF, tags)
+				&& !isTaggedRelevant(Wiki.PF, tags)
 			) {
 				return false;
 			}
@@ -120,9 +118,9 @@ public class NewsFeedReader extends SimpleBot {
 			</div>
 			""".formatted(
 				item.getLink().get(),
-				item.getTitle().get(),
+				Jsoup.parseBodyFragment(item.getTitle().get()).text(),
 				renderDate(item.getPubDate().get()),
-				renderPreview(item.getDescription().get())
+				renderPreview(item.getContent().get())
 			);
 		} catch(Exception e) {
 			reportException(e);
@@ -133,15 +131,7 @@ public class NewsFeedReader extends SimpleBot {
 	private String renderPreview(String html) {
 		try {
 			var doc = Jsoup.parseBodyFragment(html);
-			var articleBody = doc
-				.getElementsByAttributeValue("itemprop", "articleBody");
-			String text;
-			if(articleBody.isEmpty()) {
-				text = doc.text();
-			}
-			else {
-				text = articleBody.getFirst().text();
-			}
+			var text = doc.text();
 			
 			return Arrays.stream(text.split("\\s+"))
 				.limit(100)
@@ -153,7 +143,7 @@ public class NewsFeedReader extends SimpleBot {
 	}
 
 	private String renderDate(String dateStr) {
-		var date = OffsetDateTime.parse(dateStr).toLocalDate();
+		var date = DateTimeFormatter.RFC_1123_DATE_TIME.parse(dateStr, OffsetDateTime::from).toLocalDate();
 		var today = LocalDate.now();
 		
 		var display = switch((int)(today.toEpochDay()-date.toEpochDay())) {
@@ -171,6 +161,14 @@ public class NewsFeedReader extends SimpleBot {
 		This bot is parsing the Paizo news feeds and creating the page [[Template:News feeds]] from them.
 		It skips entries that are tagged only for %s.
 		""".formatted(run.getServer().getName());
+	}
+
+	public static List<String> getTags(Document doc) {
+		return doc.getElementsByClass("tags").stream()
+				.flatMap(e->e.getElementsByTag("a").stream())
+				.map(e->e.text().trim())
+				.filter(StringUtils::isNotBlank)
+				.toList();
 	}
 
 }
