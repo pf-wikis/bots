@@ -62,6 +62,8 @@ public class Scheduler {
 	protected String matomoToken;
 	@Parameter(names = "--restOnly")
 	protected boolean restOnly;
+	@Parameter(names = "--firefox")
+	protected String firefoxBin;
 	
 	private Discord discord;
 	
@@ -84,7 +86,7 @@ public class Scheduler {
 			}
 			
 			schedule(new HealthCheck(discord), Duration.ofHours(24));
-			schedule(scheduleableBot(discord, new PaizoRetriever(), new RunContext()), Duration.ofHours(12), LocalTime.of(13, 50));
+			schedule(scheduleableBot(discord, new PaizoRetriever().withFirefoxBin(firefoxBin), new RunContext()), Duration.ofHours(12), LocalTime.of(13, 50));
 			for(var wiki : Wiki.values()) {
 				scheduleOnce(scheduleableBot(wiki, discord, new Meta()));
 				schedule(scheduleableBot(wiki, discord, new FactsTemplates()), Duration.ofDays(7));

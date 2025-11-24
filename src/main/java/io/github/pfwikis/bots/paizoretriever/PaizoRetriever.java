@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -21,8 +20,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.GeckoDriverService;
-import org.openqa.selenium.support.ui.FluentWait;
-import org.openqa.selenium.support.ui.Wait;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
@@ -38,6 +35,7 @@ import io.github.pfwikis.bots.paizoretriever.State.Page;
 import io.github.pfwikis.bots.utils.Jackson;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.With;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -45,6 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 @Parameters
 public class PaizoRetriever extends DualBot {
 	
+	@With
 	@Parameter(names = "--firefox")
 	private String firefoxBin; 
 	
@@ -62,6 +61,11 @@ public class PaizoRetriever extends DualBot {
 	
 	public PaizoRetriever() {
 		super("paizo-retriever", "Bot Paizo Retriever");
+	}
+	
+	public PaizoRetriever(String firefoxBin) {
+		this();
+		this.firefoxBin = firefoxBin;
 	}
 	
 	@Override
