@@ -1,6 +1,5 @@
 package io.github.pfwikis.bots.facts.blog;
 
-import java.net.URI;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Set;
@@ -62,7 +61,6 @@ public class BlogFacts extends SimpleBot {
 			
 			var title = Jsoup.parseBodyFragment(entry.getTitle().map(String::trim).orElse("")).text();
 			String authors = "";
-			boolean sync = false;
 			try {
 				var doc = Jsoup.connect(entry.getLink().get()).get();
 				
@@ -77,29 +75,13 @@ public class BlogFacts extends SimpleBot {
 					.collect(Collectors.joining(";"));
 				
 				
-				//get tags
 				var tags = NewsFeedReader.getTags(doc);
-				if(run.getServer() == Wiki.SF) {
-					// on starfinderwiki we only want to have blog posts that are only relevant for starfinder
-					// the other we sync
-					if(! NewsFeedReader.isTaggedRelevant(Wiki.SF, tags)
-						|| NewsFeedReader.isTaggedRelevant(Wiki.PF, tags)
-					) continue;
-				}
-				else {
-					//skip SF only articles
-					if(NewsFeedReader.isTaggedRelevant(Wiki.SF, tags)
-						&& !NewsFeedReader.isTaggedRelevant(Wiki.PF, tags)
-					) {
-						continue;
-					}
-					//sync others
-					if(!NewsFeedReader.isTaggedRelevant(Wiki.PF, tags)
-						|| NewsFeedReader.isTaggedRelevant(Wiki.SF, tags)
-					) {
-						sync = true;
-					}
-				}
+				if(
+					//on SF we want articles that are SF or neutral
+					(run.getServer() == Wiki.SF && !NewsFeedReader.isTaggedRelevant(Wiki.SF, tags) && NewsFeedReader.isTaggedRelevant(Wiki.PF, tags))
+					||
+					(run.getServer() == Wiki.PF && !NewsFeedReader.isTaggedRelevant(Wiki.PF, tags) && NewsFeedReader.isTaggedRelevant(Wiki.SF, tags))
+				) { continue; }	
 			} catch(Exception e) {
 				log.warn("Failed to load authors for {}", entry.getLink().get(), e);
 			}
@@ -113,13 +95,12 @@ public class BlogFacts extends SimpleBot {
 				|Website=%s
 				|Website name=Paizo blog
 				|Release date=%s
-				}}%s[[Category:Paizo blog articles]]
+				}}[[Category:Paizo blog articles]]
 				""".formatted(
 					title,
 					authors,
 					entry.getLink().get(),
-					date.toString(),
-					sync?"\n[[Category:Synced to starfinderwiki]]":""
+					date.toString()
 				),
 				"A new blog post was released"
 			);
