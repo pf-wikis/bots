@@ -2,6 +2,8 @@ package io.github.pfwikis.bots.paizoretriever;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.nio.file.StandardCopyOption;
 import java.time.Duration;
 import java.time.Instant;
@@ -19,7 +21,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.firefox.GeckoDriverService;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
@@ -35,7 +37,6 @@ import io.github.pfwikis.bots.paizoretriever.State.Page;
 import io.github.pfwikis.bots.utils.Jackson;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.With;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -43,9 +44,8 @@ import lombok.extern.slf4j.Slf4j;
 @Parameters
 public class PaizoRetriever extends DualBot {
 	
-	@With
-	@Parameter(names = "--firefox")
-	private String firefoxBin; 
+	@Parameter(names = "--selenium")
+	private String selenium; 
 	
 	private static final long SLEEP = Duration.ofMillis(250).toMillis();
 	private static final File STATE_FILE = new File("outputs/crawl/state.yaml");
@@ -63,9 +63,9 @@ public class PaizoRetriever extends DualBot {
 		super("paizo-retriever", "Bot Paizo Retriever");
 	}
 	
-	public PaizoRetriever(String firefoxBin) {
+	public PaizoRetriever(String selenium) {
 		this();
-		this.firefoxBin = firefoxBin;
+		this.selenium = selenium;
 	}
 	
 	@Override
@@ -81,15 +81,8 @@ public class PaizoRetriever extends DualBot {
 			state = Jackson.YAML.readValue(STATE_FILE, State.class);
 		else
 			state = new State();
-		var service = GeckoDriverService.createDefaultService();
-		if(firefoxBin != null) {
-			service.setExecutable(firefoxBin);
-		}
-		var driver = new FirefoxDriver(
-				service,
-				new FirefoxOptions()
-					.addArguments(this.localMode?List.of():List.of("-headless"))
-		);
+		
+		var driver = createDriver();
 		
 		try {
 			crawlLoop(driver, state);
@@ -100,6 +93,15 @@ public class PaizoRetriever extends DualBot {
 			save(state);
 			
 		}
+	}
+
+	private RemoteWebDriver createDriver() throws MalformedURLException {
+		if(selenium != null) {
+			return new RemoteWebDriver(URI.create("http://"+selenium).toURL(),
+					new FirefoxOptions()
+						.addArguments("-headless"));
+		}
+		return new FirefoxDriver();
 	}
 
 	private static final ObjectWriter WRITER = Jackson.YAML
