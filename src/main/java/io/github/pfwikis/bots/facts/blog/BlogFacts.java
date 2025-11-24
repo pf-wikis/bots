@@ -57,7 +57,7 @@ public class BlogFacts extends SimpleBot {
 			if(id.isEmpty()) continue;
 			
 			var date = DateTimeFormatter.RFC_1123_DATE_TIME.parse(entry.getPubDate().get(), OffsetDateTime::from);
-			String page = "Facts:Paizo blog/"+date.toLocalDate().toString()+"-"+id.get();
+			String page = "Facts:Paizo blog/"+date.toLocalDate()+"-"+id.get();
 			if(run.getWiki().pageExists(page)) continue;
 			
 			var title = Jsoup.parseBodyFragment(entry.getTitle().map(String::trim).orElse("")).text();

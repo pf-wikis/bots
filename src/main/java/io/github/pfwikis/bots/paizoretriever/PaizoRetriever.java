@@ -20,9 +20,11 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.firefox.GeckoDriverService;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
+import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -34,11 +36,17 @@ import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.paizoretriever.LdJson.Product;
 import io.github.pfwikis.bots.paizoretriever.State.Page;
 import io.github.pfwikis.bots.utils.Jackson;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Getter @Setter
 @Parameters
 public class PaizoRetriever extends DualBot {
+	
+	@Parameter(names = "--firefox")
+	private String firefoxBin; 
 	
 	private static final long SLEEP = Duration.ofMillis(250).toMillis();
 	private static final File STATE_FILE = new File("outputs/crawl/state.yaml");
@@ -69,7 +77,12 @@ public class PaizoRetriever extends DualBot {
 			state = Jackson.YAML.readValue(STATE_FILE, State.class);
 		else
 			state = new State();
+		var service = GeckoDriverService.createDefaultService();
+		if(firefoxBin != null) {
+			service.setExecutable(firefoxBin);
+		}
 		var driver = new FirefoxDriver(
+				service,
 				new FirefoxOptions()
 					.addArguments(this.localMode?List.of():List.of("-headless"))
 		);
@@ -221,7 +234,7 @@ public class PaizoRetriever extends DualBot {
 		int added = 0;
 		for(var p:state.getPages()) {
 			if(
-				Duration.between(p.getLastChecked(), now).toHours()>24*(1+Math.max(p.getBackOffCounter(), 30)+(Math.abs(p.getUrl().hashCode())%10))
+				Duration.between(p.getLastChecked(), now).toHours()>24*(1+Math.min(p.getBackOffCounter(), 30)+(Math.abs(p.getUrl().hashCode())%12))
 				&& !state.getOpenList().contains(p.getUrl())
 			) {
 				state.getOpenList().add(p.getUrl());
