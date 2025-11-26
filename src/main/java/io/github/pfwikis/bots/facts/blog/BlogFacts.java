@@ -64,26 +64,33 @@ public class BlogFacts extends SimpleBot {
 			try {
 				var doc = Jsoup.connect(entry.getLink().get()).get();
 				
-				//get authors
-				var byline = doc.getElementsByClass("byline").getFirst();
-				authors = byline.getElementsByClass("name").stream()
-					.map(e->e.text())
-					.map(a->StringUtils.removeEnd(a.trim(), ",").trim())
-					.map(a->a.contains("(")?a.substring(0, a.indexOf('(')).trim():a)
-					.filter(StringUtils::isNotBlank)
-					
-					.collect(Collectors.joining(";"));
+				try {
+					//get authors
+					var byline = doc.getElementsByClass("byline").first();
+					if(byline != null)
+						authors = byline.getElementsByClass("name").stream()
+							.map(e->e.text())
+							.map(a->StringUtils.removeEnd(a.trim(), ",").trim())
+							.map(a->a.contains("(")?a.substring(0, a.indexOf('(')).trim():a)
+							.filter(StringUtils::isNotBlank)
+							.collect(Collectors.joining(";"));
+				} catch(Exception e) {
+					log.warn("Failed to load blog page for {}", entry.getLink().get(), e);
+				}
 				
-				
-				var tags = NewsFeedReader.getTags(doc);
-				if(
-					//on SF we want articles that are SF or neutral
-					(run.getServer() == Wiki.SF && !NewsFeedReader.isTaggedRelevant(Wiki.SF, tags) && NewsFeedReader.isTaggedRelevant(Wiki.PF, tags))
-					||
-					(run.getServer() == Wiki.PF && !NewsFeedReader.isTaggedRelevant(Wiki.PF, tags) && NewsFeedReader.isTaggedRelevant(Wiki.SF, tags))
-				) { continue; }	
+				try {
+					var tags = NewsFeedReader.getTags(doc);
+					if(
+						//on SF we want articles that are SF or neutral
+						(run.getServer() == Wiki.SF && !NewsFeedReader.isTaggedRelevant(Wiki.SF, tags) && NewsFeedReader.isTaggedRelevant(Wiki.PF, tags))
+						||
+						(run.getServer() == Wiki.PF && !NewsFeedReader.isTaggedRelevant(Wiki.PF, tags) && NewsFeedReader.isTaggedRelevant(Wiki.SF, tags))
+					) { continue; }
+				} catch(Exception e) {
+					log.warn("Failed to load tags for {}", entry.getLink().get(), e);
+				}
 			} catch(Exception e) {
-				log.warn("Failed to load authors for {}", entry.getLink().get(), e);
+				log.warn("Failed to load blog page for {}", entry.getLink().get(), e);
 			}
 			
 			run.getWiki().edit(
