@@ -163,6 +163,7 @@ public class PaizoRetriever extends DualBot {
 				.append("<wikitext doctable>")
 				.append("<wikitext-row>{{Paizo store|name|PZO9205}}</wikitext-row>")
 				.append("<wikitext-row>{{Paizo store|URL|PZO9205}}</wikitext-row>")
+				.append("<wikitext-row>{{Paizo store|price|PZO9205}}</wikitext-row>")
 				.append("<wikitext-row>{{Paizo store|URL|not existing}}</wikitext-row>")
 				.append("<wikitext-row>{{Paizo store|not existing}}</wikitext-row>")
 				.append("</wikitext>")
@@ -171,20 +172,27 @@ public class PaizoRetriever extends DualBot {
 		
 			createPage(api, pages, "URL", Product::getUrl, intro, outro);
 			createPage(api, pages, "name", Product::getName, intro, outro);
+			createPage(api, pages, "price", p->
+					(p.getOffers()!=null
+						&& StringUtils.isNotBlank(p.getOffers().getPrice())
+						&& "https://schema.org/NewCondition".equals(p.getOffers().getItemCondition())
+					)?("$"+p.getOffers().getPrice()):null, 
+					intro,
+					outro);
 		});
 	}
 
 	private void createPage(WikiAPI api, List<Product> pages, String name, Function<Product, String> value, String intro, String outro) {
 		var sb2 = new StringBuilder().append(intro).append("{{#switch:{{{1}}}");
 		pages.stream()
-			.filter(p->p.getUrl() != null)
-			.collect(Collectors.groupingBy(p->value.apply(p)))
+			.filter(p->StringUtils.isNotBlank(value.apply(p)))
+			.collect(Collectors.groupingBy(p->value.apply(p).trim()))
 			.entrySet()
 			.stream()
 			.sorted(Comparator.comparing(Entry::getKey))
 			
 			.forEach(e->sb2
-					.append("|")
+					.append("\n|")
 					.append(e.getValue().stream()
 						.map(Product::getSku)
 						.sorted()

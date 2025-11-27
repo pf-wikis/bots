@@ -21,6 +21,7 @@ import lombok.Setter;
 		defaultImpl = LdJson.class)
 @JsonSubTypes({
 	@JsonSubTypes.Type(value = LdJson.Product.class, name = "Product"),
+	@JsonSubTypes.Type(value = LdJson.Offer.class, name = "Offer"),
 })
 @Getter @Setter
 public class LdJson {
@@ -46,6 +47,23 @@ public class LdJson {
     	private String sku;
     	private String description;
     	private String image;
+    	private Offer offers;
+		
+    	public String toShortDescription() {
+			if(description == null) return null;
+			if(description.contains("\n")) return description.substring(0, description.indexOf('\n')).replace("|", "{{!}}");
+			return description.replace("|", "{{!}}");
+		}
     	
+    	public String toLongDescription() {
+			if(description == null) return null;
+			return description.substring(description.indexOf('\n')+1, description.length()).replace("\n", "\n\n").replace("|", "{{!}}");
+		}
+    }
+    
+    @Getter @Setter
+    public static class Offer extends LdJson {
+    	private String itemCondition;
+    	private String price;
     }
 }
