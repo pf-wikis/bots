@@ -156,6 +156,7 @@ public class PaizoRetriever extends DualBot {
 				.append("{{#switch:{{{1}}}")
 				.append("|URL={{Paizo store/URL|{{{2}}}}}")
 				.append("|name={{Paizo store/name|{{{2}}}}}")
+				.append("|price={{Paizo store/price|{{{2}}}}}")
 				.append("}}")
 				.append(outro)
 				.append("<noinclude>\n")
