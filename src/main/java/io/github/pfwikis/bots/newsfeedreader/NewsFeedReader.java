@@ -32,9 +32,11 @@ public class NewsFeedReader extends SimpleBot {
 
 	@Override
 	public void run(RunContext ctx) throws IOException {
+		String feed = collectFeed("Paizo blog", "https://paizo.com/blog?feed=rss2");
+		if(StringUtils.isBlank(feed)) return;
 		String pageContent = 
 			"<noinclude>{{Bot created|%s}}</noinclude>".formatted(this.getBotName())
-			+collectFeed("Paizo blog", "https://paizo.com/blog?feed=rss2");
+			+feed;
 		
 		run.getWiki().editIfChange("Template:News feeds", pageContent, "Automatic news feeds update");
 		
