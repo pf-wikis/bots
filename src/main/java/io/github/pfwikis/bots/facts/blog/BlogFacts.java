@@ -1,5 +1,6 @@
 package io.github.pfwikis.bots.facts.blog;
 
+import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Set;
@@ -47,7 +48,7 @@ public class BlogFacts extends SimpleBot {
 	private static Pattern ID_PATTERN = Pattern.compile("^https://paizo.com/blog/(?<id>.+?)([\\?#].*)?$");
 
 	@Override
-	public void run(RunContext ctx) {
+	public void run(RunContext ctx) throws IOException {
 		var entries = NewsFeedReader.collectFeed("https://paizo.com/blog?feed=rss2")
 			.limit(10)
 			.toList();
