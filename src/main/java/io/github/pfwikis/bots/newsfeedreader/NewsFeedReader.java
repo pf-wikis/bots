@@ -1,6 +1,7 @@
 package io.github.pfwikis.bots.newsfeedreader;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
@@ -21,7 +22,6 @@ import io.github.pfwikis.bots.common.Style;
 import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
-import io.github.pfwikis.bots.utils.Retry;
 
 @Parameters
 public class NewsFeedReader extends SimpleBot {
@@ -42,13 +42,10 @@ public class NewsFeedReader extends SimpleBot {
 		
 	}
 	
-	public static Stream<Item> collectFeed(String url) {
+	public static Stream<Item> collectFeed(String url) throws IOException {
 		RssReader rssReader = new RssReader();
-		return Retry.times(
-			()->rssReader.read(url),
-			5,
-			30
-		);
+		rssReader.setReadTimeout(Duration.ofSeconds(60));
+		return rssReader.read(url);
 	}
 	
 	private String collectFeed(String title, String url) {
