@@ -291,8 +291,9 @@ public class UsageReporter extends SimpleBot {
 	}
 
 	private <T> T matomo(boolean logBased, Class<T> type, String... args) throws Exception {
+		int matomoId = 0; //TODO run.getServer().getMatomoId()
 		var url = new URIBuilder("https://matomo.pathfinderwiki.com/index.php?module=API")
-				.addParameter("idSite", Integer.toString(run.getServer().getMatomoId()+(logBased?2:0)))
+				.addParameter("idSite", Integer.toString(matomoId+(logBased?2:0)))
 				.addParameter("format", "JSON")
 				.addParameter("token_auth", matomoToken);
 		for(int i=0;i<args.length;i+=2) {

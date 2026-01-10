@@ -42,7 +42,6 @@ import io.github.pfwikis.bots.paizoretriever.PaizoRetriever;
 import io.github.pfwikis.bots.rest.RestServer;
 import io.github.pfwikis.bots.scheduler.Schedulable.SchedulableBot;
 import io.github.pfwikis.bots.templatestyles.TemplateStyles;
-import io.github.pfwikis.bots.usagereporter.UsageReporter;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,8 +57,6 @@ public class Scheduler {
 	protected String discordToken;
 	@Parameter(names = "--localMode")
 	protected boolean localMode;
-	@Parameter(names = "--matomoToken")
-	protected String matomoToken;
 	@Parameter(names = "--restOnly")
 	protected boolean restOnly;
 	@Parameter(names = "--selenium")
@@ -100,7 +97,6 @@ public class Scheduler {
 				schedule(scheduleableBot(wiki, discord, new NewsFeedReader()), Duration.ofHours(3));
 				schedule(scheduleableBot(wiki, discord, new MapSearchPage()), Duration.ofDays(1), LocalTime.of(12, 00));
 				schedule(scheduleableBot(wiki, discord, new Maintenance()), Duration.ofDays(7), LocalTime.of(13, 00));
-				schedule(scheduleableBot(wiki, discord, new UsageReporter()), Duration.ofDays(7), LocalTime.of(14, 00));
 				schedule(scheduleableBot(wiki, discord, new AssistantTaskGiver()), Duration.ofDays(1), LocalTime.of(15, 00));
 				schedule(scheduleableBot(wiki, discord, new MakeCategories()), Duration.ofDays(1), LocalTime.of(16, 00));
 				scheduleOnce(scheduleableBot(wiki, discord, new TemplateStyles()));
@@ -191,9 +187,6 @@ public class Scheduler {
 		
 		bot.setDiscord(discord);
 		bot.setLocalMode(localMode);
-		if(bot instanceof UsageReporter ur) {
-			ur.setMatomoToken(matomoToken);
-		}
 		bot.setRun(sr);
 	}
 	

@@ -15,20 +15,17 @@ public enum Wiki {
 	PF(
 		"https://pathfinderwiki.com",
 		"Pathfinder",
-		"pf",
-		1
+		"pf"
 	),
 	SF(
 		"https://starfinderwiki.com",
 		"Starfinder",
-		"sf",
-		2
+		"sf"
 	);
 	
 	private final String url;
 	private final String name;
 	private final String code;
-	private final int matomoId;
 	@Getter(lazy = true)
 	private final String wikiNamespace = name+"Wiki";
 	private String masterAccount = "VirenerusBot";
