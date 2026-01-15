@@ -3,7 +3,6 @@ package io.github.pfwikis.bots.common.api;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,13 +23,13 @@ public enum MWApiCache {
 	private Map<Key, MWApi> cache = new HashMap<>();
 	private Map<Method, Method> interfaceToImplMap = new ConcurrentHashMap<>();
 	
-	public static synchronized MWApi get(io.github.pfwikis.bots.common.Wiki wiki, String name, String password) {
-		return INSTANCE.cache.computeIfAbsent(new Key(wiki, name, password), INSTANCE::create);
+	public static synchronized MWApi get(io.github.pfwikis.bots.common.Wiki wiki, String name, String password, String antiProtectionSecret) {
+		return INSTANCE.cache.computeIfAbsent(new Key(wiki, name, password), k->INSTANCE.create(k, antiProtectionSecret));
 	}
 	
-	private MWApi create(Key key) {
+	private MWApi create(Key key, String secret) {
 		try {
-			var handler = new WikiMethodHandler(key);
+			var handler = new WikiMethodHandler(key, secret);
 			return (MWApi) Proxy.newProxyInstance(
 				this.getClass().getClassLoader(),
 				new Class<?>[] {MWApi.class},
@@ -61,6 +60,7 @@ public enum MWApiCache {
 	@RequiredArgsConstructor
 	public static class WikiMethodHandler implements InvocationHandler {
 		private final Key key;
+		private final String secret;
 		private Wiki wiki;
 
 		@Override
@@ -97,8 +97,12 @@ public enum MWApiCache {
 			Exception last = null;
 			for (int tryCount = 0; tryCount < 6; tryCount++) {
 				try {
-					var b = new Wiki.Builder().withDomain(key.wiki.getUrl())
+					var b = new Wiki.Builder()
+							.withDomain(key.wiki.getUrl())
 							.withApiEndpoint(HttpUrl.get(key.wiki.getUrl() + "/w/api.php"));
+					if(secret != null) {
+						b = b.withUserAgent(secret);
+					}
 					if (key.name != null) {
 						b = b.withLogin(key.name, key.password);
 					}

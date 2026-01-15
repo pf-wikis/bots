@@ -60,16 +60,16 @@ import okhttp3.Response;
 @Slf4j
 public class WikiAPI {
 
-	public static synchronized WikiAPI create(io.github.pfwikis.bots.common.Wiki wiki, String name, String password) {
-		return new WikiAPI(wiki, name, password);
+	public static synchronized WikiAPI create(io.github.pfwikis.bots.common.Wiki wiki, String name, String password, String antiProtectionSecret) {
+		return new WikiAPI(wiki, name, password, antiProtectionSecret);
 	}
 
 	private io.github.pfwikis.bots.common.Wiki server;
 	private MWApi wiki;
 
-	private WikiAPI(io.github.pfwikis.bots.common.Wiki wiki, String name, String password) {
+	private WikiAPI(io.github.pfwikis.bots.common.Wiki wiki, String name, String password, String antiProtectionSecret) {
 		this.server = wiki;
-		this.wiki = MWApiCache.get(wiki, name, password);
+		this.wiki = MWApiCache.get(wiki, name, password, antiProtectionSecret);
 	}
 
 	public boolean upload(Path p, String title, String desc, String summary) {

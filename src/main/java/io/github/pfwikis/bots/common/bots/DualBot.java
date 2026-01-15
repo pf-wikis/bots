@@ -27,6 +27,7 @@ public abstract class DualBot extends Bot<DualRun> {
 			@Override
 			public String getDescription() {return null;}
 		};
+		sBot.antiProtectionSecret = this.antiProtectionSecret;
 		sBot.rootPassword = this.rootPassword;
 		var runs = sBot.createRuns();
 		run.setPfRun(runs.get(0));

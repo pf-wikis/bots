@@ -53,6 +53,8 @@ public class Scheduler {
 
 	@Parameter(names = "--password")
 	protected String rootPassword;
+	@Parameter(names = "--antiProtectionSecret")
+	protected String antiProtectionSecret;
 	@Parameter(names = "--discordToken")
 	protected String discordToken;
 	@Parameter(names = "--localMode")
@@ -72,7 +74,7 @@ public class Scheduler {
 			for(var wiki : Wiki.values()) {
 				wiki.setMasterPassword(rootPassword);
 				try {
-					wiki.setMasterApi(WikiAPI.create(wiki, wiki.getMasterAccount(), wiki.getMasterPassword()));
+					wiki.setMasterApi(WikiAPI.create(wiki, wiki.getMasterAccount(), wiki.getMasterPassword(), antiProtectionSecret));
 				} catch(Exception e) {
 					log.error("Failed to log in as {}", wiki.getMasterAccount(), e);
 					Uninterruptibles.sleepUninterruptibly(10, TimeUnit.MINUTES);
@@ -182,8 +184,8 @@ public class Scheduler {
 	
 	public void initBot(Wiki wiki, Discord discord, SimpleBot bot) {
 		bot.setRootPassword(wiki.getMasterPassword());
-		var sr = new SingleRun(wiki, wiki.getMasterAccount(), wiki.getMasterPassword());
-		sr.setWiki(WikiAPI.create(wiki, bot.getBotName(), bot.getBotPassword()));
+		var sr = new SingleRun(wiki, wiki.getMasterAccount(), wiki.getMasterPassword(), antiProtectionSecret);
+		sr.setWiki(WikiAPI.create(wiki, bot.getBotName(), bot.getBotPassword(), antiProtectionSecret));
 		
 		bot.setDiscord(discord);
 		bot.setLocalMode(localMode);

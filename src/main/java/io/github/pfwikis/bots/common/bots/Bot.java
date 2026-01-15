@@ -23,6 +23,8 @@ public abstract class Bot<RUN extends Run> {
 
 	@Parameter(names = "--password")
 	protected String rootPassword;
+	@Parameter(names = "--antiProtectionSecret")
+	protected String antiProtectionSecret;
 	@Parameter(names = "--discordToken")
 	protected String discordToken;
 	@Parameter(names = "--localMode")

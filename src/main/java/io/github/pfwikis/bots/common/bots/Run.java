@@ -31,6 +31,7 @@ public abstract class Run {
 		private final Wiki server;
 		private final String masterAccount;
 		private final String masterPassword;
+		private final String antiProtectionSecret;
 		@Getter @Setter
 		private WikiAPI wiki;
 		private WikiAPI masterWiki;
@@ -39,7 +40,7 @@ public abstract class Run {
 		public synchronized void withMaster(Consumer<WikiAPI> task) {
 			if(masterWiki == null) {
 				try {
-					masterWiki = WikiAPI.create(server, masterAccount, masterPassword);
+					masterWiki = WikiAPI.create(server, masterAccount, masterPassword, antiProtectionSecret);
 				} catch(Exception e) {
 					log.error("Failed to log in as {}", masterAccount, e);
 					System.exit(-1);

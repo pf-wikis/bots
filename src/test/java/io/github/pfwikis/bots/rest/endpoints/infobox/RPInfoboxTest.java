@@ -48,7 +48,7 @@ class RPInfoboxTest {
 		when(bot.getWiki()).thenReturn(Wiki.PF);
 		when(bot.getRun()).thenReturn(run);
 		when(run.getServer()).thenReturn(Wiki.PF);
-		when(run.getWiki()).thenReturn(WikiAPI.create(Wiki.PF, null, null));
+		when(run.getWiki()).thenReturn(WikiAPI.create(Wiki.PF, null, null, null));
 		
 		var result = endpoint.generateResult(bot, param);
 		assertThat(result).isEqualTo(Files.readString(expected.toPath()));

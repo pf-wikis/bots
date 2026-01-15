@@ -29,8 +29,8 @@ public abstract class SimpleBot extends Bot<SingleRun> {
 	protected List<SingleRun> createRuns() {
 		var runs = new ArrayList<SingleRun>(2);
 		for(var server:Wiki.values()) {
-			var run = new SingleRun(server, "VirenerusBot", rootPassword);
-			run.setWiki(WikiAPI.create(server, botName, getBotPassword()));
+			var run = new SingleRun(server, "VirenerusBot", rootPassword, antiProtectionSecret);
+			run.setWiki(WikiAPI.create(server, botName, getBotPassword(), antiProtectionSecret));
 			runs.add(run);
 		}
 		return runs;
