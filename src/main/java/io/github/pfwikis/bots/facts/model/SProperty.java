@@ -98,6 +98,9 @@ public class SProperty<JType> {
 		else if(StringUtils.startsWith(suggestValuesFrom, "Property:")) {
 			conf+="|values from property="+suggestValuesFrom.substring(9);
 		}
+		else if(StringUtils.startsWith(suggestValuesFrom, "Values:")) {
+			conf+="|values="+suggestValuesFrom.substring(7)+"|existing values only";
+		}
 		
 		if(allowsPattern != null) {
 			conf = conf.replace("input type", "base type")

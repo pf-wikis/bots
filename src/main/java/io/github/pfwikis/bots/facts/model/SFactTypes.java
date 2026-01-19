@@ -88,7 +88,33 @@ public class SFactTypes {
 		
 		@Override
 		public String toInfoboxDisplay(List<PageRef> v) {
-			var values = Lists.transform(v, e->PAGE.toInfoboxDisplay(e));
+			return VALUE_LIST.toInfoboxDisplay(Lists.transform(v, e->PAGE.toInfoboxDisplay(e)));
+		}
+
+		@Override
+		protected String configureFormField(SProperty<?> prop) {
+			return "|input type=tokens|delimiter=;";
+		};
+		
+		public List<PageRef> convertToJava(List<Object> values) {
+			return values.stream()
+				.map(PageRef.class::cast)
+				.toList();
+		};
+	};
+	public static final SFactType<List<String>> VALUE_LIST = new SFactType<>(
+			"VALUE_LIST",
+			SMWPropertyType.TEXT,
+			"string",
+			"$v"
+	) {
+		@Override
+		public String wikitextToStoreFact(SProperty<List<String>> p, String v) {
+			return v+"|+sep=;";
+		}
+		
+		@Override
+		public String toInfoboxDisplay(List<String> values) {
 			if(values.size() == 0)
 				return "";
 			if(values.size() == 1)
@@ -110,12 +136,6 @@ public class SFactTypes {
 		@Override
 		protected String configureFormField(SProperty<?> prop) {
 			return "|input type=tokens|delimiter=;";
-		};
-		
-		public List<PageRef> convertToJava(List<Object> values) {
-			return values.stream()
-				.map(PageRef.class::cast)
-				.toList();
 		};
 	};
 	public static final SFactType<List<PageRef>> PAGE_LIST_ORDERED = new SFactType<>(

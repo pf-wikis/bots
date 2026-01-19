@@ -1,6 +1,7 @@
 package io.github.pfwikis.bots.facts;
 
 import static io.github.pfwikis.bots.facts.SFactsProperties.Accessory_type;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Adventure_contact;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Artist;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Audio_type;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Author;
@@ -24,6 +25,7 @@ import static io.github.pfwikis.bots.facts.SFactsProperties.Discs;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Editor;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Engine;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Errata;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Faction;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Follows;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Full_title;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Gallery;
@@ -42,10 +44,12 @@ import static io.github.pfwikis.bots.facts.SFactsProperties.Main_book;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Map_type;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Material;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Member_category;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Metaplot;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Miniatures_type;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Modes;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Name;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Narrator;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Notes;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Number_of_players;
 import static io.github.pfwikis.bots.facts.SFactsProperties.On_page;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Pages;
@@ -66,9 +70,11 @@ import static io.github.pfwikis.bots.facts.SFactsProperties.Release_type;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Represented_by_page;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Rule_system;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Runtime;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Sanctioned;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Serialized;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Series;
-import static io.github.pfwikis.bots.facts.SFactsProperties.Sanctioned;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Society_ID;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Society_tag;
 import static io.github.pfwikis.bots.facts.SFactsProperties.To_page;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Video_game_type;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Web_enhancement;
@@ -147,8 +153,14 @@ public class SModel {
 				.properties(
 					Level_range_start,
 					Level_range_end,
+					Sanctioned,
+					Society_ID,
+					Society_tag,
+					Metaplot,
+					Faction,
+					Adventure_contact,
 					Location,
-					Sanctioned
+					Notes
 				),
 			SPropertyGroup.builder()
 				.name("Fiction")
