@@ -6,7 +6,7 @@
 
 @args(String name, String pluralName, SConcept c, boolean isSubform)
 <noinclude>
-{{Bot created|Bot Facts Master}}[[Category:Synced to starfinderwiki]]
+{{Bot created|Bot Facts Master}}
 This is the ''@name'' form. To create a page with this form, see [[:Category:Facts about @pluralName]]
 
 </noinclude><includeonly>

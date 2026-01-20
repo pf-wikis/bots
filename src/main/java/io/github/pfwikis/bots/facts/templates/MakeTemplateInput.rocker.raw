@@ -2,7 +2,7 @@
 
 @args(SConcept c)
 
-<noinclude>{{Bot created|Bot Facts Master}}[[Category:Synced to starfinderwiki]]</noinclude>
+<noinclude>{{Bot created|Bot Facts Master}}</noinclude>
 
 {{#if:{{{1|}}}|
 	{{#formredlink:
