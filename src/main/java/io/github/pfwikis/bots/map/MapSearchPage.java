@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,10 +26,16 @@ public class MapSearchPage extends SimpleBot {
 	}
 
 	@Override
-	public void run(RunContext ctx) throws IOException {
+	public void run(RunContext ctx) throws IOException, InterruptedException {
 		if(run.getServer() == Wiki.SF) return;
 		
-		var categoriesIn = Arrays.asList(Jackson.JSON.readValue(URI.create("https://map.pathfinderwiki.com/search.json").toURL(), CategoryIn[].class));
+		HttpClient httpClient = HttpClient.newHttpClient();
+    	HttpRequest request = HttpRequest.newBuilder()
+    		.header("User-Agent", antiProtectionSecret)
+    		.uri(URI.create("https://map.pathfinderwiki.com/search.json")).build();
+    	var resp = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
+        
+		var categoriesIn = Arrays.asList(Jackson.JSON.readValue(resp.body(), CategoryIn[].class));
 		var labelCounts = HashMultiset.<String>create();
 		categoriesIn.forEach(cat->cat.entries.forEach(e->labelCounts.add(e.label)));
 		
