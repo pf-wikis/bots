@@ -190,6 +190,7 @@ public class Scheduler {
 		bot.setDiscord(discord);
 		bot.setLocalMode(localMode);
 		bot.setRun(sr);
+		bot.setAntiProtectionSecret(antiProtectionSecret);
 	}
 	
 	private void initBot(Discord discord, DualBot bot) {
