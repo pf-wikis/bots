@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.commons.lang3.StringUtils;
@@ -22,7 +21,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.beust.jcommander.Parameters;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.util.concurrent.UncheckedExecutionException;
 
 import io.github.pfwikis.bots.common.model.subject.PageRef;
 import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
@@ -31,10 +29,7 @@ import io.github.pfwikis.bots.rest.RestProviderBot;
 import io.github.pfwikis.bots.rest.SafeException;
 import io.github.pfwikis.bots.rest.endpoints.citetemplate.model.BookDef;
 import io.github.pfwikis.bots.rest.endpoints.citetemplate.model.SectionDef;
-import io.github.pfwikis.bots.utils.RockerHelper;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Parameters
 public class RPCiteTemplate extends RPEndpoint<RPCiteParam> {
 	
@@ -57,8 +52,16 @@ public class RPCiteTemplate extends RPEndpoint<RPCiteParam> {
 		
 		BookDef bookDef = fromCacheOrCalc(bot, param);
 		
+		String text;
+		if(RPCiteParam.Mode.FULL_REF.equals(param.getMode())) {
+			text = MakeCitation.makeFullRef(bookDef, param);
+		}
+		else {
+			text = MakeCitation.make(bookDef, param);
+		}
+		
 		return RPResult.builder()
-			.block(new RPBlock(RPBlockType.WIKITEXT, RockerHelper.makeWikitext(MakeCitation.template(bookDef, param))))
+			.block(new RPBlock(RPBlockType.WIKITEXT, text))
 			.dependency(param.getFactsPage())
 			.build();
 	}	

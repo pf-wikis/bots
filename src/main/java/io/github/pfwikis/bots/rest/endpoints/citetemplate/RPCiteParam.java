@@ -9,12 +9,21 @@ import lombok.Data;
 
 @Data
 public class RPCiteParam {
+
+	public static final RPCiteParam EMPTY = new RPCiteParam();
+	
 	private String factsPage;
 	private Integer intLocation;
 	private String location;
 	private String endPage;
 	private String showAs;
+	private Mode mode;
 	private SemanticSubject.Container semanticSubject;
+	
+	
+	public static enum Mode {
+		FULL_REF;
+	}
 
 	public boolean validate() {
 		if(location!=null)
