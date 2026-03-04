@@ -497,11 +497,20 @@ public class SFactsProperties {
 		"Event source",
 		SFactTypes.STRING)
 		.setDescription("A citation footnote where the specific date used is source from.");
+	public static final SProperty<String> Society_code_sort = new SProperty<>(
+		"Society code sort",
+		SFactTypes.STRING)
+		.setDescription("A derived version of the Society code for sorting.")
+		.setGenerateWikitext("{{#if:{{{Society code|}}}|{{#rreplace:{{{Society code|}}}|(\\D{{!}}^)(\\d)(\\D{{!}}$)|0$2}}}}");
 	public static final SProperty<String> Society_code = new SProperty<>(
 		"Society code",
-		SFactTypes.STRING)
+		SFactTypes.STRING) {
+			public List<SProperty<?>> generateProperties(SConcept c, SConcept parent) {
+				return List.of(Society_code_sort);			
+			}
+		}
 		.setDescription("The ID of an adventure typically within society play. Typically 'season-issue'.")
-		.setAllowsPattern("^[0-9]+(-[0-9]+)?$");
+		.setAllowsPattern("^[0-9]+(-[0-9a-zA-Z]+)?$");
 	public static final SProperty<String> Metaplot = new SProperty<>(
 		"Metaplot",
 		SFactTypes.STRING)
