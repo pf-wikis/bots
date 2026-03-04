@@ -511,10 +511,10 @@ public class SFactsProperties {
 		SFactTypes.PAGE_LIST)
 		.setDescription("A list of the factions represented in this adventure.");
 	public static final SProperty<List<String>> Society_tag = new SProperty<>(
-		"Society_tag",
+		"Society tag",
 		SFactTypes.VALUE_LIST)
 		.setDescription("The Society tags that apply to this adventure.")
-		.setSuggestValuesFrom("Property:Society_tag");
+		.setSuggestValuesFrom("Property:Society tag");
 	public static final SProperty<List<PageRef>> Adventure_contact = new SProperty<>(
 		"Adventure contact",
 		SFactTypes.PAGE_LIST)

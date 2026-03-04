@@ -19,7 +19,7 @@ This is the ''@name'' form. To create a page with this form, see [[:Category:Fac
 			@for(prop:g.getProperties()) {
 				<div class="facts-form-prop prop-@ConceptUtil.cssName(prop) prop-type-@ConceptUtil.cssName(prop.getFactType().getId())">
 					<div class="facts-form-key prop-@ConceptUtil.cssName(prop) prop-type-@ConceptUtil.cssName(prop.getFactType().getId())">
-						@prop.getName()
+						@prop.getName() {{#info:@prop.getDescription()|note|max-width=400}}
 					</div>
 					<div class="facts-form-value prop-@ConceptUtil.cssName(prop) prop-type-@ConceptUtil.cssName(prop.getFactType().getId())">
 						<div class="facts-form-input">
