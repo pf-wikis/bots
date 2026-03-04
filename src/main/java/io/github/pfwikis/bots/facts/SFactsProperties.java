@@ -497,10 +497,10 @@ public class SFactsProperties {
 		"Event source",
 		SFactTypes.STRING)
 		.setDescription("A citation footnote where the specific date used is source from.");
-	public static final SProperty<String> Society_ID = new SProperty<>(
-		"Society ID",
+	public static final SProperty<String> Society_code = new SProperty<>(
+		"Society code",
 		SFactTypes.STRING)
-		.setDescription("The ID of an adventure typically within society play.")
+		.setDescription("The ID of an adventure typically within society play. Typically 'season-issue'.")
 		.setAllowsPattern("^[0-9]+(-[0-9]+)?$");
 	public static final SProperty<String> Metaplot = new SProperty<>(
 		"Metaplot",
@@ -514,15 +514,15 @@ public class SFactsProperties {
 		"Society_tag",
 		SFactTypes.VALUE_LIST)
 		.setDescription("The Society tags that apply to this adventure.")
-		.setSuggestValuesFrom("Values:All ages;Glyph;Mythic;Nova;Repeatable;Starship;Quest");
+		.setSuggestValuesFrom("Property:Society_tag");
 	public static final SProperty<List<PageRef>> Adventure_contact = new SProperty<>(
-			"Adventure contact",
-			SFactTypes.PAGE_LIST)
-			.setDescription("The contact/quest giver/Venture-captain of this adventure.");
+		"Adventure contact",
+		SFactTypes.PAGE_LIST)
+		.setDescription("The contact/quest giver/Venture-captain of this adventure.");
 	public static final SProperty<String> Notes = new SProperty<>(
-			"Notes",
-			SFactTypes.MULTILINE_WIKITEXT)
-			.setDescription("Notes that are worth mentioning.");
+		"Notes",
+		SFactTypes.MULTILINE_WIKITEXT)
+		.setDescription("Notes that are worth mentioning.");
 	
 	private static final Map<String, SProperty<?>> ALL_PROPERTIES;
 	static {

@@ -73,7 +73,7 @@ import static io.github.pfwikis.bots.facts.SFactsProperties.Runtime;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Sanctioned;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Serialized;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Series;
-import static io.github.pfwikis.bots.facts.SFactsProperties.Society_ID;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Society_code;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Society_tag;
 import static io.github.pfwikis.bots.facts.SFactsProperties.To_page;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Video_game_type;
@@ -154,7 +154,7 @@ public class SModel {
 					Level_range_start,
 					Level_range_end,
 					Sanctioned,
-					Society_ID,
+					Society_code,
 					Society_tag,
 					Metaplot,
 					Faction,

@@ -30,6 +30,7 @@ public class SProperty<JType> {
 	private String description;
 	private boolean autocompleteDisabled;
 	private String suggestValuesFrom;
+	private boolean exisitingValuesOnly = false;
 	private String formNote;
 	private String allowsPattern;
 	private boolean required;
@@ -99,7 +100,11 @@ public class SProperty<JType> {
 			conf+="|values from property="+suggestValuesFrom.substring(9);
 		}
 		else if(StringUtils.startsWith(suggestValuesFrom, "Values:")) {
-			conf+="|values="+suggestValuesFrom.substring(7)+"|existing values only";
+			conf+="|values="+suggestValuesFrom.substring(7);
+		}
+		
+		if(exisitingValuesOnly) {
+			conf+="|existing values only";
 		}
 		
 		if(allowsPattern != null) {
