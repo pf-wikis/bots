@@ -511,9 +511,9 @@ public class SFactsProperties {
 		}
 		.setDescription("The ID of an adventure typically within society play. Typically 'season-issue'.")
 		.setAllowsPattern("^[0-9]+(-[0-9a-zA-Z]+)?$");
-	public static final SProperty<String> Metaplot = new SProperty<>(
+	public static final SProperty<List<PageRef>> Metaplot = new SProperty<>(
 		"Metaplot",
-		SFactTypes.STRING)
+		SFactTypes.PAGE_LIST)
 		.setDescription("The metaplot this adventure is a part of.");
 	public static final SProperty<List<PageRef>> Faction = new SProperty<>(
 		"Faction",
