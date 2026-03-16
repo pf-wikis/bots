@@ -6,3 +6,4 @@ service-account.json
 files/*
 outputs
 /debug
+/cache

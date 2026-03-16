@@ -16,7 +16,7 @@ import com.google.common.collect.Range;
 import com.google.common.collect.RangeMap;
 import com.google.common.collect.TreeRangeMap;
 
-import io.github.pfwikis.bots.common.model.subject.PageRef;
+import io.github.pfwikis.bots.common.api.model.PageTitle;
 import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
 import io.github.pfwikis.bots.utils.StringHelper;
 import lombok.AllArgsConstructor;
@@ -34,7 +34,7 @@ public class BookDef extends BookPart {
 	private String factsPage;
 	private SemanticSubject subject;
 	@Builder.Default
-	private List<PageRef> authors = new ArrayList<>();
+	private List<PageTitle> authors = new ArrayList<>();
 	@Builder.Default
 	private List<SectionDef> sections = new ArrayList<>();
 	private Integer releaseYear;

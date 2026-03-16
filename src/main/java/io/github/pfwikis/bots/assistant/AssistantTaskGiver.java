@@ -14,7 +14,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.beust.jcommander.Parameters;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import io.github.pfwikis.bots.common.Discord;
 import io.github.pfwikis.bots.common.Wiki;

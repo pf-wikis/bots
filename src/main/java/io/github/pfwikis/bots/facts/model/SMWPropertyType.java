@@ -1,10 +1,6 @@
 package io.github.pfwikis.bots.facts.model;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Year;
-import java.time.YearMonth;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.Map;
@@ -15,14 +11,14 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.NumericNode;
-import com.fasterxml.jackson.databind.node.TextNode;
 
+import io.github.pfwikis.bots.common.api.model.PageTitle;
 import io.github.pfwikis.bots.common.model.SemanticAsk.WikiDate;
-import io.github.pfwikis.bots.common.model.subject.PageRef;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.NumericNode;
+import tools.jackson.databind.node.StringNode;
 
 @RequiredArgsConstructor
 public enum SMWPropertyType {
@@ -38,7 +34,7 @@ public enum SMWPropertyType {
 	) {
 		@Override
 		public Boolean convertToJava(JsonNode v) {
-			return "t".equals(v.textValue());
+			return "t".equals(v.stringValue());
 		}
 	},
     CODE(
@@ -53,7 +49,7 @@ public enum SMWPropertyType {
 	) {
 		@Override
 		public Temporal convertToJava(JsonNode v) {
-			return WikiDate.parseRaw(v.textValue());
+			return WikiDate.parseRaw(v.stringValue());
 		}
 	},
     EMAIL(
@@ -88,8 +84,8 @@ public enum SMWPropertyType {
 	) {
 		@Override
 		public Number convertToJava(JsonNode v) {
-			if(v instanceof TextNode tn) {
-				var dec = new BigDecimal(tn.textValue());
+			if(v instanceof StringNode tn) {
+				var dec = new BigDecimal(tn.stringValue());
 				if(dec.stripTrailingZeros().scale()<=0) {
 					try {
 						return dec.intValueExact();
@@ -110,8 +106,8 @@ public enum SMWPropertyType {
 		"Page"
 	) {
 		@Override
-		public PageRef convertToJava(JsonNode v) {
-			return PageRef.of(v);
+		public PageTitle convertToJava(JsonNode v) {
+			return PageTitle.of(v);
 		}
 	},
     QUANTITY(
@@ -182,6 +178,6 @@ public enum SMWPropertyType {
 	}
 
 	public Object convertToJava(JsonNode v) {
-		return v.textValue();
+		return v.stringValue();
 	}
 }

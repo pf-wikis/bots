@@ -8,10 +8,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.util.StdConverter;
 
+import io.github.pfwikis.bots.common.api.model.PageTitle;
 import io.github.pfwikis.bots.common.model.JsonModel;
 import io.github.pfwikis.bots.common.model.SemanticObject;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Fact_type;
@@ -19,11 +17,14 @@ import io.github.pfwikis.bots.facts.model.SConcept;
 import io.github.pfwikis.bots.facts.model.SMWPropertyType;
 import lombok.Data;
 import lombok.Setter;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.util.StdConverter;
 
 @Data
 public class SemanticSubject extends JsonModel implements SemanticObject, Comparable<SemanticSubject> {
 	
-	private PageRef subject;
+	private PageTitle subject;
 	private List<Property> data;
 	private List<SemanticSubject> subObjects = Collections.emptyList();
 	private String sortKey;
@@ -95,7 +96,7 @@ public class SemanticSubject extends JsonModel implements SemanticObject, Compar
 			}
 		}
 
-		private void replace(SemanticSubject s, Map<PageRef, SemanticSubject> replacements) {
+		private void replace(SemanticSubject s, Map<PageTitle, SemanticSubject> replacements) {
 			s.getData().forEach(p->{
 				for(int i=0;i<p.dataitem.size();i++) {
 					if(p.dataitem.get(i) instanceof SemanticSubject child) {

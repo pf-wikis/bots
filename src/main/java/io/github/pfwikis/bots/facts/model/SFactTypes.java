@@ -13,7 +13,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.google.common.collect.Lists;
 
-import io.github.pfwikis.bots.common.model.subject.PageRef;
+import io.github.pfwikis.bots.common.api.model.PageTitle;
 import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
 
 public class SFactTypes {
@@ -59,14 +59,14 @@ public class SFactTypes {
 			return "";
 		}
 	};
-	public static final SFactType<PageRef> PAGE = new SFactType<>(
+	public static final SFactType<PageTitle> PAGE = new SFactType<>(
 			"PAGE",
 			SMWPropertyType.PAGE,
 			"wiki-page-name",
 			"[[:$v]]"
 	) {
 		@Override
-		public String toInfoboxDisplay(PageRef v) {
+		public String toInfoboxDisplay(PageTitle v) {
 			return v.toWikiLink(false);
 		}
 
@@ -75,19 +75,19 @@ public class SFactTypes {
 			return STRING.configureFormField(prop);
 		};
 	};
-	public static final SFactType<List<PageRef>> PAGE_LIST = new SFactType<>(
+	public static final SFactType<List<PageTitle>> PAGE_LIST = new SFactType<>(
 			"PAGE_LIST",
 			SMWPropertyType.PAGE,
 			"string",
 			"{{#arraymap:$v|;|~|{{a|~}}}}"
 	) {
 		@Override
-		public String wikitextToStoreFact(SProperty<List<PageRef>> p, String v) {
+		public String wikitextToStoreFact(SProperty<List<PageTitle>> p, String v) {
 			return v+"|+sep=;";
 		}
 		
 		@Override
-		public String toInfoboxDisplay(List<PageRef> v) {
+		public String toInfoboxDisplay(List<PageTitle> v) {
 			return VALUE_LIST.toInfoboxDisplay(Lists.transform(v, e->PAGE.toInfoboxDisplay(e)));
 		}
 
@@ -96,9 +96,9 @@ public class SFactTypes {
 			return "|input type=tokens|delimiter=;";
 		};
 		
-		public List<PageRef> convertToJava(List<Object> values) {
+		public List<PageTitle> convertToJava(List<Object> values) {
 			return values.stream()
-				.map(PageRef.class::cast)
+				.map(PageTitle.class::cast)
 				.toList();
 		};
 	};
@@ -138,29 +138,29 @@ public class SFactTypes {
 			return "|input type=tokens|delimiter=;";
 		};
 	};
-	public static final SFactType<List<PageRef>> PAGE_LIST_ORDERED = new SFactType<>(
+	public static final SFactType<List<PageTitle>> PAGE_LIST_ORDERED = new SFactType<>(
 			"PAGE_LIST_ORDERED",
 			SMWPropertyType.PAGE,
 			"string",
 			"{{#arraymap:$v|;|~|{{a|~}}}}"
 	) {
 		@Override
-		public String toInfoboxDisplay(List<PageRef> v) {
+		public String toInfoboxDisplay(List<PageTitle> v) {
 			return PAGE_LIST.toInfoboxDisplay(v);
 		}
 		
 		@Override
-		public String wikitextBeforeStoringFact(SProperty<List<PageRef>> p) {
+		public String wikitextBeforeStoringFact(SProperty<List<PageTitle>> p) {
 			return "<span class=\"hidden\">{{#counter: "+p.getName()+"-order-counter|set=0}}</span>";
 		}
 		
 		@Override
-		public String wikitextToStoreFact(SProperty<List<PageRef>> p, String v) {
+		public String wikitextToStoreFact(SProperty<List<PageTitle>> p, String v) {
 			return "{{#arraymap:"+v+"|;|~|~;{{#counter: "+p.getName()+"-order-counter}}|§}}|+sep=§";
 		}
 		
 		@Override
-		public String wikitextToQuery(SProperty<List<PageRef>> prop) {
+		public String wikitextToQuery(SProperty<List<PageTitle>> prop) {
 			return ".Ordered_value";
 		}
 
@@ -169,13 +169,13 @@ public class SFactTypes {
 			return "|input type=tokens|delimiter=;";
 		}
 		
-		public List<PageRef> convertToJava(List<Object> values) {
+		public List<PageTitle> convertToJava(List<Object> values) {
 			return values.stream()
-				.<Pair<Integer, PageRef>>flatMap(o-> {
+				.<Pair<Integer, PageTitle>>flatMap(o-> {
 					if(o instanceof SemanticSubject ss && ss.has(Order) && ss.has(Ordered_value)) {
 						return Stream.of(Pair.of(ss.get(Order), ss.get(Ordered_value)));
 					}
-					else if(o instanceof PageRef p) {
+					else if(o instanceof PageTitle p) {
 						return Stream.of(Pair.of(99, p));
 					}
 					return Stream.empty();
@@ -197,14 +197,14 @@ public class SFactTypes {
 			return "|input type=textarea|autogrow|editor=visualeditor";
 		}
 	};
-	public static final SFactType<PageRef> IMAGE = new SFactType<>(
+	public static final SFactType<PageTitle> IMAGE = new SFactType<>(
 			"IMAGE",
 			SMWPropertyType.PAGE,
 			"wiki-file-name",
 			"[[File:$v|250px]]"
 	) {
 		@Override
-		public String wikitextToStoreFact(SProperty<PageRef> p, String v) {
+		public String wikitextToStoreFact(SProperty<PageTitle> p, String v) {
 			return "File:"+v;
 		}
 

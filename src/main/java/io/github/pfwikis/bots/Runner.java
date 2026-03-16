@@ -64,6 +64,7 @@ public class Runner {
 						.getConstructor()
 						.newInstance();
 				} catch (Exception e) {
+					log.error("Failed to instantiate bot {}", bc.getName(), e);
 					throw new RuntimeException(e);
 				}
 			})

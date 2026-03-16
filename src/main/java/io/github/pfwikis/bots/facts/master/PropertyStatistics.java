@@ -8,9 +8,6 @@ import java.util.stream.IntStream;
 import org.apache.commons.lang3.StringUtils;
 
 import com.beust.jcommander.Parameters;
-import com.fasterxml.jackson.databind.node.NumericNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.TextNode;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset.Entry;
 
@@ -18,6 +15,9 @@ import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.ScatteredRunnableBot;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import lombok.extern.slf4j.Slf4j;
+import tools.jackson.databind.node.NumericNode;
+import tools.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.node.StringNode;
 
 @Slf4j
 @Parameters
@@ -50,7 +50,7 @@ public class PropertyStatistics extends SimpleBot implements ScatteredRunnableBo
 							yield n.get("raw").textValue().substring(2);
 						yield n.toString();
 					}
-					case TextNode str -> str.textValue();
+					case StringNode str -> str.textValue();
 					case NumericNode n -> n.textValue();
 					default -> throw new IllegalStateException("unhandles type "+v.getClass());
 				}))

@@ -1,0 +1,90 @@
+@import io.github.pfwikis.bots.common.api.generator.model.APIParam
+@import com.google.common.base.CaseFormat
+
+@args(APIParam p)
+
+package io.github.pfwikis.bots.common.api.generated.params;
+
+
+import com.fasterxml.jackson.annotation.JsonValue;
+import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+@for((it,v):p.getEnumValues()) {@if(p.isSubmodule()) {
+import io.github.pfwikis.bots.common.api.generated.@v.getReferencedModule().getJavaName();
+}}
+
+@if(p.getDescription()!=null) {/**@p.getDescription()*/}
+@@Getter
+@@RequiredArgsConstructor
+public enum @p.getJavaType() {
+	@for((it,v):p.getEnumValues()) {
+	@if(v.getDescription()!=null) {/**@v.getDescription()*/}
+	@v.getSafeName()(
+		"@v.getValue()"
+		@if(p.isSubmodule()) {
+			, @(v.getReferencedModule().getJavaName()).class
+		}
+	
+	)@if(!it.last()){,}else{;}}
+	
+	private final String jsonValue;
+	@if(p.isSubmodule()) {
+		private final Class<? extends @p.getJavaModuleType()> type;
+		
+		public static interface @p.getJavaModuleType() extends AAPIModule {}
+		
+		@*
+		public static @p.getJavaType() fromType(@p.getJavaModuleType() @p.getSafeName()) @{
+			return switch(@p.getSafeName()) @{
+				@for(val:p.getEnumValues()) {
+					case @val.getReferencedModule().getJavaName() g -> @val.getSafeName();
+				}
+				default -> throw new IllegalArgumentException();
+			@};
+		@}
+		
+		public static List<@p.getJavaType()> fromType(List<@p.getJavaModuleType()> @p.getSafeName()) @{
+			var result = new ArrayList<@p.getJavaType()>();
+			for(var v:@p.getSafeName()) @{
+				result.add(fromType(v));
+			@}
+			return result;
+		@}
+
+		public static List<@p.getJavaType()> fromType(@p.getJavaModuleType()... @p.getSafeName()) @{
+			var result = new ArrayList<@p.getJavaType()>();
+			for(var v:@p.getSafeName()) @{
+				result.add(fromType(v));
+			@}
+			return result;
+		@}
+		*@
+		
+		public static class @p.getJavaSubmoduleType() extends AAPISubmodule<@p.getJavaType(), @p.getJavaModuleType()>{
+			public @p.getJavaSubmoduleType()(@p.getJavaType() k, @p.getJavaModuleType() v) @{
+				super(k,v);
+			@}
+		}
+		
+		public static @p.getJavaSubmoduleType() createSubmodule(@p.getJavaModuleType() module) {
+			return new @p.getJavaSubmoduleType()(switch(module) @{
+				@for(val:p.getEnumValues()) {
+					case @val.getReferencedModule().getJavaName() g -> @val.getSafeName();
+				}
+				default -> throw new IllegalArgumentException();
+			@}, module);
+		}
+		
+		public static List<@p.getJavaSubmoduleType()> createSubmodule(@p.getJavaModuleType()... modules) @{
+			var result = new ArrayList<@p.getJavaSubmoduleType()>();
+			for(var v:modules) @{
+				result.add(createSubmodule(v));
+			@}
+			return result;
+		@}
+	}	
+}

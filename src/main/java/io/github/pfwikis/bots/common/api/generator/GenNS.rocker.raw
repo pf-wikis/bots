@@ -1,0 +1,46 @@
+@import io.github.pfwikis.bots.common.api.generator.api.GenAPIParameter
+@import io.github.pfwikis.bots.common.api.generator.APIGenerator
+@import io.github.pfwikis.bots.common.api.generator.api.GenAPINamespace
+@import com.google.common.base.CaseFormat
+@import java.util.List
+
+@args(List<GenAPINamespace> namespaces)
+
+package io.github.pfwikis.bots.common.api.generated.params;
+
+//import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
+import lombok.RequiredArgsConstructor;
+import lombok.Getter;
+
+@@Getter
+@@RequiredArgsConstructor
+public enum NS {
+	@for((it,ns):namespaces) {
+	@ns.getJavaName()(@ns.getId(), "@ns.getPrefix()", "@ns.getLabel()")@if(it.last()){;}else{,}
+	}
+	
+	@@Getter(onMethod_=@@JsonValue)
+	private final int id;
+	private final String prefix;
+	private final String label;
+	
+	public static NS fromId(int id) {
+		return switch(id) {
+			@for(ns:namespaces) {
+				case @ns.getId() -> @ns.getJavaName();
+			}
+			default -> throw new IllegalArgumentException("Unknown namespace id "+id);
+		};
+	}
+	
+	public static NS fromName(String name) {
+		return switch(name) {
+			@for(ns:namespaces) {
+				case "@ns.getLabel()" -> @ns.getJavaName();
+			}
+			default -> throw new IllegalArgumentException("Unknown namespace name "+name);
+		};
+	}
+}

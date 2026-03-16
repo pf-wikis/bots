@@ -1,28 +1,39 @@
 package io.github.pfwikis.bots.replacer;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.HashSet;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.HexFormat;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.SequencedSet;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.hc.client5.http.utils.Hex;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.TextNode;
+import org.jsoup.select.Elements;
 
 import com.beust.jcommander.Parameters;
-import com.google.common.collect.ImmutableListMultimap;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Multimap;
 
 import io.github.pfwikis.bots.common.Wiki;
+import io.github.pfwikis.bots.common.api.model.PageRef;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
-import io.github.pfwikis.bots.common.model.Page;
 import io.github.pfwikis.bots.common.model.SemanticAsk.Result;
-import io.github.pfwikis.bots.common.model.subject.PageRef;
+import io.github.pfwikis.bots.utils.Jackson;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -30,40 +41,18 @@ import lombok.extern.slf4j.Slf4j;
 public class Replacer extends SimpleBot {
 
 	public Replacer() {
-		super("replacer", "Bot Manual Bulk Operations");
+		super("replacer", "Manual Bulk Operations");
 	}
 	
 	@Override
 	public String getDescription() {
 		return "This bot is only started by hand for manual bulk changes to the wiki.";
 	}
-
+	
+	
 	@Override
 	public void run(RunContext ctx) throws IOException {
-		var fileCats = run.getWiki().semanticAsk(P.class, "[[File:+]]|?Category=category")
-				.stream()
-				.flatMap(r->Optional.ofNullable(r.getPrintouts().category).orElse(Collections.emptyList()).stream())
-				.map(c->c.getPage())
-				.distinct()
-				.toList();
-		
-		var mainCats = run.getWiki().semanticAsk(P.class, "[[:+]]|?Category=category")
-				.stream()
-				.flatMap(r->Optional.ofNullable(r.getPrintouts().category).orElse(Collections.emptyList()).stream())
-				.map(c->c.getPage())
-				.distinct()
-				.toList();
-		
-		var matches = new HashSet<String>();
-		matches.addAll(fileCats);
-		matches.retainAll(mainCats);
-		
-		for(var m:matches) {
-			log.info(m);
-		}
-		
+		var res = run.getWiki().getWikitext(PageRef.of("blasdaklsjdla"));
+		log.info("{}", res);
 	}
-	
-	public static record Debug(List<String> debug) {}
-	public static record P(List<Result<?>> category) {}
 }

@@ -1,21 +1,10 @@
 package io.github.pfwikis.bots.facts.makecategories;
 
 import java.io.IOException;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.IntStream;
-
-import org.apache.commons.lang3.StringUtils;
 
 import com.beust.jcommander.Parameters;
-import com.fasterxml.jackson.databind.node.NumericNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.TextNode;
-import com.google.common.collect.HashMultiset;
-import com.google.common.collect.Multiset.Entry;
 
 import io.github.pfwikis.bots.common.bots.RunContext;
-import io.github.pfwikis.bots.common.bots.ScatteredRunnableBot;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.common.model.SemanticAsk.Result;
 import lombok.extern.slf4j.Slf4j;

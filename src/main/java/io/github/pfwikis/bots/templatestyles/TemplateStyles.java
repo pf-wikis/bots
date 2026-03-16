@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.beust.jcommander.Parameters;
 
 import io.github.pfwikis.bots.common.Wiki;
+import io.github.pfwikis.bots.common.api.generated.params.NS;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +35,7 @@ public class TemplateStyles extends SimpleBot {
 		var workDir = new File("outputs/"+run.getServer().getCode()+"/less");
 		workDir.mkdirs();
 		
-		var styles = run.getWiki().getPagesInNamespace("Style")
+		var styles = run.getWiki().getPagesInNamespace(NS.STYLE)
 			.stream()
 			.map(p-> new Entry(
 				p.getTitle(),

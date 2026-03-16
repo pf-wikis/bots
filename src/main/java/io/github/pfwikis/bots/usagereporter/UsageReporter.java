@@ -300,7 +300,7 @@ public class UsageReporter extends SimpleBot {
 			url.addParameter(args[i], args[i+1]);
 		}
 		try {
-			return Jackson.JSON.readValue(url.build().toURL(), type);
+			return Jackson.JSON.readValue(url.build().toURL().openStream(), type);
 		} catch(Exception e) {
 			log.error("Failed to parse matomo answer:", e);
 			//so we won't log matomo errors to the wiki

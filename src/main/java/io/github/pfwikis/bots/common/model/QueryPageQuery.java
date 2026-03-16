@@ -5,7 +5,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.github.pfwikis.bots.common.Wiki;
-import io.github.pfwikis.bots.common.model.subject.PageRef;
+import io.github.pfwikis.bots.common.api.model.PageTitle;
 import lombok.Data;
 
 @Datapublic class QueryPageQuery {
@@ -35,7 +35,7 @@ import lombok.Data;
         private long redirectId;
 		
 		public String toFullPageTitle(Wiki server) {
-			return PageRef.of(
+			return PageTitle.of(
 					redirectNamespace,
 					redirectTitle)
 				.toFullTitle()

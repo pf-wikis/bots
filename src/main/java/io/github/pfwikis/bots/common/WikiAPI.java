@@ -1,61 +1,28 @@
 package io.github.pfwikis.bots.common;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
+import com.google.common.collect.Lists;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.StreamReadFeature;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.util.concurrent.Uninterruptibles;
-
-import io.github.fastily.jwiki.core.NS;
-import io.github.fastily.jwiki.dwrap.Revision;
 import io.github.pfwikis.bots.common.api.MWApi;
 import io.github.pfwikis.bots.common.api.MWApiCache;
+import io.github.pfwikis.bots.common.api.generated.AAPIQuery;
+import io.github.pfwikis.bots.common.api.generated.AAPIQueryCategories;
+import io.github.pfwikis.bots.common.api.generated.AAPIQueryCategorymembers;
+import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryCategorymembersProp;
+import io.github.pfwikis.bots.common.api.generated.params.NS;
+import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
+import io.github.pfwikis.bots.common.api.model.PageRef;
+import io.github.pfwikis.bots.common.api.responses.QueryResponse;
+import io.github.pfwikis.bots.common.api.responses.QueryResponse.Category;
+import io.github.pfwikis.bots.common.api.responses.QueryResponse.QRPage;
 import io.github.pfwikis.bots.common.bots.Bot;
-import io.github.pfwikis.bots.common.model.AllusersQuery.WUser;
-import io.github.pfwikis.bots.common.model.LogEventsQuery.LogEvent;
 import io.github.pfwikis.bots.common.model.Page;
-import io.github.pfwikis.bots.common.model.ParseResponse;
-import io.github.pfwikis.bots.common.model.QueryPageQuery.QPPage;
-import io.github.pfwikis.bots.common.model.QueryResponse;
-import io.github.pfwikis.bots.common.model.RecentChanges.RecentChange;
-import io.github.pfwikis.bots.common.model.SemanticAsk;
-import io.github.pfwikis.bots.common.model.SemanticAsk.Printouts;
-import io.github.pfwikis.bots.common.model.SemanticAsk.Result;
-import io.github.pfwikis.bots.common.model.subject.PageRef;
-import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
-import io.github.pfwikis.bots.utils.Jackson;
 import io.github.pfwikis.bots.utils.SimpleCache.CacheId;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.Response;
 
 @Slf4j
 public class WikiAPI {
@@ -71,7 +38,77 @@ public class WikiAPI {
 		this.server = wiki;
 		this.wiki = MWApiCache.get(wiki, name, password, antiProtectionSecret);
 	}
+	
+	public boolean editIfChange(PageRef page, String content, String reason) {
+		content = content.trim()+"\n";
+		var oldText = wiki.getWikitext(page);
+		if(oldText != null) oldText = oldText.trim()+"\n";
 
+		if(!content.equals(oldText)) {
+			if(Bot.globalLocalMode) {
+				try {
+					new File("debug").mkdir();
+					var diffOld = oldText.replaceAll("((?=\\[\\[)|<div|\\{\\{#if)", "\n$1");
+					Files.writeString(Path.of("debug/old.html"), diffOld);
+					Files.writeString(Path.of("debug/newForTesting.html"), content);
+					var diffNew = content.replaceAll("((?=\\[\\[)|<div|\\{\\{#if)", "\n$1");
+					Files.writeString(Path.of("debug/new.html"), diffNew);
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+			
+			wiki.edit(page, content, reason);
+			server.storeInCache(CacheId.PAGE_EXISTS, page, true);
+			return true;
+		}
+		server.storeInCache(CacheId.PAGE_EXISTS, page, true);
+		return false;
+	}
+	
+	public void edit(PageRef page, String content, String reason) {
+		content = content.trim()+"\n";
+		wiki.edit(page, content, reason);
+		server.storeInCache(CacheId.PAGE_EXISTS, page, true);
+	}
+
+	public List<Page> getPagesInNamespace(NS style) {
+		throw new UnsupportedOperationException(); //TODO
+	}
+	
+	public List<PageRef> getPagesInCategory(ContainsPageRef category) {
+		return Lists.transform(wiki.run(AAPIQuery
+				.create()
+				.generator(AAPIQueryCategorymembers.create(category)
+						.prop(AAPIQueryCategorymembersProp.IDS)),
+				QueryResponse.class
+		).getPages(), QRPage::getPage);
+	}
+	
+	public List<QRPage> getPagesInCategory(ContainsPageRef category, NS[] namespaces) {
+		return wiki.run(AAPIQuery
+				.create()
+				.generator(AAPIQueryCategorymembers.create(category)
+						.prop(AAPIQueryCategorymembersProp.IDS)
+						.namespace(namespaces)),
+				QueryResponse.class
+		).getPages();
+	}
+
+	public String getWikitext(ContainsPageRef page) {
+		return wiki.getWikitext(page);
+	}
+
+	public boolean exists(ContainsPageRef page) {
+		return wiki.exists(page);
+	}
+
+	public List<PageRef> getCategories(ContainsPageRef page) {
+		return wiki.getPageProperties(page, AAPIQueryCategories.create()).getCategories()
+			.stream().map(Category::getPage).toList();
+	}
+
+	/*
 	public boolean upload(Path p, String title, String desc, String summary) {
 		return wiki.upload(p, title, desc, summary);
 	}
@@ -102,40 +139,6 @@ public class WikiAPI {
 	
 	public void purge(List<String> pages) {
 		wiki.purge(pages.toArray(String[]::new));
-	}
-
-	public void edit(String page, String content, String reason) {
-		if(!wiki.edit(page, content, reason)) {
-			throw new RuntimeException("Failed to edit page "+page);
-		}
-		server.storeInCache(CacheId.PAGE_EXISTS, page, true);
-	}
-
-	public boolean editIfChange(String page, String content, String reason) {
-		content = content.trim()+"\n";
-		var oldText = wiki.getPageText(page);
-		if(oldText != null) oldText = oldText.trim()+"\n";
-
-		if(!content.equals(oldText)) {
-			if(Bot.globalLocalMode) {
-				try {
-					new File("debug").mkdir();
-					var diffOld = oldText.replaceAll("((?=\\[\\[)|<div|\\{\\{#if)", "\n$1");
-					Files.writeString(Path.of("debug/old.html"), diffOld);
-					Files.writeString(Path.of("debug/newForTesting.html"), content);
-					var diffNew = content.replaceAll("((?=\\[\\[)|<div|\\{\\{#if)", "\n$1");
-					Files.writeString(Path.of("debug/new.html"), diffNew);
-				} catch(Exception e) {
-					e.printStackTrace();
-				}
-			}
-			
-			edit(page, content, reason);
-			server.storeInCache(CacheId.PAGE_EXISTS, page, true);
-			return true;
-		}
-		server.storeInCache(CacheId.PAGE_EXISTS, page, true);
-		return false;
 	}
 
 	public Set<String> getAllSubPages(String namespace, String page) {
@@ -305,7 +308,7 @@ public class WikiAPI {
 		existingPages.forEach(p->server.storeInCache(CacheId.PAGE_EXISTS, p, Boolean.TRUE));
 	}
 	
-	public boolean pageExists(PageRef page) {
+	public boolean pageExists(PageTitle page) {
 		return pageExists(page.toFullTitle());
 	}
 	
@@ -339,15 +342,6 @@ public class WikiAPI {
 			"disableeditsection", "true",
 			"disabletoc", "true"
 		).parse();
-	}
-	
-	public List<Page> getPagesInCategory(String category) {
-		return query(
-			Query.GENERATOR_CATEGORY_MEMBERS,
-			"gcmtitle", category,
-			"gcmprop", "ids",
-			"gcmlimit", "5000"
-		).getPages();
 	}
 	
 	public List<Page> getPagesTranscluding(String template) {
@@ -452,15 +446,7 @@ public class WikiAPI {
 		return false;
 	}
 
-	public List<Page> getPagesInCategory(String category, String namespace) {
-		return query(
-			Query.GENERATOR_CATEGORY_MEMBERS,
-			"gcmtitle", category,
-			"gcmprop", "ids",
-			"gcmnamespace", namespace,
-			"gcmlimit", "5000"
-		).getPages();
-	}
+	
 	
 	public List<Page> getPagesInNamespace(int namespace) {
 		return query(
@@ -649,4 +635,5 @@ public class WikiAPI {
 	public String getPageImage(String page) {
 		return query(Query.PAGE_IMAGES, "titles", page).getPages().get(0).getPageimage();
 	}
+	*/
 }

@@ -24,7 +24,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 
-import io.github.pfwikis.bots.common.model.subject.PageRef;
+import io.github.pfwikis.bots.common.api.model.PageTitle;
 import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
 import io.github.pfwikis.bots.rest.RPEndpoint;
 import io.github.pfwikis.bots.rest.RestProviderBot;
@@ -113,8 +113,8 @@ public class RPCiteTemplate extends RPEndpoint<RPCiteParam> {
 		});
 	}
 
-	private List<PageRef> sortAuthors(SemanticSubject subject) {
-		List<PageRef> result = new ArrayList<>();
+	private List<PageTitle> sortAuthors(SemanticSubject subject) {
+		List<PageTitle> result = new ArrayList<>();
 		subject.getOr(Primary_author, Collections.emptyList()).stream()
 			.filter(v->!result.contains(v))
 			.forEachOrdered(result::add);
@@ -124,7 +124,7 @@ public class RPCiteTemplate extends RPEndpoint<RPCiteParam> {
 			.forEachOrdered(result::add);
 
 		subject.getOr(Author_all, Collections.emptyList()).stream()
-			.sorted(Comparator.comparing(PageRef::getTitle))
+			.sorted(Comparator.comparing(PageTitle::getTitle))
 			.filter(v->!result.contains(v))
 			.forEachOrdered(result::add);
 		

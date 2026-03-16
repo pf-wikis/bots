@@ -28,7 +28,8 @@ public abstract class DualBot extends Bot<DualRun> {
 			public String getDescription() {return null;}
 		};
 		sBot.antiProtectionSecret = this.antiProtectionSecret;
-		sBot.rootPassword = this.rootPassword;
+		sBot.pfkey = pfkey;
+		sBot.sfkey = sfkey;
 		var runs = sBot.createRuns();
 		run.setPfRun(runs.get(0));
 		run.setSfRun(runs.get(1));

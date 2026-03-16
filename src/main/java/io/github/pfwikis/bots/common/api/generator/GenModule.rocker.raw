@@ -1,0 +1,267 @@
+@import io.github.pfwikis.bots.common.api.generator.model.APIModule
+@import io.github.pfwikis.bots.common.api.generator.model.APIModule.PageSetter
+@import org.apache.commons.lang3.StringUtils
+
+@args(APIModule m)
+package io.github.pfwikis.bots.common.api.generated;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BinaryOperator;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import lombok.NonNull;
+
+import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
+
+import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
+import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
+import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
+import io.github.pfwikis.bots.common.api.AAPI;
+import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryTokensType;
+import io.github.pfwikis.bots.common.api.generated.params.NS;
+@for(param:m.getParameters()) {
+	@if(param.requiresEnum()) {
+		import io.github.pfwikis.bots.common.api.generated.params.@param.getJavaType();
+		@if(param.isSubmodule()) {
+			import io.github.pfwikis.bots.common.api.generated.params.@(param.getJavaType()).@param.getJavaModuleType();
+			import io.github.pfwikis.bots.common.api.generated.params.@(param.getJavaType()).@param.getJavaSubmoduleType();
+		}
+	}
+}
+@for((it,ref):m.getReferencedBy()) {
+	import io.github.pfwikis.bots.common.api.generated.params.@(ref.getJavaType()).@ref.getJavaModuleType();
+}
+
+
+/** @m.getDescription()
+*/
+public class @m.getJavaName() implements AAPIModule
+@if(m.getOptionalParameters().stream().anyMatch(p->p.isToken())) {, AAPITokenModule}
+@for((it,ref):m.getReferencedBy()) {, @ref.getJavaModuleType()}
+@{
+
+	
+
+	public static @m.getJavaName() create(
+		@with?(set=m.getPageSetter()) {@if(set.required()) {
+			@@NonNull ContainsPageRef@if(set.multi()){...} @set.pageField()
+			@if(!m.getRequiredParameters().isEmpty()){,}
+		}}
+		@for((it,param):m.getRequiredParameters()) {
+			@@NonNull @param.getJavaParamValueType() @param.getSafeName()
+			@if(!it.last()){, }	
+		}
+	) @{
+		@m.getJavaName() v = new @m.getJavaName()();
+		
+		@with?(set=m.getPageSetter()) {@if(set.required()) {
+			@if(set.multi()) {
+				v.@set.pageField() = List.of(@set.pageField());
+			}
+			else {
+				v.@set.pageField() = @set.pageField();
+			}
+		}}
+		
+		@for(param:m.getRequiredParameters()) {
+			@if(param.isSubmodule()) {
+				v.@param.getSafeName() = @(param.getJavaType()).createSubmodule(@param.getSafeName());
+			}
+			else if(param.isMulti()) {
+				v.@param.getSafeName() = List.of(@param.getSafeName());
+			}
+			else {
+				v.@param.getSafeName() = @param.getSafeName();
+			}
+		}
+		
+		return v;
+	@}
+	
+	private @m.getJavaName()() @{@}
+
+	@for(param:m.getParameters()) {
+		private @param.getJavaValueType() @param.getSafeName() @if(param==m.getResultLimitParam() && param.getMaxValue() != null){= @param.getMaxValue()};
+	}
+	@with?(PageSetter set = m.getPageSetter()) {
+		private @if(set.multi()) {List<ContainsPageRef>}else{ContainsPageRef} @set.pageField();
+	}
+	
+	@for(param:m.getParameters()) {
+		@if(!param.isRequired()){
+			/**@param.getDescription()
+			*/
+			public @m.getJavaName() @param.getSafeName()(@param.getJavaParamValueType() @param.getSafeName()) @{
+				@if(param.isSubmodule()) {
+					this.@param.getSafeName() = @(param.getJavaType()).createSubmodule(@param.getSafeName());
+				}
+				else if(param.isMulti()) {
+					this.@param.getSafeName() = List.of(@param.getSafeName());
+				}
+				else {
+					this.@param.getSafeName() = @param.getSafeName();
+				}
+				return this;
+			@}
+		}
+		
+		/**@param.getDescription()
+		*/
+		public @param.getJavaValueType() get@StringUtils.capitalize(param.getSafeName())() @{
+			return this.@param.getSafeName();
+		@}
+	}
+	
+	@with?(set=m.getPageSetter()) {
+		@if(!set.required()) {
+			public @m.getJavaName() @set.pageField()(ContainsPageRef@if(set.multi()){...} @set.pageField()) @{
+				@if(set.multi()) {
+					this.@set.pageField() = List.of(@set.pageField());
+				}
+				else {
+					this.@set.pageField() = @set.pageField();
+				}
+				return this;
+			@}
+		}
+		public @if(set.multi()){List<ContainsPageRef>}else{ContainsPageRef} get@StringUtils.capitalize(set.pageField())() @{
+			return this.@set.pageField();
+		@}
+	}
+	
+	public String toString() @{
+		var sb = new StringBuilder()
+			.append("@m.getJavaName()(");
+		
+		@with?(set=m.getPageSetter()) {
+			if(@set.pageField()!=null) @{
+				sb.append("@set.pageField()=").append(@set.pageField()).append(", ");
+			@}
+		}
+			
+		@for(param:m.getParameters()) {
+			if(@param.getSafeName() != null) @{
+				@if(param.isSubmodule()) {
+					sb.append("@param.getPrefixedRawName()")
+						.append("=")
+					@if(param.isSubmodule()) {
+						@if(param.isMulti()) {
+							;@(param.getSafeName()).stream().map(v->v.getValue().toString()).collect(Collectors.joining("|"));
+						}
+						else {
+							.append(@(param.getSafeName()).getValue().toString());
+						}
+					}
+					else {
+						.append(@(param.getSafeName()).toString());
+					}
+				}
+				else {
+					sb.append("@param.getPrefixedRawName()").append("=").append(@param.getJsonValue(param.getSafeName()));
+				}
+				sb.append(", ");
+			@}
+		}
+	
+		return sb.append(")").toString();
+	@}
+	
+	@@Override
+	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) @{
+	
+		@with?(set=m.getPageSetter()) {
+			if(@set.pageField()!=null) @{
+				@if(set.multi()) {
+					if(@(set.pageField()).stream().allMatch(cpr->cpr.toPageRef().hasId())) @{
+						String val = @(set.pageField()).stream().map(p->Integer.toString(p.toPageRef().getId())).collect(Collectors.joining("|"));
+						req.addParameter(paramPrefix+"@m.getModule().getPrefix()@set.idField()", val);
+					@}
+					else @{
+						String val = @(set.pageField()).stream().map(p->p.toPageRef().getTitle().toFullTitle()).collect(Collectors.joining("|"));
+						req.addParameter(paramPrefix+"@m.getModule().getPrefix()@set.pageField()", val);
+					@}
+				}
+				else {
+					if(@(set.pageField()).toPageRef().hasId()) @{
+						req.addParameter(paramPrefix+"@m.getModule().getPrefix()@set.idField()", Integer.toString(@(set.pageField()).toPageRef().getId()));
+					@}
+					else @{
+						req.addParameter(paramPrefix+"@m.getModule().getPrefix()@set.pageField()", @(set.pageField()).toPageRef().getTitle().toFullTitle());
+					@}
+				}
+			@}
+		}
+	
+		@for(param:m.getParameters()) {
+			@if(param.isToken()) {
+				@param.getSafeName() = api.requestToken(AAPIQueryTokensType.@param.getTokenType().name());
+			}
+		
+			if(@param.getSafeName() != null) @{
+				@if(param.isSubmodule()) {
+					req.addParameter(paramPrefix+"@param.getPrefixedRawName()", @param.getJsonValue(param.getSafeName()));
+					@if(param.isMulti()) {
+						@(param.getSafeName()).forEach(v->v.getValue().buildRequest(api, req, paramPrefix@if(param.getSubmoduleParamPrefix()!=null){+"@param.getSubmoduleParamPrefix()"}));
+					}
+					else {
+						@(param.getSafeName()).getValue().buildRequest(api, req, paramPrefix@if(param.getSubmoduleParamPrefix()!=null){+"@param.getSubmoduleParamPrefix()"});
+					}
+				}
+				else {
+					req.addParameter(paramPrefix+"@param.getPrefixedRawName()", @param.getJsonValue(param.getSafeName()));
+				}
+			@}
+		}
+	@}
+	
+	
+	private final Builder builder = new Builder();
+	
+	@@Override
+	public Builder builder() {
+		return builder;
+	}
+	
+	private class Builder extends AAPIModule.Builder {
+		@@Override
+		public void forEachModule(Consumer<AAPIModule> c) @{
+			c.accept(@(m.getJavaName()).this);
+			@for(param:m.getParameters()) {@if(param.isSubmodule()) {
+				if(@param.getSafeName() != null) @{
+					@if(param.isMulti()) {
+						@(param.getSafeName()).forEach(v->v.getValue().builder().forEachModule(c));
+					}
+					else {
+						@(param.getSafeName()).getValue().builder().forEachModule(c);
+					}
+				@}
+			}}
+		@}
+		
+		@@Override
+		public <T> T mapReduce(Function<AAPIModule, T> map, BinaryOperator<T> reduce) @{
+			T value = map.apply(@(m.getJavaName()).this);
+			@for(param:m.getParameters()) {@if(param.isSubmodule()) {
+				if(@param.getSafeName() != null) @{
+					@if(param.isMulti()) {
+						value = reduce.apply(value, @(param.getSafeName()).stream().map(e->e.getValue()).map(map).reduce(reduce).get());
+					}
+					else {
+						value = reduce.apply(value, @(param.getSafeName()).getValue().builder().mapReduce(map, reduce));
+					}
+				@}
+			}}
+			
+			return value;
+		@}
+		
+		@@Override
+		protected boolean internalRequiresPost() @{
+			return @m.requiresPost();
+		@}
+	}
+@}

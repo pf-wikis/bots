@@ -1,6 +1,5 @@
 package io.github.pfwikis.bots.common.model;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Year;
@@ -13,19 +12,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JacksonException;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.BeanProperty;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.deser.ContextualDeserializer;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.TreeTraversingParser;
-import com.fasterxml.jackson.databind.util.StdConverter;
 import com.google.common.collect.Lists;
 
 import io.github.pfwikis.bots.facts.model.SFactType;
@@ -34,6 +20,18 @@ import io.github.pfwikis.bots.utils.MWJsonHelper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.BeanProperty;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JavaType;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.deser.std.StdDeserializer;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.node.TreeTraversingParser;
+import tools.jackson.databind.util.StdConverter;
 
 @Data
 public class SemanticAsk<T> {
@@ -179,7 +177,7 @@ public class SemanticAsk<T> {
 		}
 	}
 	
-	public static class PrintoutsDeserializer<T> extends StdDeserializer<T> implements ContextualDeserializer {
+	public static class PrintoutsDeserializer<T> extends StdDeserializer<T> {
 
 		protected PrintoutsDeserializer(JavaType wrapperType) {
 			super(wrapperType);
@@ -196,13 +194,13 @@ public class SemanticAsk<T> {
 		
 		@SuppressWarnings("unchecked")
 		@Override
-		public T deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
+		public T deserialize(JsonParser p, DeserializationContext ctxt) throws JacksonException {
 			JsonNode node = p.readValueAsTree();
 			if(node.isArray() && node.size() == 0) {
 				node = ctxt.getNodeFactory().objectNode();
 			}
 			var n = (ObjectNode) node;
-			var fields = Lists.newArrayList(n.fieldNames());
+			var fields = Lists.newArrayList(n.propertyNames());
 			fields.forEach(f->{
 				var v = n.get(f);
 				if(v.isArray()) {

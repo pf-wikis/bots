@@ -22,33 +22,14 @@ public abstract class Run {
 	private Discord discord;
 	private OffsetDateTime timestamp = OffsetDateTime.now();
 	
-	public abstract void withMaster(Consumer<WikiAPI> task);
 	public abstract void withOwnUser(Consumer<WikiAPI> task);
 	
 	@RequiredArgsConstructor
 	public static class SingleRun extends Run {
 		@Getter
 		private final Wiki server;
-		private final String masterAccount;
-		private final String masterPassword;
-		private final String antiProtectionSecret;
 		@Getter @Setter
 		private WikiAPI wiki;
-		private WikiAPI masterWiki;
-		
-		@Override
-		public synchronized void withMaster(Consumer<WikiAPI> task) {
-			if(masterWiki == null) {
-				try {
-					masterWiki = WikiAPI.create(server, masterAccount, masterPassword, antiProtectionSecret);
-				} catch(Exception e) {
-					log.error("Failed to log in as {}", masterAccount, e);
-					System.exit(-1);
-				}
-				
-			}
-			task.accept(masterWiki);
-		}
 		
 		@Override
 		public void withOwnUser(Consumer<WikiAPI> task) {
@@ -69,12 +50,6 @@ public abstract class Run {
 		private SingleRun pfRun;
 		private SingleRun sfRun;
 		
-		@Override
-		public void withMaster(Consumer<WikiAPI> task) {
-			pfRun.withMaster(task);
-			sfRun.withMaster(task);
-		}
-
 		public WikiAPI getPfWiki() {
 			return pfRun.getWiki();
 		}
