@@ -1,13 +1,17 @@
 package io.github.pfwikis.bots.common.bots;
 
 import java.util.List;
-import java.util.function.Consumer;
+
+import org.slf4j.MDC;
+import org.slf4j.MDC.MDCCloseable;
 
 import com.beust.jcommander.Parameter;
 
+import io.github.pfwikis.bots.Runner;
 import io.github.pfwikis.bots.common.Discord;
 import io.github.pfwikis.bots.common.Wiki;
-import io.github.pfwikis.bots.common.WikiAPI;
+import io.github.pfwikis.bots.common.bots.Run.DualRun;
+import io.github.pfwikis.bots.common.bots.Run.SingleRun;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -21,8 +25,10 @@ public abstract class Bot<RUN extends Run> {
 	protected final String id;
 	protected final String botName;
 
-	@Parameter(names = "--password")
-	protected String rootPassword;
+	@Parameter(names = "--pfkey")
+	protected String pfkey;
+	@Parameter(names = "--sfkey")
+	protected String sfkey;
 	@Parameter(names = "--antiProtectionSecret")
 	protected String antiProtectionSecret;
 	@Parameter(names = "--discordToken")
@@ -39,10 +45,6 @@ public abstract class Bot<RUN extends Run> {
 
 	public void beforeRuns() throws Exception {}
 	public void afterRuns() throws Exception {}
-	
-	public String getBotPassword() {
-		return rootPassword+botName;
-	}
 	
 	public void setLocalMode(boolean v) {
 		this.localMode=v;
@@ -75,9 +77,8 @@ public abstract class Bot<RUN extends Run> {
 				this.run = currentRun;
 				this.run.setDiscord(discord);
 				
-				try {
+				try(var mdccloser = flavorLog()) {
 					run(new RunContext());
-					createBotReport();
 				} catch (Exception e) {
 					reportException(e);
 				} finally {
@@ -91,13 +92,20 @@ public abstract class Bot<RUN extends Run> {
 		}
 	}
 	
+	private MDCCloseable flavorLog() {
+		if(run instanceof SingleRun sr)
+			return MDC.putCloseable(Runner.MDC_KEY, sr.getServer().getCode());
+		else if (run instanceof DualRun dr)
+			return MDC.putCloseable(Runner.MDC_KEY, "dual");
+		return MDC.putCloseable(Runner.MDC_KEY, Runner.MDC_VALUE_NONE);
+	}
+	
 	public synchronized void startRun(Discord discord, RunContext ctx) {
-		try {
+		try(var mdccloser = flavorLog()) {
 			executeBeforeRuns();
 			this.run.setDiscord(discord);
 			try {
 				run(ctx);
-				createBotReport();
 			} catch (Exception e) {
 				reportException(e);
 			}
@@ -109,6 +117,7 @@ public abstract class Bot<RUN extends Run> {
 	
 	public void executeBeforeRuns() {
 		try {
+			Bot.globalLocalMode = localMode;
 			beforeRuns();
 		} catch (Exception e) {
 			reportException(e);
@@ -120,28 +129,6 @@ public abstract class Bot<RUN extends Run> {
 			afterRuns();
 		} catch (Exception e) {
 			reportException(e);
-		}
-	}
-	
-	public void createBotReport() {
-		//create bot report
-		try {
-			var status = """
-			|-
-			| [[User:%s|%s]] || %s
-			""".formatted(
-				botName, botName,
-				!hadError?"<span style=\"color:ForestGreen\">OK</span>":"<span style=\"color:Crimson\">ERROR</span>[[Category:Pages with errors]]"
-			);
-			Consumer<WikiAPI> task = wiki->wiki.editIfChange("User:"+botName+"/Status", status, "Update "+botName+" status");
-			try {
-				run.withOwnUser(task);
-			} catch(Exception e) {
-				run.withMaster(task);
-			}
-		} catch(Exception e) {
-			log.error("Failed to create bot report for {}", botName, e);
-			System.exit(-1);
 		}
 	}
 

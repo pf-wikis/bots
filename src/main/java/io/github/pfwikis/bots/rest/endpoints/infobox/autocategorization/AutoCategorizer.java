@@ -38,7 +38,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.github.pfwikis.bots.common.Wiki;
-import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
+import io.github.pfwikis.bots.common.api.model.PageTitle;
+import io.github.pfwikis.bots.common.api.responses.SemanticSubject;
 import io.github.pfwikis.bots.facts.SModel;
 import io.github.pfwikis.bots.facts.model.SConcept;
 import io.github.pfwikis.bots.rest.endpoints.infobox.autocategorization.ACRule.RuleDoc;
@@ -161,7 +162,7 @@ public enum AutoCategorizer {
 				ctx-> "for each [[Series::@@@]]",
 				ctx-> {
 					for(var e:ctx.getSubject().get(Series)) {
-						ctx.addCategory(e.getTitle()+" comics");
+						ctx.addCategory(e.getName()+" comics");
 					}
 				}
 			).onlyIf(ctx->ctx.has(Series));
@@ -263,7 +264,7 @@ public enum AutoCategorizer {
 				ctx-> "[[:Category:Licensed board games]]",
 				ctx-> "if [[Publisher::@@@]] does not contain [[Paizo Inc.]]",
 				ctx-> {
-					if(ctx.getSubject().getOr(Publisher, Collections.emptyList()).stream().noneMatch(p->p.getTitle().equals("Paizo Inc."))) {
+					if(ctx.getSubject().getOr(Publisher, Collections.emptyList()).stream().noneMatch(p->p.getName().equals("Paizo Inc."))) {
 						ctx.addCategory("Licensed board games");
 					}
 				}
@@ -342,7 +343,7 @@ public enum AutoCategorizer {
 				ctx-> "as set on the Series Facts page; see [[#Details|Details]]",
 				ctx-> {
 					for(var e:ctx.getSubject().get(Series)) {
-						var cat = ctx.getSeries2Category().get(e.getTitle());
+						var cat = ctx.getSeries2Category().get(e);
 						if(cat != null)
 							ctx.addCategory(cat);
 					}
@@ -352,13 +353,13 @@ public enum AutoCategorizer {
 		
 	}
 
-	public static String categoriesWikitext(Wiki wiki, SConcept concept, SemanticSubject subject, Map<String, String> series2Category) {
+	public static String categoriesWikitext(Wiki wiki, SConcept concept, SemanticSubject subject, Map<PageTitle, PageTitle> series2Category) {
 		var ctx = new ACContext(wiki, concept, subject, series2Category);
 		INSTANCE.rules.calculateCategories(ctx);
 		return ctx.categoriesWikitext();
 	}
 	
-	public static String generateDocs(Wiki server, Map<String, String> series2Category) {
+	public static String generateDocs(Wiki server, Map<PageTitle, PageTitle> series2Category) {
 		var sb = new StringBuilder();
 		for(var concept : SModel.getConcepts(server).stream().sorted(Comparator.comparing(SConcept::getName)).toList()) {
 			var ctx = new ACContext(server, concept, null, series2Category);

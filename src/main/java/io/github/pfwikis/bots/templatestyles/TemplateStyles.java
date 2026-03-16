@@ -9,11 +9,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import com.beust.jcommander.Parameters;
 
 import io.github.pfwikis.bots.common.Wiki;
+import io.github.pfwikis.bots.common.api.generated.params.NS;
+import io.github.pfwikis.bots.common.api.model.PageRef;
+import io.github.pfwikis.bots.common.api.model.PageTitle;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import lombok.extern.slf4j.Slf4j;
@@ -23,21 +25,21 @@ import lombok.extern.slf4j.Slf4j;
 public class TemplateStyles extends SimpleBot {
 
 	public TemplateStyles() {
-		super("template-styles", "Bot Template Styles");
+		super("template-styles", "Template Styles");
 	}
 	
 	
-	private static record Entry(String page, String className) {}
+	private static record Entry(PageRef page, String className) {}
 
 	@Override
 	public void run(RunContext ctx) throws IOException {
 		var workDir = new File("outputs/"+run.getServer().getCode()+"/less");
 		workDir.mkdirs();
 		
-		var styles = run.getWiki().getPagesInNamespace("Style")
+		var styles = run.getWiki().getPagesInNamespace(NS.STYLE)
 			.stream()
 			.map(p-> new Entry(
-				p.getTitle(),
+				p,
 				toCssName(p.getTitle())
 			))
 			.toList();
@@ -53,7 +55,7 @@ public class TemplateStyles extends SimpleBot {
 		//collect files we want to regenerate
 		var toRegenerate = new HashSet<Entry>();
 		if(ctx.getPage() != null) {
-			toRegenerate.add(new Entry(ctx.getPage(), toCssName(ctx.getPage())));
+			toRegenerate.add(new Entry(ctx.getPage(), toCssName(ctx.getPage().getTitle())));
 		}
 		else {
 			toRegenerate.addAll(styles);
@@ -67,9 +69,9 @@ public class TemplateStyles extends SimpleBot {
 		//generate styles
 		log.info("Regenerating styles for {}", toRegenerate);
 		for(var style:toRegenerate) {
-			var txt = run.getWiki().getPageText(style.page());
+			var txt = run.getWiki().getWikitext(style.page());
 			var code = "/*From "+style.page()+"*/\n"+CONSTANTS.get(getWiki())+"."+style.className()+"{\n"+txt+"\n}";
-			var result = compile(code, style.page());
+			var result = compile(code, style.page().toString());
 			if(result != null) {
 				move(result, new File(workDir, style.className+".less"));
 				
@@ -128,8 +130,8 @@ public class TemplateStyles extends SimpleBot {
 			""".formatted(CONSTANTS.get(run.getServer()));
 	}
 	
-	private String toCssName(String name) {
-		var className = StringUtils.removeStart(name, "Style:")
+	private String toCssName(PageTitle title) {
+		var className = title.getName()
 			.toLowerCase()
 			.replaceAll("[^a-z0-9]", "-");
 		if(Character.isDigit(className.charAt(0))) className = "template-"+className;

@@ -10,9 +10,12 @@ import java.util.List;
 
 import io.github.pfwikis.bots.common.Discord;
 import io.github.pfwikis.bots.common.Wiki;
+import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryLogeventsType;
+import io.github.pfwikis.bots.common.api.generated.params.NS;
+import io.github.pfwikis.bots.common.api.model.PageRef;
+import io.github.pfwikis.bots.common.api.responses.QueryResponse.LogEvent;
+import io.github.pfwikis.bots.common.api.responses.QueryResponse.RecentChange;
 import io.github.pfwikis.bots.common.bots.RunContext;
-import io.github.pfwikis.bots.common.model.LogEventsQuery.LogEvent;
-import io.github.pfwikis.bots.common.model.RecentChanges.RecentChange;
 import io.github.pfwikis.bots.pagesyncer.PageSyncer;
 import io.github.pfwikis.bots.templatestyles.TemplateStyles;
 import io.github.pfwikis.bots.utils.Retry;
@@ -62,9 +65,9 @@ public class RCWatcher extends Schedulable {
 		if(nextMoveTimestamp == null) nextMoveTimestamp = Instant.now().minus(24, ChronoUnit.HOURS);
 		
 		log.info("Querying edits since {}"+nextEditTimestamp);
-		edits = wiki.getMasterApi().getRecentChanges(nextEditTimestamp, null, null);
+		edits = wiki.getSharedApi().getRecentChanges(nextEditTimestamp, null, null);
 		log.info("Querying moves since {}"+nextMoveTimestamp);
-		moves = wiki.getMasterApi().getRecentLogEvents("move", nextMoveTimestamp);
+		moves = wiki.getSharedApi().getRecentLogEvents(AAPIQueryLogeventsType.MOVE, nextMoveTimestamp);
 		Collections.reverse(edits);
 		Collections.reverse(moves);
 		
@@ -80,10 +83,10 @@ public class RCWatcher extends Schedulable {
 	private TemplateStyles botTemplateStyles = new TemplateStyles();
 	private PageSyncer botPageSyncer = new PageSyncer();
 	
-	private void handleChange(String changedPage, Instant changeTime) {
+	private void handleChange(PageRef changedPage, Instant changeTime) {
 		log.info("RC in {}", changedPage);
 		var ctx = RunContext.builder().page(changedPage).build();
-		if(changedPage.startsWith("Facts:")) {
+		if(changedPage.getTitle().getNs().equals(NS.FACTS)) {
 			/*var title = changedPage;
 			//special handling since those never contain facts themselves but feed their parent page
 			
@@ -93,7 +96,7 @@ public class RCWatcher extends Schedulable {
 			*/
 			//once we created infoboxes and cite templates here
 		}
-		if(changedPage.startsWith("Style:")) {
+		if(changedPage.getTitle().getNs().equals(NS.STYLE)) {
 			p.scheduleOnce(p.scheduleableBot(wiki, discord, botTemplateStyles, ctx), changeTime);
 		}
 		if(wiki == Wiki.PF) {

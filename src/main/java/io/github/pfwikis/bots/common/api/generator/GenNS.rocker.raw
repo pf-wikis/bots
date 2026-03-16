@@ -1,0 +1,71 @@
+@import io.github.pfwikis.bots.common.api.generator.api.GenAPIParameter
+@import io.github.pfwikis.bots.common.api.generator.APIGenerator
+@import io.github.pfwikis.bots.common.api.generator.model.APIInfo
+@import com.google.common.base.CaseFormat
+@import java.util.List
+
+@args(APIInfo info)
+
+package io.github.pfwikis.bots.common.api.generated.params;
+
+//import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
+import lombok.RequiredArgsConstructor;
+import lombok.Getter;
+
+import java.util.EnumMap;
+import java.util.Map;
+import io.github.pfwikis.bots.common.Wiki;
+
+@@Getter
+@@RequiredArgsConstructor
+public enum NS {
+	@for((it,ns):info.getNamespaces()) {
+		@ns.getJavaName()(
+			@ns.getId(),
+			@ns.isTalk(),
+			"@ns.getPrefix()",
+			"@ns.getLabel()",
+			@if(ns.getAlt() != null) {new EnumMap<>(Map.of(@for((i,en):ns.getAlt().entrySet()) {Wiki.@en.getKey().name(), "@en.getValue()"@if(!i.last()){,}}))}else{null},
+			@if(ns.getAlt() != null) {new EnumMap<>(Map.of(@for((i,en):ns.getAlt().entrySet()) {Wiki.@en.getKey().name(), "@en.getValue():"@if(!i.last()){,}}))}else{null}
+		)@if(it.last()){;}else{,}
+	}
+	
+	@@Getter(onMethod_=@@JsonValue)
+	private final int id;
+	private final boolean talk;
+	private final String prefix;
+	private final String label;
+	private final EnumMap<Wiki, String> alternativeLabels;
+	private final EnumMap<Wiki, String> alternativePrefixes;
+	
+	public static NS fromId(int id) {
+		return switch(id) {
+			@for(ns:info.getNamespaces()) {
+				case @ns.getId() -> @ns.getJavaName();
+			}
+			default -> throw new IllegalArgumentException("Unknown namespace id "+id);
+		};
+	}
+	
+	public static NS fromName(String name) {
+		NS result = fromNameOrNull(name);
+		if(result == null) {
+			throw new IllegalArgumentException("Unknown namespace name "+name);
+		}
+		return result;
+	}
+	
+	public static NS fromNameOrNull(String name) {
+		return switch(name) {
+			@for(ns:info.getNamespaces()) {
+				case
+					"@ns.getLabel()"
+					@if(ns.getAlt() != null) {@for(v:ns.getAlt().values()){, "@v"}}
+					-> @ns.getJavaName();
+			}
+			default -> null;
+		};
+	}
+}

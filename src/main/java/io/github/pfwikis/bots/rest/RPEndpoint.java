@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 
 import io.github.pfwikis.bots.common.Wiki;
+import io.github.pfwikis.bots.common.api.model.PageTitle;
 import io.github.pfwikis.bots.scheduler.Scheduler;
 import io.github.pfwikis.bots.utils.Jackson;
 import lombok.Builder;
@@ -74,7 +75,7 @@ public abstract class RPEndpoint<T> implements Route {
 		
 	}
 	
-	protected RPResult error(String factsPage, String cause, String... extraCategories) {
+	protected RPResult error(PageTitle factsPage, String cause, String... extraCategories) {
 		var sb = new StringBuilder()
 				.append("{{Error|")
 				.append(cause)
@@ -102,7 +103,7 @@ public abstract class RPEndpoint<T> implements Route {
 		@Singular
 		private List<RPBlock> blocks;
 		@Singular("dependency")
-		private List<String> dependsOn;
+		private List<PageTitle> dependsOn;
 		private String headItem;
 		private Object data;
 	}

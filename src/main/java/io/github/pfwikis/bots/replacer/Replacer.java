@@ -1,28 +1,21 @@
 package io.github.pfwikis.bots.replacer;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.beust.jcommander.Parameters;
-import com.google.common.collect.ImmutableListMultimap;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Multimap;
 
-import io.github.pfwikis.bots.common.Wiki;
+import io.github.pfwikis.bots.common.api.model.PageRef;
+import io.github.pfwikis.bots.common.api.model.PageTitle;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
-import io.github.pfwikis.bots.common.model.Page;
-import io.github.pfwikis.bots.common.model.SemanticAsk.Result;
-import io.github.pfwikis.bots.common.model.subject.PageRef;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -30,40 +23,51 @@ import lombok.extern.slf4j.Slf4j;
 public class Replacer extends SimpleBot {
 
 	public Replacer() {
-		super("replacer", "Bot Manual Bulk Operations");
+		super("replacer", "Manual Bulk Operations");
 	}
 	
 	@Override
 	public String getDescription() {
 		return "This bot is only started by hand for manual bulk changes to the wiki.";
 	}
-
+	
+	
 	@Override
 	public void run(RunContext ctx) throws IOException {
-		var fileCats = run.getWiki().semanticAsk(P.class, "[[File:+]]|?Category=category")
-				.stream()
-				.flatMap(r->Optional.ofNullable(r.getPrintouts().category).orElse(Collections.emptyList()).stream())
-				.map(c->c.getPage())
-				.distinct()
-				.toList();
-		
-		var mainCats = run.getWiki().semanticAsk(P.class, "[[:+]]|?Category=category")
-				.stream()
-				.flatMap(r->Optional.ofNullable(r.getPrintouts().category).orElse(Collections.emptyList()).stream())
-				.map(c->c.getPage())
-				.distinct()
-				.toList();
-		
-		var matches = new HashSet<String>();
-		matches.addAll(fileCats);
-		matches.retainAll(mainCats);
-		
-		for(var m:matches) {
-			log.info(m);
+		var prices = run.getWiki().getWikitext(PageRef.of("Template:Paizo store/price"));
+		var bookFacts = run.getWiki().semanticAsk(Book.class,
+				"[[Fact type::Template:Facts/Book]]|?Website=website|?Pubcode=pubcode");
+		//var books = List.of(PageRef.of("Facts:A Bitter Bargain"));
+		log.info("Still {} book TODO", bookFacts.size());
+		for(var b:bookFacts) {
+			log.info("Processing {}", b.getPage());
+			
+			String code = StringUtils.trimToNull(b.getPrintouts().pubcode);
+			String web = StringUtils.trimToNull(b.getPrintouts().website);
+			if(b.getPrintouts().pubcode==null && b.getPrintouts().website==null) continue;
+			
+			var txt = run.getWiki().getWikitext(b.getPage());
+			var ntxt =txt.replaceAll("\n( *\\| *(Website|Pubcode) *=.*)", "");
+			if(txt.equals(ntxt)) continue;
+			
+			var relPage = PageTitle.of(b.getPage().getTitle().withoutHash().toString()+"/Releases");
+			if(!run.getWiki().exists(relPage)) continue;
+			var rtxt = run.getWiki().getWikitext(relPage);
+			var ind = rtxt.lastIndexOf("}}");
+			String rntxt = rtxt.substring(0, ind)
+					+ (code==null?"":"|TODO Pubcode="+code+"\n")
+					+ ((web==null && !priceExists(prices, code))?"":"|TODO Website="+web+"\n")
+					+"}}"+rtxt.substring(ind+2);
+			
+			run.getWiki().edit(b.getPage(), ntxt, "Move undecipherable pubcode to releases");
+			run.getWiki().edit(relPage, rntxt, "Move undecipherable pubcode to releases");
 		}
-		
 	}
 	
-	public static record Debug(List<String> debug) {}
-	public static record P(List<Result<?>> category) {}
+	private boolean priceExists(String prices, String code) {
+		return Pattern.compile("\\|"+Pattern.quote(code)+"[\\|=]").matcher(prices).find();
+	}
+	
+	public static record Book(String website, String pubcode) {}
+	public static record Release(String price, String pubcode, String releaseType, String note) {}
 }

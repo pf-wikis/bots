@@ -1,7 +1,8 @@
 package io.github.pfwikis.bots.utils;
 
-import com.fasterxml.jackson.databind.util.StdConverter;
 import com.google.common.primitives.Ints;
+
+import tools.jackson.databind.util.StdConverter;
 
 public class MWJsonHelper {
 	public static <T> T assumeNoneOrOne(T[] values) {

@@ -17,13 +17,17 @@ import org.jsoup.nodes.Document;
 import com.beust.jcommander.Parameters;
 import com.beust.jcommander.internal.Lists;
 
-import io.github.pfwikis.bots.common.bots.Run.SingleRun;
 import io.github.pfwikis.bots.common.Discord;
+import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryRecentchangesShow;
+import io.github.pfwikis.bots.common.api.generated.params.NS;
+import io.github.pfwikis.bots.common.api.model.AAPIExceptions.AAPIMissingPageException;
+import io.github.pfwikis.bots.common.api.model.PageRef;
+import io.github.pfwikis.bots.common.api.responses.ParseResponse;
+import io.github.pfwikis.bots.common.api.responses.QueryResponse.RecentChange;
+import io.github.pfwikis.bots.common.api.responses.SemanticAsk.Result;
+import io.github.pfwikis.bots.common.bots.Run.SingleRun;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
-import io.github.pfwikis.bots.common.model.ParseResponse.Content;
-import io.github.pfwikis.bots.common.model.RecentChanges.RecentChange;
-import io.github.pfwikis.bots.common.model.SemanticAsk.Result;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,8 +36,11 @@ import lombok.extern.slf4j.Slf4j;
 @Parameters
 public class ArticleOfTheWeek extends SimpleBot {
 
+	private static final PageRef WIDGET_ARTICLE_OF_THE_WEEK = PageRef.of(NS.WIDGET, "Article of the Week");
+	private static final PageRef TEMPLATE_ARTICLE_OF_THE_WEEK = PageRef.of(NS.TEMPLATE, "Article of the Week");
+
 	public ArticleOfTheWeek() {
-		super("article-of-the-week", "Bot Article of the Week");
+		super("article-of-the-week", "Article of the Week");
 	}
 
 	@Override
@@ -51,7 +58,7 @@ public class ArticleOfTheWeek extends SimpleBot {
 			</noinclude><includeonly>%s</includeonly>
 			""".formatted(this.getBotName(), cutText(article.html));
 		
-		run.getWiki().editIfChange("Widget:Article of the Week", pageContent, "Automatic article of the week pick.");
+		run.getWiki().editIfChange(WIDGET_ARTICLE_OF_THE_WEEK, pageContent, "Automatic article of the week pick.");
 		
 		pageContent = 
 			"""
@@ -61,14 +68,14 @@ public class ArticleOfTheWeek extends SimpleBot {
 			|content=%s}}
 			""".formatted(this.getBotName(), article.getTitle(), render(article));
 		
-		run.getWiki().editIfChange("Template:Article of the Week", pageContent, "Automatic article of the week pick.");
+		run.getWiki().editIfChange(TEMPLATE_ARTICLE_OF_THE_WEEK, pageContent, "Automatic article of the week pick.");
 		
 		addBadge(article);
 	}
 
 	private static Pattern FEATURED_PATTERN = Pattern.compile("\\| *featured *[\\}\\|]");
-	private void addBadge(Candidate article) {
-		var wikitext = run.getWiki().getPageText(article.getTitle());
+	private void addBadge(Candidate article) throws AAPIMissingPageException {
+		var wikitext = run.getWiki().getWikitext(article.getTitle());
 		
 		if(!FEATURED_PATTERN.matcher(wikitext.toLowerCase()).find()) {
 			log.info("Did not find badge");
@@ -92,7 +99,7 @@ public class ArticleOfTheWeek extends SimpleBot {
 			<div class="article-of-the-week-thanks">'''Thanks to:''' %s</div>
 		</div>
 		""".formatted(
-			article.parsed.properties().getPage_image_free(),
+			article.parsed.getProperties().getPageImageFree(),
 			article.title,
 			article.title,
 			article.changes.stream()
@@ -111,10 +118,14 @@ public class ArticleOfTheWeek extends SimpleBot {
 		html = Jsoup.parseBodyFragment(raw);
 		return html.body().html();
 	}
+	
+	@Data
+	public static class Printouts {
+	}
 
 	private Candidate findArticle() {
 		Duration timeRange = Duration.ofDays(7);
-		var options = run.getWiki().getRecentChanges(Instant.now().minus(timeRange), "0", "!minor|!bot");
+		var options = run.getWiki().getRecentChanges(Instant.now().minus(timeRange), NS.MAIN, AAPIQueryRecentchangesShow.builder().NOT_MINOR().NOT_BOT().build());
 		var candidates = Lists.newArrayList(options.stream()
 			.collect(Collectors.groupingBy(c->c.getTitle()))
 			.entrySet()
@@ -122,8 +133,7 @@ public class ArticleOfTheWeek extends SimpleBot {
 			.map(e-> new Candidate(e.getKey(), e.getValue()))
 			.toList());
 		
-		var shouldNotFeatureArticles = run.getWiki().semanticAsk("[[Category:Should not be featured]][[:+]]").stream().map(Result::getPage).collect(Collectors.toSet());
-		
+		var shouldNotFeatureArticles = run.getWiki().semanticAsk(Printouts.class, "[[Category:Should not be featured]][[:+]]").stream().map(Result::toPage).collect(Collectors.toSet());
 		
 		candidates.removeIf(c->!c.loadHTML(run));
 		candidates.removeIf(c->!isValidPick(c, shouldNotFeatureArticles));
@@ -144,27 +154,27 @@ public class ArticleOfTheWeek extends SimpleBot {
 		}
 		var sb = new StringBuilder()
 			.append("Chose ")
-			.append(Discord.wikiLink(run.getServer(), candidates.get(0).getTitle(), "/wiki/"+candidates.get(0).getTitle()))
+			.append(Discord.wikiLink(run.getServer(), candidates.get(0).getTitle().getTitle().toString(), "/wiki/"+candidates.get(0).getTitle().getTitle().toString()))
 			.append("\nCandidates were:\n");
 		candidates.forEach(c-> {
 			sb
 				.append("* ")
-				.append(Discord.wikiLink(run.getServer(), c.getTitle(), "/wiki/"+c.getTitle()))
+				.append(Discord.wikiLink(run.getServer(), c.getTitle().getTitle().toString(), "/wiki/"+c.getTitle().getTitle().toString()))
 				.append(" with an effective change size of "+c.getChangeSize()+"\n");
 		});
 		discord.report(this, sb.toString());
 		return candidates.get(0);
 	}
 	
-	private boolean isValidPick(Candidate cand, Set<String> shouldNotFeatureArticles) {
+	private boolean isValidPick(Candidate cand, Set<PageRef> shouldNotFeatureArticles) {
 		//requires image
-		if(StringUtils.isBlank(cand.parsed.properties().getPage_image_free())) {
+		if(StringUtils.isBlank(cand.parsed.getProperties().getPageImageFree())) {
 			log.info("Excluded {}\tbecause it has no image", cand.title);
 			return false;
 		}
 		
 		//not real world
-		if(cand.parsed.categories().stream().anyMatch(c->"Real-world_articles".equals(c.category()))) {
+		if(cand.parsed.getCategories().stream().anyMatch(c->"Real-world_articles".equals(c.getCategory()))) {
 			log.info("Excluded {}\tbecause it is a real-world article", cand.title);
 			return false;
 		}
@@ -186,8 +196,8 @@ public class ArticleOfTheWeek extends SimpleBot {
 	
 	private boolean hasTooManyRedLinks(Candidate cand) {
 		//no red links
-		int links = cand.parsed.links().size();
-		long nonRedLinks = cand.parsed.links().stream().filter(l->l.exists()).count();
+		int links = cand.parsed.getLinks().size();
+		long nonRedLinks = cand.parsed.getLinks().stream().filter(l->l.isExists()).count();
 		if(((double)nonRedLinks)/links < .95) {
 			log.info("Excluded {}\tbecause it has too many red links", cand.title);
 			return true;
@@ -231,11 +241,11 @@ public class ArticleOfTheWeek extends SimpleBot {
 	@Data
 	@RequiredArgsConstructor
 	private static class Candidate {
-		private final String title;
+		private final PageRef title;
 		private final List<RecentChange> changes;
 		private long changeSize;
-		private Content parsed;
-		private Content beforeEditsParsed;
+		private ParseResponse parsed;
+		private ParseResponse beforeEditsParsed;
 		private Document html;
 		private Document beforeEditsHtml;
 		
@@ -250,23 +260,23 @@ public class ArticleOfTheWeek extends SimpleBot {
 				changeSize = 0;
 				return;
 			}
-			beforeEditsParsed = run.getWiki().getParsed(oldestChange.getOld_revid());
 			
 			//new page
-			if(beforeEditsParsed == null) {
+			if(oldestChange.getOld_revid() == 0) {
 				changeSize = html.text().length();
 			}
 			else {
-				beforeEditsHtml=cleanHTML(beforeEditsParsed.text());
+				beforeEditsParsed = run.getWiki().getHTML(oldestChange.getOld_revid());
+				beforeEditsHtml=cleanHTML(beforeEditsParsed.getText());
 				changeSize = Math.max(0, html.text().length()-beforeEditsHtml.text().length());
 			}
 		}
 
 		public boolean loadHTML(SingleRun run) {
 			log.info("Loading text for {}", title);
-			parsed = run.getWiki().getParsed(title);
+			parsed = run.getWiki().getHTML(title);
 			if(parsed != null) {
-				html=cleanHTML(parsed.text());
+				html=cleanHTML(parsed.getText());
 				return true;
 			}
 			//this happens if the article has been deleted

@@ -25,11 +25,10 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.common.util.concurrent.Uninterruptibles;
 
 import io.github.pfwikis.bots.common.WikiAPI;
+import io.github.pfwikis.bots.common.api.model.PageRef;
 import io.github.pfwikis.bots.common.bots.DualBot;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.paizoretriever.LdJson.Product;
@@ -38,6 +37,8 @@ import io.github.pfwikis.bots.utils.Jackson;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectWriter;
 
 @Slf4j
 @Getter @Setter
@@ -50,7 +51,7 @@ public class PaizoRetriever extends DualBot {
 	private static final long SLEEP = Duration.ofMillis(250).toMillis();
 	private static final File STATE_FILE = new File("outputs/crawl/state.yaml");
 	private static final String[] ENTRY_SHOP_URLS =  {
-			 "https://store.paizo.com/pathfinder/",
+			"https://store.paizo.com/pathfinder/",
 			"https://store.paizo.com/pathfinder/pathfinder-second-edition/coming-soon/",
 			"https://store.paizo.com/pathfinder/pathfinder-society/",
 			"https://store.paizo.com/starfinder/",
@@ -60,7 +61,7 @@ public class PaizoRetriever extends DualBot {
 	
 	
 	public PaizoRetriever() {
-		super("paizo-retriever", "Bot Paizo Retriever");
+		super("paizo-retriever", "Paizo Retriever");
 	}
 	
 	public PaizoRetriever(String selenium) {
@@ -169,7 +170,7 @@ public class PaizoRetriever extends DualBot {
 				.append("<wikitext-row>{{Paizo store|not existing}}</wikitext-row>")
 				.append("</wikitext>")
 				.append("}}</noinclude>");
-			api.editIfChange("Template:Paizo store", sb1.toString(), "Automatic update from store");
+			api.editIfChange(PageRef.of("Template:Paizo store"), sb1.toString(), "Automatic update from store");
 		
 			createPage(api, pages, "URL", Product::getUrl, intro, outro);
 			createPage(api, pages, "name", Product::getName, intro, outro);
@@ -203,7 +204,7 @@ public class PaizoRetriever extends DualBot {
 					.append(e.getKey()));
 		sb2.append("}}").append(outro);
 		
-		api.editIfChange("Template:Paizo store/"+name, sb2.toString(), "Automatic update from store");
+		api.editIfChange(PageRef.of("Template:Paizo store/"+name), sb2.toString(), "Automatic update from store");
 	}
 
 	private void crawl(WebDriver driver, State state, String url) {
@@ -219,7 +220,7 @@ public class PaizoRetriever extends DualBot {
 				.map(json -> {
 					try {
 						return Jackson.JSON_LENIENT.readValue(json, LdJson.class);
-					} catch (JsonProcessingException e) {
+					} catch (JacksonException e) {
 						log.warn("Failed to parse json for {}", url, e);
 						return null;
 					}

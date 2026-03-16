@@ -20,7 +20,7 @@
 @title => {
 	<span class="title">
 		@if(book.has(Represented_by_page)){
-			[[@book.get(Represented_by_page)|@pageToTitle(book.getName())]]
+			[[@book.get(Represented_by_page)|book.getName()]]
 		}
 		else if(book.has(Website)) {
 			[
@@ -31,7 +31,7 @@
 				@*space->*@ @book.getName()]
 		}
 		else {
-			[[@book.getName()|@pageToTitle(book.getName())]]
+			[[@book.getName()|book.getName()]]
 		}
 	</span>
 }
@@ -58,7 +58,7 @@
 	@if(book.has(Publisher)) {
 		<span class="publisher">
 		@for((i,pub):book.get(Publisher)){
-			@if(!i.first()){, }@pub.toWikiLink(false)
+			@if(!i.first()){, }@pub.toWikitextLink(false)
 		}
 		</span>
 	}

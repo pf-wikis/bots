@@ -8,11 +8,9 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 
-import io.github.pfwikis.bots.common.model.SemanticAsk.WikiDate;
-import io.github.pfwikis.bots.facts.model.SFactTypes;
+import io.github.pfwikis.bots.common.api.responses.SemanticAsk.WikiDate;
 import io.github.pfwikis.bots.rest.RPEndpoint;
 import io.github.pfwikis.bots.rest.RestProviderBot;
-import io.github.pfwikis.bots.utils.Jackson;
 
 public class RPTimeline extends RPEndpoint<RPTimelineParam> {
 
@@ -72,7 +70,7 @@ public class RPTimeline extends RPEndpoint<RPTimelineParam> {
 		var id = "timeline-"+UUID.randomUUID().toString();
 		return RPResult.builder()
 			.block(new RPBlock(RPBlockType.HTML, "<div id=\"%s\" class=\"timeline\"></div>".formatted(id)))
-			.dependsOn(events.stream().map(e->e.toPage()).distinct().toList())
+			.dependsOn(events.stream().map(e->e.toPage().getTitle()).distinct().toList())
 			.data(Map.of("id", id, "events", tlEvents))
 			.build();
 	}

@@ -1,21 +1,21 @@
 package io.github.pfwikis.bots.assistant;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.util.Objects;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.beust.jcommander.Parameters;
 
 import io.github.pfwikis.bots.common.Discord;
+import io.github.pfwikis.bots.common.api.generated.params.NS;
+import io.github.pfwikis.bots.common.api.model.PageRef;
+import io.github.pfwikis.bots.common.api.model.PageTitle;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
-import io.github.pfwikis.bots.common.model.Page;
 import io.github.pfwikis.bots.utils.Jackson;
+import io.github.pfwikis.bots.utils.StringHelper;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -25,7 +25,7 @@ public class Assistant extends SimpleBot {
 	private boolean taskDone = false;
 
 	public Assistant() {
-		super("assistant", "Bot Assistant");
+		super("assistant", "Assistant");
 	}
 	
 	@Override
@@ -33,17 +33,17 @@ public class Assistant extends SimpleBot {
 		return """
 		This bot is meant to directly interact with humans. It has multiple tasks:
 		
-		== Giving tasks to humans ==
+		=== Giving tasks to humans ===
 		
 		This bot might give tasks to its human handlers via Discord.
 		
-		== Reacting to tasks ==
+		=== Reacting to tasks ===
 				
 		This bot executes the tasks given to it via the [https://github.com/pf-wikis/bots/issues/new/choose tasks page].
 		It is meant to start automized tasks with manually given parameters.
 		The tasks it understands are:
 		
-		=== replaceImage ===
+		==== replaceImage ====
 		This task is used to replace images with better version, that have a different extension.
 		This job uploads a new image with the same name as the given old image, but a new extension. It copies the description
 		from the original file. It then replaces every usage of the original file with the new file and then deletes the original
@@ -78,44 +78,39 @@ public class Assistant extends SimpleBot {
 			Objects.requireNonNull(task.getReplaceWith());
 			String oldExt = FilenameUtils.getExtension(task.getImage());
 			String newExt = FilenameUtils.getExtension(task.getReplaceWith());
-			var oldFile = StringUtils.prependIfMissing(task.getImage(), "File:");
-			if(oldExt.equals(newExt) || !run.getWiki().pageExists(oldFile)) {
+			var oldFile = PageRef.of(task.getImage()).withNS(NS.FILE);
+			if(oldExt.equals(newExt) || !run.getWiki().exists(oldFile)) {
 				throw new IllegalStateException("Invalid inputs");
 			}
 			
 			
-			var description = run.getWiki().getPageText(oldFile);
-			var name = oldFile.substring(0, oldFile.lastIndexOf('.'))+"."+newExt;
+			var description = run.getWiki().getWikitext(oldFile);
+			var name = PageTitle.of(NS.FILE, oldFile.getTitle().getName().substring(0, oldFile.getTitle().getName().lastIndexOf('.'))+"."+newExt);
 			
-			if(!run.getWiki().pageExists(name)) {
-				var tmp = File.createTempFile("upload_", "."+newExt);
-				FileUtils.copyInputStreamToFile(URI.create(task.getReplaceWith()).toURL().openStream(), tmp);
-				if(!run.getWiki().upload(
-					tmp.toPath(),
+			if(!run.getWiki().exists(name)) {
+				run.getWiki().upload(
+					task.getReplaceWith(),
 					name,
 					description,
 					"Higher resolution version of "+task.getImage()
-				)) {
-					throw new IllegalStateException();
-				}
-				tmp.delete();
+				);
 			}
 			
-			for(Page p:run.getWiki().getImageUsage(oldFile)) {
-				var oldTxt = run.getWiki().getPageText(p.getTitle());
-				var nameMatcher = StringUtils.removeStart(oldFile.replaceAll("[ _]", "[ _]").replace(".", "\\."), "File:");
-				var txt = oldTxt.replaceAll(nameMatcher, StringUtils.removeStart(name.replace('_', ' '), "File:"));
+			for(PageRef p:run.getWiki().getImageUsage(oldFile)) {
+				var oldTxt = run.getWiki().getWikitext(p.getTitle());
+				var nameMatcher = StringHelper.titleToPattern(oldFile.getTitle().getName(), false);
+				var txt = oldTxt.replaceAll(nameMatcher, StringUtils.removeStart(name.getName(), "File:"));
 				if(!oldTxt.equals(txt)) {
-					run.getWiki().edit(p.getTitle(), txt, "Replace image with new version");
+					run.getWiki().edit(p, txt, "Replace image with new version");
 				}
 			}
 			run.getWiki().delete(oldFile, "Replaced with [[:"+name+"]]");
 			discord.report(
 				this,
 				"I replaced "
-				+ Discord.wikiLink(run.getServer(), oldFile, "/wiki/"+oldFile)
+				+ Discord.wikiLink(run.getServer(), oldFile.getTitle().toString(), "/wiki/"+oldFile)
 				+ " with "
-				+ Discord.wikiLink(run.getServer(), name, "/wiki/"+name)
+				+ Discord.wikiLink(run.getServer(), name.toString(), "/wiki/"+name)
 			);
 		}
 		else {

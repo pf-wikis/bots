@@ -15,6 +15,8 @@ import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 
 import io.github.pfwikis.bots.common.Wiki;
+import io.github.pfwikis.bots.common.api.generated.params.NS;
+import io.github.pfwikis.bots.common.api.model.PageRef;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.utils.Jackson;
@@ -22,7 +24,7 @@ import io.github.pfwikis.bots.utils.Jackson;
 public class MapSearchPage extends SimpleBot {
 
 	public MapSearchPage() {
-		super("map-search-page", "Bot Map Search Page");
+		super("map-search-page", "Map Search Page");
 	}
 
 	@Override
@@ -82,7 +84,7 @@ public class MapSearchPage extends SimpleBot {
 				}}[[Category:Templates]]
 				</noinclude><includeonly>{{#if:{{Area/Helper|{{{1}}}}}|{{formatnum:{{Area/Helper|{{{1}}}}}}} mi²}}{{Validate parameters}}</includeonly>
 				""");
-		run.getWiki().editIfChange("Template:Area", sb.toString(), "Automatic update");
+		run.getWiki().editIfChange(PageRef.of(NS.TEMPLATE, "Area"), sb.toString(), "Automatic update");
 		sb = new StringBuilder()
 			.append("<noinclude>[[Category:Helper Template]]</noinclude><includeonly>")
 			.append("{{#switch:{{{1}}}");
@@ -111,7 +113,7 @@ public class MapSearchPage extends SimpleBot {
 			}
 		}
 		sb.append("\n}}</includeonly>");
-		run.getWiki().editIfChange("Template:Area/Helper", sb.toString(), "Automatic update");
+		run.getWiki().editIfChange(PageRef.of(NS.TEMPLATE, "Area/Helper"), sb.toString(), "Automatic update");
 	}
 	
 	private void createSearchAspect(List<Category> categories) {
@@ -141,7 +143,7 @@ public class MapSearchPage extends SimpleBot {
 		sb.append("|1.62}}</includeonly>");
 		
 		
-		run.getWiki().editIfChange("Template:DisplayMap/Search aspect", sb.toString(), "Automatic update");
+		run.getWiki().editIfChange(PageRef.of(NS.TEMPLATE, "DisplayMap/Search aspect"), sb.toString(), "Automatic update");
 	}
 
 	private void createSearch(List<Category> categories) {
@@ -178,7 +180,7 @@ public class MapSearchPage extends SimpleBot {
 		sb.append("|}}</includeonly>");
 		
 		
-		run.getWiki().editIfChange("Template:DisplayMap/Search", sb.toString(), "Automatic update");
+		run.getWiki().editIfChange(PageRef.of(NS.TEMPLATE, "DisplayMap/Search"), sb.toString(), "Automatic update");
 	}
 
 	private String key(Multiset<String> labelCounts, String label, String category) {

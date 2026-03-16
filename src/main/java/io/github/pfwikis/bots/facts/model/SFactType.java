@@ -3,7 +3,6 @@ package io.github.pfwikis.bots.facts.model;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
-import com.fasterxml.jackson.databind.JavaType;
 
 import io.github.pfwikis.bots.common.WikiAPI;
 import io.github.pfwikis.bots.utils.Jackson;
@@ -11,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import tools.jackson.databind.JavaType;
 
 @Slf4j
 @EqualsAndHashCode(of = "id")

@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.pfwikis.bots.paizoretriever.LdJson.Product;
 import lombok.Getter;
 import lombok.Setter;
 

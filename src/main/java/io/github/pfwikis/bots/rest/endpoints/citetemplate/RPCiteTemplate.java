@@ -14,18 +14,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
-import org.apache.commons.lang3.StringUtils;
 
 import com.beust.jcommander.Parameters;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.util.concurrent.UncheckedExecutionException;
 
-import io.github.pfwikis.bots.common.model.subject.PageRef;
-import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
+import io.github.pfwikis.bots.common.api.model.PageTitle;
+import io.github.pfwikis.bots.common.api.responses.SemanticSubject;
 import io.github.pfwikis.bots.rest.RPEndpoint;
 import io.github.pfwikis.bots.rest.RestProviderBot;
 import io.github.pfwikis.bots.rest.SafeException;
@@ -38,7 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 @Parameters
 public class RPCiteTemplate extends RPEndpoint<RPCiteParam> {
 	
-	private final Cache<String, BookDef> cache = CacheBuilder.newBuilder()
+	private final Cache<PageTitle, BookDef> cache = CacheBuilder.newBuilder()
 			.expireAfterWrite(Duration.ofHours(1))
 			.maximumSize(10_000)
 			.build();
@@ -72,11 +69,11 @@ public class RPCiteTemplate extends RPEndpoint<RPCiteParam> {
 			}
 			var type = subject.get(Fact_type);
 			if(!CiteUtil.isCiteable(type)) {
-				throw new SafeException(param.getFactsPage(), param.getFactsPage()+"is of the non-citable type "+type.getTitle());
+				throw new SafeException(param.getFactsPage(), param.getFactsPage()+"is of the non-citable type "+type.getName());
 			}
 			
 			BookDef bookDef = BookDef.builder()
-				.factsPage(StringUtils.removeStart(param.getFactsPage(), "Facts:"))
+				.factsPage(param.getFactsPage())
 				.subject(subject)
 				.authors(sortAuthors(subject))
 				.releaseYear("unknown".equals(subject.get(Release_year))
@@ -113,8 +110,8 @@ public class RPCiteTemplate extends RPEndpoint<RPCiteParam> {
 		});
 	}
 
-	private List<PageRef> sortAuthors(SemanticSubject subject) {
-		List<PageRef> result = new ArrayList<>();
+	private List<PageTitle> sortAuthors(SemanticSubject subject) {
+		List<PageTitle> result = new ArrayList<>();
 		subject.getOr(Primary_author, Collections.emptyList()).stream()
 			.filter(v->!result.contains(v))
 			.forEachOrdered(result::add);
@@ -124,7 +121,7 @@ public class RPCiteTemplate extends RPEndpoint<RPCiteParam> {
 			.forEachOrdered(result::add);
 
 		subject.getOr(Author_all, Collections.emptyList()).stream()
-			.sorted(Comparator.comparing(PageRef::getTitle))
+			.sorted(Comparator.comparing(PageTitle::getName))
 			.filter(v->!result.contains(v))
 			.forEachOrdered(result::add);
 		

@@ -20,6 +20,8 @@ import com.beust.jcommander.Parameters;
 
 import io.github.pfwikis.bots.common.Style;
 import io.github.pfwikis.bots.common.Wiki;
+import io.github.pfwikis.bots.common.api.generated.params.NS;
+import io.github.pfwikis.bots.common.api.model.PageRef;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 
@@ -27,7 +29,7 @@ import io.github.pfwikis.bots.common.bots.SimpleBot;
 public class NewsFeedReader extends SimpleBot {
 
 	public NewsFeedReader() {
-		super("news-feed-reader", "Bot News Feed Reader");
+		super("news-feed-reader", "News Feed Reader");
 	}
 
 	@Override
@@ -38,13 +40,13 @@ public class NewsFeedReader extends SimpleBot {
 			"<noinclude>{{Bot created|%s}}</noinclude>".formatted(this.getBotName())
 			+feed;
 		
-		run.getWiki().editIfChange("Template:News feeds", pageContent, "Automatic news feeds update");
+		run.getWiki().editIfChange(PageRef.of(NS.TEMPLATE, "News feeds"), pageContent, "Automatic news feeds update");
 		
 	}
 	
 	public static Stream<Item> collectFeed(String url) throws IOException {
 		RssReader rssReader = new RssReader();
-		rssReader.setReadTimeout(Duration.ofSeconds(60));
+		rssReader.setReadTimeout(Duration.ofSeconds(30));
 		return rssReader.read(url);
 	}
 	

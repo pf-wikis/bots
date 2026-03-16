@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 
 import io.github.pfwikis.bots.facts.SFactsProperties;
@@ -15,6 +13,8 @@ import io.github.pfwikis.bots.utils.Jackson;
 import lombok.Setter;
 import lombok.Value;
 import lombok.experimental.Accessors;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.node.ObjectNode;
 
 @Value
 public class SConcept {
@@ -109,7 +109,7 @@ public class SConcept {
 				|| generatedProperties.contains(p);
 	}
 
-	public String generateTemplateData() throws JsonProcessingException {
+	public String generateTemplateData() throws JacksonException {
 		var props = Lists.newArrayList(this.allProperties()).stream()
 				//.filter(p->p.getGenerateWikitext() == null)
 				.toList();

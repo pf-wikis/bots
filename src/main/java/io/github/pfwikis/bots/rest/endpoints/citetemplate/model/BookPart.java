@@ -5,15 +5,15 @@ import static io.github.pfwikis.bots.facts.SFactsProperties.On_page;
 import java.util.List;
 
 import io.github.pfwikis.bots.common.WikiAPI;
-import io.github.pfwikis.bots.common.model.subject.PageRef;
-import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
+import io.github.pfwikis.bots.common.api.model.PageTitle;
+import io.github.pfwikis.bots.common.api.responses.SemanticSubject;
 import io.github.pfwikis.bots.facts.model.SProperty;
 import io.github.pfwikis.bots.utils.MWJsonHelper;
 
 public abstract class BookPart {
 	
 	public abstract SemanticSubject getSubject();
-	public abstract List<PageRef> getAuthors();
+	public abstract List<PageTitle> getAuthors();
 	
 	protected String makeAuthors() {
 		var result = formatAuthors(getAuthors());
@@ -22,16 +22,16 @@ public abstract class BookPart {
 		return result;
 	}
 
-	protected String formatAuthors(List<PageRef> authors) {
+	protected String formatAuthors(List<PageTitle> authors) {
 		if(authors == null || authors.isEmpty())
 			return null;
 		if(authors.size() == 1) {
-			return authors.get(0).toWikiLink(false);
+			return authors.get(0).toWikitextLink(false);
 		}
 		if(authors.size() == 2) {
-			return authors.get(0).toWikiLink(false)+" & "+authors.get(1).toWikiLink(false);
+			return authors.get(0).toWikitextLink(false)+" & "+authors.get(1).toWikitextLink(false);
 		}
-		return authors.get(0).toWikiLink(false)+", et al";
+		return authors.get(0).toWikitextLink(false)+", et al";
 	}
 
 	

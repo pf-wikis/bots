@@ -1,5 +1,6 @@
 package io.github.pfwikis.bots.common.bots;
 
+import io.github.pfwikis.bots.common.api.model.PageRef;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +14,7 @@ import lombok.With;
 @Builder
 public class RunContext {
 
-	private String page;
+	private PageRef page;
 	private Object scatterShard;
 	
 	public String toInfoText() {

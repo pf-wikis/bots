@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.github.pfwikis.bots.common.model.subject.PageRef;
+import io.github.pfwikis.bots.common.api.model.PageTitle;
 import io.github.pfwikis.bots.facts.model.SConcept;
 import io.github.pfwikis.bots.facts.model.SFactTypes;
 import io.github.pfwikis.bots.facts.model.SProperty;
@@ -17,12 +17,12 @@ public class SFactsProperties {
 		"Accessory type",
 		SFactTypes.STRING)
 		.setDescription("The type of accessory.");
-	public static final SProperty<List<PageRef>> Artist = new SProperty<>(
+	public static final SProperty<List<PageTitle>> Artist = new SProperty<>(
 		"Artist",
 		SFactTypes.PAGE_LIST)
 		.setSuggestValuesFrom("Category:Artists")
 		.setDescription("An artist that worked on this book or product.");
-	public static final SProperty<List<PageRef>> Editor = new SProperty<>(
+	public static final SProperty<List<PageTitle>> Editor = new SProperty<>(
 		"Editor",
 		SFactTypes.PAGE_LIST)
 		.setSuggestValuesFrom("Category:Real-world people")
@@ -31,12 +31,12 @@ public class SFactsProperties {
 		"Audio type",
 		SFactTypes.STRING)
 		.setDescription("The type of audio product.");
-	public static final SProperty<List<PageRef>> Author_all = new SProperty<>(
+	public static final SProperty<List<PageTitle>> Author_all = new SProperty<>(
 		"Author all",
 		SFactTypes.PAGE_LIST)
 		.setGenerateWikitext("{{{Author|}}};{{{Primary author|}}}")
 		.setDescription("This entity is automatically filled with all authors, section authors and primary authors.");
-	public static final SProperty<List<PageRef>> Author = new SProperty<>(
+	public static final SProperty<List<PageTitle>> Author = new SProperty<>(
 		"Author",
 		SFactTypes.PAGE_LIST_ORDERED)
 		.setSuggestValuesFrom("Category:Authors")
@@ -76,12 +76,12 @@ public class SFactsProperties {
 		"Chapters",
 		SFactTypes.INTEGER)
 		.setDescription("The number of chapters.");
-	public static final SProperty<List<PageRef>> Composer = new SProperty<>(
+	public static final SProperty<List<PageTitle>> Composer = new SProperty<>(
 		"Composer",
 		SFactTypes.PAGE_LIST)
 		.setSuggestValuesFrom("Category:Real-world people")
 		.setDescription("The composer who worked on this product.");
-	public static final SProperty<PageRef> Created_from = new SProperty<>(
+	public static final SProperty<PageTitle> Created_from = new SProperty<>(
 		"Created from",
 		SFactTypes.PAGE)
 		.setDescription("Marks a relation between a generated page and its source. This implies, that if the source is deleted this page should be deleted as well.");
@@ -109,12 +109,12 @@ public class SFactsProperties {
 		"Description",
 		SFactTypes.MULTILINE_WIKITEXT)
 		.setDescription("A wikitext description of the entity.");
-	public static final SProperty<List<PageRef>> Designer = new SProperty<>(
+	public static final SProperty<List<PageTitle>> Designer = new SProperty<>(
 		"Designer",
 		SFactTypes.PAGE_LIST)
 		.setSuggestValuesFrom("Category:Real-world people")
 		.setDescription("The designer working on this product.");
-	public static final SProperty<List<PageRef>> Developer = new SProperty<>(
+	public static final SProperty<List<PageTitle>> Developer = new SProperty<>(
 		"Developer",
 		SFactTypes.PAGE_LIST)
 		.setSuggestValuesFrom("Category:Real-world people")
@@ -127,12 +127,12 @@ public class SFactsProperties {
 		"Grid",
 		SFactTypes.STRING)
 		.setDescription("The type of grid used in this product.");
-	public static final SProperty<List<PageRef>> Director = new SProperty<>(
+	public static final SProperty<List<PageTitle>> Director = new SProperty<>(
 		"Director",
 		SFactTypes.PAGE_LIST)
 		.setSuggestValuesFrom("Category:Real-world people")
 		.setDescription("The directory working on this product.");
-	public static final SProperty<List<PageRef>> Main_book = new SProperty<>(
+	public static final SProperty<List<PageTitle>> Main_book = new SProperty<>(
 		"Main book",
 		SFactTypes.PAGE_LIST) {
 			public List<SProperty<?>> generateProperties(SConcept c, SConcept parent) {
@@ -159,7 +159,7 @@ public class SFactsProperties {
 		.setSuggestValuesFrom("Category:Facts about Books")
 		.setDescription("The main books that make up this Adventure Path.")
 		.setFormNote("List the Facts pages here.");
-	public static final SProperty<PageRef> Member_category = new SProperty<>(
+	public static final SProperty<PageTitle> Member_category = new SProperty<>(
 		"Member category",
 		SFactTypes.PAGE)
 		.setDescription("The category that collects members of this series.")
@@ -177,13 +177,13 @@ public class SFactsProperties {
 		SFactTypes.STRING)
 		.setAutocompleteDisabled(true)
 		.setDescription("A link to all the erratas related to this book.");
-	public static final SProperty<PageRef> Fact_type = new SProperty<>(
+	public static final SProperty<PageTitle> Fact_type = new SProperty<>(
 		"Fact type",
 		SFactTypes.PAGE)
 		.setGenerateWikitext("unknown")
 		.setRequired(true)
 		.setDescription("The type of fact represented by this entity. This should be a reference to the template that created it.");
-	public static final SProperty<List<PageRef>> Follows = new SProperty<>(
+	public static final SProperty<List<PageTitle>> Follows = new SProperty<>(
 		"Follows",
 		SFactTypes.PAGE_LIST)
 		.setSuggestValuesFrom("Namespace:Main")
@@ -194,7 +194,7 @@ public class SFactsProperties {
 		.setAutocompleteDisabled(true)
 		.setFormNote("Fill this only, if the commonly used title of this product is a shorter form of the full title.")
 		.setDescription("The full book title. This should only be used in addition to name if the book has a long name that is not typically used in its full form.");
-	public static final SProperty<PageRef> Gallery_page = new SProperty<>(
+	public static final SProperty<PageTitle> Gallery_page = new SProperty<>(
 		"Gallery page",
 		SFactTypes.PAGE)
 		.setGenerateWikitext("{{#if:{{{Gallery|}}}|Category:Artwork from {{{Gallery}}}|Category:Artwork from {{PAGENAME}}}}")
@@ -221,11 +221,11 @@ public class SFactsProperties {
 		SFactTypes.DATE)
 		.setDescription("The AT time this work of fiction is set in.")
 		.setFormNote("Only fill this if it is different from the start date.");
-	public static final SProperty<List<PageRef>> Includes_work = new SProperty<>(
+	public static final SProperty<List<PageTitle>> Includes_work = new SProperty<>(
 		"Includes work",
 		SFactTypes.PAGE_LIST)
 		.setDescription("Other works that are included in this collection.");
-	public static final SProperty<PageRef> Image = new SProperty<>(
+	public static final SProperty<PageTitle> Image = new SProperty<>(
 		"Image",
 		SFactTypes.IMAGE)
 		.setDescription("The page of an image representing this entity.");
@@ -242,7 +242,7 @@ public class SFactsProperties {
 		"Level range start",
 		SFactTypes.INTEGER)
 		.setDescription("This adventure is supposed to be started at this level '''or''' this society adventure can be played in a range starting with this level.");
-	public static final SProperty<List<PageRef>> Location = new SProperty<>(
+	public static final SProperty<List<PageTitle>> Location = new SProperty<>(
 		"Location",
 		SFactTypes.PAGE_LIST)
 		.setDescription("This adventures features the location in a meaningful way.");
@@ -272,7 +272,7 @@ public class SFactsProperties {
 		.setAutocompleteDisabled(true)
 		.setDescription("The general name of an entity. This is used for many different types.")
 		.setRequired(true);
-	public static final SProperty<List<PageRef>> Narrator = new SProperty<>(
+	public static final SProperty<List<PageTitle>> Narrator = new SProperty<>(
 		"Narrator",
 		SFactTypes.PAGE_LIST)
 		.setSuggestValuesFrom("Category:Real-world people")
@@ -287,7 +287,7 @@ public class SFactsProperties {
 		"Pages",
 		SFactTypes.INTEGER)
 		.setDescription("The number of pages in this book.");
-	public static final SProperty<List<PageRef>> Performer = new SProperty<>(
+	public static final SProperty<List<PageTitle>> Performer = new SProperty<>(
 		"Performer",
 		SFactTypes.PAGE_LIST)
 		.setSuggestValuesFrom("Category:Actors (real world)")
@@ -296,7 +296,7 @@ public class SFactsProperties {
 		"Platforms",
 		SFactTypes.STRING)
 		.setDescription("The platforms that are supported for this product.");
-	public static final SProperty<List<PageRef>> Precedes = new SProperty<>(
+	public static final SProperty<List<PageTitle>> Precedes = new SProperty<>(
 		"Precedes",
 		SFactTypes.PAGE_LIST)
 		.setSuggestValuesFrom("Namespace:Main")
@@ -304,10 +304,11 @@ public class SFactsProperties {
 	public static final SProperty<String> Price = new SProperty<>(
 		"Price",
 		SFactTypes.STRING)
-		.setFormNote("The purchase price of the product in the form of \"$4.99\".")
+		.setFormNote("The purchase price of the product in the form of \"$4.99\". Not necessary if there is a Paizo pubcode.")
 		.setDescription("The price of this release.")
-		.setAllowsPattern("^(Free|[$€]\\d+(.\\d+)?)$");
-	public static final SProperty<List<PageRef>> Primary_author = new SProperty<>(
+		.setAllowsPattern("^(Free|[$€]\\d+(.\\d+)?)$")
+		.setDefaultValue("{{#coalesce:{{Paizo store|price|{{{Pubcode}}}}}}}");
+	public static final SProperty<List<PageTitle>> Primary_author = new SProperty<>(
 		"Primary author",
 		SFactTypes.PAGE_LIST_ORDERED) {
 			public List<SProperty<?>> generateProperties(SConcept c, SConcept parent) {
@@ -317,12 +318,12 @@ public class SFactsProperties {
 		.setSuggestValuesFrom("Category:Authors")
 		.setFormNote("Only set this if there are authors on the cover and they are different from <code>Authors</code>")
 		.setDescription("This entity was written by the given Person. This property can appear multiple times to indicate multiple authors. Compared to the Author property this should be credited on the cover page.");
-	public static final SProperty<List<PageRef>> Producer = new SProperty<>(
+	public static final SProperty<List<PageTitle>> Producer = new SProperty<>(
 		"Producer",
 		SFactTypes.PAGE_LIST)
 		.setSuggestValuesFrom("Category:Real-world people")
 		.setDescription("The producer working on this product.");
-	public static final SProperty<List<PageRef>> Programmer = new SProperty<>(
+	public static final SProperty<List<PageTitle>> Programmer = new SProperty<>(
 		"Programmer",
 		SFactTypes.PAGE_LIST)
 		.setSuggestValuesFrom("Category:Real-world people")
@@ -331,9 +332,9 @@ public class SFactsProperties {
 		"Pubcode",
 		SFactTypes.STRING)
 		.setAutocompleteDisabled(true)
-		.setFormNote("The publisher's product code for this release (e.g. PZO9500, etc.).")
+		.setFormNote("The publisher's product code for this release (e.g. PZO9500, etc.). Only set this if the releases do not have pubcodes.")
 		.setDescription("Typically a Paizo pubcode.");
-	public static final SProperty<List<PageRef>> Publisher = new SProperty<>(
+	public static final SProperty<List<PageTitle>> Publisher = new SProperty<>(
 		"Publisher",
 		SFactTypes.PAGE_LIST)
 		.setFormNote("Typically Paizo Inc.")
@@ -343,7 +344,7 @@ public class SFactsProperties {
 		"Quantity",
 		SFactTypes.STRING)
 		.setDescription("The number of elements included in the product.");
-	public static final SProperty<List<PageRef>> Region = new SProperty<>(
+	public static final SProperty<List<PageTitle>> Region = new SProperty<>(
 		"Region",
 		SFactTypes.PAGE_LIST)
 		.setSuggestValuesFrom("Category:Locations")
@@ -409,7 +410,7 @@ public class SFactsProperties {
 		"Release type",
 		SFactTypes.STRING)
 		.setDescription("What differentiates this release from others. E.g. PDF, Hardover or Special Edition.");
-	public static final SProperty<PageRef> Represented_by_page = new SProperty<>(
+	public static final SProperty<PageTitle> Represented_by_page = new SProperty<>(
 		"Represented by page",
 		SFactTypes.PAGE)
 		.setFormNote("Only fill this if it is different from the Main page of the same name.")
@@ -430,7 +431,7 @@ public class SFactsProperties {
 		"Serialized",
 		SFactTypes.STRING)
 		.setDescription("If the contents were serialized, note the month and year of both the start and end of serialization.");
-	public static final SProperty<List<PageRef>> Series = new SProperty<>(
+	public static final SProperty<List<PageTitle>> Series = new SProperty<>(
 		"Series",
 		SFactTypes.PAGE_LIST)
 		.setSuggestValuesFrom("Namespace:Main")
@@ -456,7 +457,7 @@ public class SFactsProperties {
 	public static final SProperty<String> Website = new SProperty<>(
 		"Website",
 		SFactTypes.URL)
-		.setFormNote("The URL of the product's official page on the publisher's website.")
+		.setFormNote("The URL of the product's official page on the publisher's website. Not necessary if there is a Paizo pubcode.")
 		.setAutocompleteDisabled(true)
 		.setDescription("An URL that is strongly linked to this entity. E.g. the Paizo page for a book. "
 				+ "Defaults to a Paizo shop URL if the Pubcode matches one in the store.")
@@ -467,7 +468,7 @@ public class SFactsProperties {
 		SFactTypes.STRING)
 		.setFormNote("This should be a simple name for the general website, not the specific url.")
 		.setDescription("The name of the website referenced.");
-	public static final SProperty<List<PageRef>> Writer = new SProperty<>(
+	public static final SProperty<List<PageTitle>> Writer = new SProperty<>(
 		"Writer",
 		SFactTypes.PAGE_LIST)
 		.setSuggestValuesFrom("Category:Real-world people")
@@ -511,11 +512,11 @@ public class SFactsProperties {
 		}
 		.setDescription("The ID of an adventure typically within society play. Typically 'season-issue'.")
 		.setAllowsPattern("^[0-9]+(-[0-9a-zA-Z ]+)?$");
-	public static final SProperty<List<PageRef>> Metaplot = new SProperty<>(
+	public static final SProperty<List<PageTitle>> Metaplot = new SProperty<>(
 		"Metaplot",
 		SFactTypes.PAGE_LIST)
 		.setDescription("The metaplot this adventure is a part of.");
-	public static final SProperty<List<PageRef>> Faction = new SProperty<>(
+	public static final SProperty<List<PageTitle>> Faction = new SProperty<>(
 		"Faction",
 		SFactTypes.PAGE_LIST)
 		.setDescription("A list of the factions represented in this adventure.");
@@ -524,7 +525,7 @@ public class SFactsProperties {
 		SFactTypes.VALUE_LIST)
 		.setDescription("The Society tags that apply to this adventure.")
 		.setSuggestValuesFrom("Property:Society tag");
-	public static final SProperty<List<PageRef>> Adventure_contact = new SProperty<>(
+	public static final SProperty<List<PageTitle>> Adventure_contact = new SProperty<>(
 		"Adventure contact",
 		SFactTypes.PAGE_LIST)
 		.setDescription("The contact/quest giver/Venture-captain of this adventure.");

@@ -1,23 +1,27 @@
 package io.github.pfwikis.bots.utils;
 
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.DumperOptions.ScalarStyle;
-import org.yaml.snakeyaml.LoaderOptions;
+import org.snakeyaml.engine.v2.api.DumpSettings;
+import org.snakeyaml.engine.v2.api.LoadSettings;
+import org.snakeyaml.engine.v2.common.ScalarStyle;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.json.JsonReadFeature;
-import com.fasterxml.jackson.core.util.DefaultIndenter;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.cfg.CoercionAction;
-import com.fasterxml.jackson.databind.cfg.CoercionInputShape;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
-import com.fasterxml.jackson.datatype.guava.GuavaModule;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.StreamReadFeature;
+import tools.jackson.core.json.JsonReadFeature;
+import tools.jackson.core.util.DefaultIndenter;
+import tools.jackson.core.util.DefaultPrettyPrinter;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.MapperFeature;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.cfg.CoercionAction;
+import tools.jackson.databind.cfg.CoercionInputShape;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.dataformat.yaml.YAMLFactory;
+import tools.jackson.dataformat.yaml.YAMLGenerator;
+import tools.jackson.dataformat.yaml.YAMLMapper;
+import tools.jackson.dataformat.yaml.YAMLWriteFeature;
+import tools.jackson.datatype.guava.GuavaModule;
 
 public class Jackson {
 
@@ -25,33 +29,38 @@ public class Jackson {
 	public static final ObjectMapper JSON_LENIENT;
 	public static final ObjectMapper YAML;
 	static {
-		var dumper = new DumperOptions();
-		dumper.setIndicatorIndent(2);
-		dumper.setIndentWithIndicator(true);
-		dumper.setSplitLines(false);
-		dumper.setDefaultScalarStyle(ScalarStyle.FOLDED);
-		var loader = new LoaderOptions();
-		loader.setCodePointLimit(Integer.MAX_VALUE);
-		YAML = new ObjectMapper(YAMLFactory
+		var dumper = DumpSettings.builder()
+			.setIndicatorIndent(2)
+			.setIndentWithIndicator(true)
+			.setSplitLines(false)
+			.setDefaultScalarStyle(ScalarStyle.FOLDED)
+			.build();
+		var loader = LoadSettings.builder()
+			.setCodePointLimit(Integer.MAX_VALUE)
+			.build();
+		new ObjectMapper();
+		YAML = YAMLMapper.builder(YAMLFactory
 			.builder()
 			.dumperOptions(dumper)
-			.loaderOptions(loader)
+			.loadSettings(loader)
+			.enable(YAMLWriteFeature.MINIMIZE_QUOTES)
+			.disable(YAMLWriteFeature.WRITE_DOC_START_MARKER)
 			.build()
-			.enable(YAMLGenerator.Feature.MINIMIZE_QUOTES)
-			.disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER)
 		)
-		.setDefaultPropertyInclusion(Include.NON_EMPTY)
-		.registerModule(new GuavaModule())
-		.registerModule(new JavaTimeModule());
+		.changeDefaultPropertyInclusion(v->v.withValueInclusion(Include.NON_EMPTY))
+		.addModule(new GuavaModule())
+		.build();
 		
-		JSON = new ObjectMapper()
-			.setDefaultPropertyInclusion(Include.NON_EMPTY)
+		JSON = JsonMapper.builder()
+			.changeDefaultPropertyInclusion(v->v.withValueInclusion(Include.NON_EMPTY))
 			.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
-			.registerModule(new JavaTimeModule())
-			.findAndRegisterModules();
+			.enable(StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION)
+			.findAndAddModules()
+			.build();
 		
-		JSON_LENIENT = JSON
-			.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-		JSON_LENIENT.coercionConfigFor(Enum.class).setCoercion(CoercionInputShape.EmptyString, CoercionAction.AsNull);
+		JSON_LENIENT = JSON.rebuild()
+			.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+			.withCoercionConfig(Enum.class, cfg->cfg.setCoercion(CoercionInputShape.EmptyString, CoercionAction.AsNull))
+			.build();
 	}
 }

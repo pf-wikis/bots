@@ -8,7 +8,7 @@
 
 	<appender name="CONSOLE" class="ConsoleAppender">
 		<encoder class="PatternLayoutEncoder">
-			<pattern>%d{HH:mm:ss} [%thread] %highlight(%-5level) %logger{1} %msg%n</pattern>
+			<pattern>%d{HH:mm:ss} [%X{wiki} %thread] %highlight(%-5level) %logger{1} %msg%n</pattern>
 		</encoder>
 	</appender>
 

@@ -1,23 +1,12 @@
 package io.github.pfwikis.bots.facts.makecategories;
 
 import java.io.IOException;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.IntStream;
-
-import org.apache.commons.lang3.StringUtils;
 
 import com.beust.jcommander.Parameters;
-import com.fasterxml.jackson.databind.node.NumericNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.TextNode;
-import com.google.common.collect.HashMultiset;
-import com.google.common.collect.Multiset.Entry;
 
+import io.github.pfwikis.bots.common.api.responses.SemanticAsk.Result;
 import io.github.pfwikis.bots.common.bots.RunContext;
-import io.github.pfwikis.bots.common.bots.ScatteredRunnableBot;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
-import io.github.pfwikis.bots.common.model.SemanticAsk.Result;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -25,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MakeCategories extends SimpleBot {
 	
 	public MakeCategories() {
-		super("make-categories", "Bot Facts Master");
+		super("make-categories", "Facts Master");
 	}
 
 	@Override
@@ -37,7 +26,7 @@ public class MakeCategories extends SimpleBot {
 		
 		for(var r:res) {
 			if(r.getPrintouts().gallery.getExists().equals("1")) continue;
-			var entries = run.getWiki().semanticAsk("[["+r.getPrintouts().gallery.getPage()+"]]").size();
+			var entries = run.getWiki().semanticAsk(Printout.class, "[["+r.getPrintouts().gallery.getPage()+"]]").size();
 			if(entries == 0) continue;
 			
 			run.getWiki().edit(
@@ -52,11 +41,13 @@ public class MakeCategories extends SimpleBot {
 		}
 	}
 	
-	private record Print(
+	private static record Print(
 		Result<?> factType,
 		Result<?> gallery,
 		Result<?> main
 	) {}
+	
+	private static record Printout() {}
 	
 	@Override
 	public String getDescription() {

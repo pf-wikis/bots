@@ -5,12 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.github.pfwikis.bots.common.model.subject.PageRef;
+import io.github.pfwikis.bots.common.api.model.PageTitle;
 import io.github.pfwikis.bots.facts.model.SFactTypes;
 import io.github.pfwikis.bots.facts.model.SProperty;
 
 public class SUtilProperties {
-	public static final SProperty<PageRef> Ordered_value = new SProperty<>(
+	public static final SProperty<PageTitle> Ordered_value = new SProperty<>(
 			"Ordered value",
 			SFactTypes.PAGE)
 			.setDescription("The value of an ordered list entry.");

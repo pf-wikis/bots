@@ -3,7 +3,8 @@
 @import java.util.Set
 @import java.util.List
 @import java.util.Map
-@import io.github.pfwikis.bots.common.model.subject.SemanticSubject
+@import java.util.Comparator
+@import io.github.pfwikis.bots.common.api.responses.SemanticSubject
 @import io.github.pfwikis.bots.facts.model.SConcept
 @import static java.util.Comparator.*
 @import java.time.LocalDate
@@ -12,11 +13,12 @@
 @import io.github.pfwikis.bots.facts.model.SInfoboxProperty
 @import io.github.pfwikis.bots.facts.SFactsProperties
 @import io.github.pfwikis.bots.facts.model.SProperty
+@import io.github.pfwikis.bots.common.api.model.PageTitle
 @import io.github.pfwikis.bots.utils.StringHelper
 @import io.github.pfwikis.bots.common.Wiki
 @import io.github.pfwikis.bots.rest.endpoints.infobox.autocategorization.AutoCategorizer
 
-@args(Wiki wiki, List<SConcept> concepts, SemanticSubject page, Map<String, String> series2Category)
+@args(Wiki wiki, List<SConcept> concepts, SemanticSubject page, Map<PageTitle, PageTitle> series2Category)
 @for(SConcept concept:concepts) {
 	<div class="infobox @ConceptUtil.cssName(concept)">
 		<div class="name">
@@ -24,18 +26,30 @@
 				@page.get(Full_title)
 			}
 			else {
-				@page.getOr(Name, StringHelper.pageToTitle(page.getSubject().getTitle()))
+				@page.getOr(Name, page.getSubject().toDisplayName())
 			}
 		</div>
 		@if(page.has(Image)) {
-			{{#ifexist:File:@page.get(Image).getTitle()|
-				<div class="image">[[File:@page.get(Image).getTitle()|250px|Cover Image|class=not-lazy]]</div>
+			{{#ifexist:File:@page.get(Image).getName()|
+				<div class="image">[[File:@page.get(Image).getName()|250px|Cover Image|class=not-lazy]]</div>
 			}}
 		}
 		@if(page.has(Website)) {
 			<div class="website">
 				[@page.get(Website) @page.getOr(Pubcode, "Publisher's product page")]
 			</div>
+		}
+		else {
+			@with?(linkedRelease=page
+				.getSubObjects("Facts/"+concept.getName()+"/Release")
+				.stream()
+				.filter(r->r.has(Website))
+				.sorted(Comparator.comparing(r->r.getOr(Pubcode, "9999999999999").length()))
+				.findFirst().orElse(null)) {
+				<div class="website">
+					[@linkedRelease.get(Website) @linkedRelease.getOr(Pubcode, "Publisher's product page")]
+				</div>
+			}
 		}
 		<div class="type@if(page.has(Sanctioned)){@*important space*@ sanctioned}">
 			@concept.getName() @*<-important space*@

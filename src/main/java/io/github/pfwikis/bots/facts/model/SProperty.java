@@ -56,7 +56,7 @@ public class SProperty<JType> {
 		return 
 			"{{#if:"+wikitextToTestIfValue(false)
 			+ "|" + res
-			+ "|''default:'' " + factType.wikitextToDisplayFact(this, defaultValue)
+			+ "|''automatic value:'' " + factType.wikitextToDisplayFact(this, defaultValue)
 			+ "}}";
 	}
 

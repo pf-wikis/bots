@@ -2,7 +2,7 @@ package io.github.pfwikis.bots.rest.endpoints.citetemplate;
 
 import java.util.Set;
 
-import io.github.pfwikis.bots.common.model.subject.PageRef;
+import io.github.pfwikis.bots.common.api.model.PageTitle;
 import io.github.pfwikis.bots.facts.model.SConcept;
 
 public class CiteUtil {
@@ -17,8 +17,8 @@ public class CiteUtil {
 		"Facts/Miniatures"
 	);
 
-	public static boolean isCiteable(PageRef type) {
-		return TYPES_WITH_CITE.contains(type.getTitle());
+	public static boolean isCiteable(PageTitle type) {
+		return TYPES_WITH_CITE.contains(type.getName());
 	}
 
 	public static boolean isCiteable(SConcept c) {

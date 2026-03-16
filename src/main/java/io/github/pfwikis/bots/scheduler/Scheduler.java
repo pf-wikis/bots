@@ -18,7 +18,6 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 import com.google.common.util.concurrent.Uninterruptibles;
 
-import io.github.pfwikis.bots.Runner;
 import io.github.pfwikis.bots.assistant.AssistantTaskGiver;
 import io.github.pfwikis.bots.common.Discord;
 import io.github.pfwikis.bots.common.Wiki;
@@ -51,8 +50,10 @@ import lombok.extern.slf4j.Slf4j;
 @Parameters
 public class Scheduler {
 
-	@Parameter(names = "--password")
-	protected String rootPassword;
+	@Parameter(names = "--pfkey")
+	protected String pfkey;
+	@Parameter(names = "--sfkey")
+	protected String sfkey;
 	@Parameter(names = "--antiProtectionSecret")
 	protected String antiProtectionSecret;
 	@Parameter(names = "--discordToken")
@@ -72,16 +73,13 @@ public class Scheduler {
 		try(var d = new Discord(discordToken)) {
 			this.discord = d;
 			for(var wiki : Wiki.values()) {
-				wiki.setMasterPassword(rootPassword);
 				try {
-					wiki.setMasterApi(WikiAPI.create(wiki, wiki.getMasterAccount(), wiki.getMasterPassword(), antiProtectionSecret));
+					wiki.setSharedApi(WikiAPI.create(wiki, wiki.getMasterAccount(), wiki==Wiki.PF?pfkey:sfkey, antiProtectionSecret));
 				} catch(Exception e) {
 					log.error("Failed to log in as {}", wiki.getMasterAccount(), e);
 					Uninterruptibles.sleepUninterruptibly(10, TimeUnit.MINUTES);
 					System.exit(-1);
 				}
-				
-				checkAccounts(wiki);
 			}
 			
 			schedule(new HealthCheck(discord), Duration.ofHours(24));
@@ -183,9 +181,10 @@ public class Scheduler {
 
 	
 	public void initBot(Wiki wiki, Discord discord, SimpleBot bot) {
-		bot.setRootPassword(wiki.getMasterPassword());
-		var sr = new SingleRun(wiki, wiki.getMasterAccount(), wiki.getMasterPassword(), antiProtectionSecret);
-		sr.setWiki(WikiAPI.create(wiki, bot.getBotName(), bot.getBotPassword(), antiProtectionSecret));
+		bot.setPfkey(pfkey);
+		bot.setSfkey(sfkey);
+		var sr = new SingleRun(wiki);
+		sr.setWiki(wiki.getSharedApi());
 		
 		bot.setDiscord(discord);
 		bot.setLocalMode(localMode);
@@ -194,7 +193,8 @@ public class Scheduler {
 	}
 	
 	private void initBot(Discord discord, DualBot bot) {
-		bot.setRootPassword(Wiki.PF.getMasterPassword());
+		bot.setPfkey(pfkey);
+		bot.setSfkey(sfkey);
 		bot.setDiscord(discord);
 		bot.setLocalMode(localMode);
 		bot.setRun(bot.createRuns().get(0));
@@ -297,19 +297,4 @@ public class Scheduler {
 	public void schedule(Task task) {
 		tasks.add(task);
 	}
-
-	private void checkAccounts(Wiki wiki) {
-		for(var bot : Runner.getAllBots()) {
-			try {
-				if(!wiki.getMasterApi().accountExists(bot.getBotName())) {
-					wiki.getMasterApi().createAccount(bot.getBotName(), rootPassword+bot.getBotName());
-					wiki.getMasterApi().addRight(bot.getBotName(), "bot|sysop|techadmin", "never");
-				}
-			} catch(Exception e) {
-				log.error("Failed to check account {}", bot.getBotName(), e);
-				System.exit(-1);
-			}
-		}
-	}
-
 }
