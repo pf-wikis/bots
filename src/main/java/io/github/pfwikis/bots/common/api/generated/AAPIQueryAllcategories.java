@@ -66,11 +66,11 @@ public class AAPIQueryAllcategories
 
 	private AAPIQueryAllcategoriesDir dir;
 
-	private Integer min;
+	private Long min;
 
-	private Integer max;
+	private Long max;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	private List<AAPIQueryAllcategoriesProp> prop;
 
@@ -136,7 +136,7 @@ public class AAPIQueryAllcategories
 
 	/**Only return categories with at least this many members.
 	 */
-	public AAPIQueryAllcategories min(Integer min) {
+	public AAPIQueryAllcategories min(Long min) {
 
 		this.min = min;
 
@@ -145,13 +145,13 @@ public class AAPIQueryAllcategories
 
 	/**Only return categories with at least this many members.
 	 */
-	public Integer getMin() {
+	public Long getMin() {
 		return this.min;
 	}
 
 	/**Only return categories with at most this many members.
 	 */
-	public AAPIQueryAllcategories max(Integer max) {
+	public AAPIQueryAllcategories max(Long max) {
 
 		this.max = max;
 
@@ -160,7 +160,7 @@ public class AAPIQueryAllcategories
 
 	/**Only return categories with at most this many members.
 	 */
-	public Integer getMax() {
+	public Long getMax() {
 		return this.max;
 	}
 
@@ -301,6 +301,9 @@ public class AAPIQueryAllcategories
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "aclimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "aclimit", "5000");
 		}
 
 		if (prop != null) {
@@ -334,6 +337,11 @@ public class AAPIQueryAllcategories
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

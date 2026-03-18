@@ -70,7 +70,7 @@ public class AAPIQuerySearch
 
 	private List<NS> namespace;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	private AAPIQuerySearchQiprofile qiprofile;
 
@@ -346,6 +346,9 @@ public class AAPIQuerySearch
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "srlimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "srlimit", "5000");
 		}
 
 		if (qiprofile != null) {
@@ -411,6 +414,11 @@ public class AAPIQuerySearch
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

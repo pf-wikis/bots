@@ -62,11 +62,11 @@ public class AAPIMain implements AAPIModule {
 
 	private AAPIMainFormatSubmodule format;
 
-	private Integer maxlag;
+	private Long maxlag;
 
-	private Integer smaxage;
+	private Long smaxage;
 
-	private Integer maxage;
+	private Long maxage;
 
 	private AAPIMainAssert _assert;
 
@@ -132,7 +132,7 @@ public class AAPIMain implements AAPIModule {
 
 	/**Maximum lag can be used when MediaWiki is installed on a database replicated cluster. To save actions causing any more site replication lag, this parameter can make the client wait until the replication lag is less than the specified value. In case of excessive lag, error code <samp>maxlag</samp> is returned with a message like <samp>Waiting for $host: $lag seconds lagged</samp>.<br />See <a href="/w/index.php?title=Mw:Special:MyLanguage/Manual:Maxlag_parameter&amp;action=edit&amp;redlink=1" class="new" title="Mw:Special:MyLanguage/Manual:Maxlag parameter (page does not exist)">Manual: Maxlag parameter</a> for more information.
 	 */
-	public AAPIMain maxlag(Integer maxlag) {
+	public AAPIMain maxlag(Long maxlag) {
 
 		this.maxlag = maxlag;
 
@@ -141,13 +141,13 @@ public class AAPIMain implements AAPIModule {
 
 	/**Maximum lag can be used when MediaWiki is installed on a database replicated cluster. To save actions causing any more site replication lag, this parameter can make the client wait until the replication lag is less than the specified value. In case of excessive lag, error code <samp>maxlag</samp> is returned with a message like <samp>Waiting for $host: $lag seconds lagged</samp>.<br />See <a href="/w/index.php?title=Mw:Special:MyLanguage/Manual:Maxlag_parameter&amp;action=edit&amp;redlink=1" class="new" title="Mw:Special:MyLanguage/Manual:Maxlag parameter (page does not exist)">Manual: Maxlag parameter</a> for more information.
 	 */
-	public Integer getMaxlag() {
+	public Long getMaxlag() {
 		return this.maxlag;
 	}
 
 	/**Set the <code>s-maxage</code> HTTP cache control header to this many seconds. Errors are never cached.
 	 */
-	public AAPIMain smaxage(Integer smaxage) {
+	public AAPIMain smaxage(Long smaxage) {
 
 		this.smaxage = smaxage;
 
@@ -156,13 +156,13 @@ public class AAPIMain implements AAPIModule {
 
 	/**Set the <code>s-maxage</code> HTTP cache control header to this many seconds. Errors are never cached.
 	 */
-	public Integer getSmaxage() {
+	public Long getSmaxage() {
 		return this.smaxage;
 	}
 
 	/**Set the <code>max-age</code> HTTP cache control header to this many seconds. Errors are never cached.
 	 */
-	public AAPIMain maxage(Integer maxage) {
+	public AAPIMain maxage(Long maxage) {
 
 		this.maxage = maxage;
 
@@ -171,7 +171,7 @@ public class AAPIMain implements AAPIModule {
 
 	/**Set the <code>max-age</code> HTTP cache control header to this many seconds. Errors are never cached.
 	 */
-	public Integer getMaxage() {
+	public Long getMaxage() {
 		return this.maxage;
 	}
 
@@ -626,6 +626,11 @@ public class AAPIMain implements AAPIModule {
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
 		}
 	}
 }

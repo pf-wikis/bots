@@ -34,9 +34,9 @@ public class AAPIThank implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 
 	private AAPIThank() {}
 
-	private Integer rev;
+	private Long rev;
 
-	private Integer log;
+	private Long log;
 
 	private String token;
 
@@ -44,7 +44,7 @@ public class AAPIThank implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 
 	/**Revision ID to thank someone for. This or 'log' must be provided.
 	 */
-	public AAPIThank rev(Integer rev) {
+	public AAPIThank rev(Long rev) {
 
 		this.rev = rev;
 
@@ -53,13 +53,13 @@ public class AAPIThank implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 
 	/**Revision ID to thank someone for. This or 'log' must be provided.
 	 */
-	public Integer getRev() {
+	public Long getRev() {
 		return this.rev;
 	}
 
 	/**Log ID to thank someone for. This or 'rev' must be provided.
 	 */
-	public AAPIThank log(Integer log) {
+	public AAPIThank log(Long log) {
 
 		this.log = log;
 
@@ -68,7 +68,7 @@ public class AAPIThank implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 
 	/**Log ID to thank someone for. This or 'rev' must be provided.
 	 */
-	public Integer getLog() {
+	public Long getLog() {
 		return this.log;
 	}
 
@@ -184,6 +184,11 @@ public class AAPIThank implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 
 		@Override
 		protected boolean internalRequiresPost() {
+			return true;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
 			return true;
 		}
 	}

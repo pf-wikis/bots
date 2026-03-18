@@ -301,5 +301,10 @@ public class AAPIOptions implements AAPIModule, AAPITokenModule, AAPIMainActionM
 		protected boolean internalRequiresPost() {
 			return true;
 		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
+		}
 	}
 }

@@ -25,6 +25,12 @@ public interface AAPIModule {
 			return mapReduce(m->m.builder().internalRequiresPost(), (a,b)->a||b);
 		}
 		
+		public boolean requiresPagination() {
+			return mapReduce(m->m.builder().internalRequiresPagination(), (a,b)->a&&b);
+		}
+		
 		protected abstract boolean internalRequiresPost();
+		
+		protected abstract boolean internalRequiresPagination();
 	}
 }

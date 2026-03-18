@@ -257,5 +257,10 @@ public class AAPIEchocreateevent implements AAPIModule, AAPITokenModule, AAPIMai
 		protected boolean internalRequiresPost() {
 			return true;
 		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
+		}
 	}
 }

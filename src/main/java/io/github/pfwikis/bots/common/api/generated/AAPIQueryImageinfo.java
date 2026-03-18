@@ -38,15 +38,15 @@ public class AAPIQueryImageinfo implements AAPIModule, AAPIQueryPropModule {
 
 	private List<AAPIQueryImageinfoProp> prop;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	private java.time.Instant start;
 
 	private java.time.Instant end;
 
-	private Integer urlwidth;
+	private Long urlwidth;
 
-	private Integer urlheight;
+	private Long urlheight;
 
 	private String metadataversion;
 
@@ -129,7 +129,7 @@ public class AAPIQueryImageinfo implements AAPIModule, AAPIQueryPropModule {
 	/**If iiprop=url is set, a URL to an image scaled to this width will be returned.
 	 * For performance reasons if this option is used, no more than 50 scaled images will be returned.
 	 */
-	public AAPIQueryImageinfo urlwidth(Integer urlwidth) {
+	public AAPIQueryImageinfo urlwidth(Long urlwidth) {
 
 		this.urlwidth = urlwidth;
 
@@ -139,13 +139,13 @@ public class AAPIQueryImageinfo implements AAPIModule, AAPIQueryPropModule {
 	/**If iiprop=url is set, a URL to an image scaled to this width will be returned.
 	 * For performance reasons if this option is used, no more than 50 scaled images will be returned.
 	 */
-	public Integer getUrlwidth() {
+	public Long getUrlwidth() {
 		return this.urlwidth;
 	}
 
 	/**Similar to iiurlwidth.
 	 */
-	public AAPIQueryImageinfo urlheight(Integer urlheight) {
+	public AAPIQueryImageinfo urlheight(Long urlheight) {
 
 		this.urlheight = urlheight;
 
@@ -154,7 +154,7 @@ public class AAPIQueryImageinfo implements AAPIModule, AAPIQueryPropModule {
 
 	/**Similar to iiurlwidth.
 	 */
-	public Integer getUrlheight() {
+	public Long getUrlheight() {
 		return this.urlheight;
 	}
 
@@ -387,6 +387,9 @@ public class AAPIQueryImageinfo implements AAPIModule, AAPIQueryPropModule {
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "iilimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "iilimit", "5000");
 		}
 
 		if (start != null) {
@@ -475,6 +478,11 @@ public class AAPIQueryImageinfo implements AAPIModule, AAPIQueryPropModule {
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

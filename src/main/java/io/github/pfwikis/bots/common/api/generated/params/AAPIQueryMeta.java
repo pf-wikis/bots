@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -112,5 +113,77 @@ public enum AAPIQueryMeta {
 			result.add(createSubmodule(v));
 		}
 		return result;
+	}
+
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	public static class Builder {
+		private EnumSet<AAPIQueryMeta> set = EnumSet.noneOf(AAPIQueryMeta.class);
+
+		public AAPIQueryMeta[] build() {
+			return set.toArray(AAPIQueryMeta[]::new);
+		}
+
+		/**Return messages from this site.*/
+		public Builder ALLMESSAGES() {
+			set.add(ALLMESSAGES);
+			return this;
+		}
+
+		/**Retrieve information about the current authentication status.*/
+		public Builder AUTHMANAGERINFO() {
+			set.add(AUTHMANAGERINFO);
+			return this;
+		}
+
+		/**Return meta information about image repositories configured on the wiki.*/
+		public Builder FILEREPOINFO() {
+			set.add(FILEREPOINFO);
+			return this;
+		}
+
+		/**Return information about available languages.*/
+		public Builder LANGUAGEINFO() {
+			set.add(LANGUAGEINFO);
+			return this;
+		}
+
+		/**Get number of lint errors in each category*/
+		public Builder LINTERSTATS() {
+			set.add(LINTERSTATS);
+			return this;
+		}
+
+		/**Get notifications waiting for the current user.*/
+		public Builder NOTIFICATIONS() {
+			set.add(NOTIFICATIONS);
+			return this;
+		}
+
+		/**Return general information about the site.*/
+		public Builder SITEINFO() {
+			set.add(SITEINFO);
+			return this;
+		}
+
+		/**Gets tokens for data-modifying actions.*/
+		public Builder TOKENS() {
+			set.add(TOKENS);
+			return this;
+		}
+
+		/**Get pages for which there are unread notifications for the current user.*/
+		public Builder UNREADNOTIFICATIONPAGES() {
+			set.add(UNREADNOTIFICATIONPAGES);
+			return this;
+		}
+
+		/**Get information about the current user.*/
+		public Builder USERINFO() {
+			set.add(USERINFO);
+			return this;
+		}
 	}
 }

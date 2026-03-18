@@ -44,7 +44,7 @@ public class AAPIChecktoken implements AAPIModule, AAPIMainActionModule {
 
 	private String token;
 
-	private Integer maxtokenage;
+	private Long maxtokenage;
 
 	/**Type of token being tested.
 	 */
@@ -60,7 +60,7 @@ public class AAPIChecktoken implements AAPIModule, AAPIMainActionModule {
 
 	/**Maximum allowed age of the token, in seconds.
 	 */
-	public AAPIChecktoken maxtokenage(Integer maxtokenage) {
+	public AAPIChecktoken maxtokenage(Long maxtokenage) {
 
 		this.maxtokenage = maxtokenage;
 
@@ -69,7 +69,7 @@ public class AAPIChecktoken implements AAPIModule, AAPIMainActionModule {
 
 	/**Maximum allowed age of the token, in seconds.
 	 */
-	public Integer getMaxtokenage() {
+	public Long getMaxtokenage() {
 		return this.maxtokenage;
 	}
 
@@ -142,6 +142,11 @@ public class AAPIChecktoken implements AAPIModule, AAPIMainActionModule {
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
 		}
 	}
 }

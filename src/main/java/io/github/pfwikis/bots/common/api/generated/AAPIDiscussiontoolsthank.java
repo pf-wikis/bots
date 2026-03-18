@@ -143,5 +143,10 @@ public class AAPIDiscussiontoolsthank implements AAPIModule, AAPITokenModule, AA
 		protected boolean internalRequiresPost() {
 			return true;
 		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
+		}
 	}
 }

@@ -38,11 +38,11 @@ public class AAPIQueryLinterrors implements AAPIModule, AAPIQueryListModule {
 
 	private List<AAPIQueryLinterrorsCategories> categories;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	private List<NS> namespace;
 
-	private List<Integer> pageid;
+	private List<Long> pageid;
 
 	private String title;
 
@@ -93,7 +93,7 @@ public class AAPIQueryLinterrors implements AAPIModule, AAPIQueryListModule {
 
 	/**Only include lint errors from the specified page IDs
 	 */
-	public AAPIQueryLinterrors pageid(Integer... pageid) {
+	public AAPIQueryLinterrors pageid(Long... pageid) {
 
 		this.pageid = List.of(pageid);
 
@@ -102,7 +102,7 @@ public class AAPIQueryLinterrors implements AAPIModule, AAPIQueryListModule {
 
 	/**Only include lint errors from the specified page IDs
 	 */
-	public List<Integer> getPageid() {
+	public List<Long> getPageid() {
 		return this.pageid;
 	}
 
@@ -192,6 +192,9 @@ public class AAPIQueryLinterrors implements AAPIModule, AAPIQueryListModule {
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "lntlimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "lntlimit", "5000");
 		}
 
 		if (namespace != null) {
@@ -239,6 +242,11 @@ public class AAPIQueryLinterrors implements AAPIModule, AAPIQueryListModule {
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

@@ -122,5 +122,10 @@ public class AAPIRemoveauthenticationdata
 		protected boolean internalRequiresPost() {
 			return true;
 		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
+		}
 	}
 }

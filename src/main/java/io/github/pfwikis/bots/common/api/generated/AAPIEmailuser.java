@@ -195,5 +195,10 @@ public class AAPIEmailuser implements AAPIModule, AAPITokenModule, AAPIMainActio
 		protected boolean internalRequiresPost() {
 			return true;
 		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
+		}
 	}
 }

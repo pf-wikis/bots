@@ -32,7 +32,9 @@ import io.github.pfwikis.bots.utils.Jackson;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import tools.jackson.databind.JavaType;
 import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.exc.MismatchedInputException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -52,25 +54,42 @@ public class AAPI {
 	
 	@SneakyThrows
 	public <T extends IResponse<T>> T run(AAPIMainActionModule action, Class<T> model) {
-		var res = jsonRequest(action, null);
-		
-		var result = Jackson.JSON.treeToValue(res.result, model);
-		result.validate();
-		
-		var continueMap = res.response.getContinueMap();
-		while(continueMap != null && !continueMap.isEmpty()) {
-			var moreResults = this.jsonRequest(action, res.response.getContinueMap());
-			var more = Jackson.JSON.treeToValue(moreResults.result, model);
-			more.validate();
-			result.addContinuedResults(more);
-			continueMap = moreResults.response.getContinueMap();
+		var res = jsonRequest(action, null, null);
+		try {	
+			var result = Jackson.JSON.treeToValue(res.result, model);
+			result.validate();
+			
+			if(action.builder().requiresPagination()) {
+				var continueMap = res.response.getContinueMap();
+				while(continueMap != null && !continueMap.isEmpty()) {
+					var moreResults = this.jsonRequest(action, null, res.response.getContinueMap());
+					var more = Jackson.JSON.treeToValue(moreResults.result, model);
+					more.validate();
+					result.addContinuedResults(more);
+					continueMap = moreResults.response.getContinueMap();
+				}
+			}
+			
+			return result;
+		} catch(MismatchedInputException e) {
+			throw new AAPIException("Failed to parse JSON:\n"+res.result, e);
 		}
-		
-		return result;
 	}
 	
 	@SneakyThrows
-	private RequestResult jsonRequest(AAPIMainActionModule action, Map<String, String> continueMap) {
+	public <T> RequestResult<T> complexRun(AAPIMainActionModule action, String mappedField, JavaType model) {
+		
+		var res = jsonRequest(action, mappedField, null);
+		try {	
+			T result = Jackson.JSON.treeToValue(res.result, model);
+			return new RequestResult<T>(res.response, result);
+		} catch(MismatchedInputException e) {
+			throw new AAPIException("Failed to parse JSON:\n"+res.result, e);
+		}
+	}
+	
+	@SneakyThrows
+	private RawRequestResult jsonRequest(AAPIMainActionModule action, String mappedField, Map<String, String> continueMap) {
 		synchronized(client) {
 			if(log.isDebugEnabled()) {
 				log.debug(action.toString());
@@ -116,13 +135,14 @@ public class AAPI {
 					throw new AAPIExceptions.AAPIMultipleExceptions(wrapper.getErrors().stream().map(AAPIExceptions::from).toList());
 				}
 			}
-			var result = wrapper.getOtherFields().get(main.getAction().getKey().getJsonValue());
+			var result = wrapper.getOtherFields().get(mappedField==null?main.getAction().getKey().getJsonValue():mappedField);
 			
-			return new RequestResult(wrapper, result);
+			return new RawRequestResult(wrapper, result);
 		}
 	}
 	
-	private record RequestResult(AAPIWrappedResponse response, JsonNode result) {}
+	private static record RawRequestResult(AAPIWrappedResponse response, JsonNode result) {}
+	public static record RequestResult<T>(AAPIWrappedResponse response, T result) {}
 	
 	public String requestToken(AAPIQueryTokensType token) {
 		synchronized(client) {
@@ -133,6 +153,7 @@ public class AAPI {
 								.meta(AAPIQueryTokens.create()
 										.type(token)
 								),
+							null,
 							null
 						);
 					

@@ -1,4 +1,4 @@
-package io.github.pfwikis.bots.common.model;
+package io.github.pfwikis.bots.common.api.responses;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,6 +14,7 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Lists;
 
+import io.github.pfwikis.bots.common.api.model.PageRef;
 import io.github.pfwikis.bots.facts.model.SFactType;
 import io.github.pfwikis.bots.facts.model.SMWPropertyType;
 import io.github.pfwikis.bots.utils.MWJsonHelper;
@@ -33,12 +34,7 @@ import tools.jackson.databind.node.ObjectNode;
 import tools.jackson.databind.node.TreeTraversingParser;
 import tools.jackson.databind.util.StdConverter;
 
-@Data
-public class SemanticAsk<T> {
-
-	@JsonProperty("query-continue-offset")
-	private Integer queryContinueOffset;
-	private Query<T> query;
+public class SemanticAsk {
 	
 	@Data
 	public static class Query<T> {
@@ -48,18 +44,19 @@ public class SemanticAsk<T> {
 	@Data
 	public static class Result<T> {
 		@JsonProperty("fulltext")
-		private String page;
+		@JsonDeserialize(using = PageRef.FromString.class)
+		private PageRef page;
         private String fullurl;
         private int namespace;
         @JsonDeserialize(using = PrintoutsDeserializer.class)
         private T printouts;
         private String exists;
 
-		public String toPage() {
-			return page.replaceFirst(" *#.*", "");
+		public PageRef toPage() {
+			return PageRef.of(page.getTitle().withoutHash());
 		}
 	}
-	
+	/*
 	@Data
 	public static class Printouts {
 		@JsonProperty("Website")
@@ -137,7 +134,7 @@ public class SemanticAsk<T> {
 		public int compareTo(Ordered o) {
 			return Objects.compare(order.getValue(), o.order.getValue(), Integer::compare);
 		}
-	}
+	}*/
 	
 	@Data
 	@AllArgsConstructor

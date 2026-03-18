@@ -54,7 +54,7 @@ public class AAPIQueryNotifications implements AAPIModule, AAPIQueryMetaModule {
 
 	private AAPIQueryNotificationsFormat format;
 
-	private Integer limit = 500;
+	private Integer limit;
 
 	private Boolean unreadfirst;
 
@@ -450,6 +450,9 @@ public class AAPIQueryNotifications implements AAPIModule, AAPIQueryMetaModule {
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "notlimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "notlimit", "500");
 		}
 
 		if (unreadfirst != null) {
@@ -522,6 +525,11 @@ public class AAPIQueryNotifications implements AAPIModule, AAPIQueryMetaModule {
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

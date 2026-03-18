@@ -26,8 +26,7 @@ import io.github.pfwikis.bots.common.api.generated.params.AAPIMainAction.AAPIMai
  */
 public class AAPIExtSrfSlideshowShow implements AAPIModule, AAPIMainActionModule {
 
-	public static AAPIExtSrfSlideshowShow create(
-			@NonNull Integer pageid, @NonNull String template) {
+	public static AAPIExtSrfSlideshowShow create(@NonNull Long pageid, @NonNull String template) {
 
 		AAPIExtSrfSlideshowShow v = new AAPIExtSrfSlideshowShow();
 
@@ -40,7 +39,7 @@ public class AAPIExtSrfSlideshowShow implements AAPIModule, AAPIMainActionModule
 
 	private AAPIExtSrfSlideshowShow() {}
 
-	private Integer pageid;
+	private Long pageid;
 
 	private String template;
 
@@ -48,7 +47,7 @@ public class AAPIExtSrfSlideshowShow implements AAPIModule, AAPIMainActionModule
 
 	/**<span class="apihelp-empty">(no description)</span>
 	 */
-	public Integer getPageid() {
+	public Long getPageid() {
 		return this.pageid;
 	}
 
@@ -142,6 +141,11 @@ public class AAPIExtSrfSlideshowShow implements AAPIModule, AAPIMainActionModule
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
 		}
 	}
 }

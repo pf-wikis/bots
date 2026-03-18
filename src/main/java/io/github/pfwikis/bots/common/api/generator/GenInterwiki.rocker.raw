@@ -1,0 +1,49 @@
+@import io.github.pfwikis.bots.common.api.generator.api.GenAPIParameter
+@import io.github.pfwikis.bots.common.api.generator.APIGenerator
+@import io.github.pfwikis.bots.common.api.generator.model.APIInfo
+@import com.google.common.base.CaseFormat
+@import java.util.List
+
+@args(APIInfo info)
+
+package io.github.pfwikis.bots.common.api.generated.params;
+
+//import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
+import lombok.RequiredArgsConstructor;
+import lombok.Getter;
+import io.github.pfwikis.bots.common.Wiki;
+
+@@Getter
+@@RequiredArgsConstructor
+public enum Interwiki {
+	@for((it,iw):info.getInterwikis()) {
+		@iw.getJavaName()(
+			"@iw.getPrefix()",
+			"@iw.getUrl()",
+			Wiki.@iw.getWiki().name()
+		)@if(it.last()){;}else{,}
+	}
+	
+	@@Getter(onMethod_=@@JsonValue)
+	private final String prefix;
+	private final String url;
+	private final Wiki wiki;
+	
+	public static Interwiki fromPrefix(String prefix) {
+		var res = fromPrefixOrNull(prefix);
+		if(res == null)
+			throw new IllegalArgumentException("Unknown interwiki prefix "+prefix);
+		return res;
+	}
+	
+	public static Interwiki fromPrefixOrNull(String prefix) {
+		return switch(prefix) {
+			@for(iw:info.getInterwikis()) {
+				case "@iw.getPrefix()" -> @iw.getJavaName();
+			}
+			default -> null;
+		};
+	}
+}

@@ -49,7 +49,7 @@ public class AAPIUndelete implements AAPIModule, AAPITokenModule, AAPIMainAction
 
 	private List<java.time.Instant> timestamps;
 
-	private List<Integer> fileids;
+	private List<Long> fileids;
 
 	private Boolean undeletetalk;
 
@@ -110,7 +110,7 @@ public class AAPIUndelete implements AAPIModule, AAPITokenModule, AAPIMainAction
 
 	/**IDs of the file revisions to restore. If both <var>timestamps</var> and <var>fileids</var> are empty, all will be restored.
 	 */
-	public AAPIUndelete fileids(Integer... fileids) {
+	public AAPIUndelete fileids(Long... fileids) {
 
 		this.fileids = List.of(fileids);
 
@@ -119,7 +119,7 @@ public class AAPIUndelete implements AAPIModule, AAPITokenModule, AAPIMainAction
 
 	/**IDs of the file revisions to restore. If both <var>timestamps</var> and <var>fileids</var> are empty, all will be restored.
 	 */
-	public List<Integer> getFileids() {
+	public List<Long> getFileids() {
 		return this.fileids;
 	}
 
@@ -326,6 +326,11 @@ public class AAPIUndelete implements AAPIModule, AAPITokenModule, AAPIMainAction
 
 		@Override
 		protected boolean internalRequiresPost() {
+			return true;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
 			return true;
 		}
 	}

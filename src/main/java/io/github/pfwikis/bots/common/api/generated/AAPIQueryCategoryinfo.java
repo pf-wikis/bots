@@ -67,5 +67,10 @@ public class AAPIQueryCategoryinfo implements AAPIModule, AAPIQueryPropModule {
 		protected boolean internalRequiresPost() {
 			return false;
 		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
+		}
 	}
 }

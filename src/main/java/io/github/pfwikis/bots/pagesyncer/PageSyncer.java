@@ -88,7 +88,7 @@ public class PageSyncer extends DualBot implements RunOnPageBot {
                 synced.add(doc.getTitle().toFullTitle());
             }
             
-            PageRef style = PageRef.of(NS.STYLE, page.getTitle().getName());
+            PageRef style = page.withNS(NS.STYLE);
             if(run.getPfWiki().exists(style)) {
                 sync(style);
                 synced.add(style.getTitle().toFullTitle());

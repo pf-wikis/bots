@@ -17,26 +17,4 @@ public class GenAPINamespace {
 	private boolean nonincludable;
 	private String namespaceprotection;
 	private String defaultcontentmodel;
-	
-	public String getJavaName() {
-		if(canonical == null) {
-			return "MAIN";
-		}
-		var name = canonical.toUpperCase().replaceAll("[^A-Z]+", "_");
-		return name;
-	}
-
-	public String getPrefix() {
-		if(canonical == null) {
-			return "";
-		}
-		return canonical+":";
-	}
-
-	public String getLabel() {
-		if(canonical == null) {
-			return "Main";
-		}
-		return canonical;
-	}
 }

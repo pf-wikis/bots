@@ -58,7 +58,7 @@ public class AAPIQueryAllusers implements AAPIModule, AAPIQueryListModule {
 
 	private List<AAPIQueryAllusersProp> prop;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	private Boolean witheditsonly;
 
@@ -437,6 +437,9 @@ public class AAPIQueryAllusers implements AAPIModule, AAPIQueryListModule {
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "aulimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "aulimit", "5000");
 		}
 
 		if (witheditsonly != null) {
@@ -488,6 +491,11 @@ public class AAPIQueryAllusers implements AAPIModule, AAPIQueryListModule {
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

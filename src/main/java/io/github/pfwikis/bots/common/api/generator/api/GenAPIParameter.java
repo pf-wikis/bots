@@ -78,7 +78,7 @@ public class GenAPIParameter {
 				return name+".getJsonValue()";
 			}
 		},
-		INTEGER("integer", "Integer") {
+		INTEGER("integer", "Long") {
 			@Override
 			public String codeToGetJsonValue(String name) {
 				return name+".toString()";

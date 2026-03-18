@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -55,6 +56,8 @@ public enum AAPIQueryLogeventsAction {
 	MOVE_MOVE("move/move"),
 
 	MOVE_MOVE_REDIR("move/move_redir"),
+
+	MWOAUTHCONSUMER_("mwoauthconsumer/*"),
 
 	NEWUSERS_AUTOCREATE("newusers/autocreate"),
 

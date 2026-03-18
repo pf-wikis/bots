@@ -126,5 +126,10 @@ public class AAPIQueryUnreadnotificationpages implements AAPIModule, AAPIQueryMe
 		protected boolean internalRequiresPost() {
 			return false;
 		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
+		}
 	}
 }

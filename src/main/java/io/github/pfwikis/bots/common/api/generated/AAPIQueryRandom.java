@@ -63,7 +63,7 @@ public class AAPIQueryRandom
 
 	private AAPIQueryRandomFilterredir filterredir;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	/**Return pages in these namespaces only.
 	 */
@@ -162,6 +162,9 @@ public class AAPIQueryRandom
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "rnlimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "rnlimit", "5000");
 		}
 	}
 
@@ -188,6 +191,11 @@ public class AAPIQueryRandom
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

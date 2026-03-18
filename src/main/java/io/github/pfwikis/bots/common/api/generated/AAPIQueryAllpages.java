@@ -80,9 +80,9 @@ public class AAPIQueryAllpages
 
 	private AAPIQueryAllpagesFilterlanglinks filterlanglinks;
 
-	private Integer minsize;
+	private Long minsize;
 
-	private Integer maxsize;
+	private Long maxsize;
 
 	private List<AAPIQueryAllpagesPrtype> prtype;
 
@@ -92,7 +92,7 @@ public class AAPIQueryAllpages
 
 	private AAPIQueryAllpagesPrexpiry prexpiry;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	private AAPIQueryAllpagesDir dir;
 
@@ -188,7 +188,7 @@ public class AAPIQueryAllpages
 
 	/**Limit to pages with at least this many bytes.
 	 */
-	public AAPIQueryAllpages minsize(Integer minsize) {
+	public AAPIQueryAllpages minsize(Long minsize) {
 
 		this.minsize = minsize;
 
@@ -197,13 +197,13 @@ public class AAPIQueryAllpages
 
 	/**Limit to pages with at least this many bytes.
 	 */
-	public Integer getMinsize() {
+	public Long getMinsize() {
 		return this.minsize;
 	}
 
 	/**Limit to pages with at most this many bytes.
 	 */
-	public AAPIQueryAllpages maxsize(Integer maxsize) {
+	public AAPIQueryAllpages maxsize(Long maxsize) {
 
 		this.maxsize = maxsize;
 
@@ -212,7 +212,7 @@ public class AAPIQueryAllpages
 
 	/**Limit to pages with at most this many bytes.
 	 */
-	public Integer getMaxsize() {
+	public Long getMaxsize() {
 		return this.maxsize;
 	}
 
@@ -494,6 +494,9 @@ public class AAPIQueryAllpages
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "aplimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "aplimit", "5000");
 		}
 
 		if (dir != null) {
@@ -525,6 +528,11 @@ public class AAPIQueryAllpages
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

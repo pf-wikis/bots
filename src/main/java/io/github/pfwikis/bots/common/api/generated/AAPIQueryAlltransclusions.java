@@ -70,7 +70,7 @@ public class AAPIQueryAlltransclusions
 
 	private NS namespace;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	private AAPIQueryAlltransclusionsDir dir;
 
@@ -305,6 +305,9 @@ public class AAPIQueryAlltransclusions
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "atlimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "atlimit", "5000");
 		}
 
 		if (dir != null) {
@@ -336,6 +339,11 @@ public class AAPIQueryAlltransclusions
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

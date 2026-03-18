@@ -58,7 +58,7 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 
 	private Boolean bot;
 
-	private Integer baserevid;
+	private Long baserevid;
 
 	private java.time.Instant basetimestamp;
 
@@ -78,9 +78,9 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 
 	private String appendtext;
 
-	private Integer undo;
+	private Long undo;
 
-	private Integer undoafter;
+	private Long undoafter;
 
 	private Boolean redirect;
 
@@ -226,7 +226,7 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 
 	/**ID of the base revision, used to detect edit conflicts. May be obtained through <a href="/wiki/Special:ApiHelp/query%2Brevisions" title="Special:ApiHelp/query+revisions">action=query&amp;prop=revisions</a>. Self-conflicts cause the edit to fail unless basetimestamp is set.
 	 */
-	public AAPIEdit baserevid(Integer baserevid) {
+	public AAPIEdit baserevid(Long baserevid) {
 
 		this.baserevid = baserevid;
 
@@ -235,7 +235,7 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 
 	/**ID of the base revision, used to detect edit conflicts. May be obtained through <a href="/wiki/Special:ApiHelp/query%2Brevisions" title="Special:ApiHelp/query+revisions">action=query&amp;prop=revisions</a>. Self-conflicts cause the edit to fail unless basetimestamp is set.
 	 */
-	public Integer getBaserevid() {
+	public Long getBaserevid() {
 		return this.baserevid;
 	}
 
@@ -380,7 +380,7 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 
 	/**Undo this revision. Overrides text, prependtext and appendtext.
 	 */
-	public AAPIEdit undo(Integer undo) {
+	public AAPIEdit undo(Long undo) {
 
 		this.undo = undo;
 
@@ -389,13 +389,13 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 
 	/**Undo this revision. Overrides text, prependtext and appendtext.
 	 */
-	public Integer getUndo() {
+	public Long getUndo() {
 		return this.undo;
 	}
 
 	/**Undo all revisions from undo to this one. If not set, just undo one revision.
 	 */
-	public AAPIEdit undoafter(Integer undoafter) {
+	public AAPIEdit undoafter(Long undoafter) {
 
 		this.undoafter = undoafter;
 
@@ -404,7 +404,7 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 
 	/**Undo all revisions from undo to this one. If not set, just undo one revision.
 	 */
-	public Integer getUndoafter() {
+	public Long getUndoafter() {
 		return this.undoafter;
 	}
 
@@ -913,6 +913,11 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 
 		@Override
 		protected boolean internalRequiresPost() {
+			return true;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
 			return true;
 		}
 	}

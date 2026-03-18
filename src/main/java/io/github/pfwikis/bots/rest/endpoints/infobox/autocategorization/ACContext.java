@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 import io.github.pfwikis.bots.common.Wiki;
+import io.github.pfwikis.bots.common.api.model.PageRef;
 import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
 import io.github.pfwikis.bots.facts.model.SConcept;
 import io.github.pfwikis.bots.facts.model.SProperty;
@@ -20,7 +21,7 @@ public class ACContext {
 	private final Wiki wiki;
 	private final SConcept concept;
 	private final SemanticSubject subject;
-	private final Map<String, String> series2Category;
+	private final Map<PageRef, PageRef> series2Category;
 	private Set<String> categories = new HashSet<>();
 
 	public void addCategory(String category) {

@@ -17,13 +17,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.github.pfwikis.bots.common.Discord;
 import io.github.pfwikis.bots.common.Wiki;
+import io.github.pfwikis.bots.common.api.responses.SemanticAsk;
+import io.github.pfwikis.bots.common.api.responses.SemanticAsk.Result;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.common.model.Page;
-import io.github.pfwikis.bots.common.model.SemanticAsk;
-import io.github.pfwikis.bots.common.model.SemanticAsk.Ordered;
-import io.github.pfwikis.bots.common.model.SemanticAsk.Printouts;
-import io.github.pfwikis.bots.common.model.SemanticAsk.Result;
 import io.github.pfwikis.bots.facts.model.SFactType;
 import io.github.pfwikis.bots.facts.model.SMWPropertyType;
 import io.github.pfwikis.bots.utils.Jackson;
@@ -37,7 +35,7 @@ public class AssistantTaskGiver extends SimpleBot {
 	private boolean taskDone = false;
 
 	public AssistantTaskGiver() {
-		super("assistant-task-giver", "Bot Assistant");
+		super("assistant-task-giver", "Assistant");
 	}
 	
 	@Override
@@ -47,6 +45,7 @@ public class AssistantTaskGiver extends SimpleBot {
 
 	@Override
 	public void run(RunContext ctx) throws Exception {
+		/*
 		var cats = run.getWiki().semanticAsk(Object.class, "[[:Category:+]][[Subcategory of::Category:Pages with errors]]")
 			.stream()
 			.map(c->c.getPage())
@@ -89,6 +88,7 @@ public class AssistantTaskGiver extends SimpleBot {
 		}
 		log.info("New human task:\n{}", sb);
 		discord.reportToTalkChannel(run.getServer(), this, sb.toString(), true);
+		*/
 	}
 	
 	@Data

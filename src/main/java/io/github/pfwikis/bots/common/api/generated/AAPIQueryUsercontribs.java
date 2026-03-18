@@ -40,7 +40,7 @@ public class AAPIQueryUsercontribs implements AAPIModule, AAPIQueryListModule {
 
 	private AAPIQueryUsercontribs() {}
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	private java.time.Instant start;
 
@@ -48,7 +48,7 @@ public class AAPIQueryUsercontribs implements AAPIModule, AAPIQueryListModule {
 
 	private List<String> user;
 
-	private List<Integer> userids;
+	private List<Long> userids;
 
 	private String userprefix;
 
@@ -126,7 +126,7 @@ public class AAPIQueryUsercontribs implements AAPIModule, AAPIQueryListModule {
 
 	/**The user IDs to retrieve contributions for. Cannot be used with <var>ucuser</var>, <var>ucuserprefix</var>, or <var>uciprange</var>.
 	 */
-	public AAPIQueryUsercontribs userids(Integer... userids) {
+	public AAPIQueryUsercontribs userids(Long... userids) {
 
 		this.userids = List.of(userids);
 
@@ -135,7 +135,7 @@ public class AAPIQueryUsercontribs implements AAPIModule, AAPIQueryListModule {
 
 	/**The user IDs to retrieve contributions for. Cannot be used with <var>ucuser</var>, <var>ucuserprefix</var>, or <var>uciprange</var>.
 	 */
-	public List<Integer> getUserids() {
+	public List<Long> getUserids() {
 		return this.userids;
 	}
 
@@ -378,6 +378,9 @@ public class AAPIQueryUsercontribs implements AAPIModule, AAPIQueryListModule {
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "uclimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "uclimit", "5000");
 		}
 
 		if (start != null) {
@@ -475,6 +478,11 @@ public class AAPIQueryUsercontribs implements AAPIModule, AAPIQueryListModule {
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

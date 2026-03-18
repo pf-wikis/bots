@@ -273,5 +273,10 @@ public class AAPICreateaccount implements AAPIModule, AAPITokenModule, AAPIMainA
 		protected boolean internalRequiresPost() {
 			return true;
 		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
+		}
 	}
 }

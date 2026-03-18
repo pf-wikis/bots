@@ -56,7 +56,7 @@ public class AAPIQueryDuplicatefiles
 
 	private AAPIQueryDuplicatefiles() {}
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	private AAPIQueryDuplicatefilesDir dir;
 
@@ -140,6 +140,9 @@ public class AAPIQueryDuplicatefiles
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "dflimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "dflimit", "5000");
 		}
 
 		if (dir != null) {
@@ -176,6 +179,11 @@ public class AAPIQueryDuplicatefiles
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

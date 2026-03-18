@@ -4,9 +4,9 @@ import java.io.IOException;
 
 import com.beust.jcommander.Parameters;
 
+import io.github.pfwikis.bots.common.api.responses.SemanticAsk.Result;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
-import io.github.pfwikis.bots.common.model.SemanticAsk.Result;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MakeCategories extends SimpleBot {
 	
 	public MakeCategories() {
-		super("make-categories", "Bot Facts Master");
+		super("make-categories", "Facts Master");
 	}
 
 	@Override
@@ -26,7 +26,7 @@ public class MakeCategories extends SimpleBot {
 		
 		for(var r:res) {
 			if(r.getPrintouts().gallery.getExists().equals("1")) continue;
-			var entries = run.getWiki().semanticAsk("[["+r.getPrintouts().gallery.getPage()+"]]").size();
+			var entries = run.getWiki().semanticAsk(Printout.class, "[["+r.getPrintouts().gallery.getPage()+"]]").size();
 			if(entries == 0) continue;
 			
 			run.getWiki().edit(
@@ -41,11 +41,13 @@ public class MakeCategories extends SimpleBot {
 		}
 	}
 	
-	private record Print(
+	private static record Print(
 		Result<?> factType,
 		Result<?> gallery,
 		Result<?> main
 	) {}
+	
+	private static record Printout() {}
 	
 	@Override
 	public String getDescription() {

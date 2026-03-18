@@ -75,7 +75,7 @@ public class APIParam {
 				String name = CaseFormat.LOWER_HYPHEN
 						.converterTo(CaseFormat.UPPER_UNDERSCORE)
 						.convert(v.getValue());
-				name = name.replaceAll("[^A-Z_0-9]+", "_");
+				name = name.replace("!", "NOT_").replaceAll("[^A-Z_0-9]+", "_");
 				if(Character.isDigit(name.charAt(0))) {
 					name="V_"+name;
 				}

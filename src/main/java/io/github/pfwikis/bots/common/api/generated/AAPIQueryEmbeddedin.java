@@ -60,7 +60,7 @@ public class AAPIQueryEmbeddedin
 
 	private String title;
 
-	private Integer pageid;
+	private Long pageid;
 
 	private List<NS> namespace;
 
@@ -68,7 +68,7 @@ public class AAPIQueryEmbeddedin
 
 	private AAPIQueryEmbeddedinFilterredir filterredir;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	/**Title to search. Cannot be used together with eipageid.
 	 */
@@ -87,7 +87,7 @@ public class AAPIQueryEmbeddedin
 
 	/**Page ID to search. Cannot be used together with eititle.
 	 */
-	public AAPIQueryEmbeddedin pageid(Integer pageid) {
+	public AAPIQueryEmbeddedin pageid(Long pageid) {
 
 		this.pageid = pageid;
 
@@ -96,7 +96,7 @@ public class AAPIQueryEmbeddedin
 
 	/**Page ID to search. Cannot be used together with eititle.
 	 */
-	public Integer getPageid() {
+	public Long getPageid() {
 		return this.pageid;
 	}
 
@@ -248,6 +248,9 @@ public class AAPIQueryEmbeddedin
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "eilimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "eilimit", "5000");
 		}
 	}
 
@@ -274,6 +277,11 @@ public class AAPIQueryEmbeddedin
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

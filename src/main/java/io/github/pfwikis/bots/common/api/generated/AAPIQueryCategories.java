@@ -64,7 +64,7 @@ public class AAPIQueryCategories
 
 	private List<AAPIQueryCategoriesShow> show;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	private List<String> categories;
 
@@ -222,6 +222,9 @@ public class AAPIQueryCategories
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "cllimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "cllimit", "5000");
 		}
 
 		if (categories != null) {
@@ -260,6 +263,11 @@ public class AAPIQueryCategories
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

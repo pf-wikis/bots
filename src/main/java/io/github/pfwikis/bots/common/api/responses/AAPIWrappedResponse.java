@@ -14,6 +14,8 @@ import tools.jackson.databind.JsonNode;
 public class AAPIWrappedResponse {
 
 	private Boolean batchcomplete;
+	@JsonProperty("query-continue-offset")
+	private Integer queryContinueOffset;
 	private List<AAPIWarning> warnings;
 	private List<AAPIError> errors;
 	@JsonProperty("continue")

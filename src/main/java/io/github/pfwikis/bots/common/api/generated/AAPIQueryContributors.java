@@ -50,7 +50,7 @@ public class AAPIQueryContributors implements AAPIModule, AAPIQueryPropModule {
 
 	private List<AAPIQueryContributorsExcluderights> excluderights;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	/**Only include users in the given groups. Does not include implicit or auto-promoted groups like *, user, or autoconfirmed.
 	 */
@@ -227,6 +227,9 @@ public class AAPIQueryContributors implements AAPIModule, AAPIQueryPropModule {
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "pclimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "pclimit", "5000");
 		}
 	}
 
@@ -253,6 +256,11 @@ public class AAPIQueryContributors implements AAPIModule, AAPIQueryPropModule {
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

@@ -78,9 +78,9 @@ public class AAPIQueryAllimages
 
 	private String prefix;
 
-	private Integer minsize;
+	private Long minsize;
 
-	private Integer maxsize;
+	private Long maxsize;
 
 	private String sha1;
 
@@ -92,7 +92,7 @@ public class AAPIQueryAllimages
 
 	private List<String> mime;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	/**Property to sort by.
 	 */
@@ -220,7 +220,7 @@ public class AAPIQueryAllimages
 
 	/**Limit to images with at least this many bytes.
 	 */
-	public AAPIQueryAllimages minsize(Integer minsize) {
+	public AAPIQueryAllimages minsize(Long minsize) {
 
 		this.minsize = minsize;
 
@@ -229,13 +229,13 @@ public class AAPIQueryAllimages
 
 	/**Limit to images with at least this many bytes.
 	 */
-	public Integer getMinsize() {
+	public Long getMinsize() {
 		return this.minsize;
 	}
 
 	/**Limit to images with at most this many bytes.
 	 */
-	public AAPIQueryAllimages maxsize(Integer maxsize) {
+	public AAPIQueryAllimages maxsize(Long maxsize) {
 
 		this.maxsize = maxsize;
 
@@ -244,7 +244,7 @@ public class AAPIQueryAllimages
 
 	/**Limit to images with at most this many bytes.
 	 */
-	public Integer getMaxsize() {
+	public Long getMaxsize() {
 		return this.maxsize;
 	}
 
@@ -556,6 +556,9 @@ public class AAPIQueryAllimages
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "ailimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "ailimit", "5000");
 		}
 	}
 
@@ -582,6 +585,11 @@ public class AAPIQueryAllimages
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

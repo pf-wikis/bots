@@ -347,5 +347,10 @@ public class AAPIRevisiondelete implements AAPIModule, AAPITokenModule, AAPIMain
 		protected boolean internalRequiresPost() {
 			return true;
 		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
+		}
 	}
 }

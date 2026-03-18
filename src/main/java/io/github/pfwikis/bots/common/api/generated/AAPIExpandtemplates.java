@@ -42,7 +42,7 @@ public class AAPIExpandtemplates implements AAPIModule, AAPIMainActionModule {
 
 	private String text;
 
-	private Integer revid;
+	private Long revid;
 
 	private List<AAPIExpandtemplatesProp> prop;
 
@@ -73,7 +73,7 @@ public class AAPIExpandtemplates implements AAPIModule, AAPIMainActionModule {
 
 	/**Revision ID, for <code>{{REVISIONID}}</code> and similar variables.
 	 */
-	public AAPIExpandtemplates revid(Integer revid) {
+	public AAPIExpandtemplates revid(Long revid) {
 
 		this.revid = revid;
 
@@ -82,7 +82,7 @@ public class AAPIExpandtemplates implements AAPIModule, AAPIMainActionModule {
 
 	/**Revision ID, for <code>{{REVISIONID}}</code> and similar variables.
 	 */
-	public Integer getRevid() {
+	public Long getRevid() {
 		return this.revid;
 	}
 
@@ -249,6 +249,11 @@ public class AAPIExpandtemplates implements AAPIModule, AAPIMainActionModule {
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
 		}
 	}
 }

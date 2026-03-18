@@ -46,7 +46,7 @@ public class AAPIQueryIwlinks implements AAPIModule, AAPIQueryPropModule {
 
 	private AAPIQueryIwlinksDir dir;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	/**<p>Which additional properties to get for each interwiki link:
 	 * </p>
@@ -201,6 +201,9 @@ public class AAPIQueryIwlinks implements AAPIModule, AAPIQueryPropModule {
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "iwlimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "iwlimit", "5000");
 		}
 	}
 
@@ -227,6 +230,11 @@ public class AAPIQueryIwlinks implements AAPIModule, AAPIQueryPropModule {
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

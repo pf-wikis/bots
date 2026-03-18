@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 public class TemplateStyles extends SimpleBot {
 
 	public TemplateStyles() {
-		super("template-styles", "Bot Template Styles");
+		super("template-styles", "Template Styles");
 	}
 	
 	

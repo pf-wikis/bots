@@ -232,5 +232,10 @@ public class AAPIEchomarkread implements AAPIModule, AAPITokenModule, AAPIMainAc
 		protected boolean internalRequiresPost() {
 			return true;
 		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
+		}
 	}
 }

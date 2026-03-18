@@ -110,5 +110,10 @@ public class AAPIQueryFilerepoinfo implements AAPIModule, AAPIQueryMetaModule {
 		protected boolean internalRequiresPost() {
 			return false;
 		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
+		}
 	}
 }

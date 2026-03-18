@@ -43,7 +43,7 @@ public class AAPIRollback implements AAPIModule, AAPITokenModule, AAPIMainAction
 
 	private String title;
 
-	private Integer pageid;
+	private Long pageid;
 
 	private List<String> tags;
 
@@ -74,7 +74,7 @@ public class AAPIRollback implements AAPIModule, AAPITokenModule, AAPIMainAction
 
 	/**Page ID of the page to roll back. Cannot be used together with <var>title</var>.
 	 */
-	public AAPIRollback pageid(Integer pageid) {
+	public AAPIRollback pageid(Long pageid) {
 
 		this.pageid = pageid;
 
@@ -83,7 +83,7 @@ public class AAPIRollback implements AAPIModule, AAPITokenModule, AAPIMainAction
 
 	/**Page ID of the page to roll back. Cannot be used together with <var>title</var>.
 	 */
-	public Integer getPageid() {
+	public Long getPageid() {
 		return this.pageid;
 	}
 
@@ -308,6 +308,11 @@ public class AAPIRollback implements AAPIModule, AAPITokenModule, AAPIMainAction
 
 		@Override
 		protected boolean internalRequiresPost() {
+			return true;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
 			return true;
 		}
 	}

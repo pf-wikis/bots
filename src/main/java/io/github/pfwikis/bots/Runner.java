@@ -3,6 +3,7 @@ package io.github.pfwikis.bots;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.MissingCommandException;
@@ -63,10 +64,11 @@ public class Runner {
 					return bc.loadClass(Bot.class)
 						.getConstructor()
 						.newInstance();
-				} catch (Exception e) {
-					log.error("Failed to instantiate bot {}", bc.getName(), e);
-					throw new RuntimeException(e);
+				} catch (Throwable t) {
+					log.error("Failed to instantiate bot {}", bc.getName(), t);
+					return null;
 				}
 			})
+			.filter(Objects::nonNull)
 			.toList();
 }

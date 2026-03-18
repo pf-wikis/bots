@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -22,14 +23,15 @@ import io.github.pfwikis.bots.common.api.generated.@v.getReferencedModule().getJ
 @@RequiredArgsConstructor
 public enum @p.getJavaType() {
 	@for((it,v):p.getEnumValues()) {
-	@if(v.getDescription()!=null) {/**@v.getDescription()*/}
-	@v.getSafeName()(
-		"@v.getValue()"
-		@if(p.isSubmodule()) {
-			, @(v.getReferencedModule().getJavaName()).class
-		}
-	
-	)@if(!it.last()){,}else{;}}
+		@if(v.getDescription()!=null) {/**@v.getDescription()*/}
+		@v.getSafeName()(
+			"@v.getValue()"
+			@if(p.isSubmodule()) {
+				, @(v.getReferencedModule().getJavaName()).class
+			}
+		
+		)@if(!it.last()){,}else{;}
+	}
 	
 	private final String jsonValue;
 	@if(p.isSubmodule()) {
@@ -85,6 +87,28 @@ public enum @p.getJavaType() {
 				result.add(createSubmodule(v));
 			@}
 			return result;
+		@}
+	}
+	
+	@if(p.isMulti()) {
+		public static Builder builder() {
+			return new Builder();
+		}
+		
+		public static class Builder @{
+			private EnumSet<@p.getJavaType()> set = EnumSet.noneOf(@(p.getJavaType()).class);
+			
+			public @(p.getJavaType())[] build() {
+				return set.toArray(@(p.getJavaType())[]::new);
+			}
+			
+			@for((it,v):p.getEnumValues()) {
+				@if(v.getDescription()!=null) {/**@v.getDescription()*/}
+				public Builder @v.getSafeName()() {
+					set.add(@v.getSafeName());
+					return this;
+				}
+			}
 		@}
 	}	
 }

@@ -13,7 +13,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 import io.github.pfwikis.bots.common.api.model.PageTitle;
-import io.github.pfwikis.bots.common.model.SemanticAsk.WikiDate;
+import io.github.pfwikis.bots.common.api.responses.SemanticAsk.WikiDate;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import tools.jackson.databind.JsonNode;

@@ -40,7 +40,7 @@ public class AAPIMove implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 
 	private String from;
 
-	private Integer fromid;
+	private Long fromid;
 
 	private String to;
 
@@ -77,7 +77,7 @@ public class AAPIMove implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 
 	/**Page ID of the page to rename. Cannot be used together with <var>from</var>.
 	 */
-	public AAPIMove fromid(Integer fromid) {
+	public AAPIMove fromid(Long fromid) {
 
 		this.fromid = fromid;
 
@@ -86,7 +86,7 @@ public class AAPIMove implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 
 	/**Page ID of the page to rename. Cannot be used together with <var>from</var>.
 	 */
-	public Integer getFromid() {
+	public Long getFromid() {
 		return this.fromid;
 	}
 
@@ -386,6 +386,11 @@ public class AAPIMove implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 
 		@Override
 		protected boolean internalRequiresPost() {
+			return true;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
 			return true;
 		}
 	}

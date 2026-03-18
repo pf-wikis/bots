@@ -48,7 +48,7 @@ public class AAPIQueryLanglinks implements AAPIModule, AAPIQueryPropModule {
 
 	private String inlanguagecode;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	/**<p>Which additional properties to get for each interlanguage link:
 	 * </p>
@@ -230,6 +230,9 @@ public class AAPIQueryLanglinks implements AAPIModule, AAPIQueryPropModule {
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "lllimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "lllimit", "5000");
 		}
 	}
 
@@ -256,6 +259,11 @@ public class AAPIQueryLanglinks implements AAPIModule, AAPIQueryPropModule {
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

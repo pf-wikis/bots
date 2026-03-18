@@ -62,7 +62,7 @@ public class PaizoRetriever extends DualBot {
 	
 	
 	public PaizoRetriever() {
-		super("paizo-retriever", "Bot Paizo Retriever");
+		super("paizo-retriever", "Paizo Retriever");
 	}
 	
 	public PaizoRetriever(String selenium) {

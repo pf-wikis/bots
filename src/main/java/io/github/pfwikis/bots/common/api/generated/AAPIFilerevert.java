@@ -172,5 +172,10 @@ public class AAPIFilerevert implements AAPIModule, AAPITokenModule, AAPIMainActi
 		protected boolean internalRequiresPost() {
 			return true;
 		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
+		}
 	}
 }

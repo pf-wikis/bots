@@ -106,5 +106,10 @@ public class AAPIQueryPageprops implements AAPIModule, AAPIQueryPropModule {
 		protected boolean internalRequiresPost() {
 			return false;
 		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
+		}
 	}
 }

@@ -94,5 +94,10 @@ public class AAPIDiscussiontoolsgetsubscriptions implements AAPIModule, AAPIMain
 		protected boolean internalRequiresPost() {
 			return false;
 		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
+		}
 	}
 }

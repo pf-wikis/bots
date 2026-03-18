@@ -42,7 +42,7 @@ public class AAPIQueryUsers implements AAPIModule, AAPIQueryListModule {
 
 	private List<String> users;
 
-	private List<Integer> userids;
+	private List<Long> userids;
 
 	/**<p>Which pieces of information to include:
 	 * </p>
@@ -95,7 +95,7 @@ public class AAPIQueryUsers implements AAPIModule, AAPIQueryListModule {
 
 	/**A list of user IDs to obtain information for.
 	 */
-	public AAPIQueryUsers userids(Integer... userids) {
+	public AAPIQueryUsers userids(Long... userids) {
 
 		this.userids = List.of(userids);
 
@@ -104,7 +104,7 @@ public class AAPIQueryUsers implements AAPIModule, AAPIQueryListModule {
 
 	/**A list of user IDs to obtain information for.
 	 */
-	public List<Integer> getUserids() {
+	public List<Long> getUserids() {
 		return this.userids;
 	}
 
@@ -207,6 +207,11 @@ public class AAPIQueryUsers implements AAPIModule, AAPIQueryListModule {
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
 		}
 	}
 }

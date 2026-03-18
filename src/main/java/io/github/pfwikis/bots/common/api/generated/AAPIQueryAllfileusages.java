@@ -68,7 +68,7 @@ public class AAPIQueryAllfileusages
 
 	private List<AAPIQueryAllfileusagesProp> prop;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	private AAPIQueryAllfileusagesDir dir;
 
@@ -276,6 +276,9 @@ public class AAPIQueryAllfileusages
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "aflimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "aflimit", "5000");
 		}
 
 		if (dir != null) {
@@ -307,6 +310,11 @@ public class AAPIQueryAllfileusages
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

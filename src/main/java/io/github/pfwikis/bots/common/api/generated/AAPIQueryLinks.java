@@ -58,7 +58,7 @@ public class AAPIQueryLinks
 
 	private List<NS> namespace;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	private List<String> titles;
 
@@ -180,6 +180,9 @@ public class AAPIQueryLinks
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "pllimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "pllimit", "5000");
 		}
 
 		if (titles != null) {
@@ -218,6 +221,11 @@ public class AAPIQueryLinks
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

@@ -38,6 +38,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.github.pfwikis.bots.common.Wiki;
+import io.github.pfwikis.bots.common.api.model.PageRef;
 import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
 import io.github.pfwikis.bots.facts.SModel;
 import io.github.pfwikis.bots.facts.model.SConcept;
@@ -352,13 +353,13 @@ public enum AutoCategorizer {
 		
 	}
 
-	public static String categoriesWikitext(Wiki wiki, SConcept concept, SemanticSubject subject, Map<String, String> series2Category) {
+	public static String categoriesWikitext(Wiki wiki, SConcept concept, SemanticSubject subject, Map<PageRef, PageRef> series2Category) {
 		var ctx = new ACContext(wiki, concept, subject, series2Category);
 		INSTANCE.rules.calculateCategories(ctx);
 		return ctx.categoriesWikitext();
 	}
 	
-	public static String generateDocs(Wiki server, Map<String, String> series2Category) {
+	public static String generateDocs(Wiki server, Map<PageRef, PageRef> series2Category) {
 		var sb = new StringBuilder();
 		for(var concept : SModel.getConcepts(server).stream().sorted(Comparator.comparing(SConcept::getName)).toList()) {
 			var ctx = new ACContext(server, concept, null, series2Category);

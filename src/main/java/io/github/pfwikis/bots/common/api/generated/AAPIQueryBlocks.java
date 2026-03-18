@@ -46,13 +46,13 @@ public class AAPIQueryBlocks implements AAPIModule, AAPIQueryListModule {
 
 	private AAPIQueryBlocksDir dir;
 
-	private List<Integer> ids;
+	private List<Long> ids;
 
 	private List<String> users;
 
 	private String ip;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	private List<AAPIQueryBlocksProp> prop;
 
@@ -109,7 +109,7 @@ public class AAPIQueryBlocks implements AAPIModule, AAPIQueryListModule {
 
 	/**List of block IDs to list (optional).
 	 */
-	public AAPIQueryBlocks ids(Integer... ids) {
+	public AAPIQueryBlocks ids(Long... ids) {
 
 		this.ids = List.of(ids);
 
@@ -118,7 +118,7 @@ public class AAPIQueryBlocks implements AAPIModule, AAPIQueryListModule {
 
 	/**List of block IDs to list (optional).
 	 */
-	public List<Integer> getIds() {
+	public List<Long> getIds() {
 		return this.ids;
 	}
 
@@ -336,6 +336,9 @@ public class AAPIQueryBlocks implements AAPIModule, AAPIQueryListModule {
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "bklimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "bklimit", "5000");
 		}
 
 		if (prop != null) {
@@ -376,6 +379,11 @@ public class AAPIQueryBlocks implements AAPIModule, AAPIQueryListModule {
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

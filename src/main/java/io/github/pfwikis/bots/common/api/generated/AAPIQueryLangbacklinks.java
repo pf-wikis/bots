@@ -66,7 +66,7 @@ public class AAPIQueryLangbacklinks
 
 	private String title;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	private List<AAPIQueryLangbacklinksProp> prop;
 
@@ -213,6 +213,9 @@ public class AAPIQueryLangbacklinks
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "lbllimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "lbllimit", "5000");
 		}
 
 		if (prop != null) {
@@ -251,6 +254,11 @@ public class AAPIQueryLangbacklinks
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

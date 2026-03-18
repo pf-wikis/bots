@@ -8,7 +8,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 
-import io.github.pfwikis.bots.common.model.SemanticAsk.WikiDate;
+import io.github.pfwikis.bots.common.api.responses.SemanticAsk.WikiDate;
 import io.github.pfwikis.bots.facts.model.SFactTypes;
 import io.github.pfwikis.bots.rest.RPEndpoint;
 import io.github.pfwikis.bots.rest.RestProviderBot;

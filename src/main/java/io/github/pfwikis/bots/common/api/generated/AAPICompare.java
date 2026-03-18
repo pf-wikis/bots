@@ -51,9 +51,9 @@ public class AAPICompare implements AAPIModule, AAPIMainActionModule {
 
 	private String fromtitle;
 
-	private Integer fromid;
+	private Long fromid;
 
-	private Integer fromrev;
+	private Long fromrev;
 
 	private List<AAPICompareFromslots> fromslots;
 
@@ -61,9 +61,9 @@ public class AAPICompare implements AAPIModule, AAPIMainActionModule {
 
 	private String totitle;
 
-	private Integer toid;
+	private Long toid;
 
-	private Integer torev;
+	private Long torev;
 
 	private AAPICompareTorelative torelative;
 
@@ -94,7 +94,7 @@ public class AAPICompare implements AAPIModule, AAPIMainActionModule {
 
 	/**First page ID to compare.
 	 */
-	public AAPICompare fromid(Integer fromid) {
+	public AAPICompare fromid(Long fromid) {
 
 		this.fromid = fromid;
 
@@ -103,13 +103,13 @@ public class AAPICompare implements AAPIModule, AAPIMainActionModule {
 
 	/**First page ID to compare.
 	 */
-	public Integer getFromid() {
+	public Long getFromid() {
 		return this.fromid;
 	}
 
 	/**First revision to compare.
 	 */
-	public AAPICompare fromrev(Integer fromrev) {
+	public AAPICompare fromrev(Long fromrev) {
 
 		this.fromrev = fromrev;
 
@@ -118,7 +118,7 @@ public class AAPICompare implements AAPIModule, AAPIMainActionModule {
 
 	/**First revision to compare.
 	 */
-	public Integer getFromrev() {
+	public Long getFromrev() {
 		return this.fromrev;
 	}
 
@@ -173,7 +173,7 @@ public class AAPICompare implements AAPIModule, AAPIMainActionModule {
 
 	/**Second page ID to compare.
 	 */
-	public AAPICompare toid(Integer toid) {
+	public AAPICompare toid(Long toid) {
 
 		this.toid = toid;
 
@@ -182,13 +182,13 @@ public class AAPICompare implements AAPIModule, AAPIMainActionModule {
 
 	/**Second page ID to compare.
 	 */
-	public Integer getToid() {
+	public Long getToid() {
 		return this.toid;
 	}
 
 	/**Second revision to compare.
 	 */
-	public AAPICompare torev(Integer torev) {
+	public AAPICompare torev(Long torev) {
 
 		this.torev = torev;
 
@@ -197,7 +197,7 @@ public class AAPICompare implements AAPIModule, AAPIMainActionModule {
 
 	/**Second revision to compare.
 	 */
-	public Integer getTorev() {
+	public Long getTorev() {
 		return this.torev;
 	}
 
@@ -528,6 +528,11 @@ public class AAPICompare implements AAPIModule, AAPIMainActionModule {
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
 		}
 	}
 }

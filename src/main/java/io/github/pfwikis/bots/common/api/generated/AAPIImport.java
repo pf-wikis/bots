@@ -425,5 +425,10 @@ public class AAPIImport implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 		protected boolean internalRequiresPost() {
 			return true;
 		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
+		}
 	}
 }

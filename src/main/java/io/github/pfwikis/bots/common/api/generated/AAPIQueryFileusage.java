@@ -64,7 +64,7 @@ public class AAPIQueryFileusage
 
 	private List<AAPIQueryFileusageShow> show;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	/**<p>Which properties to get:
 	 * </p>
@@ -212,6 +212,9 @@ public class AAPIQueryFileusage
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "fulimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "fulimit", "5000");
 		}
 	}
 
@@ -238,6 +241,11 @@ public class AAPIQueryFileusage
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

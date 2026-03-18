@@ -97,5 +97,10 @@ public class AAPIQueryCirruscompsuggestbuilddoc implements AAPIModule, AAPIQuery
 		protected boolean internalRequiresPost() {
 			return false;
 		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
+		}
 	}
 }

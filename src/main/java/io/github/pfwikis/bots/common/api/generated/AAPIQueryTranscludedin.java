@@ -64,7 +64,7 @@ public class AAPIQueryTranscludedin
 
 	private List<AAPIQueryTranscludedinShow> show;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	/**<p>Which properties to get:
 	 * </p>
@@ -212,6 +212,9 @@ public class AAPIQueryTranscludedin
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "tilimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "tilimit", "5000");
 		}
 	}
 
@@ -238,6 +241,11 @@ public class AAPIQueryTranscludedin
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

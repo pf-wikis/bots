@@ -55,7 +55,7 @@ public class AAPIVeforallParsoidUtils implements AAPIModule, AAPIMainActionModul
 
 	private String title;
 
-	private Integer pageid;
+	private Long pageid;
 
 	/**'html' or 'wikitext'
 	 */
@@ -92,7 +92,7 @@ public class AAPIVeforallParsoidUtils implements AAPIModule, AAPIMainActionModul
 
 	/**page ID of the page holding the content
 	 */
-	public AAPIVeforallParsoidUtils pageid(Integer pageid) {
+	public AAPIVeforallParsoidUtils pageid(Long pageid) {
 
 		this.pageid = pageid;
 
@@ -101,7 +101,7 @@ public class AAPIVeforallParsoidUtils implements AAPIModule, AAPIMainActionModul
 
 	/**page ID of the page holding the content
 	 */
-	public Integer getPageid() {
+	public Long getPageid() {
 		return this.pageid;
 	}
 
@@ -198,6 +198,11 @@ public class AAPIVeforallParsoidUtils implements AAPIModule, AAPIMainActionModul
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
 		}
 	}
 }

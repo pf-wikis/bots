@@ -45,9 +45,9 @@ public class AAPITemplatedata implements AAPIModule, AAPIMainActionModule {
 
 	private List<String> titles;
 
-	private List<Integer> pageids;
+	private List<Long> pageids;
 
-	private List<Integer> revids;
+	private List<Long> revids;
 
 	private AAPITemplatedataGeneratorSubmodule generator;
 
@@ -102,7 +102,7 @@ public class AAPITemplatedata implements AAPIModule, AAPIMainActionModule {
 
 	/**A list of page IDs to work on.
 	 */
-	public AAPITemplatedata pageids(Integer... pageids) {
+	public AAPITemplatedata pageids(Long... pageids) {
 
 		this.pageids = List.of(pageids);
 
@@ -111,13 +111,13 @@ public class AAPITemplatedata implements AAPIModule, AAPIMainActionModule {
 
 	/**A list of page IDs to work on.
 	 */
-	public List<Integer> getPageids() {
+	public List<Long> getPageids() {
 		return this.pageids;
 	}
 
 	/**A list of revision IDs to work on. Note that almost all query modules will convert revision IDs to the corresponding page ID and work on the latest revision instead. Only <kbd>prop=revisions</kbd> uses exact revisions for its response.
 	 */
-	public AAPITemplatedata revids(Integer... revids) {
+	public AAPITemplatedata revids(Long... revids) {
 
 		this.revids = List.of(revids);
 
@@ -126,7 +126,7 @@ public class AAPITemplatedata implements AAPIModule, AAPIMainActionModule {
 
 	/**A list of revision IDs to work on. Note that almost all query modules will convert revision IDs to the corresponding page ID and work on the latest revision instead. Only <kbd>prop=revisions</kbd> uses exact revisions for its response.
 	 */
-	public List<Integer> getRevids() {
+	public List<Long> getRevids() {
 		return this.revids;
 	}
 
@@ -340,6 +340,11 @@ public class AAPITemplatedata implements AAPIModule, AAPIMainActionModule {
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
 		}
 	}
 }

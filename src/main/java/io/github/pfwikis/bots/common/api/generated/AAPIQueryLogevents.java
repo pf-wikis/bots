@@ -64,7 +64,7 @@ public class AAPIQueryLogevents implements AAPIModule, AAPIQueryListModule {
 
 	private String tag;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	/**<p>Which properties to get:
 	 * </p>
@@ -420,6 +420,9 @@ public class AAPIQueryLogevents implements AAPIModule, AAPIQueryListModule {
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "lelimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "lelimit", "5000");
 		}
 	}
 
@@ -446,6 +449,11 @@ public class AAPIQueryLogevents implements AAPIModule, AAPIQueryListModule {
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

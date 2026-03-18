@@ -34,11 +34,11 @@ public class AAPITag implements AAPIModule, AAPITokenModule, AAPIMainActionModul
 
 	private AAPITag() {}
 
-	private List<Integer> rcid;
+	private List<Long> rcid;
 
-	private List<Integer> revid;
+	private List<Long> revid;
 
-	private List<Integer> logid;
+	private List<Long> logid;
 
 	private List<String> add;
 
@@ -52,7 +52,7 @@ public class AAPITag implements AAPIModule, AAPITokenModule, AAPIMainActionModul
 
 	/**One or more recent changes IDs from which to add or remove the tag.
 	 */
-	public AAPITag rcid(Integer... rcid) {
+	public AAPITag rcid(Long... rcid) {
 
 		this.rcid = List.of(rcid);
 
@@ -61,13 +61,13 @@ public class AAPITag implements AAPIModule, AAPITokenModule, AAPIMainActionModul
 
 	/**One or more recent changes IDs from which to add or remove the tag.
 	 */
-	public List<Integer> getRcid() {
+	public List<Long> getRcid() {
 		return this.rcid;
 	}
 
 	/**One or more revision IDs from which to add or remove the tag.
 	 */
-	public AAPITag revid(Integer... revid) {
+	public AAPITag revid(Long... revid) {
 
 		this.revid = List.of(revid);
 
@@ -76,13 +76,13 @@ public class AAPITag implements AAPIModule, AAPITokenModule, AAPIMainActionModul
 
 	/**One or more revision IDs from which to add or remove the tag.
 	 */
-	public List<Integer> getRevid() {
+	public List<Long> getRevid() {
 		return this.revid;
 	}
 
 	/**One or more log entry IDs from which to add or remove the tag.
 	 */
-	public AAPITag logid(Integer... logid) {
+	public AAPITag logid(Long... logid) {
 
 		this.logid = List.of(logid);
 
@@ -91,7 +91,7 @@ public class AAPITag implements AAPIModule, AAPITokenModule, AAPIMainActionModul
 
 	/**One or more log entry IDs from which to add or remove the tag.
 	 */
-	public List<Integer> getLogid() {
+	public List<Long> getLogid() {
 		return this.logid;
 	}
 
@@ -323,6 +323,11 @@ public class AAPITag implements AAPIModule, AAPITokenModule, AAPIMainActionModul
 
 		@Override
 		protected boolean internalRequiresPost() {
+			return true;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
 			return true;
 		}
 	}

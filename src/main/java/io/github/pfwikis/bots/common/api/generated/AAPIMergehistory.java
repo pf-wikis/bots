@@ -36,11 +36,11 @@ public class AAPIMergehistory implements AAPIModule, AAPITokenModule, AAPIMainAc
 
 	private String from;
 
-	private Integer fromid;
+	private Long fromid;
 
 	private String to;
 
-	private Integer toid;
+	private Long toid;
 
 	private java.time.Instant timestamp;
 
@@ -65,7 +65,7 @@ public class AAPIMergehistory implements AAPIModule, AAPITokenModule, AAPIMainAc
 
 	/**Page ID of the page from which history will be merged. Cannot be used together with <var>from</var>.
 	 */
-	public AAPIMergehistory fromid(Integer fromid) {
+	public AAPIMergehistory fromid(Long fromid) {
 
 		this.fromid = fromid;
 
@@ -74,7 +74,7 @@ public class AAPIMergehistory implements AAPIModule, AAPITokenModule, AAPIMainAc
 
 	/**Page ID of the page from which history will be merged. Cannot be used together with <var>from</var>.
 	 */
-	public Integer getFromid() {
+	public Long getFromid() {
 		return this.fromid;
 	}
 
@@ -95,7 +95,7 @@ public class AAPIMergehistory implements AAPIModule, AAPITokenModule, AAPIMainAc
 
 	/**Page ID of the page to which history will be merged. Cannot be used together with <var>to</var>.
 	 */
-	public AAPIMergehistory toid(Integer toid) {
+	public AAPIMergehistory toid(Long toid) {
 
 		this.toid = toid;
 
@@ -104,7 +104,7 @@ public class AAPIMergehistory implements AAPIModule, AAPITokenModule, AAPIMainAc
 
 	/**Page ID of the page to which history will be merged. Cannot be used together with <var>to</var>.
 	 */
-	public Integer getToid() {
+	public Long getToid() {
 		return this.toid;
 	}
 
@@ -278,6 +278,11 @@ public class AAPIMergehistory implements AAPIModule, AAPITokenModule, AAPIMainAc
 
 		@Override
 		protected boolean internalRequiresPost() {
+			return true;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
 			return true;
 		}
 	}

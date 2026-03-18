@@ -64,7 +64,7 @@ public class AAPIQueryPageswithprop
 
 	private List<AAPIQueryPageswithpropProp> prop;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	private AAPIQueryPageswithpropDir dir;
 
@@ -180,6 +180,9 @@ public class AAPIQueryPageswithprop
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "pwplimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "pwplimit", "5000");
 		}
 
 		if (dir != null) {
@@ -211,6 +214,11 @@ public class AAPIQueryPageswithprop
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

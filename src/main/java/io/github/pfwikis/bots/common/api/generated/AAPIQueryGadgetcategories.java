@@ -143,5 +143,10 @@ public class AAPIQueryGadgetcategories implements AAPIModule, AAPIQueryListModul
 		protected boolean internalRequiresPost() {
 			return false;
 		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
+		}
 	}
 }

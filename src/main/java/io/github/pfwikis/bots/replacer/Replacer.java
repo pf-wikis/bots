@@ -29,9 +29,9 @@ import com.beust.jcommander.Parameters;
 
 import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.api.model.PageRef;
+import io.github.pfwikis.bots.common.api.responses.SemanticAsk.Result;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
-import io.github.pfwikis.bots.common.model.SemanticAsk.Result;
 import io.github.pfwikis.bots.utils.Jackson;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;

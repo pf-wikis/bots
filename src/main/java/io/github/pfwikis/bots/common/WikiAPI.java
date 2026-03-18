@@ -3,26 +3,51 @@ package io.github.pfwikis.bots.common;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
 import io.github.pfwikis.bots.common.api.MWApi;
 import io.github.pfwikis.bots.common.api.MWApiCache;
+import io.github.pfwikis.bots.common.api.generated.AAPIAsk;
+import io.github.pfwikis.bots.common.api.generated.AAPIParse;
 import io.github.pfwikis.bots.common.api.generated.AAPIQuery;
+import io.github.pfwikis.bots.common.api.generated.AAPIQueryAllpages;
+import io.github.pfwikis.bots.common.api.generated.AAPIQueryAllusers;
 import io.github.pfwikis.bots.common.api.generated.AAPIQueryCategories;
 import io.github.pfwikis.bots.common.api.generated.AAPIQueryCategorymembers;
+import io.github.pfwikis.bots.common.api.generated.AAPIQueryLogevents;
+import io.github.pfwikis.bots.common.api.generated.AAPIQueryRecentchanges;
+import io.github.pfwikis.bots.common.api.generated.params.AAPIAskApi_version;
+import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryAllusersGroup;
 import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryCategorymembersProp;
+import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryRecentchangesProp;
+import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryRecentchangesShow;
+import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryRecentchangesType;
 import io.github.pfwikis.bots.common.api.generated.params.NS;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
 import io.github.pfwikis.bots.common.api.model.PageRef;
+import io.github.pfwikis.bots.common.api.responses.ParseResponse;
+import io.github.pfwikis.bots.common.api.responses.ParseResponse.Content;
 import io.github.pfwikis.bots.common.api.responses.QueryResponse;
 import io.github.pfwikis.bots.common.api.responses.QueryResponse.Category;
+import io.github.pfwikis.bots.common.api.responses.QueryResponse.LogEvent;
+import io.github.pfwikis.bots.common.api.responses.QueryResponse.MWUser;
 import io.github.pfwikis.bots.common.api.responses.QueryResponse.QRPage;
+import io.github.pfwikis.bots.common.api.responses.QueryResponse.RecentChange;
+import io.github.pfwikis.bots.common.api.responses.SemanticAsk;
+import io.github.pfwikis.bots.common.api.responses.SemanticAsk.Result;
 import io.github.pfwikis.bots.common.bots.Bot;
 import io.github.pfwikis.bots.common.model.Page;
+import io.github.pfwikis.bots.utils.Jackson;
 import io.github.pfwikis.bots.utils.SimpleCache.CacheId;
 import lombok.extern.slf4j.Slf4j;
+import tools.jackson.databind.JavaType;
 
 @Slf4j
 public class WikiAPI {
@@ -72,8 +97,10 @@ public class WikiAPI {
 		server.storeInCache(CacheId.PAGE_EXISTS, page, true);
 	}
 
-	public List<Page> getPagesInNamespace(NS style) {
-		throw new UnsupportedOperationException(); //TODO
+	public List<PageRef> getPagesInNamespace(NS namespace) {
+		return wiki.run(AAPIQuery.create().list(AAPIQueryAllpages.create()
+					.namespace(namespace)
+				), QueryResponse.class).getAllpages().stream().map(QRPage::getPage).toList();
 	}
 	
 	public List<PageRef> getPagesInCategory(ContainsPageRef category) {
@@ -107,32 +134,133 @@ public class WikiAPI {
 		return wiki.getPageProperties(page, AAPIQueryCategories.create()).getCategories()
 			.stream().map(Category::getPage).toList();
 	}
-
-	/*
-	public boolean upload(Path p, String title, String desc, String summary) {
-		return wiki.upload(p, title, desc, summary);
-	}
-
-	public List<RecentChange> getRecentChanges(Instant changesSince, String namespace, String show) {
-		var query = new String[] {
-			"rcend", changesSince.truncatedTo(ChronoUnit.SECONDS).toString(),
-			"rclimit", "5000",
-			"rctype", "edit|new",
-			"rcprop", "title|timestamp|ids|user|sizes"
-		};
-		if(namespace != null) {
-			query = ArrayUtils.addAll(query, "rcnamespace", namespace);
-		}
-		if(show != null) {
-			query = ArrayUtils.addAll(query, "rcshow", show);
-		}
-		
-		return Arrays.asList(query(
-			Query.LIST_RECENT_CHANGES,
-			query
-		).recentchanges());
+	
+	public List<MWUser> getAdmins() {
+		return wiki.run(AAPIQuery.create()
+			.list(AAPIQueryAllusers.create()
+					.group(AAPIQueryAllusersGroup.SYSOP)
+			),
+			QueryResponse.class
+		).getAllusers();
 	}
 	
+	public List<LogEvent> getLogEvents(Instant end, String user) {
+		return wiki.run(
+			AAPIQuery.create()
+				.list(AAPIQueryLogevents.create()
+					.end(end)
+					.user(user)
+				),
+			QueryResponse.class
+		).getLogevents();
+	}
+	
+	public List<RecentChange> getRecentChanges(Instant changesSince, NS namespace, AAPIQueryRecentchangesShow[] show) {
+		var rc = AAPIQueryRecentchanges.create()
+			.end(changesSince)
+			.type(
+				AAPIQueryRecentchangesType.EDIT,
+				AAPIQueryRecentchangesType.NEW
+			)
+			.prop(
+				AAPIQueryRecentchangesProp.TITLE,
+				AAPIQueryRecentchangesProp.TIMESTAMP,
+				AAPIQueryRecentchangesProp.IDS,
+				AAPIQueryRecentchangesProp.USER,
+				AAPIQueryRecentchangesProp.SIZES
+			)
+			.show(show);
+		
+		if(namespace != null) {
+			rc.namespace(namespace);
+		}
+		
+		return wiki.run(AAPIQuery.create().list(rc), QueryResponse.class).getRecentchanges();
+	}
+	
+	private static final Map<Class<?>, JavaType> PRINTOUT_TYPES = new HashMap<>();
+	private static synchronized JavaType printoutType(Class<?>cl) {
+		return PRINTOUT_TYPES.computeIfAbsent(cl, 
+				t->Jackson.JSON.getTypeFactory().constructSimpleType(
+						SemanticAsk.Query.class,
+						new JavaType[] {Jackson.JSON.getTypeFactory().constructType(t)}
+				)
+		);
+	}
+	
+	public <T> List<Result<T>> semanticAsk(Class<T> printoutType, String query) {
+		var result = new ArrayList<Result<T>>();
+		Integer offset = 0;
+		int limit = 1000;
+		
+		while(offset != null) {
+			var resp = wiki.<SemanticAsk.Query<T>>complexRun(
+					AAPIAsk.create(query+"|limit="+limit+"|offset="+offset)
+						.api_version(AAPIAskApi_version.V_3),
+					"query",
+					printoutType(printoutType)
+			);
+			offset = resp.response().getQueryContinueOffset();
+			resp.result().getResults().stream().flatMap(e->e.values().stream()).forEach(result::add);
+		}
+		
+		return result;
+	}
+	
+	public <T> List<Result<T>> semanticAsk(Class<T> printoutType, String query, int limit) {
+		var resp = wiki.<SemanticAsk.Query<T>>complexRun(
+				AAPIAsk.create(query+"|limit="+limit)
+					.api_version(AAPIAskApi_version.V_3),
+				"query",
+				printoutType(printoutType)
+		);
+		
+		return resp.result().getResults().stream().flatMap(e->e.values().stream()).toList();
+	}
+
+	public Content getHTML(long revid) {
+		return wiki.run(AAPIParse.create()
+				.oldid(revid)
+				.disablelimitreport(true)
+				.disableeditsection(true)
+				.disabletoc(true),
+				ParseResponse.class
+			).getContent();
+	}
+	
+	public Content getHTML(PageRef page) {
+		return wiki.run(AAPIParse.create()
+			.page(page)
+			.disablelimitreport(true)
+			.disableeditsection(true)
+			.disabletoc(true),
+			
+			ParseResponse.class
+		).getContent();
+	}
+
+	public boolean upload(Path p, PageRef title, String desc, String summary) {
+		return wiki.upload(p, title, desc, summary);
+	}
+	
+	private record Series2CategoryPrintouts(Result<?> series, Result<?> category) {}
+	public Map<PageRef, PageRef> getSeries2Category() {
+		return server
+			.cache(CacheId.SERIES_2_CATEGORY, "", () -> {
+				var res = semanticAsk(Series2CategoryPrintouts.class, "[[Fact type::Template:Facts/Series]][[Member category::+]]|?Represented by page=series|?Member category=category");
+				var b = ImmutableMap.<PageRef, PageRef>builder();
+				for(var r:res) {
+					b.put(
+							r.getPrintouts().series().getPage(),
+							r.getPrintouts().category().getPage()
+					);
+				}
+				return b.build();
+			});
+	}
+
+	
+	/*
 	public ArrayList<Revision> getRevisions(String title, Duration timeRange) {
 		return wiki.getRevisions(title, 0, false, Instant.now().minus(timeRange).truncatedTo(ChronoUnit.SECONDS), null);
 	}
@@ -315,15 +443,6 @@ public class WikiAPI {
 	public String getPageText(String title) {
 		return wiki.getPageText(title);
 	}
-
-	public ParseResponse.Content getParsed(String title) {
-		return get(ParseResponse.class, "parse",
-			"page", title,
-			"disablelimitreport", "true",
-			"disableeditsection", "true",
-			"disabletoc", "true"
-		).parse();
-	}
 	
 	public ParseResponse.Content parseText(String text) {
 		return get(ParseResponse.class, "parse",
@@ -335,14 +454,7 @@ public class WikiAPI {
 		).parse();
 	}
 	
-	public ParseResponse.Content getParsed(long oldid) {
-		return get(ParseResponse.class, "parse",
-			"oldid", Long.toString(oldid),
-			"disablelimitreport", "true",
-			"disableeditsection", "true",
-			"disabletoc", "true"
-		).parse();
-	}
+	
 	
 	public List<Page> getPagesTranscluding(String template) {
 		var pages = query(
@@ -398,13 +510,6 @@ public class WikiAPI {
 		});
 	}
 	
-	public List<WUser> getAdmins() {
-		return query(
-			Query.LIST_ALL_USERS,
-			"augroup", "sysop",
-			"aulimit", "5000"
-		).getAllusers();
-	}
 	
 	public int getNamespaceId(String page) {
 		return wiki.whichNS(page).v;
@@ -417,15 +522,6 @@ public class WikiAPI {
 			"qplimit", "5000"
 		).getQuerypage()
 			.getResults();
-	}
-	
-	public List<LogEvent> getLogEvents(ZonedDateTime end, String user) {
-		return query(
-			Query.LIST_LOG_EVENTS,
-			"lelimit", "5000",
-			"leend", end.toInstant().truncatedTo(ChronoUnit.SECONDS).toString(),
-			"leuser", user
-		).getLogevents();
 	}
 	
 	public List<LogEvent> getRecentLogEvents(String types, Instant changesSince) {
@@ -446,20 +542,6 @@ public class WikiAPI {
 		return false;
 	}
 
-	
-	
-	public List<Page> getPagesInNamespace(int namespace) {
-		return query(
-			Query.LIST_ALL_PAGES,
-			"apnamespace", Integer.toString(namespace),
-			"aplimit", "5000"
-		).getAllpages();
-	}
-	
-	public List<Page> getPagesInNamespace(String namespace) {
-		return getPagesInNamespace(wiki.getNS(namespace).v);
-	}
-	
 	public List<Page> getCategories(String page) {
 		var result = query(
 				Query.PROP_CATEGORIES,
@@ -514,21 +596,7 @@ public class WikiAPI {
 	}
 	
 	
-	private static final Map<Class<?>, JavaType> PRINTOUT_TYPES = new HashMap<>();
-	private static JavaType printoutType(Class<?>cl) {
-		return PRINTOUT_TYPES.computeIfAbsent(cl, 
-				t->Jackson.JSON.getTypeFactory().constructSimpleType(
-						SemanticAsk.class,
-						new JavaType[] {Jackson.JSON.getTypeFactory().constructType(t)}
-				)
-		);
-	}
-	public <T> List<Result<T>> semanticAsk(Class<T> printoutType, String query, int limit) {
-		var response = this.<SemanticAsk<T>>get(
-			printoutType(printoutType),
-			"ask", "api_version", "3", "query", query+"|limit="+limit);
-		return response.getQuery().getResults().stream().flatMap(e->e.values().stream()).toList();
-	}
+	
 
 	public List<Result<Printouts>> semanticAsk(String query) {
 		return semanticAsk(Printouts.class, query);
@@ -616,21 +684,7 @@ public class WikiAPI {
 		return wiki.nss(title);
 	}
 
-	private record Series2CategoryPrintouts(Result<?> series, Result<?> category) {}
-	public Map<String, String> getSeries2Category() {
-		return server
-			.cache(CacheId.SERIES_2_CATEGORY, "", () -> {
-				var res = semanticAsk(Series2CategoryPrintouts.class, "[[Fact type::Template:Facts/Series]][[Member category::+]]|?Represented by page=series|?Member category=category");
-				var b = ImmutableMap.<String, String>builder();
-				for(var r:res) {
-					b.put(
-							r.getPrintouts().series().getPage(),
-							r.getPrintouts().category().getPage()
-					);
-				}
-				return b.build();
-			});
-	}
+	
 
 	public String getPageImage(String page) {
 		return query(Query.PAGE_IMAGES, "titles", page).getPages().get(0).getPageimage();

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -14,15 +15,15 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum AAPIQueryUsercontribsShow {
-	_AUTOPATROLLED("!autopatrolled"),
+	NOT_AUTOPATROLLED("!autopatrolled"),
 
-	_MINOR("!minor"),
+	NOT_MINOR("!minor"),
 
-	_NEW("!new"),
+	NOT_NEW("!new"),
 
-	_PATROLLED("!patrolled"),
+	NOT_PATROLLED("!patrolled"),
 
-	_TOP("!top"),
+	NOT_TOP("!top"),
 
 	AUTOPATROLLED("autopatrolled"),
 
@@ -35,4 +36,67 @@ public enum AAPIQueryUsercontribsShow {
 	TOP("top");
 
 	private final String jsonValue;
+
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	public static class Builder {
+		private EnumSet<AAPIQueryUsercontribsShow> set =
+				EnumSet.noneOf(AAPIQueryUsercontribsShow.class);
+
+		public AAPIQueryUsercontribsShow[] build() {
+			return set.toArray(AAPIQueryUsercontribsShow[]::new);
+		}
+
+		public Builder NOT_AUTOPATROLLED() {
+			set.add(NOT_AUTOPATROLLED);
+			return this;
+		}
+
+		public Builder NOT_MINOR() {
+			set.add(NOT_MINOR);
+			return this;
+		}
+
+		public Builder NOT_NEW() {
+			set.add(NOT_NEW);
+			return this;
+		}
+
+		public Builder NOT_PATROLLED() {
+			set.add(NOT_PATROLLED);
+			return this;
+		}
+
+		public Builder NOT_TOP() {
+			set.add(NOT_TOP);
+			return this;
+		}
+
+		public Builder AUTOPATROLLED() {
+			set.add(AUTOPATROLLED);
+			return this;
+		}
+
+		public Builder MINOR() {
+			set.add(MINOR);
+			return this;
+		}
+
+		public Builder NEW() {
+			set.add(NEW);
+			return this;
+		}
+
+		public Builder PATROLLED() {
+			set.add(PATROLLED);
+			return this;
+		}
+
+		public Builder TOP() {
+			set.add(TOP);
+			return this;
+		}
+	}
 }

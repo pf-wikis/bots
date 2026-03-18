@@ -53,13 +53,13 @@ public class AAPIParse implements AAPIModule, AAPIMainActionModule {
 
 	private String text;
 
-	private Integer revid;
+	private Long revid;
 
 	private String summary;
 
 	private Boolean redirects;
 
-	private Integer oldid;
+	private Long oldid;
 
 	private List<AAPIParseProp> prop;
 
@@ -131,7 +131,7 @@ public class AAPIParse implements AAPIModule, AAPIMainActionModule {
 
 	/**Revision ID, for <code>{{REVISIONID}}</code> and similar variables.
 	 */
-	public AAPIParse revid(Integer revid) {
+	public AAPIParse revid(Long revid) {
 
 		this.revid = revid;
 
@@ -140,7 +140,7 @@ public class AAPIParse implements AAPIModule, AAPIMainActionModule {
 
 	/**Revision ID, for <code>{{REVISIONID}}</code> and similar variables.
 	 */
-	public Integer getRevid() {
+	public Long getRevid() {
 		return this.revid;
 	}
 
@@ -176,7 +176,7 @@ public class AAPIParse implements AAPIModule, AAPIMainActionModule {
 
 	/**Parse the content of this revision. Overrides <var>page</var> and <var>pageid</var>.
 	 */
-	public AAPIParse oldid(Integer oldid) {
+	public AAPIParse oldid(Long oldid) {
 
 		this.oldid = oldid;
 
@@ -185,7 +185,7 @@ public class AAPIParse implements AAPIModule, AAPIMainActionModule {
 
 	/**Parse the content of this revision. Overrides <var>page</var> and <var>pageid</var>.
 	 */
-	public Integer getOldid() {
+	public Long getOldid() {
 		return this.oldid;
 	}
 
@@ -830,6 +830,11 @@ public class AAPIParse implements AAPIModule, AAPIMainActionModule {
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
 		}
 	}
 }

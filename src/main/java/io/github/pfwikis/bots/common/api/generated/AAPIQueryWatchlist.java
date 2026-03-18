@@ -76,7 +76,7 @@ public class AAPIQueryWatchlist
 
 	private AAPIQueryWatchlistDir dir;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	private List<AAPIQueryWatchlistProp> prop;
 
@@ -465,6 +465,9 @@ public class AAPIQueryWatchlist
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "wllimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "wllimit", "5000");
 		}
 
 		if (prop != null) {
@@ -522,6 +525,11 @@ public class AAPIQueryWatchlist
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

@@ -70,7 +70,7 @@ public class AAPIQueryAllredirects
 
 	private NS namespace;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	private AAPIQueryAllredirectsDir dir;
 
@@ -305,6 +305,9 @@ public class AAPIQueryAllredirects
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "arlimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "arlimit", "5000");
 		}
 
 		if (dir != null) {
@@ -336,6 +339,11 @@ public class AAPIQueryAllredirects
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

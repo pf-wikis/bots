@@ -679,5 +679,10 @@ public class AAPIDiscussiontoolsedit implements AAPIModule, AAPITokenModule, AAP
 		protected boolean internalRequiresPost() {
 			return true;
 		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
+		}
 	}
 }

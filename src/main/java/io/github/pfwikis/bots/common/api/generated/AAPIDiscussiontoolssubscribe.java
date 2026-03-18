@@ -167,5 +167,10 @@ public class AAPIDiscussiontoolssubscribe
 		protected boolean internalRequiresPost() {
 			return true;
 		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
+		}
 	}
 }

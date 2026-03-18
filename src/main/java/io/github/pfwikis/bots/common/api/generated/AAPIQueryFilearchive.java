@@ -52,7 +52,7 @@ public class AAPIQueryFilearchive implements AAPIModule, AAPIQueryListModule {
 
 	private List<AAPIQueryFilearchiveProp> prop;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	/**The image title to start enumerating from.
 	 */
@@ -288,6 +288,9 @@ public class AAPIQueryFilearchive implements AAPIModule, AAPIQueryListModule {
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "falimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "falimit", "5000");
 		}
 	}
 
@@ -314,6 +317,11 @@ public class AAPIQueryFilearchive implements AAPIModule, AAPIQueryListModule {
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

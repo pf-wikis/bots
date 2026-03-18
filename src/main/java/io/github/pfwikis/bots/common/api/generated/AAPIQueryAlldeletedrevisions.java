@@ -64,7 +64,7 @@ public class AAPIQueryAlldeletedrevisions
 
 	private List<AAPIQueryAlldeletedrevisionsSlots> slots;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	private String section;
 
@@ -473,6 +473,9 @@ public class AAPIQueryAlldeletedrevisions
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "adrlimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "adrlimit", "5000");
 		}
 
 		if (section != null) {
@@ -567,6 +570,11 @@ public class AAPIQueryAlldeletedrevisions
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

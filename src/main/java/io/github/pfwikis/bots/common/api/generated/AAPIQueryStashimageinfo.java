@@ -40,9 +40,9 @@ public class AAPIQueryStashimageinfo implements AAPIModule, AAPIQueryPropModule 
 
 	private List<AAPIQueryStashimageinfoProp> prop;
 
-	private Integer urlwidth;
+	private Long urlwidth;
 
-	private Integer urlheight;
+	private Long urlheight;
 
 	private String urlparam;
 
@@ -83,7 +83,7 @@ public class AAPIQueryStashimageinfo implements AAPIModule, AAPIQueryPropModule 
 	/**If siiprop=url is set, a URL to an image scaled to this width will be returned.
 	 * For performance reasons if this option is used, no more than 50 scaled images will be returned.
 	 */
-	public AAPIQueryStashimageinfo urlwidth(Integer urlwidth) {
+	public AAPIQueryStashimageinfo urlwidth(Long urlwidth) {
 
 		this.urlwidth = urlwidth;
 
@@ -93,13 +93,13 @@ public class AAPIQueryStashimageinfo implements AAPIModule, AAPIQueryPropModule 
 	/**If siiprop=url is set, a URL to an image scaled to this width will be returned.
 	 * For performance reasons if this option is used, no more than 50 scaled images will be returned.
 	 */
-	public Integer getUrlwidth() {
+	public Long getUrlwidth() {
 		return this.urlwidth;
 	}
 
 	/**Similar to siiurlwidth.
 	 */
-	public AAPIQueryStashimageinfo urlheight(Integer urlheight) {
+	public AAPIQueryStashimageinfo urlheight(Long urlheight) {
 
 		this.urlheight = urlheight;
 
@@ -108,7 +108,7 @@ public class AAPIQueryStashimageinfo implements AAPIModule, AAPIQueryPropModule 
 
 	/**Similar to siiurlwidth.
 	 */
-	public Integer getUrlheight() {
+	public Long getUrlheight() {
 		return this.urlheight;
 	}
 
@@ -231,6 +231,11 @@ public class AAPIQueryStashimageinfo implements AAPIModule, AAPIQueryPropModule 
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
 		}
 	}
 }

@@ -36,7 +36,7 @@ public class AAPIQueryExtlinks implements AAPIModule, AAPIQueryPropModule {
 
 	private AAPIQueryExtlinks() {}
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	private AAPIQueryExtlinksProtocol protocol;
 
@@ -120,6 +120,9 @@ public class AAPIQueryExtlinks implements AAPIModule, AAPIQueryPropModule {
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "ellimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "ellimit", "5000");
 		}
 
 		if (protocol != null) {
@@ -156,6 +159,11 @@ public class AAPIQueryExtlinks implements AAPIModule, AAPIQueryPropModule {
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

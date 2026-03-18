@@ -69,7 +69,7 @@ public class AAPIQueryDeletedrevisions
 
 	private List<AAPIQueryDeletedrevisionsSlots> slots;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	private String section;
 
@@ -353,6 +353,9 @@ public class AAPIQueryDeletedrevisions
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "drvlimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "drvlimit", "5000");
 		}
 
 		if (section != null) {
@@ -418,6 +421,11 @@ public class AAPIQueryDeletedrevisions
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

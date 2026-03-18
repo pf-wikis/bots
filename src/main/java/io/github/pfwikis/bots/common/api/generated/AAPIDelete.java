@@ -38,7 +38,7 @@ public class AAPIDelete implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 
 	private String title;
 
-	private Integer pageid;
+	private Long pageid;
 
 	private String reason;
 
@@ -69,7 +69,7 @@ public class AAPIDelete implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 
 	/**Page ID of the page to delete. Cannot be used together with <var>title</var>.
 	 */
-	public AAPIDelete pageid(Integer pageid) {
+	public AAPIDelete pageid(Long pageid) {
 
 		this.pageid = pageid;
 
@@ -78,7 +78,7 @@ public class AAPIDelete implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 
 	/**Page ID of the page to delete. Cannot be used together with <var>title</var>.
 	 */
-	public Integer getPageid() {
+	public Long getPageid() {
 		return this.pageid;
 	}
 
@@ -306,6 +306,11 @@ public class AAPIDelete implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 
 		@Override
 		protected boolean internalRequiresPost() {
+			return true;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
 			return true;
 		}
 	}

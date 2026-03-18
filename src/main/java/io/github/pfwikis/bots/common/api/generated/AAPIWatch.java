@@ -43,9 +43,9 @@ public class AAPIWatch implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 
 	private List<String> titles;
 
-	private List<Integer> pageids;
+	private List<Long> pageids;
 
-	private List<Integer> revids;
+	private List<Long> revids;
 
 	private AAPIWatchGeneratorSubmodule generator;
 
@@ -87,7 +87,7 @@ public class AAPIWatch implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 
 	/**A list of page IDs to work on.
 	 */
-	public AAPIWatch pageids(Integer... pageids) {
+	public AAPIWatch pageids(Long... pageids) {
 
 		this.pageids = List.of(pageids);
 
@@ -96,13 +96,13 @@ public class AAPIWatch implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 
 	/**A list of page IDs to work on.
 	 */
-	public List<Integer> getPageids() {
+	public List<Long> getPageids() {
 		return this.pageids;
 	}
 
 	/**A list of revision IDs to work on. Note that almost all query modules will convert revision IDs to the corresponding page ID and work on the latest revision instead. Only <kbd>prop=revisions</kbd> uses exact revisions for its response.
 	 */
-	public AAPIWatch revids(Integer... revids) {
+	public AAPIWatch revids(Long... revids) {
 
 		this.revids = List.of(revids);
 
@@ -111,7 +111,7 @@ public class AAPIWatch implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 
 	/**A list of revision IDs to work on. Note that almost all query modules will convert revision IDs to the corresponding page ID and work on the latest revision instead. Only <kbd>prop=revisions</kbd> uses exact revisions for its response.
 	 */
-	public List<Integer> getRevids() {
+	public List<Long> getRevids() {
 		return this.revids;
 	}
 
@@ -341,6 +341,11 @@ public class AAPIWatch implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 
 		@Override
 		protected boolean internalRequiresPost() {
+			return true;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
 			return true;
 		}
 	}

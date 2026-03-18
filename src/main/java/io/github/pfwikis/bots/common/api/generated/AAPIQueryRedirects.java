@@ -64,7 +64,7 @@ public class AAPIQueryRedirects
 
 	private List<AAPIQueryRedirectsShow> show;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	/**<p>Which properties to get:
 	 * </p>
@@ -212,6 +212,9 @@ public class AAPIQueryRedirects
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "rdlimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "rdlimit", "5000");
 		}
 	}
 
@@ -238,6 +241,11 @@ public class AAPIQueryRedirects
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

@@ -64,7 +64,7 @@ public class AAPIQueryProtectedtitles
 
 	private List<AAPIQueryProtectedtitlesLevel> level;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	private AAPIQueryProtectedtitlesDir dir;
 
@@ -283,6 +283,9 @@ public class AAPIQueryProtectedtitles
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "ptlimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "ptlimit", "5000");
 		}
 
 		if (dir != null) {
@@ -335,6 +338,11 @@ public class AAPIQueryProtectedtitles
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

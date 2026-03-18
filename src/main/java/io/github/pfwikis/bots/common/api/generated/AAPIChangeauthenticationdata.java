@@ -122,5 +122,10 @@ public class AAPIChangeauthenticationdata
 		protected boolean internalRequiresPost() {
 			return true;
 		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
+		}
 	}
 }

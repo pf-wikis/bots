@@ -22,7 +22,7 @@ import io.github.pfwikis.bots.utils.Jackson;
 public class MapSearchPage extends SimpleBot {
 
 	public MapSearchPage() {
-		super("map-search-page", "Bot Map Search Page");
+		super("map-search-page", "Map Search Page");
 	}
 
 	@Override

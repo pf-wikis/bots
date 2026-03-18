@@ -82,7 +82,7 @@ public class AAPIQueryRecentchanges
 
 	private List<AAPIQueryRecentchangesShow> show;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	private List<AAPIQueryRecentchangesType> type;
 
@@ -525,6 +525,9 @@ public class AAPIQueryRecentchanges
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "rclimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "rclimit", "5000");
 		}
 
 		if (type != null) {
@@ -578,6 +581,11 @@ public class AAPIQueryRecentchanges
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

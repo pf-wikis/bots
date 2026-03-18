@@ -60,7 +60,7 @@ public class AAPIQueryBacklinks
 
 	private String title;
 
-	private Integer pageid;
+	private Long pageid;
 
 	private List<NS> namespace;
 
@@ -68,7 +68,7 @@ public class AAPIQueryBacklinks
 
 	private AAPIQueryBacklinksFilterredir filterredir;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	private Boolean redirect;
 
@@ -89,7 +89,7 @@ public class AAPIQueryBacklinks
 
 	/**Page ID to search. Cannot be used together with <var>bltitle</var>.
 	 */
-	public AAPIQueryBacklinks pageid(Integer pageid) {
+	public AAPIQueryBacklinks pageid(Long pageid) {
 
 		this.pageid = pageid;
 
@@ -98,7 +98,7 @@ public class AAPIQueryBacklinks
 
 	/**Page ID to search. Cannot be used together with <var>bltitle</var>.
 	 */
-	public Integer getPageid() {
+	public Long getPageid() {
 		return this.pageid;
 	}
 
@@ -272,6 +272,9 @@ public class AAPIQueryBacklinks
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "bllimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "bllimit", "5000");
 		}
 
 		if (redirect != null) {
@@ -303,6 +306,11 @@ public class AAPIQueryBacklinks
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

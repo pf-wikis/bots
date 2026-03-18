@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import com.beust.jcommander.Parameters;
 
 import io.github.pfwikis.bots.common.Wiki;
+import io.github.pfwikis.bots.common.api.model.PageRef;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.facts.SFactsProperties;
@@ -23,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 public class FactsTemplates extends SimpleBot {
 
 	public FactsTemplates() {
-		super("facts-templates", "Bot Facts Master");
+		super("facts-templates", "Facts Master");
 	}
 
 	@Override
@@ -66,7 +67,7 @@ public class FactsTemplates extends SimpleBot {
 			.filter(p->p.getAllowsPattern() != null)
 			.map(p->" "+p.toSafeName()+"|"+p.getAllowsPattern())
 			.collect(Collectors.joining("\n"));
-		run.getWiki().editIfChange("MediaWiki:Smw_allows_pattern", patterns, "Update facts patterns");
+		run.getWiki().editIfChange(PageRef.of("MediaWiki:Smw_allows_pattern"), patterns, "Update facts patterns");
 		
 		for(var p:SProperty.getAll()) {
 			make(run.getWiki(), "Property:"+p.getName(), MakeProperty.template(p));

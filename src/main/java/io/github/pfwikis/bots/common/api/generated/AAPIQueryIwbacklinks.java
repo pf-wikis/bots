@@ -65,7 +65,7 @@ public class AAPIQueryIwbacklinks
 
 	private String title;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	private List<AAPIQueryIwbacklinksProp> prop;
 
@@ -212,6 +212,9 @@ public class AAPIQueryIwbacklinks
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "iwbllimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "iwbllimit", "5000");
 		}
 
 		if (prop != null) {
@@ -250,6 +253,11 @@ public class AAPIQueryIwbacklinks
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

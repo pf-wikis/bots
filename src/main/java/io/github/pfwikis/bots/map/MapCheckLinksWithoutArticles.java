@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MapCheckLinksWithoutArticles extends SimpleBot {
 
 	public MapCheckLinksWithoutArticles() {
-		super("map-check-links-without-articles", "Bot Map Search Page");
+		super("map-check-links-without-articles", "Map Search Page");
 	}
 
 	@Override

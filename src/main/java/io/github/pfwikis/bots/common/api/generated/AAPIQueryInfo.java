@@ -423,5 +423,10 @@ public class AAPIQueryInfo implements AAPIModule, AAPIQueryPropModule {
 		protected boolean internalRequiresPost() {
 			return false;
 		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
+		}
 	}
 }

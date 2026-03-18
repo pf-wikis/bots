@@ -70,7 +70,7 @@ public class AAPIQueryCategorymembers
 
 	private List<AAPIQueryCategorymembersType> type;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	private AAPIQueryCategorymembersSort sort;
 
@@ -431,6 +431,9 @@ public class AAPIQueryCategorymembers
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "cmlimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "cmlimit", "5000");
 		}
 
 		if (sort != null) {
@@ -501,6 +504,11 @@ public class AAPIQueryCategorymembers
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

@@ -40,7 +40,7 @@ public class AAPIChangecontentmodel implements AAPIModule, AAPITokenModule, AAPI
 
 	private String title;
 
-	private Integer pageid;
+	private Long pageid;
 
 	private String summary;
 
@@ -69,7 +69,7 @@ public class AAPIChangecontentmodel implements AAPIModule, AAPITokenModule, AAPI
 
 	/**Page ID of the page to change the contentmodel of. Cannot be used together with <var>title</var>.
 	 */
-	public AAPIChangecontentmodel pageid(Integer pageid) {
+	public AAPIChangecontentmodel pageid(Long pageid) {
 
 		this.pageid = pageid;
 
@@ -78,7 +78,7 @@ public class AAPIChangecontentmodel implements AAPIModule, AAPITokenModule, AAPI
 
 	/**Page ID of the page to change the contentmodel of. Cannot be used together with <var>title</var>.
 	 */
-	public Integer getPageid() {
+	public Long getPageid() {
 		return this.pageid;
 	}
 
@@ -270,6 +270,11 @@ public class AAPIChangecontentmodel implements AAPIModule, AAPITokenModule, AAPI
 
 		@Override
 		protected boolean internalRequiresPost() {
+			return true;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
 			return true;
 		}
 	}

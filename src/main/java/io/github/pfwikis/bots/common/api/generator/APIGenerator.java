@@ -26,6 +26,7 @@ import com.google.googlejavaformat.java.JavaFormatterOptions;
 
 import io.github.pfwikis.bots.common.api.generator.api.GenAPIModule;
 import io.github.pfwikis.bots.common.api.generator.api.GenAPIResult;
+import io.github.pfwikis.bots.common.api.generator.model.APIInfo;
 import io.github.pfwikis.bots.common.api.generator.model.APIModule;
 import io.github.pfwikis.bots.common.api.responses.AAPIWrappedResponse;
 import io.github.pfwikis.bots.utils.Jackson;
@@ -59,8 +60,11 @@ public class APIGenerator {
 	}
 
 	private void generateNamespaceEnum() throws IOException {
-		var res = parseJson("https://pathfinderwiki.com/w/api.php?format=json&action=query&meta=siteinfo&siprop=namespaces&utf8=1&formatversion=2", GenAPIResult.class);
-		render(GenNS.template(List.copyOf(res.getQuery().getNamespaces().values())), new File(root, "params/NS.java"));
+		var res1 = parseJson("https://pathfinderwiki.com/w/api.php?format=json&action=query&meta=siteinfo&siprop=namespaces%7Cinterwikimap&utf8=1&formatversion=2", GenAPIResult.class);
+		var res2 = parseJson("https://starfinderwiki.com/w/api.php?format=json&action=query&meta=siteinfo&siprop=namespaces%7Cinterwikimap&utf8=1&formatversion=2", GenAPIResult.class);
+		var info = APIInfo.create(res1, res2);
+		render(GenNS.template(info), new File(root, "params/NS.java"));
+		render(GenInterwiki.template(info), new File(root, "params/Interwiki.java"));
 	}
 
 	public APIModule getInfo(GenAPIModule parent, String path) {
@@ -139,7 +143,8 @@ public class APIGenerator {
 				result = new Formatter(
 						new JavaFormatterOptions(false, true, JavaFormatterOptions.Style.AOSP)
 				).formatSource(result).replace("    ", "\t");
-			} catch(FormatterException e) {
+			} catch(Exception e) {
+				log.warn("Failed formatting for {}", file);
 				e.printStackTrace();
 				//still write the unformatted to code
 			}

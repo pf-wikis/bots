@@ -85,7 +85,7 @@ public class @m.getJavaName() implements AAPIModule
 	private @m.getJavaName()() @{@}
 
 	@for(param:m.getParameters()) {
-		private @param.getJavaValueType() @param.getSafeName() @if(param==m.getResultLimitParam() && param.getMaxValue() != null){= @param.getMaxValue()};
+		private @param.getJavaValueType() @param.getSafeName();
 	}
 	@with?(PageSetter set = m.getPageSetter()) {
 		private @if(set.multi()) {List<ContainsPageRef>}else{ContainsPageRef} @set.pageField();
@@ -150,7 +150,7 @@ public class @m.getJavaName() implements AAPIModule
 						.append("=")
 					@if(param.isSubmodule()) {
 						@if(param.isMulti()) {
-							;@(param.getSafeName()).stream().map(v->v.getValue().toString()).collect(Collectors.joining("|"));
+							.append(@(param.getSafeName()).stream().map(v->v.getValue().toString()).collect(Collectors.joining("|")));
 						}
 						else {
 							.append(@(param.getSafeName()).getValue().toString());
@@ -215,6 +215,11 @@ public class @m.getJavaName() implements AAPIModule
 					req.addParameter(paramPrefix+"@param.getPrefixedRawName()", @param.getJsonValue(param.getSafeName()));
 				}
 			@}
+			@if(param.equals(m.getResultLimitParam()) && param.getMaxValue() != null) {
+				else @{
+					req.addParameter(paramPrefix+"@param.getPrefixedRawName()", "@param.getMaxValue()");
+				@}
+			}
 		}
 	@}
 	
@@ -262,6 +267,11 @@ public class @m.getJavaName() implements AAPIModule
 		@@Override
 		protected boolean internalRequiresPost() @{
 			return @m.requiresPost();
+		@}
+		
+		@@Override
+		protected boolean internalRequiresPagination() @{
+			return @if(m.getResultLimitParam() == null) {true}else{@m.getResultLimitParam().getSafeName() != null};
 		@}
 	}
 @}

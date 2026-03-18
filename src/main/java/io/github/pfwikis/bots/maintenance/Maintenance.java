@@ -19,7 +19,7 @@ public class Maintenance extends SimpleBot {
 
 
 	public Maintenance() {
-		super("maintenance", "Bot Maintenance");
+		super("maintenance", "Maintenance");
 	}
 
 	@Override

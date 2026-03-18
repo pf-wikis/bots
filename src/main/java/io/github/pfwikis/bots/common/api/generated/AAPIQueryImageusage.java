@@ -60,7 +60,7 @@ public class AAPIQueryImageusage
 
 	private String title;
 
-	private Integer pageid;
+	private Long pageid;
 
 	private List<NS> namespace;
 
@@ -68,7 +68,7 @@ public class AAPIQueryImageusage
 
 	private AAPIQueryImageusageFilterredir filterredir;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	private Boolean redirect;
 
@@ -89,7 +89,7 @@ public class AAPIQueryImageusage
 
 	/**Page ID to search. Cannot be used together with iutitle.
 	 */
-	public AAPIQueryImageusage pageid(Integer pageid) {
+	public AAPIQueryImageusage pageid(Long pageid) {
 
 		this.pageid = pageid;
 
@@ -98,7 +98,7 @@ public class AAPIQueryImageusage
 
 	/**Page ID to search. Cannot be used together with iutitle.
 	 */
-	public Integer getPageid() {
+	public Long getPageid() {
 		return this.pageid;
 	}
 
@@ -272,6 +272,9 @@ public class AAPIQueryImageusage
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "iulimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "iulimit", "5000");
 		}
 
 		if (redirect != null) {
@@ -303,6 +306,11 @@ public class AAPIQueryImageusage
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

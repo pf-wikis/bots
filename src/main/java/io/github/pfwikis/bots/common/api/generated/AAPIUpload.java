@@ -65,9 +65,9 @@ public class AAPIUpload implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 
 	private Boolean stash;
 
-	private Integer filesize;
+	private Long filesize;
 
-	private Integer offset;
+	private Long offset;
 
 	private byte[] chunk;
 
@@ -229,7 +229,7 @@ public class AAPIUpload implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 
 	/**Filesize of entire upload.
 	 */
-	public AAPIUpload filesize(Integer filesize) {
+	public AAPIUpload filesize(Long filesize) {
 
 		this.filesize = filesize;
 
@@ -238,13 +238,13 @@ public class AAPIUpload implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 
 	/**Filesize of entire upload.
 	 */
-	public Integer getFilesize() {
+	public Long getFilesize() {
 		return this.filesize;
 	}
 
 	/**Offset of chunk in bytes.
 	 */
-	public AAPIUpload offset(Integer offset) {
+	public AAPIUpload offset(Long offset) {
 
 		this.offset = offset;
 
@@ -253,7 +253,7 @@ public class AAPIUpload implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 
 	/**Offset of chunk in bytes.
 	 */
-	public Integer getOffset() {
+	public Long getOffset() {
 		return this.offset;
 	}
 
@@ -547,6 +547,11 @@ public class AAPIUpload implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 
 		@Override
 		protected boolean internalRequiresPost() {
+			return true;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
 			return true;
 		}
 	}

@@ -60,7 +60,7 @@ public class AAPIQueryQuerypage
 
 	private AAPIQueryQuerypagePage page;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	/**The name of the special page. Note, this is case-sensitive.
 	 */
@@ -114,6 +114,9 @@ public class AAPIQueryQuerypage
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "qplimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "qplimit", "5000");
 		}
 	}
 
@@ -140,6 +143,11 @@ public class AAPIQueryQuerypage
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

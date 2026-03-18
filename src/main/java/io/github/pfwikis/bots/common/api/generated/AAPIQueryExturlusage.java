@@ -66,7 +66,7 @@ public class AAPIQueryExturlusage
 
 	private List<NS> namespace;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	/**<p>Which pieces of information to include:
 	 * </p>
@@ -230,6 +230,9 @@ public class AAPIQueryExturlusage
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "eulimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "eulimit", "5000");
 		}
 	}
 
@@ -256,6 +259,11 @@ public class AAPIQueryExturlusage
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

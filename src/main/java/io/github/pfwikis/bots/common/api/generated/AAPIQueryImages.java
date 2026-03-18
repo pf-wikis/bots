@@ -56,7 +56,7 @@ public class AAPIQueryImages
 
 	private AAPIQueryImages() {}
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	private List<String> images;
 
@@ -142,6 +142,9 @@ public class AAPIQueryImages
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "imlimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "imlimit", "5000");
 		}
 
 		if (images != null) {
@@ -180,6 +183,11 @@ public class AAPIQueryImages
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

@@ -46,9 +46,9 @@ public class AAPIFeedcontributions implements AAPIModule, AAPIMainActionModule {
 
 	private NS namespace;
 
-	private Integer year;
+	private Long year;
 
-	private Integer month;
+	private Long month;
 
 	private List<AAPIFeedcontributionsTagfilter> tagfilter;
 
@@ -100,7 +100,7 @@ public class AAPIFeedcontributions implements AAPIModule, AAPIMainActionModule {
 
 	/**From year (and earlier).
 	 */
-	public AAPIFeedcontributions year(Integer year) {
+	public AAPIFeedcontributions year(Long year) {
 
 		this.year = year;
 
@@ -109,13 +109,13 @@ public class AAPIFeedcontributions implements AAPIModule, AAPIMainActionModule {
 
 	/**From year (and earlier).
 	 */
-	public Integer getYear() {
+	public Long getYear() {
 		return this.year;
 	}
 
 	/**From month (and earlier).
 	 */
-	public AAPIFeedcontributions month(Integer month) {
+	public AAPIFeedcontributions month(Long month) {
 
 		this.month = month;
 
@@ -124,7 +124,7 @@ public class AAPIFeedcontributions implements AAPIModule, AAPIMainActionModule {
 
 	/**From month (and earlier).
 	 */
-	public Integer getMonth() {
+	public Long getMonth() {
 		return this.month;
 	}
 
@@ -390,6 +390,11 @@ public class AAPIFeedcontributions implements AAPIModule, AAPIMainActionModule {
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
 		}
 	}
 }

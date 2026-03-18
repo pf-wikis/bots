@@ -42,7 +42,7 @@ public class AAPIFeedwatchlist implements AAPIModule, AAPIMainActionModule {
 
 	private AAPIFeedwatchlistFeedformat feedformat;
 
-	private Integer hours;
+	private Long hours;
 
 	private Boolean linktosections;
 
@@ -75,7 +75,7 @@ public class AAPIFeedwatchlist implements AAPIModule, AAPIMainActionModule {
 
 	/**List pages modified within this many hours from now.
 	 */
-	public AAPIFeedwatchlist hours(Integer hours) {
+	public AAPIFeedwatchlist hours(Long hours) {
 
 		this.hours = hours;
 
@@ -84,7 +84,7 @@ public class AAPIFeedwatchlist implements AAPIModule, AAPIMainActionModule {
 
 	/**List pages modified within this many hours from now.
 	 */
-	public Integer getHours() {
+	public Long getHours() {
 		return this.hours;
 	}
 
@@ -352,6 +352,11 @@ public class AAPIFeedwatchlist implements AAPIModule, AAPIMainActionModule {
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
 		}
 	}
 }

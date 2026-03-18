@@ -44,9 +44,9 @@ public class AAPIFeedrecentchanges implements AAPIModule, AAPIMainActionModule {
 
 	private Boolean associated;
 
-	private Integer days;
+	private Long days;
 
-	private Integer limit;
+	private Long limit;
 
 	private Boolean hideminor;
 
@@ -132,7 +132,7 @@ public class AAPIFeedrecentchanges implements AAPIModule, AAPIMainActionModule {
 
 	/**Days to limit the results to.
 	 */
-	public AAPIFeedrecentchanges days(Integer days) {
+	public AAPIFeedrecentchanges days(Long days) {
 
 		this.days = days;
 
@@ -141,13 +141,13 @@ public class AAPIFeedrecentchanges implements AAPIModule, AAPIMainActionModule {
 
 	/**Days to limit the results to.
 	 */
-	public Integer getDays() {
+	public Long getDays() {
 		return this.days;
 	}
 
 	/**Maximum number of results to return.
 	 */
-	public AAPIFeedrecentchanges limit(Integer limit) {
+	public AAPIFeedrecentchanges limit(Long limit) {
 
 		this.limit = limit;
 
@@ -156,7 +156,7 @@ public class AAPIFeedrecentchanges implements AAPIModule, AAPIMainActionModule {
 
 	/**Maximum number of results to return.
 	 */
-	public Integer getLimit() {
+	public Long getLimit() {
 		return this.limit;
 	}
 
@@ -562,6 +562,11 @@ public class AAPIFeedrecentchanges implements AAPIModule, AAPIMainActionModule {
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

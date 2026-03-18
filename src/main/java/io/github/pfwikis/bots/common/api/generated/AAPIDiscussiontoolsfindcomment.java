@@ -155,5 +155,10 @@ public class AAPIDiscussiontoolsfindcomment implements AAPIModule, AAPIMainActio
 		protected boolean internalRequiresPost() {
 			return false;
 		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
+		}
 	}
 }

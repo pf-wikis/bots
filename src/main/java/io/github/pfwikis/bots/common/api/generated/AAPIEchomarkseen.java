@@ -123,5 +123,10 @@ public class AAPIEchomarkseen implements AAPIModule, AAPIMainActionModule {
 		protected boolean internalRequiresPost() {
 			return false;
 		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
+		}
 	}
 }

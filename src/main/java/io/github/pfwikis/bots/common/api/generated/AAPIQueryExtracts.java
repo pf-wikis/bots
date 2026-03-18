@@ -36,9 +36,9 @@ public class AAPIQueryExtracts implements AAPIModule, AAPIQueryPropModule {
 
 	private AAPIQueryExtracts() {}
 
-	private Integer chars;
+	private Long chars;
 
-	private Integer sentences;
+	private Long sentences;
 
 	private Integer limit;
 
@@ -50,7 +50,7 @@ public class AAPIQueryExtracts implements AAPIModule, AAPIQueryPropModule {
 
 	/**How many characters to return. Actual text returned might be slightly longer.
 	 */
-	public AAPIQueryExtracts chars(Integer chars) {
+	public AAPIQueryExtracts chars(Long chars) {
 
 		this.chars = chars;
 
@@ -59,13 +59,13 @@ public class AAPIQueryExtracts implements AAPIModule, AAPIQueryPropModule {
 
 	/**How many characters to return. Actual text returned might be slightly longer.
 	 */
-	public Integer getChars() {
+	public Long getChars() {
 		return this.chars;
 	}
 
 	/**How many sentences to return.
 	 */
-	public AAPIQueryExtracts sentences(Integer sentences) {
+	public AAPIQueryExtracts sentences(Long sentences) {
 
 		this.sentences = sentences;
 
@@ -74,7 +74,7 @@ public class AAPIQueryExtracts implements AAPIModule, AAPIQueryPropModule {
 
 	/**How many sentences to return.
 	 */
-	public Integer getSentences() {
+	public Long getSentences() {
 		return this.sentences;
 	}
 
@@ -247,6 +247,11 @@ public class AAPIQueryExtracts implements AAPIModule, AAPIQueryPropModule {
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

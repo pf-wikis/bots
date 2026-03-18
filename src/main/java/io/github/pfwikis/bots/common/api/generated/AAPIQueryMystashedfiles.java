@@ -38,7 +38,7 @@ public class AAPIQueryMystashedfiles implements AAPIModule, AAPIQueryListModule 
 
 	private List<AAPIQueryMystashedfilesProp> prop;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	/**<p>Which properties to fetch for the files.
 	 * </p>
@@ -112,6 +112,9 @@ public class AAPIQueryMystashedfiles implements AAPIModule, AAPIQueryListModule 
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "msflimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "msflimit", "5000");
 		}
 	}
 
@@ -138,6 +141,11 @@ public class AAPIQueryMystashedfiles implements AAPIModule, AAPIQueryListModule 
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

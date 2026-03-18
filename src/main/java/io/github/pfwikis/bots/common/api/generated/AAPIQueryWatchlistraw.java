@@ -62,7 +62,7 @@ public class AAPIQueryWatchlistraw
 
 	private List<NS> namespace;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	private List<AAPIQueryWatchlistrawProp> prop;
 
@@ -316,6 +316,9 @@ public class AAPIQueryWatchlistraw
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "wrlimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "wrlimit", "5000");
 		}
 
 		if (prop != null) {
@@ -381,6 +384,11 @@ public class AAPIQueryWatchlistraw
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

@@ -49,9 +49,9 @@ public class AAPIImagerotate implements AAPIModule, AAPITokenModule, AAPIMainAct
 
 	private List<String> titles;
 
-	private List<Integer> pageids;
+	private List<Long> pageids;
 
-	private List<Integer> revids;
+	private List<Long> revids;
 
 	private AAPIImagerotateGeneratorSubmodule generator;
 
@@ -99,7 +99,7 @@ public class AAPIImagerotate implements AAPIModule, AAPITokenModule, AAPIMainAct
 
 	/**A list of page IDs to work on.
 	 */
-	public AAPIImagerotate pageids(Integer... pageids) {
+	public AAPIImagerotate pageids(Long... pageids) {
 
 		this.pageids = List.of(pageids);
 
@@ -108,13 +108,13 @@ public class AAPIImagerotate implements AAPIModule, AAPITokenModule, AAPIMainAct
 
 	/**A list of page IDs to work on.
 	 */
-	public List<Integer> getPageids() {
+	public List<Long> getPageids() {
 		return this.pageids;
 	}
 
 	/**A list of revision IDs to work on. Note that almost all query modules will convert revision IDs to the corresponding page ID and work on the latest revision instead. Only <kbd>prop=revisions</kbd> uses exact revisions for its response.
 	 */
-	public AAPIImagerotate revids(Integer... revids) {
+	public AAPIImagerotate revids(Long... revids) {
 
 		this.revids = List.of(revids);
 
@@ -123,7 +123,7 @@ public class AAPIImagerotate implements AAPIModule, AAPITokenModule, AAPIMainAct
 
 	/**A list of revision IDs to work on. Note that almost all query modules will convert revision IDs to the corresponding page ID and work on the latest revision instead. Only <kbd>prop=revisions</kbd> uses exact revisions for its response.
 	 */
-	public List<Integer> getRevids() {
+	public List<Long> getRevids() {
 		return this.revids;
 	}
 
@@ -369,6 +369,11 @@ public class AAPIImagerotate implements AAPIModule, AAPITokenModule, AAPIMainAct
 
 		@Override
 		protected boolean internalRequiresPost() {
+			return true;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
 			return true;
 		}
 	}

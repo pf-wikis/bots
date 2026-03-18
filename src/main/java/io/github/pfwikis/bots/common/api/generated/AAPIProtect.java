@@ -40,7 +40,7 @@ public class AAPIProtect implements AAPIModule, AAPITokenModule, AAPIMainActionM
 
 	private String title;
 
-	private Integer pageid;
+	private Long pageid;
 
 	private List<String> protections;
 
@@ -73,7 +73,7 @@ public class AAPIProtect implements AAPIModule, AAPITokenModule, AAPIMainActionM
 
 	/**ID of the page to (un)protect. Cannot be used together with title.
 	 */
-	public AAPIProtect pageid(Integer pageid) {
+	public AAPIProtect pageid(Long pageid) {
 
 		this.pageid = pageid;
 
@@ -82,7 +82,7 @@ public class AAPIProtect implements AAPIModule, AAPITokenModule, AAPIMainActionM
 
 	/**ID of the page to (un)protect. Cannot be used together with title.
 	 */
-	public Integer getPageid() {
+	public Long getPageid() {
 		return this.pageid;
 	}
 
@@ -338,6 +338,11 @@ public class AAPIProtect implements AAPIModule, AAPITokenModule, AAPIMainActionM
 
 		@Override
 		protected boolean internalRequiresPost() {
+			return true;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
 			return true;
 		}
 	}

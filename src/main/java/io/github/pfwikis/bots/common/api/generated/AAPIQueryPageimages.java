@@ -40,9 +40,9 @@ public class AAPIQueryPageimages implements AAPIModule, AAPIQueryPropModule {
 
 	private List<AAPIQueryPageimagesProp> prop;
 
-	private Integer thumbsize;
+	private Long thumbsize;
 
-	private Integer limit = 100;
+	private Integer limit;
 
 	private AAPIQueryPageimagesLicense license;
 
@@ -69,7 +69,7 @@ public class AAPIQueryPageimages implements AAPIModule, AAPIQueryPropModule {
 
 	/**Maximum width in pixels of thumbnail images.
 	 */
-	public AAPIQueryPageimages thumbsize(Integer thumbsize) {
+	public AAPIQueryPageimages thumbsize(Long thumbsize) {
 
 		this.thumbsize = thumbsize;
 
@@ -78,7 +78,7 @@ public class AAPIQueryPageimages implements AAPIModule, AAPIQueryPropModule {
 
 	/**Maximum width in pixels of thumbnail images.
 	 */
-	public Integer getThumbsize() {
+	public Long getThumbsize() {
 		return this.thumbsize;
 	}
 
@@ -195,6 +195,9 @@ public class AAPIQueryPageimages implements AAPIModule, AAPIQueryPropModule {
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "pilimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "pilimit", "100");
 		}
 
 		if (license != null) {
@@ -231,6 +234,11 @@ public class AAPIQueryPageimages implements AAPIModule, AAPIQueryPropModule {
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

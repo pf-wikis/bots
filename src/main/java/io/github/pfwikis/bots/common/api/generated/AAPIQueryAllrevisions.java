@@ -64,7 +64,7 @@ public class AAPIQueryAllrevisions
 
 	private List<AAPIQueryAllrevisionsSlots> slots;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	private String section;
 
@@ -377,6 +377,9 @@ public class AAPIQueryAllrevisions
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "arvlimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "arvlimit", "5000");
 		}
 
 		if (section != null) {
@@ -451,6 +454,11 @@ public class AAPIQueryAllrevisions
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

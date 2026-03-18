@@ -64,7 +64,7 @@ public class AAPIQueryLinkshere
 
 	private List<AAPIQueryLinkshereShow> show;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	/**<p>Which properties to get:
 	 * </p>
@@ -212,6 +212,9 @@ public class AAPIQueryLinkshere
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "lhlimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "lhlimit", "5000");
 		}
 	}
 
@@ -238,6 +241,11 @@ public class AAPIQueryLinkshere
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

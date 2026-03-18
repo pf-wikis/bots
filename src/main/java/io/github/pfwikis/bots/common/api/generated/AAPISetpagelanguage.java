@@ -44,7 +44,7 @@ public class AAPISetpagelanguage implements AAPIModule, AAPITokenModule, AAPIMai
 
 	private String title;
 
-	private Integer pageid;
+	private Long pageid;
 
 	private AAPISetpagelanguageLang lang;
 
@@ -71,7 +71,7 @@ public class AAPISetpagelanguage implements AAPIModule, AAPITokenModule, AAPIMai
 
 	/**Page ID of the page whose language you wish to change. Cannot be used together with <var>title</var>.
 	 */
-	public AAPISetpagelanguage pageid(Integer pageid) {
+	public AAPISetpagelanguage pageid(Long pageid) {
 
 		this.pageid = pageid;
 
@@ -80,7 +80,7 @@ public class AAPISetpagelanguage implements AAPIModule, AAPITokenModule, AAPIMai
 
 	/**Page ID of the page whose language you wish to change. Cannot be used together with <var>title</var>.
 	 */
-	public Integer getPageid() {
+	public Long getPageid() {
 		return this.pageid;
 	}
 
@@ -245,6 +245,11 @@ public class AAPISetpagelanguage implements AAPIModule, AAPITokenModule, AAPIMai
 
 		@Override
 		protected boolean internalRequiresPost() {
+			return true;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
 			return true;
 		}
 	}

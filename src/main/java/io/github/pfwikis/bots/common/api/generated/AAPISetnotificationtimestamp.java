@@ -47,15 +47,15 @@ public class AAPISetnotificationtimestamp
 
 	private java.time.Instant timestamp;
 
-	private Integer torevid;
+	private Long torevid;
 
-	private Integer newerthanrevid;
+	private Long newerthanrevid;
 
 	private List<String> titles;
 
-	private List<Integer> pageids;
+	private List<Long> pageids;
 
-	private List<Integer> revids;
+	private List<Long> revids;
 
 	private AAPISetnotificationtimestampGeneratorSubmodule generator;
 
@@ -97,7 +97,7 @@ public class AAPISetnotificationtimestamp
 
 	/**Revision to set the notification timestamp to (one page only).
 	 */
-	public AAPISetnotificationtimestamp torevid(Integer torevid) {
+	public AAPISetnotificationtimestamp torevid(Long torevid) {
 
 		this.torevid = torevid;
 
@@ -106,13 +106,13 @@ public class AAPISetnotificationtimestamp
 
 	/**Revision to set the notification timestamp to (one page only).
 	 */
-	public Integer getTorevid() {
+	public Long getTorevid() {
 		return this.torevid;
 	}
 
 	/**Revision to set the notification timestamp newer than (one page only).
 	 */
-	public AAPISetnotificationtimestamp newerthanrevid(Integer newerthanrevid) {
+	public AAPISetnotificationtimestamp newerthanrevid(Long newerthanrevid) {
 
 		this.newerthanrevid = newerthanrevid;
 
@@ -121,7 +121,7 @@ public class AAPISetnotificationtimestamp
 
 	/**Revision to set the notification timestamp newer than (one page only).
 	 */
-	public Integer getNewerthanrevid() {
+	public Long getNewerthanrevid() {
 		return this.newerthanrevid;
 	}
 
@@ -142,7 +142,7 @@ public class AAPISetnotificationtimestamp
 
 	/**A list of page IDs to work on.
 	 */
-	public AAPISetnotificationtimestamp pageids(Integer... pageids) {
+	public AAPISetnotificationtimestamp pageids(Long... pageids) {
 
 		this.pageids = List.of(pageids);
 
@@ -151,13 +151,13 @@ public class AAPISetnotificationtimestamp
 
 	/**A list of page IDs to work on.
 	 */
-	public List<Integer> getPageids() {
+	public List<Long> getPageids() {
 		return this.pageids;
 	}
 
 	/**A list of revision IDs to work on. Note that almost all query modules will convert revision IDs to the corresponding page ID and work on the latest revision instead. Only <kbd>prop=revisions</kbd> uses exact revisions for its response.
 	 */
-	public AAPISetnotificationtimestamp revids(Integer... revids) {
+	public AAPISetnotificationtimestamp revids(Long... revids) {
 
 		this.revids = List.of(revids);
 
@@ -166,7 +166,7 @@ public class AAPISetnotificationtimestamp
 
 	/**A list of revision IDs to work on. Note that almost all query modules will convert revision IDs to the corresponding page ID and work on the latest revision instead. Only <kbd>prop=revisions</kbd> uses exact revisions for its response.
 	 */
-	public List<Integer> getRevids() {
+	public List<Long> getRevids() {
 		return this.revids;
 	}
 
@@ -440,6 +440,11 @@ public class AAPISetnotificationtimestamp
 
 		@Override
 		protected boolean internalRequiresPost() {
+			return true;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
 			return true;
 		}
 	}

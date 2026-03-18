@@ -103,5 +103,10 @@ public class AAPIPhp implements AAPIModule, AAPIMainFormatModule {
 		protected boolean internalRequiresPost() {
 			return false;
 		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
+		}
 	}
 }

@@ -36,7 +36,7 @@ public class AAPIQueryTags implements AAPIModule, AAPIQueryListModule {
 
 	private AAPIQueryTags() {}
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	private List<AAPIQueryTagsProp> prop;
 
@@ -105,6 +105,9 @@ public class AAPIQueryTags implements AAPIModule, AAPIQueryListModule {
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "tglimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "tglimit", "5000");
 		}
 
 		if (prop != null) {
@@ -138,6 +141,11 @@ public class AAPIQueryTags implements AAPIModule, AAPIQueryListModule {
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

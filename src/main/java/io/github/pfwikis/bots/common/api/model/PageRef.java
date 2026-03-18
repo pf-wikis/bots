@@ -7,10 +7,14 @@ import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.deser.std.StdScalarDeserializer;
 
 @ToString
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class PageRef implements ContainsPageRef {
+public class PageRef implements ContainsPageRef, Comparable<PageRef> {
 	
 	private final PageTitle title;
 	
@@ -30,9 +34,16 @@ public class PageRef implements ContainsPageRef {
 		return new PageRef(PageTitle.of(ns, name));
 	}
 	
-	@JsonCreator
 	public static PageRef of(int pageid, @NonNull String title) {
 		return new PageRef.WithId(pageid, PageTitle.of(title));
+	}
+	
+	@JsonCreator
+	public static PageRef of(Integer pageid, @NonNull String title) {
+		if(pageid == null)
+			return of(title);
+		else
+			return of(pageid.intValue(), title);
 	}
 	
 	public boolean hasId() {
@@ -59,6 +70,16 @@ public class PageRef implements ContainsPageRef {
 		return title.equals(p.title);
 	}
 	
+	@Override
+	public int hashCode() {
+		return title.hashCode();
+	}
+	
+	@Override
+	public int compareTo(PageRef o) {
+		return title.compareTo(o.title);
+	}
+	
 	private static class WithId extends PageRef {
 		private final int id;
 		
@@ -74,5 +95,22 @@ public class PageRef implements ContainsPageRef {
 		public int getId() {
 			return id;
 		}
+	}
+	
+	public static class FromString extends StdScalarDeserializer<PageRef> {
+
+		protected FromString() {
+			super(PageRef.class);
+		}
+
+		@Override
+		public PageRef deserialize(JsonParser p, DeserializationContext ctxt) throws JacksonException {
+			return PageRef.of(p.getString());
+		}
+		
+	}
+
+	public PageRef withNS(NS ns) {
+		return new PageRef(PageTitle.of(ns, title.getName()));
 	}
 }

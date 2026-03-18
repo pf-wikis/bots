@@ -58,7 +58,7 @@ public class AAPIQueryTemplates
 
 	private List<NS> namespace;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	private List<String> templates;
 
@@ -180,6 +180,9 @@ public class AAPIQueryTemplates
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "tllimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "tllimit", "5000");
 		}
 
 		if (templates != null) {
@@ -218,6 +221,11 @@ public class AAPIQueryTemplates
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

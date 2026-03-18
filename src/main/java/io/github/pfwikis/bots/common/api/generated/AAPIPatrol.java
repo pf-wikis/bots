@@ -34,9 +34,9 @@ public class AAPIPatrol implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 
 	private AAPIPatrol() {}
 
-	private Integer rcid;
+	private Long rcid;
 
-	private Integer revid;
+	private Long revid;
 
 	private List<String> tags;
 
@@ -44,7 +44,7 @@ public class AAPIPatrol implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 
 	/**Recentchanges ID to patrol.
 	 */
-	public AAPIPatrol rcid(Integer rcid) {
+	public AAPIPatrol rcid(Long rcid) {
 
 		this.rcid = rcid;
 
@@ -53,13 +53,13 @@ public class AAPIPatrol implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 
 	/**Recentchanges ID to patrol.
 	 */
-	public Integer getRcid() {
+	public Long getRcid() {
 		return this.rcid;
 	}
 
 	/**Revision ID to patrol.
 	 */
-	public AAPIPatrol revid(Integer revid) {
+	public AAPIPatrol revid(Long revid) {
 
 		this.revid = revid;
 
@@ -68,7 +68,7 @@ public class AAPIPatrol implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 
 	/**Revision ID to patrol.
 	 */
-	public Integer getRevid() {
+	public Long getRevid() {
 		return this.revid;
 	}
 
@@ -188,6 +188,11 @@ public class AAPIPatrol implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 
 		@Override
 		protected boolean internalRequiresPost() {
+			return true;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
 			return true;
 		}
 	}

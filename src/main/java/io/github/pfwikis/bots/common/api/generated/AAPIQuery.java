@@ -77,7 +77,7 @@ public class AAPIQuery implements AAPIModule, AAPIMainActionModule {
 
 	private Boolean rawcontinue;
 
-	private List<Integer> revids;
+	private List<Long> revids;
 
 	private AAPIQueryGeneratorSubmodule generator;
 
@@ -236,7 +236,7 @@ public class AAPIQuery implements AAPIModule, AAPIMainActionModule {
 
 	/**A list of revision IDs to work on. Note that almost all query modules will convert revision IDs to the corresponding page ID and work on the latest revision instead. Only <kbd>prop=revisions</kbd> uses exact revisions for its response.
 	 */
-	public AAPIQuery revids(Integer... revids) {
+	public AAPIQuery revids(Long... revids) {
 
 		this.revids = List.of(revids);
 
@@ -245,7 +245,7 @@ public class AAPIQuery implements AAPIModule, AAPIMainActionModule {
 
 	/**A list of revision IDs to work on. Note that almost all query modules will convert revision IDs to the corresponding page ID and work on the latest revision instead. Only <kbd>prop=revisions</kbd> uses exact revisions for its response.
 	 */
-	public List<Integer> getRevids() {
+	public List<Long> getRevids() {
 		return this.revids;
 	}
 
@@ -320,27 +320,36 @@ public class AAPIQuery implements AAPIModule, AAPIMainActionModule {
 
 		if (prop != null) {
 
-			sb.append("prop").append("=");
-
-			prop.stream().map(v -> v.getValue().toString()).collect(Collectors.joining("|"));
+			sb.append("prop")
+					.append("=")
+					.append(
+							prop.stream()
+									.map(v -> v.getValue().toString())
+									.collect(Collectors.joining("|")));
 
 			sb.append(", ");
 		}
 
 		if (list != null) {
 
-			sb.append("list").append("=");
-
-			list.stream().map(v -> v.getValue().toString()).collect(Collectors.joining("|"));
+			sb.append("list")
+					.append("=")
+					.append(
+							list.stream()
+									.map(v -> v.getValue().toString())
+									.collect(Collectors.joining("|")));
 
 			sb.append(", ");
 		}
 
 		if (meta != null) {
 
-			sb.append("meta").append("=");
-
-			meta.stream().map(v -> v.getValue().toString()).collect(Collectors.joining("|"));
+			sb.append("meta")
+					.append("=")
+					.append(
+							meta.stream()
+									.map(v -> v.getValue().toString())
+									.collect(Collectors.joining("|")));
 
 			sb.append(", ");
 		}
@@ -603,6 +612,11 @@ public class AAPIQuery implements AAPIModule, AAPIMainActionModule {
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
 		}
 	}
 }

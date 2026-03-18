@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -12,9 +13,32 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum AAPIQueryNotificationsFilter {
-	_READ("!read"),
+	NOT_READ("!read"),
 
 	READ("read");
 
 	private final String jsonValue;
+
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	public static class Builder {
+		private EnumSet<AAPIQueryNotificationsFilter> set =
+				EnumSet.noneOf(AAPIQueryNotificationsFilter.class);
+
+		public AAPIQueryNotificationsFilter[] build() {
+			return set.toArray(AAPIQueryNotificationsFilter[]::new);
+		}
+
+		public Builder NOT_READ() {
+			set.add(NOT_READ);
+			return this;
+		}
+
+		public Builder READ() {
+			set.add(READ);
+			return this;
+		}
+	}
 }

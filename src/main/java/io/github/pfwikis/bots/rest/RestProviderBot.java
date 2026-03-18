@@ -6,7 +6,7 @@ import io.github.pfwikis.bots.common.bots.SimpleBot;
 public class RestProviderBot extends SimpleBot {
 
 	public RestProviderBot() {
-		super("rest-provider", "Bot Rest Provider");
+		super("rest-provider", "Rest Provider");
 	}
 
 	@Override

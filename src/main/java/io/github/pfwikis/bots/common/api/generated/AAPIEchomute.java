@@ -189,5 +189,10 @@ public class AAPIEchomute implements AAPIModule, AAPITokenModule, AAPIMainAction
 		protected boolean internalRequiresPost() {
 			return true;
 		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
+		}
 	}
 }

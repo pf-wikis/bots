@@ -267,5 +267,10 @@ public class AAPIClientlogin implements AAPIModule, AAPITokenModule, AAPIMainAct
 		protected boolean internalRequiresPost() {
 			return true;
 		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
+		}
 	}
 }

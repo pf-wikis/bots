@@ -67,5 +67,10 @@ public class AAPIClearhasmsg implements AAPIModule, AAPIMainActionModule {
 		protected boolean internalRequiresPost() {
 			return true;
 		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return true;
+		}
 	}
 }

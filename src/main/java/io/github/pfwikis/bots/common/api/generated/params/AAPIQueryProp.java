@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -218,5 +219,167 @@ public enum AAPIQueryProp {
 			result.add(createSubmodule(v));
 		}
 		return result;
+	}
+
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	public static class Builder {
+		private EnumSet<AAPIQueryProp> set = EnumSet.noneOf(AAPIQueryProp.class);
+
+		public AAPIQueryProp[] build() {
+			return set.toArray(AAPIQueryProp[]::new);
+		}
+
+		/**List all categories the pages belong to.*/
+		public Builder CATEGORIES() {
+			set.add(CATEGORIES);
+			return this;
+		}
+
+		/**Returns information about the given categories.*/
+		public Builder CATEGORYINFO() {
+			set.add(CATEGORYINFO);
+			return this;
+		}
+
+		/**Dump of a CirrusSearch article document from the database servers*/
+		public Builder CIRRUSBUILDDOC() {
+			set.add(CIRRUSBUILDDOC);
+			return this;
+		}
+
+		/**Dump of the document used by the completion suggester*/
+		public Builder CIRRUSCOMPSUGGESTBUILDDOC() {
+			set.add(CIRRUSCOMPSUGGESTBUILDDOC);
+			return this;
+		}
+
+		/**Dump of a CirrusSearch article document from the search servers*/
+		public Builder CIRRUSDOC() {
+			set.add(CIRRUSDOC);
+			return this;
+		}
+
+		/**Get the list of logged-in contributors and the count of logged-out contributors to a page.*/
+		public Builder CONTRIBUTORS() {
+			set.add(CONTRIBUTORS);
+			return this;
+		}
+
+		/**Get deleted revision information.*/
+		public Builder DELETEDREVISIONS() {
+			set.add(DELETEDREVISIONS);
+			return this;
+		}
+
+		/**List all files that are duplicates of the given files based on hash values.*/
+		public Builder DUPLICATEFILES() {
+			set.add(DUPLICATEFILES);
+			return this;
+		}
+
+		/**Returns all external URLs (not interwikis) from the given pages.*/
+		public Builder EXTLINKS() {
+			set.add(EXTLINKS);
+			return this;
+		}
+
+		/**Returns plain-text or limited HTML extracts of the given pages.*/
+		public Builder EXTRACTS() {
+			set.add(EXTRACTS);
+			return this;
+		}
+
+		/**Find all pages that use the given files.*/
+		public Builder FILEUSAGE() {
+			set.add(FILEUSAGE);
+			return this;
+		}
+
+		/**Returns file information and upload history.*/
+		public Builder IMAGEINFO() {
+			set.add(IMAGEINFO);
+			return this;
+		}
+
+		/**Returns all files contained on the given pages.*/
+		public Builder IMAGES() {
+			set.add(IMAGES);
+			return this;
+		}
+
+		/**Get basic page information.*/
+		public Builder INFO() {
+			set.add(INFO);
+			return this;
+		}
+
+		/**Returns all interwiki links from the given pages.*/
+		public Builder IWLINKS() {
+			set.add(IWLINKS);
+			return this;
+		}
+
+		/**Returns all interlanguage links from the given pages.*/
+		public Builder LANGLINKS() {
+			set.add(LANGLINKS);
+			return this;
+		}
+
+		/**Returns all links from the given pages.*/
+		public Builder LINKS() {
+			set.add(LINKS);
+			return this;
+		}
+
+		/**Find all pages that link to the given pages.*/
+		public Builder LINKSHERE() {
+			set.add(LINKSHERE);
+			return this;
+		}
+
+		/**Returns information about images on the page, such as thumbnail and presence of photos.*/
+		public Builder PAGEIMAGES() {
+			set.add(PAGEIMAGES);
+			return this;
+		}
+
+		/**Get various page properties defined in the page content.*/
+		public Builder PAGEPROPS() {
+			set.add(PAGEPROPS);
+			return this;
+		}
+
+		/**Returns all redirects to the given pages.*/
+		public Builder REDIRECTS() {
+			set.add(REDIRECTS);
+			return this;
+		}
+
+		/**Get revision information.*/
+		public Builder REVISIONS() {
+			set.add(REVISIONS);
+			return this;
+		}
+
+		/**Returns file information for stashed files.*/
+		public Builder STASHIMAGEINFO() {
+			set.add(STASHIMAGEINFO);
+			return this;
+		}
+
+		/**Returns all pages transcluded on the given pages.*/
+		public Builder TEMPLATES() {
+			set.add(TEMPLATES);
+			return this;
+		}
+
+		/**Find all pages that transclude the given pages.*/
+		public Builder TRANSCLUDEDIN() {
+			set.add(TRANSCLUDEDIN);
+			return this;
+		}
 	}
 }

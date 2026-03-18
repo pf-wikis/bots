@@ -34,7 +34,7 @@ public class AAPIUnblock implements AAPIModule, AAPITokenModule, AAPIMainActionM
 
 	private AAPIUnblock() {}
 
-	private Integer id;
+	private Long id;
 
 	private String user;
 
@@ -48,7 +48,7 @@ public class AAPIUnblock implements AAPIModule, AAPITokenModule, AAPIMainActionM
 
 	/**ID of the block to unblock (obtained through <kbd>list=blocks</kbd>). Cannot be used together with <var>user</var>.
 	 */
-	public AAPIUnblock id(Integer id) {
+	public AAPIUnblock id(Long id) {
 
 		this.id = id;
 
@@ -57,7 +57,7 @@ public class AAPIUnblock implements AAPIModule, AAPITokenModule, AAPIMainActionM
 
 	/**ID of the block to unblock (obtained through <kbd>list=blocks</kbd>). Cannot be used together with <var>user</var>.
 	 */
-	public Integer getId() {
+	public Long getId() {
 		return this.id;
 	}
 
@@ -246,6 +246,11 @@ public class AAPIUnblock implements AAPIModule, AAPITokenModule, AAPIMainActionM
 
 		@Override
 		protected boolean internalRequiresPost() {
+			return true;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
 			return true;
 		}
 	}

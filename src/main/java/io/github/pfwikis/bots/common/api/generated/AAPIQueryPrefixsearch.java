@@ -63,7 +63,7 @@ public class AAPIQueryPrefixsearch
 
 	private List<NS> namespace;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	/**Search string.
 	 */
@@ -153,6 +153,9 @@ public class AAPIQueryPrefixsearch
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "pslimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "pslimit", "5000");
 		}
 	}
 
@@ -179,6 +182,11 @@ public class AAPIQueryPrefixsearch
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }

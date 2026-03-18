@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -308,5 +309,245 @@ public enum AAPIQueryList {
 			result.add(createSubmodule(v));
 		}
 		return result;
+	}
+
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	public static class Builder {
+		private EnumSet<AAPIQueryList> set = EnumSet.noneOf(AAPIQueryList.class);
+
+		public AAPIQueryList[] build() {
+			return set.toArray(AAPIQueryList[]::new);
+		}
+
+		/**Enumerate all categories.*/
+		public Builder ALLCATEGORIES() {
+			set.add(ALLCATEGORIES);
+			return this;
+		}
+
+		/**List all deleted revisions by a user or in a namespace.*/
+		public Builder ALLDELETEDREVISIONS() {
+			set.add(ALLDELETEDREVISIONS);
+			return this;
+		}
+
+		/**List all file usages, including non-existing.*/
+		public Builder ALLFILEUSAGES() {
+			set.add(ALLFILEUSAGES);
+			return this;
+		}
+
+		/**Enumerate all images sequentially.*/
+		public Builder ALLIMAGES() {
+			set.add(ALLIMAGES);
+			return this;
+		}
+
+		/**Enumerate all links that point to a given namespace.*/
+		public Builder ALLLINKS() {
+			set.add(ALLLINKS);
+			return this;
+		}
+
+		/**Enumerate all pages sequentially in a given namespace.*/
+		public Builder ALLPAGES() {
+			set.add(ALLPAGES);
+			return this;
+		}
+
+		/**List all redirects to a namespace.*/
+		public Builder ALLREDIRECTS() {
+			set.add(ALLREDIRECTS);
+			return this;
+		}
+
+		/**List all revisions.*/
+		public Builder ALLREVISIONS() {
+			set.add(ALLREVISIONS);
+			return this;
+		}
+
+		/**List all transclusions (pages embedded using &#123;&#123;x&#125;&#125;), including non-existing.*/
+		public Builder ALLTRANSCLUSIONS() {
+			set.add(ALLTRANSCLUSIONS);
+			return this;
+		}
+
+		/**Enumerate all registered users.*/
+		public Builder ALLUSERS() {
+			set.add(ALLUSERS);
+			return this;
+		}
+
+		/**Find all pages that link to the given page.*/
+		public Builder BACKLINKS() {
+			set.add(BACKLINKS);
+			return this;
+		}
+
+		/**List all blocked users and IP addresses.*/
+		public Builder BLOCKS() {
+			set.add(BLOCKS);
+			return this;
+		}
+
+		/**List all pages in a given category.*/
+		public Builder CATEGORYMEMBERS() {
+			set.add(CATEGORYMEMBERS);
+			return this;
+		}
+
+		/**List number of edits of given users.*/
+		public Builder EDITCOUNT() {
+			set.add(EDITCOUNT);
+			return this;
+		}
+
+		/**Find all pages that embed (transclude) the given title.*/
+		public Builder EMBEDDEDIN() {
+			set.add(EMBEDDEDIN);
+			return this;
+		}
+
+		/**Enumerate pages that contain a given URL.*/
+		public Builder EXTURLUSAGE() {
+			set.add(EXTURLUSAGE);
+			return this;
+		}
+
+		/**Enumerate all deleted files sequentially.*/
+		public Builder FILEARCHIVE() {
+			set.add(FILEARCHIVE);
+			return this;
+		}
+
+		/**Returns a list of gadget categories.*/
+		public Builder GADGETCATEGORIES() {
+			set.add(GADGETCATEGORIES);
+			return this;
+		}
+
+		/**Returns a list of gadgets used on this wiki.*/
+		public Builder GADGETS() {
+			set.add(GADGETS);
+			return this;
+		}
+
+		/**Find all pages that use the given image title.*/
+		public Builder IMAGEUSAGE() {
+			set.add(IMAGEUSAGE);
+			return this;
+		}
+
+		/**Find all pages that link to the given interwiki link.*/
+		public Builder IWBACKLINKS() {
+			set.add(IWBACKLINKS);
+			return this;
+		}
+
+		/**Find all pages that link to the given language link.*/
+		public Builder LANGBACKLINKS() {
+			set.add(LANGBACKLINKS);
+			return this;
+		}
+
+		/**Get a list of lint errors*/
+		public Builder LINTERRORS() {
+			set.add(LINTERRORS);
+			return this;
+		}
+
+		/**Get events from logs.*/
+		public Builder LOGEVENTS() {
+			set.add(LOGEVENTS);
+			return this;
+		}
+
+		/**Get a list of files in the current user's upload stash.*/
+		public Builder MYSTASHEDFILES() {
+			set.add(MYSTASHEDFILES);
+			return this;
+		}
+
+		/**List all page property names in use on the wiki.*/
+		public Builder PAGEPROPNAMES() {
+			set.add(PAGEPROPNAMES);
+			return this;
+		}
+
+		/**List all pages using a given page property.*/
+		public Builder PAGESWITHPROP() {
+			set.add(PAGESWITHPROP);
+			return this;
+		}
+
+		/**Perform a prefix search for page titles.*/
+		public Builder PREFIXSEARCH() {
+			set.add(PREFIXSEARCH);
+			return this;
+		}
+
+		/**List all titles protected from creation.*/
+		public Builder PROTECTEDTITLES() {
+			set.add(PROTECTEDTITLES);
+			return this;
+		}
+
+		/**Get a list provided by a QueryPage-based special page.*/
+		public Builder QUERYPAGE() {
+			set.add(QUERYPAGE);
+			return this;
+		}
+
+		/**Get a set of random pages.*/
+		public Builder RANDOM() {
+			set.add(RANDOM);
+			return this;
+		}
+
+		/**Enumerate recent changes.*/
+		public Builder RECENTCHANGES() {
+			set.add(RECENTCHANGES);
+			return this;
+		}
+
+		/**Perform a full text search.*/
+		public Builder SEARCH() {
+			set.add(SEARCH);
+			return this;
+		}
+
+		/**List change tags.*/
+		public Builder TAGS() {
+			set.add(TAGS);
+			return this;
+		}
+
+		/**Get all edits by a user.*/
+		public Builder USERCONTRIBS() {
+			set.add(USERCONTRIBS);
+			return this;
+		}
+
+		/**Get information about a list of users.*/
+		public Builder USERS() {
+			set.add(USERS);
+			return this;
+		}
+
+		/**Get recent changes to pages in the current user's watchlist.*/
+		public Builder WATCHLIST() {
+			set.add(WATCHLIST);
+			return this;
+		}
+
+		/**Get all pages on the current user's watchlist.*/
+		public Builder WATCHLISTRAW() {
+			set.add(WATCHLISTRAW);
+			return this;
+		}
 	}
 }

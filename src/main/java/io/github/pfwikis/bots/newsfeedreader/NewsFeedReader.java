@@ -27,7 +27,7 @@ import io.github.pfwikis.bots.common.bots.SimpleBot;
 public class NewsFeedReader extends SimpleBot {
 
 	public NewsFeedReader() {
-		super("news-feed-reader", "Bot News Feed Reader");
+		super("news-feed-reader", "News Feed Reader");
 	}
 
 	@Override

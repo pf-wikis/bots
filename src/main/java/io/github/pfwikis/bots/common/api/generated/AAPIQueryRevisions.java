@@ -70,13 +70,13 @@ public class AAPIQueryRevisions
 
 	private List<AAPIQueryRevisionsSlots> slots;
 
-	private Integer limit = 5000;
+	private Integer limit;
 
 	private String section;
 
-	private Integer startid;
+	private Long startid;
 
-	private Integer endid;
+	private Long endid;
 
 	private java.time.Instant start;
 
@@ -156,7 +156,7 @@ public class AAPIQueryRevisions
 
 	/**Start enumeration from this revision's timestamp. The revision must exist, but need not belong to this page.
 	 */
-	public AAPIQueryRevisions startid(Integer startid) {
+	public AAPIQueryRevisions startid(Long startid) {
 
 		this.startid = startid;
 
@@ -165,13 +165,13 @@ public class AAPIQueryRevisions
 
 	/**Start enumeration from this revision's timestamp. The revision must exist, but need not belong to this page.
 	 */
-	public Integer getStartid() {
+	public Long getStartid() {
 		return this.startid;
 	}
 
 	/**Stop enumeration at this revision's timestamp. The revision must exist, but need not belong to this page.
 	 */
-	public AAPIQueryRevisions endid(Integer endid) {
+	public AAPIQueryRevisions endid(Long endid) {
 
 		this.endid = endid;
 
@@ -180,7 +180,7 @@ public class AAPIQueryRevisions
 
 	/**Stop enumeration at this revision's timestamp. The revision must exist, but need not belong to this page.
 	 */
-	public Integer getEndid() {
+	public Long getEndid() {
 		return this.endid;
 	}
 
@@ -402,6 +402,9 @@ public class AAPIQueryRevisions
 		if (limit != null) {
 
 			req.addParameter(paramPrefix + "rvlimit", limit.toString());
+
+		} else {
+			req.addParameter(paramPrefix + "rvlimit", "5000");
 		}
 
 		if (section != null) {
@@ -477,6 +480,11 @@ public class AAPIQueryRevisions
 		@Override
 		protected boolean internalRequiresPost() {
 			return false;
+		}
+
+		@Override
+		protected boolean internalRequiresPagination() {
+			return limit != null;
 		}
 	}
 }
