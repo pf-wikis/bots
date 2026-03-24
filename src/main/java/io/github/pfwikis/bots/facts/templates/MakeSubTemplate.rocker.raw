@@ -34,6 +34,7 @@
 		</div>
 	}}
 	
+	{{Validate parameters}}
 	<div class="
 			facts-display @*important space*@
 			facts-display-@ConceptUtil.cssName(parent)-@ConceptUtil.cssName(c)
