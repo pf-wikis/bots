@@ -37,7 +37,7 @@ public class NewsFeedReader extends SimpleBot {
 		String feed = collectFeed("Paizo blog", "https://paizo.com/blog?feed=rss2");
 		if(StringUtils.isBlank(feed)) return;
 		String pageContent = 
-			"<noinclude>{{Bot created|%s}}</noinclude>".formatted(this.getBotName())
+			"<noinclude>{{Bot created|VirenerusBot#%s}}</noinclude>".formatted(this.getBotName())
 			+feed;
 		
 		run.getWiki().editIfChange(PageRef.of(NS.TEMPLATE, "News feeds"), pageContent, "Automatic news feeds update");

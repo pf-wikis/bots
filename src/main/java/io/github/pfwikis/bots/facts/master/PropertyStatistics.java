@@ -67,7 +67,7 @@ public class PropertyStatistics extends SimpleBot implements ScatteredRunnableBo
 			});
 			
 			var sb = new StringBuilder();
-			sb.append("<noinclude>{{Bot created|Bot Property Statistics|This template is automatically created from [[Created from::Property:"+name+"]].}}</noinclude>");
+			sb.append("<noinclude>{{Bot created|VirenerusBot|This template is automatically created from [[Created from::Property:"+name+"]].}}</noinclude>");
 			if(counts.entrySet().size()>50) {
 				sb.append("This property has "+counts.entrySet().size()+" different values. The following are the 50 most common ones.\n");
 			}

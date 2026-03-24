@@ -2,7 +2,7 @@
 
 @args(SConcept c)
 
-<noinclude>{{Bot created|Bot Facts Master}}</noinclude>
+<noinclude>{{Bot created|VirenerusBot#Facts Master}}</noinclude>
 
 {{#if:{{{1|}}}|
 	{{#formredlink:

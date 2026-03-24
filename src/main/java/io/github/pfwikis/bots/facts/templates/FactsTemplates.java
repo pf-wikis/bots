@@ -48,7 +48,7 @@ public class FactsTemplates extends SimpleBot {
 	private void handleAutomaticCategorization() {
 		run.getWiki().editIfChange(
 				PageRef.of(NS.PROJECT, "Automatic categorization"),
-				"{{Bot created|"+botName+"}}"
+				"{{Bot created|VirenerusBot#"+botName+"}}"
 				+ "{{tl|Infobox}} adds automatic categories based on the facts page. "
 				+ "This page explains what categories are added.\n\n"
 				+ "Changes on this page do not change how the infobox bot works. "

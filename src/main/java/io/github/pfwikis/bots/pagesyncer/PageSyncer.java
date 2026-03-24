@@ -114,7 +114,7 @@ public class PageSyncer extends DualBot implements RunOnPageBot {
     	log.info("Syncing {}", page);
         var targetTxt = run.getPfWiki().getWikitext(page);
         if(!page.getTitle().getNs().equals(NS.STYLE)) {
-            targetTxt = "<noinclude>{{Bot created|VirenerusBot/"+botName+"|"
+            targetTxt = "<noinclude>{{Bot created|VirenerusBot#"+botName+"|"
                 + "This page is automatically synced from [https://pathfinderwiki.com/wiki/{{FULLPAGENAMEE}} this] pathfinderwiki page. "
                 + "Do not edit it here.}}\n\n</noinclude>" //no linebreak after noinclude!!!
                 + targetTxt;

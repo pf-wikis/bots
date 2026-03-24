@@ -64,7 +64,7 @@ public class MapSearchPage extends SimpleBot {
 	
 	private void createArea(List<Category> categories) {
 		var sb = new StringBuilder()
-			.append("<noinclude>{{Bot created|").append(this.getBotName()).append("}}\n")
+			.append("<noinclude>{{Bot created|VirenerusBot#").append(this.getBotName()).append("}}\n")
 			.append("""
 				{{Documentation|content=
 				<wikitext doc>{{Area|Ustalav}}</wikitext>
@@ -118,7 +118,7 @@ public class MapSearchPage extends SimpleBot {
 	
 	private void createSearchAspect(List<Category> categories) {
 		var sb = new StringBuilder()
-			.append("<noinclude>{{Bot created|").append(this.getBotName()).append("}}\n")
+			.append("<noinclude>{{Bot created|VirenerusBot#").append(this.getBotName()).append("}}\n")
 			.append("This page works like {{tl|DisplayMap/Search}}, "
 				+ "but generetes the aspect ratio instead of a bbox.</noinclude><includeonly>{{#switch:{{{1}}}");
 		for(var cat:categories) {
@@ -148,7 +148,7 @@ public class MapSearchPage extends SimpleBot {
 
 	private void createSearch(List<Category> categories) {
 		var sb = new StringBuilder()
-				.append("<noinclude>{{Bot created|").append(this.getBotName()).append("}}\n")
+				.append("<noinclude>{{Bot created|VirenerusBot#").append(this.getBotName()).append("}}\n")
 				.append("This page is a helper for the by name parameter.\n")
 				.append("The full list of entries are:\n<ul>\n");
 		

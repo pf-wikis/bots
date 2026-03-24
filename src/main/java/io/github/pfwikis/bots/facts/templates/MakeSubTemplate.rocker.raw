@@ -6,7 +6,7 @@
 
 @args(SConcept parent, SConcept c)
 <noinclude>
-{{Bot created|Bot Facts Master}}
+{{Bot created|VirenerusBot#Facts Master}}
 {{#template_params:
 	@for((i,prop):c.allProperties()) {
 		@if(!i.first()){|}
@@ -83,3 +83,6 @@
 	}*@
 }}
 </includeonly>
+<noinclude>
+	<templatedata>@c.generateTemplateData()</templateData>
+</noinclude>

@@ -3,7 +3,7 @@
 @import static io.github.pfwikis.bots.utils.RockerHelper.n
 
 @args(SProperty<?> p)
-{{Bot created|Bot Facts Master}}
+{{Bot created|VirenerusBot#Facts Master}}
 
 
 @with?(String descr=p.getDescription()) {

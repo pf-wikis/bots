@@ -4,7 +4,7 @@
 
 @args(SConcept c)
 <noinclude>
-{{Bot created|Bot Facts Master}}
+{{Bot created|VirenerusBot#Facts Master}}
 {{#template_params:
 	@for((i,prop):c.allProperties()) {
 		@if(!i.first()){|}@prop.getName() (property=@prop.getName())

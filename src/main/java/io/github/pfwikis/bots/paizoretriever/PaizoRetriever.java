@@ -147,7 +147,7 @@ public class PaizoRetriever extends DualBot {
 				.filter(p->p.getSku().startsWith("PZO"))
 				.sorted(Comparator.comparing(Product::getSku))
 				.toList();
-		var intro = "<noinclude>{{Bot created|Bot Paizo Retriever|This template is automatically created and update from the paizo webstore.}}</noinclude><includeonly>";
+		var intro = "<noinclude>{{Bot created|VirenerusBot#Paizo Retriever|This template is automatically created and update from the paizo webstore.}}</noinclude><includeonly>";
 		var outro = "</includeonly><noinclude>[[Category:Data templates]]</noinclude>";
 		
 		

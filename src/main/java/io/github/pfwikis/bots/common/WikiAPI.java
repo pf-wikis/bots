@@ -45,7 +45,6 @@ import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryRecentchanges
 import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryRecentchangesShow;
 import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryRecentchangesType;
 import io.github.pfwikis.bots.common.api.generated.params.NS;
-import io.github.pfwikis.bots.common.api.model.AAPIExceptions.AAPIException;
 import io.github.pfwikis.bots.common.api.model.AAPIExceptions.AAPIMissingPageException;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
 import io.github.pfwikis.bots.common.api.model.PageRef;
@@ -381,6 +380,16 @@ public class WikiAPI {
 			DeleteResponse.class
 		);
 		server.storeInCache(CacheId.PAGE_EXISTS, page.toPageRef(), false);
+	}
+	
+	public List<PageRef> getSubPages(ContainsPageRef page) {
+		return wiki.run(AAPIQuery.create()
+			.list(AAPIQueryAllpages.create()
+				.namespace(page.toPageTitle().getNs())
+				.prefix(page.toPageTitle().getName()+"/")
+			),
+			QueryResponse.class
+		).getAllpages().stream().map(p->p.getPage()).toList();
 	}
 	
 	

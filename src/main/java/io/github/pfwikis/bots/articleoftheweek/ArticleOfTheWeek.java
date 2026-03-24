@@ -53,7 +53,7 @@ public class ArticleOfTheWeek extends SimpleBot {
 		String pageContent = 
 			"""
 			<noinclude>
-			{{Bot created|%s}}
+			{{Bot created|VirenerusBot#%s}}
 			{{#widget:Article of the Week}}
 			</noinclude><includeonly>%s</includeonly>
 			""".formatted(this.getBotName(), cutText(article.html));
@@ -62,7 +62,7 @@ public class ArticleOfTheWeek extends SimpleBot {
 		
 		pageContent = 
 			"""
-			<noinclude>{{Bot created|%s}}</noinclude>
+			<noinclude>{{Bot created|VirenerusBot#%s}}</noinclude>
 			{{Content box
 			|title=This week's featured article: [[%s]]
 			|content=%s}}
