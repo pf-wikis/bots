@@ -20,7 +20,7 @@
 @title => {
 	<span class="title">
 		@if(book.has(Represented_by_page)){
-			[[@book.get(Represented_by_page)|book.getName()]]
+			[[@book.get(Represented_by_page)|@book.getName()]]
 		}
 		else if(book.has(Website)) {
 			[
@@ -31,7 +31,7 @@
 				@*space->*@ @book.getName()]
 		}
 		else {
-			[[@book.getName()|book.getName()]]
+			[[@book.getName()|@book.getName()]]
 		}
 	</span>
 }
