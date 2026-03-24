@@ -73,7 +73,6 @@ public class AAPIQueryEmbeddedin
 	/**Title to search. Cannot be used together with eipageid.
 	 */
 	public AAPIQueryEmbeddedin title(String title) {
-
 		this.title = title;
 
 		return this;
@@ -88,7 +87,6 @@ public class AAPIQueryEmbeddedin
 	/**Page ID to search. Cannot be used together with eititle.
 	 */
 	public AAPIQueryEmbeddedin pageid(Long pageid) {
-
 		this.pageid = pageid;
 
 		return this;
@@ -102,10 +100,16 @@ public class AAPIQueryEmbeddedin
 
 	/**The namespace to enumerate.
 	 */
-	public AAPIQueryEmbeddedin namespace(NS... namespace) {
-
+	public AAPIQueryEmbeddedin namespace(NS namespace) {
 		this.namespace = List.of(namespace);
 
+		return this;
+	}
+
+	/**The namespace to enumerate.
+	 */
+	public AAPIQueryEmbeddedin namespace(NS... namespace) {
+		this.namespace = List.of(namespace);
 		return this;
 	}
 
@@ -118,7 +122,6 @@ public class AAPIQueryEmbeddedin
 	/**The direction in which to list.
 	 */
 	public AAPIQueryEmbeddedin dir(AAPIQueryEmbeddedinDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -133,7 +136,6 @@ public class AAPIQueryEmbeddedin
 	/**How to filter for redirects.
 	 */
 	public AAPIQueryEmbeddedin filterredir(AAPIQueryEmbeddedinFilterredir filterredir) {
-
 		this.filterredir = filterredir;
 
 		return this;
@@ -148,7 +150,6 @@ public class AAPIQueryEmbeddedin
 	/**How many total pages to return.
 	 */
 	public AAPIQueryEmbeddedin limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -281,7 +282,7 @@ public class AAPIQueryEmbeddedin
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

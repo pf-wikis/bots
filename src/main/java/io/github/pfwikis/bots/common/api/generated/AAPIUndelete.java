@@ -66,7 +66,6 @@ public class AAPIUndelete implements AAPIModule, AAPITokenModule, AAPIMainAction
 	/**Reason for restoring.
 	 */
 	public AAPIUndelete reason(String reason) {
-
 		this.reason = reason;
 
 		return this;
@@ -80,10 +79,16 @@ public class AAPIUndelete implements AAPIModule, AAPITokenModule, AAPIMainAction
 
 	/**Change tags to apply to the entry in the deletion log.
 	 */
-	public AAPIUndelete tags(String... tags) {
-
+	public AAPIUndelete tags(String tags) {
 		this.tags = List.of(tags);
 
+		return this;
+	}
+
+	/**Change tags to apply to the entry in the deletion log.
+	 */
+	public AAPIUndelete tags(String... tags) {
+		this.tags = List.of(tags);
 		return this;
 	}
 
@@ -95,10 +100,16 @@ public class AAPIUndelete implements AAPIModule, AAPITokenModule, AAPIMainAction
 
 	/**Timestamps of the revisions to undelete. If both <var>timestamps</var> and <var>fileids</var> are empty, all will be undeleted.
 	 */
-	public AAPIUndelete timestamps(java.time.Instant... timestamps) {
-
+	public AAPIUndelete timestamps(java.time.Instant timestamps) {
 		this.timestamps = List.of(timestamps);
 
+		return this;
+	}
+
+	/**Timestamps of the revisions to undelete. If both <var>timestamps</var> and <var>fileids</var> are empty, all will be undeleted.
+	 */
+	public AAPIUndelete timestamps(java.time.Instant... timestamps) {
+		this.timestamps = List.of(timestamps);
 		return this;
 	}
 
@@ -110,10 +121,16 @@ public class AAPIUndelete implements AAPIModule, AAPITokenModule, AAPIMainAction
 
 	/**IDs of the file revisions to restore. If both <var>timestamps</var> and <var>fileids</var> are empty, all will be restored.
 	 */
-	public AAPIUndelete fileids(Long... fileids) {
-
+	public AAPIUndelete fileids(Long fileids) {
 		this.fileids = List.of(fileids);
 
+		return this;
+	}
+
+	/**IDs of the file revisions to restore. If both <var>timestamps</var> and <var>fileids</var> are empty, all will be restored.
+	 */
+	public AAPIUndelete fileids(Long... fileids) {
+		this.fileids = List.of(fileids);
 		return this;
 	}
 
@@ -126,7 +143,6 @@ public class AAPIUndelete implements AAPIModule, AAPITokenModule, AAPIMainAction
 	/**Undelete all revisions of the associated talk page, if any.
 	 */
 	public AAPIUndelete undeletetalk(Boolean undeletetalk) {
-
 		this.undeletetalk = undeletetalk;
 
 		return this;
@@ -141,7 +157,6 @@ public class AAPIUndelete implements AAPIModule, AAPITokenModule, AAPIMainAction
 	/**Unconditionally add or remove the page from the current user's watchlist, use preferences (ignored for bot users) or do not change watch.
 	 */
 	public AAPIUndelete watchlist(AAPIUndeleteWatchlist watchlist) {
-
 		this.watchlist = watchlist;
 
 		return this;
@@ -156,7 +171,6 @@ public class AAPIUndelete implements AAPIModule, AAPITokenModule, AAPIMainAction
 	/**A "csrf" token retrieved from <a href="/wiki/Special:ApiHelp/query%2Btokens" title="Special:ApiHelp/query+tokens">action=query&amp;meta=tokens</a>
 	 */
 	public AAPIUndelete token(String token) {
-
 		this.token = token;
 
 		return this;

@@ -94,10 +94,16 @@ public class AAPIQuerySearch
 
 	/**Search only within these namespaces.
 	 */
-	public AAPIQuerySearch namespace(NS... namespace) {
-
+	public AAPIQuerySearch namespace(NS namespace) {
 		this.namespace = List.of(namespace);
 
+		return this;
+	}
+
+	/**Search only within these namespaces.
+	 */
+	public AAPIQuerySearch namespace(NS... namespace) {
+		this.namespace = List.of(namespace);
 		return this;
 	}
 
@@ -110,7 +116,6 @@ public class AAPIQuerySearch
 	/**How many total pages to return.
 	 */
 	public AAPIQuerySearch limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -127,7 +132,6 @@ public class AAPIQuerySearch
 	 * <dl></dl>
 	 */
 	public AAPIQuerySearch qiprofile(AAPIQuerySearchQiprofile qiprofile) {
-
 		this.qiprofile = qiprofile;
 
 		return this;
@@ -144,7 +148,6 @@ public class AAPIQuerySearch
 	/**Which type of search to perform.
 	 */
 	public AAPIQuerySearch what(AAPIQuerySearchWhat what) {
-
 		this.what = what;
 
 		return this;
@@ -158,10 +161,16 @@ public class AAPIQuerySearch
 
 	/**Which metadata to return.
 	 */
-	public AAPIQuerySearch info(AAPIQuerySearchInfo... info) {
-
+	public AAPIQuerySearch info(AAPIQuerySearchInfo info) {
 		this.info = List.of(info);
 
+		return this;
+	}
+
+	/**Which metadata to return.
+	 */
+	public AAPIQuerySearch info(AAPIQuerySearchInfo... info) {
+		this.info = List.of(info);
 		return this;
 	}
 
@@ -175,10 +184,18 @@ public class AAPIQuerySearch
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQuerySearch prop(AAPIQuerySearchProp... prop) {
-
+	public AAPIQuerySearch prop(AAPIQuerySearchProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which properties to return:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQuerySearch prop(AAPIQuerySearchProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -193,7 +210,6 @@ public class AAPIQuerySearch
 	/**Include interwiki results in the search, if available.
 	 */
 	public AAPIQuerySearch interwiki(Boolean interwiki) {
-
 		this.interwiki = interwiki;
 
 		return this;
@@ -208,7 +224,6 @@ public class AAPIQuerySearch
 	/**Enable internal query rewriting. Some search backends can rewrite the query into another which is thought to provide better results, for instance by correcting spelling errors.
 	 */
 	public AAPIQuerySearch enablerewrites(Boolean enablerewrites) {
-
 		this.enablerewrites = enablerewrites;
 
 		return this;
@@ -223,7 +238,6 @@ public class AAPIQuerySearch
 	/**Set the sort order of returned results.
 	 */
 	public AAPIQuerySearch sort(AAPIQuerySearchSort sort) {
-
 		this.sort = sort;
 
 		return this;
@@ -418,7 +432,7 @@ public class AAPIQuerySearch
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

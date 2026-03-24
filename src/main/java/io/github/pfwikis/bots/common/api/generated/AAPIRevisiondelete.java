@@ -34,7 +34,7 @@ import io.github.pfwikis.bots.common.api.generated.params.AAPIMainAction.AAPIMai
 public class AAPIRevisiondelete implements AAPIModule, AAPITokenModule, AAPIMainActionModule {
 
 	public static AAPIRevisiondelete create(
-			@NonNull AAPIRevisiondeleteType type, @NonNull String... ids) {
+			@NonNull AAPIRevisiondeleteType type, @NonNull String ids) {
 
 		AAPIRevisiondelete v = new AAPIRevisiondelete();
 
@@ -74,7 +74,6 @@ public class AAPIRevisiondelete implements AAPIModule, AAPITokenModule, AAPIMain
 	/**Page title for the revision deletion, if required for the type.
 	 */
 	public AAPIRevisiondelete target(String target) {
-
 		this.target = target;
 
 		return this;
@@ -94,10 +93,16 @@ public class AAPIRevisiondelete implements AAPIModule, AAPITokenModule, AAPIMain
 
 	/**What to hide for each revision.
 	 */
-	public AAPIRevisiondelete hide(AAPIRevisiondeleteHide... hide) {
-
+	public AAPIRevisiondelete hide(AAPIRevisiondeleteHide hide) {
 		this.hide = List.of(hide);
 
+		return this;
+	}
+
+	/**What to hide for each revision.
+	 */
+	public AAPIRevisiondelete hide(AAPIRevisiondeleteHide... hide) {
+		this.hide = List.of(hide);
 		return this;
 	}
 
@@ -109,10 +114,16 @@ public class AAPIRevisiondelete implements AAPIModule, AAPITokenModule, AAPIMain
 
 	/**What to unhide for each revision.
 	 */
-	public AAPIRevisiondelete show(AAPIRevisiondeleteShow... show) {
-
+	public AAPIRevisiondelete show(AAPIRevisiondeleteShow show) {
 		this.show = List.of(show);
 
+		return this;
+	}
+
+	/**What to unhide for each revision.
+	 */
+	public AAPIRevisiondelete show(AAPIRevisiondeleteShow... show) {
+		this.show = List.of(show);
 		return this;
 	}
 
@@ -125,7 +136,6 @@ public class AAPIRevisiondelete implements AAPIModule, AAPITokenModule, AAPIMain
 	/**Whether to suppress data from administrators as well as others.
 	 */
 	public AAPIRevisiondelete suppress(AAPIRevisiondeleteSuppress suppress) {
-
 		this.suppress = suppress;
 
 		return this;
@@ -140,7 +150,6 @@ public class AAPIRevisiondelete implements AAPIModule, AAPITokenModule, AAPIMain
 	/**Reason for the deletion or undeletion.
 	 */
 	public AAPIRevisiondelete reason(String reason) {
-
 		this.reason = reason;
 
 		return this;
@@ -154,10 +163,16 @@ public class AAPIRevisiondelete implements AAPIModule, AAPITokenModule, AAPIMain
 
 	/**Tags to apply to the entry in the deletion log.
 	 */
-	public AAPIRevisiondelete tags(String... tags) {
-
+	public AAPIRevisiondelete tags(String tags) {
 		this.tags = List.of(tags);
 
+		return this;
+	}
+
+	/**Tags to apply to the entry in the deletion log.
+	 */
+	public AAPIRevisiondelete tags(String... tags) {
+		this.tags = List.of(tags);
 		return this;
 	}
 
@@ -170,7 +185,6 @@ public class AAPIRevisiondelete implements AAPIModule, AAPITokenModule, AAPIMain
 	/**A "csrf" token retrieved from <a href="/wiki/Special:ApiHelp/query%2Btokens" title="Special:ApiHelp/query+tokens">action=query&amp;meta=tokens</a>
 	 */
 	public AAPIRevisiondelete token(String token) {
-
 		this.token = token;
 
 		return this;

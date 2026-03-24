@@ -48,7 +48,6 @@ public class AAPILogin implements AAPIModule, AAPIMainActionModule {
 	/**Username.
 	 */
 	public AAPILogin name(String name) {
-
 		this.name = name;
 
 		return this;
@@ -63,7 +62,6 @@ public class AAPILogin implements AAPIModule, AAPIMainActionModule {
 	/**Password.
 	 */
 	public AAPILogin password(String password) {
-
 		this.password = password;
 
 		return this;
@@ -78,7 +76,6 @@ public class AAPILogin implements AAPIModule, AAPIMainActionModule {
 	/**Domain (optional).
 	 */
 	public AAPILogin domain(String domain) {
-
 		this.domain = domain;
 
 		return this;
@@ -93,7 +90,6 @@ public class AAPILogin implements AAPIModule, AAPIMainActionModule {
 	/**A "login" token retrieved from <a href="/wiki/Special:ApiHelp/query%2Btokens" title="Special:ApiHelp/query+tokens">action=query&amp;meta=tokens</a>
 	 */
 	public AAPILogin token(String token) {
-
 		this.token = token;
 
 		return this;

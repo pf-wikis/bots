@@ -71,7 +71,6 @@ public class AAPIQueryQuerypage
 	/**Number of results to return.
 	 */
 	public AAPIQueryQuerypage limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -147,7 +146,7 @@ public class AAPIQueryQuerypage
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

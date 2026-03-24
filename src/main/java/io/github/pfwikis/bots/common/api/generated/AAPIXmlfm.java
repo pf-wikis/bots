@@ -43,7 +43,6 @@ public class AAPIXmlfm implements AAPIModule, AAPIMainFormatModule {
 	/**Return the pretty-printed HTML and associated ResourceLoader modules as a JSON object.
 	 */
 	public AAPIXmlfm wrappedhtml(Boolean wrappedhtml) {
-
 		this.wrappedhtml = wrappedhtml;
 
 		return this;
@@ -58,7 +57,6 @@ public class AAPIXmlfm implements AAPIModule, AAPIMainFormatModule {
 	/**If specified, adds the named page as an XSL stylesheet. The value must be a title in the MediaWiki namespace ending in <code>.xsl</code>.
 	 */
 	public AAPIXmlfm xslt(String xslt) {
-
 		this.xslt = xslt;
 
 		return this;
@@ -73,7 +71,6 @@ public class AAPIXmlfm implements AAPIModule, AAPIMainFormatModule {
 	/**If specified, adds an XML namespace.
 	 */
 	public AAPIXmlfm includexmlnamespace(Boolean includexmlnamespace) {
-
 		this.includexmlnamespace = includexmlnamespace;
 
 		return this;

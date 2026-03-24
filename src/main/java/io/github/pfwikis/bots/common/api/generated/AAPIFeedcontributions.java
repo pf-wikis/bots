@@ -65,7 +65,6 @@ public class AAPIFeedcontributions implements AAPIModule, AAPIMainActionModule {
 	/**The format of the feed.
 	 */
 	public AAPIFeedcontributions feedformat(AAPIFeedcontributionsFeedformat feedformat) {
-
 		this.feedformat = feedformat;
 
 		return this;
@@ -86,7 +85,6 @@ public class AAPIFeedcontributions implements AAPIModule, AAPIMainActionModule {
 	/**Which namespace to filter the contributions by.
 	 */
 	public AAPIFeedcontributions namespace(NS namespace) {
-
 		this.namespace = namespace;
 
 		return this;
@@ -101,7 +99,6 @@ public class AAPIFeedcontributions implements AAPIModule, AAPIMainActionModule {
 	/**From year (and earlier).
 	 */
 	public AAPIFeedcontributions year(Long year) {
-
 		this.year = year;
 
 		return this;
@@ -116,7 +113,6 @@ public class AAPIFeedcontributions implements AAPIModule, AAPIMainActionModule {
 	/**From month (and earlier).
 	 */
 	public AAPIFeedcontributions month(Long month) {
-
 		this.month = month;
 
 		return this;
@@ -130,10 +126,16 @@ public class AAPIFeedcontributions implements AAPIModule, AAPIMainActionModule {
 
 	/**Filter contributions that have these tags.
 	 */
-	public AAPIFeedcontributions tagfilter(AAPIFeedcontributionsTagfilter... tagfilter) {
-
+	public AAPIFeedcontributions tagfilter(AAPIFeedcontributionsTagfilter tagfilter) {
 		this.tagfilter = List.of(tagfilter);
 
+		return this;
+	}
+
+	/**Filter contributions that have these tags.
+	 */
+	public AAPIFeedcontributions tagfilter(AAPIFeedcontributionsTagfilter... tagfilter) {
+		this.tagfilter = List.of(tagfilter);
 		return this;
 	}
 
@@ -146,7 +148,6 @@ public class AAPIFeedcontributions implements AAPIModule, AAPIMainActionModule {
 	/**Show only deleted contributions.
 	 */
 	public AAPIFeedcontributions deletedonly(Boolean deletedonly) {
-
 		this.deletedonly = deletedonly;
 
 		return this;
@@ -161,7 +162,6 @@ public class AAPIFeedcontributions implements AAPIModule, AAPIMainActionModule {
 	/**Only show edits that are the latest revisions.
 	 */
 	public AAPIFeedcontributions toponly(Boolean toponly) {
-
 		this.toponly = toponly;
 
 		return this;
@@ -176,7 +176,6 @@ public class AAPIFeedcontributions implements AAPIModule, AAPIMainActionModule {
 	/**Only show edits that are page creations.
 	 */
 	public AAPIFeedcontributions newonly(Boolean newonly) {
-
 		this.newonly = newonly;
 
 		return this;
@@ -191,7 +190,6 @@ public class AAPIFeedcontributions implements AAPIModule, AAPIMainActionModule {
 	/**Hide minor edits.
 	 */
 	public AAPIFeedcontributions hideminor(Boolean hideminor) {
-
 		this.hideminor = hideminor;
 
 		return this;
@@ -206,7 +204,6 @@ public class AAPIFeedcontributions implements AAPIModule, AAPIMainActionModule {
 	/**Show the size difference between revisions.
 	 */
 	public AAPIFeedcontributions showsizediff(Boolean showsizediff) {
-
 		this.showsizediff = showsizediff;
 
 		return this;

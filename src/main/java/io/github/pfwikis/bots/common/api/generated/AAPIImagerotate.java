@@ -69,10 +69,16 @@ public class AAPIImagerotate implements AAPIModule, AAPITokenModule, AAPIMainAct
 
 	/**Tags to apply to the entry in the upload log.
 	 */
-	public AAPIImagerotate tags(String... tags) {
-
+	public AAPIImagerotate tags(String tags) {
 		this.tags = List.of(tags);
 
+		return this;
+	}
+
+	/**Tags to apply to the entry in the upload log.
+	 */
+	public AAPIImagerotate tags(String... tags) {
+		this.tags = List.of(tags);
 		return this;
 	}
 
@@ -84,10 +90,16 @@ public class AAPIImagerotate implements AAPIModule, AAPITokenModule, AAPIMainAct
 
 	/**A list of titles to work on.
 	 */
-	public AAPIImagerotate titles(String... titles) {
-
+	public AAPIImagerotate titles(String titles) {
 		this.titles = List.of(titles);
 
+		return this;
+	}
+
+	/**A list of titles to work on.
+	 */
+	public AAPIImagerotate titles(String... titles) {
+		this.titles = List.of(titles);
 		return this;
 	}
 
@@ -99,10 +111,16 @@ public class AAPIImagerotate implements AAPIModule, AAPITokenModule, AAPIMainAct
 
 	/**A list of page IDs to work on.
 	 */
-	public AAPIImagerotate pageids(Long... pageids) {
-
+	public AAPIImagerotate pageids(Long pageids) {
 		this.pageids = List.of(pageids);
 
+		return this;
+	}
+
+	/**A list of page IDs to work on.
+	 */
+	public AAPIImagerotate pageids(Long... pageids) {
+		this.pageids = List.of(pageids);
 		return this;
 	}
 
@@ -114,10 +132,16 @@ public class AAPIImagerotate implements AAPIModule, AAPITokenModule, AAPIMainAct
 
 	/**A list of revision IDs to work on. Note that almost all query modules will convert revision IDs to the corresponding page ID and work on the latest revision instead. Only <kbd>prop=revisions</kbd> uses exact revisions for its response.
 	 */
-	public AAPIImagerotate revids(Long... revids) {
-
+	public AAPIImagerotate revids(Long revids) {
 		this.revids = List.of(revids);
 
+		return this;
+	}
+
+	/**A list of revision IDs to work on. Note that almost all query modules will convert revision IDs to the corresponding page ID and work on the latest revision instead. Only <kbd>prop=revisions</kbd> uses exact revisions for its response.
+	 */
+	public AAPIImagerotate revids(Long... revids) {
+		this.revids = List.of(revids);
 		return this;
 	}
 
@@ -133,7 +157,6 @@ public class AAPIImagerotate implements AAPIModule, AAPITokenModule, AAPIMainAct
 	 * <dl></dl>
 	 */
 	public AAPIImagerotate generator(AAPIImagerotateGeneratorModule generator) {
-
 		this.generator = AAPIImagerotateGenerator.createSubmodule(generator);
 
 		return this;
@@ -151,7 +174,6 @@ public class AAPIImagerotate implements AAPIModule, AAPITokenModule, AAPIMainAct
 	/**Automatically resolve redirects in <var>titles</var>, <var>pageids</var>, and <var>revids</var>, and in pages returned by <var>generator</var>.
 	 */
 	public AAPIImagerotate redirects(Boolean redirects) {
-
 		this.redirects = redirects;
 
 		return this;
@@ -166,7 +188,6 @@ public class AAPIImagerotate implements AAPIModule, AAPITokenModule, AAPIMainAct
 	/**Convert titles to other variants if necessary. Only works if the wiki's content language supports variant conversion. Languages that support variant conversion include ban, en, crh, gan, iu, ku, mni, sh, shi, sr, tg, tly, uz, wuu, zgh and zh.
 	 */
 	public AAPIImagerotate converttitles(Boolean converttitles) {
-
 		this.converttitles = converttitles;
 
 		return this;
@@ -181,7 +202,6 @@ public class AAPIImagerotate implements AAPIModule, AAPITokenModule, AAPIMainAct
 	/**A "csrf" token retrieved from <a href="/wiki/Special:ApiHelp/query%2Btokens" title="Special:ApiHelp/query+tokens">action=query&amp;meta=tokens</a>
 	 */
 	public AAPIImagerotate token(String token) {
-
 		this.token = token;
 
 		return this;

@@ -3,7 +3,7 @@ package io.github.pfwikis.bots.facts.model;
 import java.util.List;
 
 import io.github.pfwikis.bots.common.WikiAPI;
-import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
+import io.github.pfwikis.bots.common.api.responses.SemanticSubject;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

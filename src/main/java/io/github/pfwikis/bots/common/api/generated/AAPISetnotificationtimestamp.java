@@ -68,7 +68,6 @@ public class AAPISetnotificationtimestamp
 	/**Work on all watched pages.
 	 */
 	public AAPISetnotificationtimestamp entirewatchlist(Boolean entirewatchlist) {
-
 		this.entirewatchlist = entirewatchlist;
 
 		return this;
@@ -83,7 +82,6 @@ public class AAPISetnotificationtimestamp
 	/**Timestamp to which to set the notification timestamp.
 	 */
 	public AAPISetnotificationtimestamp timestamp(java.time.Instant timestamp) {
-
 		this.timestamp = timestamp;
 
 		return this;
@@ -98,7 +96,6 @@ public class AAPISetnotificationtimestamp
 	/**Revision to set the notification timestamp to (one page only).
 	 */
 	public AAPISetnotificationtimestamp torevid(Long torevid) {
-
 		this.torevid = torevid;
 
 		return this;
@@ -113,7 +110,6 @@ public class AAPISetnotificationtimestamp
 	/**Revision to set the notification timestamp newer than (one page only).
 	 */
 	public AAPISetnotificationtimestamp newerthanrevid(Long newerthanrevid) {
-
 		this.newerthanrevid = newerthanrevid;
 
 		return this;
@@ -127,10 +123,16 @@ public class AAPISetnotificationtimestamp
 
 	/**A list of titles to work on.
 	 */
-	public AAPISetnotificationtimestamp titles(String... titles) {
-
+	public AAPISetnotificationtimestamp titles(String titles) {
 		this.titles = List.of(titles);
 
+		return this;
+	}
+
+	/**A list of titles to work on.
+	 */
+	public AAPISetnotificationtimestamp titles(String... titles) {
+		this.titles = List.of(titles);
 		return this;
 	}
 
@@ -142,10 +144,16 @@ public class AAPISetnotificationtimestamp
 
 	/**A list of page IDs to work on.
 	 */
-	public AAPISetnotificationtimestamp pageids(Long... pageids) {
-
+	public AAPISetnotificationtimestamp pageids(Long pageids) {
 		this.pageids = List.of(pageids);
 
+		return this;
+	}
+
+	/**A list of page IDs to work on.
+	 */
+	public AAPISetnotificationtimestamp pageids(Long... pageids) {
+		this.pageids = List.of(pageids);
 		return this;
 	}
 
@@ -157,10 +165,16 @@ public class AAPISetnotificationtimestamp
 
 	/**A list of revision IDs to work on. Note that almost all query modules will convert revision IDs to the corresponding page ID and work on the latest revision instead. Only <kbd>prop=revisions</kbd> uses exact revisions for its response.
 	 */
-	public AAPISetnotificationtimestamp revids(Long... revids) {
-
+	public AAPISetnotificationtimestamp revids(Long revids) {
 		this.revids = List.of(revids);
 
+		return this;
+	}
+
+	/**A list of revision IDs to work on. Note that almost all query modules will convert revision IDs to the corresponding page ID and work on the latest revision instead. Only <kbd>prop=revisions</kbd> uses exact revisions for its response.
+	 */
+	public AAPISetnotificationtimestamp revids(Long... revids) {
+		this.revids = List.of(revids);
 		return this;
 	}
 
@@ -177,7 +191,6 @@ public class AAPISetnotificationtimestamp
 	 */
 	public AAPISetnotificationtimestamp generator(
 			AAPISetnotificationtimestampGeneratorModule generator) {
-
 		this.generator = AAPISetnotificationtimestampGenerator.createSubmodule(generator);
 
 		return this;
@@ -195,7 +208,6 @@ public class AAPISetnotificationtimestamp
 	/**Automatically resolve redirects in <var>titles</var>, <var>pageids</var>, and <var>revids</var>, and in pages returned by <var>generator</var>.
 	 */
 	public AAPISetnotificationtimestamp redirects(Boolean redirects) {
-
 		this.redirects = redirects;
 
 		return this;
@@ -210,7 +222,6 @@ public class AAPISetnotificationtimestamp
 	/**Convert titles to other variants if necessary. Only works if the wiki's content language supports variant conversion. Languages that support variant conversion include ban, en, crh, gan, iu, ku, mni, sh, shi, sr, tg, tly, uz, wuu, zgh and zh.
 	 */
 	public AAPISetnotificationtimestamp converttitles(Boolean converttitles) {
-
 		this.converttitles = converttitles;
 
 		return this;
@@ -225,7 +236,6 @@ public class AAPISetnotificationtimestamp
 	/**A "csrf" token retrieved from <a href="/wiki/Special:ApiHelp/query%2Btokens" title="Special:ApiHelp/query+tokens">action=query&amp;meta=tokens</a>
 	 */
 	public AAPISetnotificationtimestamp token(String token) {
-
 		this.token = token;
 
 		return this;

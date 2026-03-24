@@ -53,7 +53,6 @@ public class AAPIEchomarkseen implements AAPIModule, AAPIMainActionModule {
 	/**Timestamp format to use for output, 'ISO_8601' or 'MW'. 'MW' is deprecated here, so all clients should switch to 'ISO_8601'. This parameter will be removed, and 'ISO_8601' will become the only output format.
 	 */
 	public AAPIEchomarkseen timestampFormat(AAPIEchomarkseenTimestampFormat timestampFormat) {
-
 		this.timestampFormat = timestampFormat;
 
 		return this;

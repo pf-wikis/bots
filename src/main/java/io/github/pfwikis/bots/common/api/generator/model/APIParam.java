@@ -51,7 +51,7 @@ public class APIParam {
 		if(r.isSubmodule())
 			r.javaParamValueType=r.getJavaModuleType();
 		if(param.isMulti())
-			r.javaParamValueType = r.javaParamValueType+"...";
+			r.javaParamValueType = r.javaParamValueType;
 		
 		/*
 		r.javaEnumType=r.javaType;

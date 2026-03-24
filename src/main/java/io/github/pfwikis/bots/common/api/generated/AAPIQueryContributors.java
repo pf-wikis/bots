@@ -54,10 +54,16 @@ public class AAPIQueryContributors implements AAPIModule, AAPIQueryPropModule {
 
 	/**Only include users in the given groups. Does not include implicit or auto-promoted groups like *, user, or autoconfirmed.
 	 */
-	public AAPIQueryContributors group(AAPIQueryContributorsGroup... group) {
-
+	public AAPIQueryContributors group(AAPIQueryContributorsGroup group) {
 		this.group = List.of(group);
 
+		return this;
+	}
+
+	/**Only include users in the given groups. Does not include implicit or auto-promoted groups like *, user, or autoconfirmed.
+	 */
+	public AAPIQueryContributors group(AAPIQueryContributorsGroup... group) {
+		this.group = List.of(group);
 		return this;
 	}
 
@@ -69,10 +75,16 @@ public class AAPIQueryContributors implements AAPIModule, AAPIQueryPropModule {
 
 	/**Exclude users in the given groups. Does not include implicit or auto-promoted groups like *, user, or autoconfirmed.
 	 */
-	public AAPIQueryContributors excludegroup(AAPIQueryContributorsExcludegroup... excludegroup) {
-
+	public AAPIQueryContributors excludegroup(AAPIQueryContributorsExcludegroup excludegroup) {
 		this.excludegroup = List.of(excludegroup);
 
+		return this;
+	}
+
+	/**Exclude users in the given groups. Does not include implicit or auto-promoted groups like *, user, or autoconfirmed.
+	 */
+	public AAPIQueryContributors excludegroup(AAPIQueryContributorsExcludegroup... excludegroup) {
+		this.excludegroup = List.of(excludegroup);
 		return this;
 	}
 
@@ -84,10 +96,16 @@ public class AAPIQueryContributors implements AAPIModule, AAPIQueryPropModule {
 
 	/**Only include users having the given rights. Does not include rights granted by implicit or auto-promoted groups like *, user, or autoconfirmed.
 	 */
-	public AAPIQueryContributors rights(AAPIQueryContributorsRights... rights) {
-
+	public AAPIQueryContributors rights(AAPIQueryContributorsRights rights) {
 		this.rights = List.of(rights);
 
+		return this;
+	}
+
+	/**Only include users having the given rights. Does not include rights granted by implicit or auto-promoted groups like *, user, or autoconfirmed.
+	 */
+	public AAPIQueryContributors rights(AAPIQueryContributorsRights... rights) {
+		this.rights = List.of(rights);
 		return this;
 	}
 
@@ -99,11 +117,17 @@ public class AAPIQueryContributors implements AAPIModule, AAPIQueryPropModule {
 
 	/**Exclude users having the given rights. Does not include rights granted by implicit or auto-promoted groups like *, user, or autoconfirmed.
 	 */
-	public AAPIQueryContributors excluderights(
-			AAPIQueryContributorsExcluderights... excluderights) {
-
+	public AAPIQueryContributors excluderights(AAPIQueryContributorsExcluderights excluderights) {
 		this.excluderights = List.of(excluderights);
 
+		return this;
+	}
+
+	/**Exclude users having the given rights. Does not include rights granted by implicit or auto-promoted groups like *, user, or autoconfirmed.
+	 */
+	public AAPIQueryContributors excluderights(
+			AAPIQueryContributorsExcluderights... excluderights) {
+		this.excluderights = List.of(excluderights);
 		return this;
 	}
 
@@ -116,7 +140,6 @@ public class AAPIQueryContributors implements AAPIModule, AAPIQueryPropModule {
 	/**How many contributors to return.
 	 */
 	public AAPIQueryContributors limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -260,7 +283,7 @@ public class AAPIQueryContributors implements AAPIModule, AAPIQueryPropModule {
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

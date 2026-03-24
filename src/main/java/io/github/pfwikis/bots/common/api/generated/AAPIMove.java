@@ -63,7 +63,6 @@ public class AAPIMove implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	/**Title of the page to rename. Cannot be used together with <var>fromid</var>.
 	 */
 	public AAPIMove from(String from) {
-
 		this.from = from;
 
 		return this;
@@ -78,7 +77,6 @@ public class AAPIMove implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	/**Page ID of the page to rename. Cannot be used together with <var>from</var>.
 	 */
 	public AAPIMove fromid(Long fromid) {
-
 		this.fromid = fromid;
 
 		return this;
@@ -99,7 +97,6 @@ public class AAPIMove implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	/**Reason for the rename.
 	 */
 	public AAPIMove reason(String reason) {
-
 		this.reason = reason;
 
 		return this;
@@ -114,7 +111,6 @@ public class AAPIMove implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	/**Rename the talk page, if it exists.
 	 */
 	public AAPIMove movetalk(Boolean movetalk) {
-
 		this.movetalk = movetalk;
 
 		return this;
@@ -129,7 +125,6 @@ public class AAPIMove implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	/**Rename subpages, if applicable.
 	 */
 	public AAPIMove movesubpages(Boolean movesubpages) {
-
 		this.movesubpages = movesubpages;
 
 		return this;
@@ -144,7 +139,6 @@ public class AAPIMove implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	/**Don't create a redirect.
 	 */
 	public AAPIMove noredirect(Boolean noredirect) {
-
 		this.noredirect = noredirect;
 
 		return this;
@@ -159,7 +153,6 @@ public class AAPIMove implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	/**Unconditionally add or remove the page from the current user's watchlist, use preferences (ignored for bot users) or do not change watch.
 	 */
 	public AAPIMove watchlist(AAPIMoveWatchlist watchlist) {
-
 		this.watchlist = watchlist;
 
 		return this;
@@ -174,7 +167,6 @@ public class AAPIMove implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	/**Ignore any warnings.
 	 */
 	public AAPIMove ignorewarnings(Boolean ignorewarnings) {
-
 		this.ignorewarnings = ignorewarnings;
 
 		return this;
@@ -188,10 +180,16 @@ public class AAPIMove implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 
 	/**Change tags to apply to the entry in the move log and to the null revision on the destination page.
 	 */
-	public AAPIMove tags(String... tags) {
-
+	public AAPIMove tags(String tags) {
 		this.tags = List.of(tags);
 
+		return this;
+	}
+
+	/**Change tags to apply to the entry in the move log and to the null revision on the destination page.
+	 */
+	public AAPIMove tags(String... tags) {
+		this.tags = List.of(tags);
 		return this;
 	}
 
@@ -204,7 +202,6 @@ public class AAPIMove implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	/**A "csrf" token retrieved from <a href="/wiki/Special:ApiHelp/query%2Btokens" title="Special:ApiHelp/query+tokens">action=query&amp;meta=tokens</a>
 	 */
 	public AAPIMove token(String token) {
-
 		this.token = token;
 
 		return this;

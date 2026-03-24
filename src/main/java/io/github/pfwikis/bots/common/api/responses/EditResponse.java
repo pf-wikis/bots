@@ -5,6 +5,7 @@ import java.time.Instant;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 import io.github.pfwikis.bots.common.api.model.AAPIExceptions;
+import io.github.pfwikis.bots.common.api.model.AnyJson;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
 import io.github.pfwikis.bots.common.api.model.PageRef;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class EditResponse implements IResponse<EditResponse>, ContainsPageRef {
+public class EditResponse extends AnyJson implements IResponse<EditResponse>, ContainsPageRef {
 	private String result;
 	@JsonUnwrapped
 	private PageRef page;

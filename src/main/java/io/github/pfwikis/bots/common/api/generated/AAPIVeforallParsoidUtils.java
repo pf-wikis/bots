@@ -78,7 +78,6 @@ public class AAPIVeforallParsoidUtils implements AAPIModule, AAPIMainActionModul
 	/**title of the page holding the content
 	 */
 	public AAPIVeforallParsoidUtils title(String title) {
-
 		this.title = title;
 
 		return this;
@@ -93,7 +92,6 @@ public class AAPIVeforallParsoidUtils implements AAPIModule, AAPIMainActionModul
 	/**page ID of the page holding the content
 	 */
 	public AAPIVeforallParsoidUtils pageid(Long pageid) {
-
 		this.pageid = pageid;
 
 		return this;

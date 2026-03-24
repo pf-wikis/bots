@@ -97,7 +97,6 @@ public class AAPIQueryAllimages
 	/**Property to sort by.
 	 */
 	public AAPIQueryAllimages sort(AAPIQueryAllimagesSort sort) {
-
 		this.sort = sort;
 
 		return this;
@@ -112,7 +111,6 @@ public class AAPIQueryAllimages
 	/**The direction in which to list.
 	 */
 	public AAPIQueryAllimages dir(AAPIQueryAllimagesDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -127,7 +125,6 @@ public class AAPIQueryAllimages
 	/**The image title to start enumerating from. Can only be used with aisort=name.
 	 */
 	public AAPIQueryAllimages from(String from) {
-
 		this.from = from;
 
 		return this;
@@ -142,7 +139,6 @@ public class AAPIQueryAllimages
 	/**The image title to stop enumerating at. Can only be used with aisort=name.
 	 */
 	public AAPIQueryAllimages to(String to) {
-
 		this.to = to;
 
 		return this;
@@ -157,7 +153,6 @@ public class AAPIQueryAllimages
 	/**The timestamp to start enumerating from. Can only be used with aisort=timestamp.
 	 */
 	public AAPIQueryAllimages start(java.time.Instant start) {
-
 		this.start = start;
 
 		return this;
@@ -172,7 +167,6 @@ public class AAPIQueryAllimages
 	/**The timestamp to end enumerating. Can only be used with aisort=timestamp.
 	 */
 	public AAPIQueryAllimages end(java.time.Instant end) {
-
 		this.end = end;
 
 		return this;
@@ -188,10 +182,18 @@ public class AAPIQueryAllimages
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryAllimages prop(AAPIQueryAllimagesProp... prop) {
-
+	public AAPIQueryAllimages prop(AAPIQueryAllimagesProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which file information to get:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryAllimages prop(AAPIQueryAllimagesProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -206,7 +208,6 @@ public class AAPIQueryAllimages
 	/**Search for all image titles that begin with this value. Can only be used with aisort=name.
 	 */
 	public AAPIQueryAllimages prefix(String prefix) {
-
 		this.prefix = prefix;
 
 		return this;
@@ -221,7 +222,6 @@ public class AAPIQueryAllimages
 	/**Limit to images with at least this many bytes.
 	 */
 	public AAPIQueryAllimages minsize(Long minsize) {
-
 		this.minsize = minsize;
 
 		return this;
@@ -236,7 +236,6 @@ public class AAPIQueryAllimages
 	/**Limit to images with at most this many bytes.
 	 */
 	public AAPIQueryAllimages maxsize(Long maxsize) {
-
 		this.maxsize = maxsize;
 
 		return this;
@@ -251,7 +250,6 @@ public class AAPIQueryAllimages
 	/**SHA1 hash of image. Overrides aisha1base36.
 	 */
 	public AAPIQueryAllimages sha1(String sha1) {
-
 		this.sha1 = sha1;
 
 		return this;
@@ -266,7 +264,6 @@ public class AAPIQueryAllimages
 	/**SHA1 hash of image in base 36 (used in MediaWiki).
 	 */
 	public AAPIQueryAllimages sha1base36(String sha1base36) {
-
 		this.sha1base36 = sha1base36;
 
 		return this;
@@ -281,7 +278,6 @@ public class AAPIQueryAllimages
 	/**Only return files where the last version was uploaded by this user. Can only be used with aisort=timestamp. Cannot be used together with aifilterbots.
 	 */
 	public AAPIQueryAllimages user(String user) {
-
 		this.user = user;
 
 		return this;
@@ -296,7 +292,6 @@ public class AAPIQueryAllimages
 	/**How to filter files uploaded by bots. Can only be used with aisort=timestamp. Cannot be used together with aiuser.
 	 */
 	public AAPIQueryAllimages filterbots(AAPIQueryAllimagesFilterbots filterbots) {
-
 		this.filterbots = filterbots;
 
 		return this;
@@ -310,10 +305,16 @@ public class AAPIQueryAllimages
 
 	/**What MIME types to search for, e.g. <kbd>image/jpeg</kbd>.
 	 */
-	public AAPIQueryAllimages mime(String... mime) {
-
+	public AAPIQueryAllimages mime(String mime) {
 		this.mime = List.of(mime);
 
+		return this;
+	}
+
+	/**What MIME types to search for, e.g. <kbd>image/jpeg</kbd>.
+	 */
+	public AAPIQueryAllimages mime(String... mime) {
+		this.mime = List.of(mime);
 		return this;
 	}
 
@@ -326,7 +327,6 @@ public class AAPIQueryAllimages
 	/**How many images in total to return.
 	 */
 	public AAPIQueryAllimages limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -589,7 +589,7 @@ public class AAPIQueryAllimages
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

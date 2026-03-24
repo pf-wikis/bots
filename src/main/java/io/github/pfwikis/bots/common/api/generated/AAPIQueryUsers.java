@@ -48,10 +48,18 @@ public class AAPIQueryUsers implements AAPIModule, AAPIQueryListModule {
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryUsers prop(AAPIQueryUsersProp... prop) {
-
+	public AAPIQueryUsers prop(AAPIQueryUsersProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which pieces of information to include:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryUsers prop(AAPIQueryUsersProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -66,7 +74,6 @@ public class AAPIQueryUsers implements AAPIModule, AAPIQueryListModule {
 	/**With <kbd>usprop=centralids</kbd>, indicate whether the user is attached with the wiki identified by this ID.
 	 */
 	public AAPIQueryUsers attachedwiki(String attachedwiki) {
-
 		this.attachedwiki = attachedwiki;
 
 		return this;
@@ -80,10 +87,16 @@ public class AAPIQueryUsers implements AAPIModule, AAPIQueryListModule {
 
 	/**A list of users to obtain information for.
 	 */
-	public AAPIQueryUsers users(String... users) {
-
+	public AAPIQueryUsers users(String users) {
 		this.users = List.of(users);
 
+		return this;
+	}
+
+	/**A list of users to obtain information for.
+	 */
+	public AAPIQueryUsers users(String... users) {
+		this.users = List.of(users);
 		return this;
 	}
 
@@ -95,10 +108,16 @@ public class AAPIQueryUsers implements AAPIModule, AAPIQueryListModule {
 
 	/**A list of user IDs to obtain information for.
 	 */
-	public AAPIQueryUsers userids(Long... userids) {
-
+	public AAPIQueryUsers userids(Long userids) {
 		this.userids = List.of(userids);
 
+		return this;
+	}
+
+	/**A list of user IDs to obtain information for.
+	 */
+	public AAPIQueryUsers userids(Long... userids) {
+		this.userids = List.of(userids);
 		return this;
 	}
 

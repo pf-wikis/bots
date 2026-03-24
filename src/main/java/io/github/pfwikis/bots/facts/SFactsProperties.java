@@ -304,9 +304,10 @@ public class SFactsProperties {
 	public static final SProperty<String> Price = new SProperty<>(
 		"Price",
 		SFactTypes.STRING)
-		.setFormNote("The purchase price of the product in the form of \"$4.99\".")
+		.setFormNote("The purchase price of the product in the form of \"$4.99\". Not necessary if there is a Paizo pubcode.")
 		.setDescription("The price of this release.")
-		.setAllowsPattern("^(Free|[$€]\\d+(.\\d+)?)$");
+		.setAllowsPattern("^(Free|[$€]\\d+(.\\d+)?)$")
+		.setDefaultValue("{{#coalesce:{{Paizo store|price|{{{Pubcode}}}}}}}");
 	public static final SProperty<List<PageTitle>> Primary_author = new SProperty<>(
 		"Primary author",
 		SFactTypes.PAGE_LIST_ORDERED) {
@@ -331,7 +332,7 @@ public class SFactsProperties {
 		"Pubcode",
 		SFactTypes.STRING)
 		.setAutocompleteDisabled(true)
-		.setFormNote("The publisher's product code for this release (e.g. PZO9500, etc.).")
+		.setFormNote("The publisher's product code for this release (e.g. PZO9500, etc.). Only set this if the releases do not have pubcodes.")
 		.setDescription("Typically a Paizo pubcode.");
 	public static final SProperty<List<PageTitle>> Publisher = new SProperty<>(
 		"Publisher",
@@ -456,7 +457,7 @@ public class SFactsProperties {
 	public static final SProperty<String> Website = new SProperty<>(
 		"Website",
 		SFactTypes.URL)
-		.setFormNote("The URL of the product's official page on the publisher's website.")
+		.setFormNote("The URL of the product's official page on the publisher's website. Not necessary if there is a Paizo pubcode.")
 		.setAutocompleteDisabled(true)
 		.setDescription("An URL that is strongly linked to this entity. E.g. the Paizo page for a book. "
 				+ "Defaults to a Paizo shop URL if the Pubcode matches one in the store.")

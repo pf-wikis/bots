@@ -5,11 +5,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
-
 import io.github.pfwikis.bots.common.Wiki;
-import io.github.pfwikis.bots.common.api.model.PageRef;
-import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
+import io.github.pfwikis.bots.common.api.generated.params.NS;
+import io.github.pfwikis.bots.common.api.model.PageTitle;
+import io.github.pfwikis.bots.common.api.responses.SemanticSubject;
 import io.github.pfwikis.bots.facts.model.SConcept;
 import io.github.pfwikis.bots.facts.model.SProperty;
 import lombok.Getter;
@@ -21,11 +20,15 @@ public class ACContext {
 	private final Wiki wiki;
 	private final SConcept concept;
 	private final SemanticSubject subject;
-	private final Map<PageRef, PageRef> series2Category;
-	private Set<String> categories = new HashSet<>();
+	private final Map<PageTitle, PageTitle> series2Category;
+	private Set<PageTitle> categories = new HashSet<>();
 
-	public void addCategory(String category) {
-		categories.add(StringUtils.prependIfMissing(category, "Category:"));
+	public void addCategory(PageTitle category) {
+		categories.add(category);
+	}
+	
+	public void addCategory(String categoryName) {
+		categories.add(PageTitle.of(NS.CATEGORY, categoryName));
 	}
 	
 	public String categoriesWikitext() {

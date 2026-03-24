@@ -1,15 +1,19 @@
 package io.github.pfwikis.bots.maintenance;
 
+import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringUtils;
 
 import com.beust.jcommander.Parameters;
 
+import io.github.pfwikis.bots.common.api.generated.params.NS;
+import io.github.pfwikis.bots.common.api.model.AAPIExceptions.AAPIException;
+import io.github.pfwikis.bots.common.api.model.PageRef;
+import io.github.pfwikis.bots.common.api.model.PageTitle;
+import io.github.pfwikis.bots.common.api.responses.SemanticAsk.Result;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
-import io.github.pfwikis.bots.common.model.Page;
 import io.github.pfwikis.bots.utils.StringHelper;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,63 +28,63 @@ public class Maintenance extends SimpleBot {
 
 	@Override
 	protected void run(RunContext ctx) throws Exception {
-		protectBotCreatedPages();
 		resolveAndRemoveRedirects();
+		protectBotCreatedPages();
 		removeCreatedPagesWithoutSource();
 	}
 
 	private void protectBotCreatedPages() {
 		
-		for(var p:run.getWiki().getPagesTranscluding("Template:Bot created")) {
-			if(p.getTitle().startsWith("Template:Bot created")) continue;
+		for(var p:run.getWiki().getPagesTranscluding(PageRef.of(NS.TEMPLATE, "Bot created"))) {
+			if(p.getPage().toString().startsWith("Template:Bot created")) continue;
 			
-			if(!run.getWiki().isProtected(p.getTitle())) {
-				log.info("Protecting {}", p.getTitle());
-				var token=run.getWiki().requestToken("csrf");
-				run.getWiki().protect(p.getTitle(), "edit=sysop|move=sysop", "Bot created page", token);
+			log.info("Checking protection of {}", p.toPageTitle());
+			if(!run.getWiki().isProtected(p.getPage())) {
+				log.info("Protecting {}", p.getPage());
+				run.getWiki().protect(p.getPage(), "edit=sysop|move=sysop", "Bot created page");
 			}
 		}
 	}
 
-	private void resolveAndRemoveRedirects() {
-		var redirects = run.getWiki().getRedirects().stream()
-			.filter(r->StringUtils.startsWithAny(r.getTitle(), "File:", "Template:", "Facts:"))
+	private static Set<NS> REDIRECT_NS = EnumSet.of(NS.FILE, NS.TEMPLATE, NS.FACTS);
+	private void resolveAndRemoveRedirects() throws AAPIException {
+		var redirects = run.getWiki().getAllRedirects().stream()
+			.filter(r->REDIRECT_NS.contains(r.getPage().getTitle().getNs()))
 			.toList();
 		log.info("There are {} redirects that are not necessary", redirects.size());
 		for(var red:redirects) {
-			var from = red.getTitle();
-			var fromTitle = run.getWiki().withoutNamespace(from);
-			var fromTitlePattern = StringHelper.titleToPattern(fromTitle, true);
-			var fromPattern = Pattern.quote(from.substring(0, from.indexOf(fromTitle)))+fromTitlePattern;
+			var from = red.getPage().getTitle();
+			var fromTitle = from.getName();
+			var fromTitlePattern = StringHelper.titleToPattern(from.getName(), true);
+			var fromPattern = Pattern.quote(from.getNs().getPrefix())+fromTitlePattern;
 			
 			//temporary workaround until manually resolved
-			if(from.equals("Template:Iconic")) continue;
-			var to = red.getDatabaseResult().toFullPageTitle(run.getServer());
-			var toTitle = red.getDatabaseResult().getRedirectTitle().replace('_', ' ');
+			if(from.equals(PageTitle.of(NS.TEMPLATE, "Iconic"))) continue;
+			var to = red.getDatabaseResult().toPageTitle();
 			
-			var uses = new HashSet<Page>(run.getWiki().getImageUsage(from));
+			var uses = new HashSet<PageRef>(run.getWiki().getImageUsage(from));
 			uses.addAll(run.getWiki().getPagesLinkingTo(from));
-			uses.addAll(run.getWiki().getPagesTranscluding(from));
+			run.getWiki().getPagesTranscluding(from).forEach(r->uses.add(r.getPage()));
 			
-			log.info(from);
+			log.info("{}", from);
 			boolean resolveFailed = false;
 			if(!uses.isEmpty()) {
 				
 				for(var use:uses) {
-					var txt = run.getWiki().getPageText(use.getTitle());
-					var ntxt = txt.replaceAll(fromPattern, to);
+					var txt = run.getWiki().getWikitext(use);
+					var ntxt = txt.replaceAll(fromPattern, to.toFullTitle());
 					//special case: Templates can be transcluded
-					if(from.startsWith("Template:")) {
+					if(from.getNs().equals(NS.TEMPLATE)) {
 						ntxt = ntxt
-							.replaceAll("(?s)(\\{\\{\\s*)"+fromTitlePattern+"(\\s*[\\|\\}])", "$1"+toTitle+"$2")
-							.replaceAll("(?s)(\\{\\{\\s*tl\\s*\\|)"+fromTitlePattern+"(\\s*[\\|\\}])", "$1"+toTitle+"$2");
+							.replaceAll("(?s)(\\{\\{\\s*)"+fromTitlePattern+"(\\s*[\\|\\}])", "$1"+to.getName()+"$2")
+							.replaceAll("(?s)(\\{\\{\\s*tl\\s*\\|)"+fromTitlePattern+"(\\s*[\\|\\}])", "$1"+to.getName()+"$2");
 					}
 					//special case: image Files can be used via the Image: ns
-					if(from.startsWith("File:")) {
-						ntxt = ntxt.replaceAll(fromTitlePattern, toTitle);
+					if(from.getNs().equals(NS.FILE)) {
+						ntxt = ntxt.replaceAll(fromTitlePattern, to.getName());
 					}
 					if(!ntxt.equals(txt)) {
-						run.getWiki().edit(use.getTitle(), ntxt, "Resolved unnecessary redirect");
+						run.getWiki().edit(use, ntxt, "Resolved unnecessary redirect");
 					}
 					else {
 						resolveFailed = true;
@@ -95,16 +99,18 @@ public class Maintenance extends SimpleBot {
 	}
 
 	private void removeCreatedPagesWithoutSource() {
-		var entries = run.getWiki().semanticAsk("[[Created from::+]]|?Created from");
+		var entries = run.getWiki().semanticAsk(Printouts.class, "[[Created from::+]]|?Created from=from");
 		entries.forEach(r-> {
 			var generated = r.getPage();
-			var from = r.getPrintouts().getCreatedFrom();
+			var from = r.getPrintouts().from();
 			
-			if(from != null && from.getExists().equals("") && !run.getWiki().pageExists(from.getPage())) {
+			if(from != null && from.getExists().equals("") && !run.getWiki().exists(from.getPage())) {
 				run.getWiki().delete(generated, "Source [["+from.getPage()+"]] was deleted.");
 			}
 		});
 	}
+	
+	private static record Printouts(Result<Printouts> from) {}
 
 	@Override
 	public String getDescription() {

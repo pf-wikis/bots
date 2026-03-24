@@ -39,7 +39,6 @@ public class AAPILogout implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**A "csrf" token retrieved from <a href="/wiki/Special:ApiHelp/query%2Btokens" title="Special:ApiHelp/query+tokens">action=query&amp;meta=tokens</a>
 	 */
 	public AAPILogout token(String token) {
-
 		this.token = token;
 
 		return this;

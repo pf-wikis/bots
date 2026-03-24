@@ -97,7 +97,6 @@ public class AAPIMain implements AAPIModule {
 	 * <dl></dl>
 	 */
 	public AAPIMain action(AAPIMainActionModule action) {
-
 		this.action = AAPIMainAction.createSubmodule(action);
 
 		return this;
@@ -116,7 +115,6 @@ public class AAPIMain implements AAPIModule {
 	 * <dl></dl>
 	 */
 	public AAPIMain format(AAPIMainFormatModule format) {
-
 		this.format = AAPIMainFormat.createSubmodule(format);
 
 		return this;
@@ -133,7 +131,6 @@ public class AAPIMain implements AAPIModule {
 	/**Maximum lag can be used when MediaWiki is installed on a database replicated cluster. To save actions causing any more site replication lag, this parameter can make the client wait until the replication lag is less than the specified value. In case of excessive lag, error code <samp>maxlag</samp> is returned with a message like <samp>Waiting for $host: $lag seconds lagged</samp>.<br />See <a href="/w/index.php?title=Mw:Special:MyLanguage/Manual:Maxlag_parameter&amp;action=edit&amp;redlink=1" class="new" title="Mw:Special:MyLanguage/Manual:Maxlag parameter (page does not exist)">Manual: Maxlag parameter</a> for more information.
 	 */
 	public AAPIMain maxlag(Long maxlag) {
-
 		this.maxlag = maxlag;
 
 		return this;
@@ -148,7 +145,6 @@ public class AAPIMain implements AAPIModule {
 	/**Set the <code>s-maxage</code> HTTP cache control header to this many seconds. Errors are never cached.
 	 */
 	public AAPIMain smaxage(Long smaxage) {
-
 		this.smaxage = smaxage;
 
 		return this;
@@ -163,7 +159,6 @@ public class AAPIMain implements AAPIModule {
 	/**Set the <code>max-age</code> HTTP cache control header to this many seconds. Errors are never cached.
 	 */
 	public AAPIMain maxage(Long maxage) {
-
 		this.maxage = maxage;
 
 		return this;
@@ -178,7 +173,6 @@ public class AAPIMain implements AAPIModule {
 	/**Verify that the user is logged in (including possibly as a temporary user) if set to <kbd>user</kbd>, <em>not</em> logged in if set to <kbd>anon</kbd>, or has the bot user right if <kbd>bot</kbd>.
 	 */
 	public AAPIMain _assert(AAPIMainAssert _assert) {
-
 		this._assert = _assert;
 
 		return this;
@@ -193,7 +187,6 @@ public class AAPIMain implements AAPIModule {
 	/**Verify the current user is the named user.
 	 */
 	public AAPIMain assertuser(String assertuser) {
-
 		this.assertuser = assertuser;
 
 		return this;
@@ -208,7 +201,6 @@ public class AAPIMain implements AAPIModule {
 	/**Any value given here will be included in the response. May be used to distinguish requests.
 	 */
 	public AAPIMain requestid(String requestid) {
-
 		this.requestid = requestid;
 
 		return this;
@@ -223,7 +215,6 @@ public class AAPIMain implements AAPIModule {
 	/**Include the hostname that served the request in the results.
 	 */
 	public AAPIMain servedby(Boolean servedby) {
-
 		this.servedby = servedby;
 
 		return this;
@@ -238,7 +229,6 @@ public class AAPIMain implements AAPIModule {
 	/**Include the current timestamp in the result.
 	 */
 	public AAPIMain curtimestamp(Boolean curtimestamp) {
-
 		this.curtimestamp = curtimestamp;
 
 		return this;
@@ -253,7 +243,6 @@ public class AAPIMain implements AAPIModule {
 	/**Include the languages used for <var>uselang</var> and <var>errorlang</var> in the result.
 	 */
 	public AAPIMain responselanginfo(Boolean responselanginfo) {
-
 		this.responselanginfo = responselanginfo;
 
 		return this;
@@ -271,7 +260,6 @@ public class AAPIMain implements AAPIModule {
 	 * </p>
 	 */
 	public AAPIMain origin(String origin) {
-
 		this.origin = origin;
 
 		return this;
@@ -289,7 +277,6 @@ public class AAPIMain implements AAPIModule {
 	/**Language to use for message translations. <kbd><a href="/wiki/Special:ApiHelp/query%2Bsiteinfo" title="Special:ApiHelp/query+siteinfo">action=query&amp;meta=siteinfo&amp;siprop=languages</a></kbd> returns a list of language codes. You can specify <kbd>user</kbd> to use the current user's language preference or <kbd>content</kbd> to use this wiki's content language.
 	 */
 	public AAPIMain uselang(String uselang) {
-
 		this.uselang = uselang;
 
 		return this;
@@ -304,7 +291,6 @@ public class AAPIMain implements AAPIModule {
 	/**Variant of the language. Only works if the base language supports variant conversion.
 	 */
 	public AAPIMain variant(String variant) {
-
 		this.variant = variant;
 
 		return this;
@@ -321,7 +307,6 @@ public class AAPIMain implements AAPIModule {
 	 * <dl></dl>
 	 */
 	public AAPIMain errorformat(AAPIMainErrorformat errorformat) {
-
 		this.errorformat = errorformat;
 
 		return this;
@@ -338,7 +323,6 @@ public class AAPIMain implements AAPIModule {
 	/**Language to use for warnings and errors. <kbd><a href="/wiki/Special:ApiHelp/query%2Bsiteinfo" title="Special:ApiHelp/query+siteinfo">action=query&amp;meta=siteinfo&amp;siprop=languages</a></kbd> returns a list of language codes. Specify <kbd>content</kbd> to use this wiki's content language or <kbd>uselang</kbd> to use the same value as the <var>uselang</var> parameter.
 	 */
 	public AAPIMain errorlang(String errorlang) {
-
 		this.errorlang = errorlang;
 
 		return this;
@@ -353,7 +337,6 @@ public class AAPIMain implements AAPIModule {
 	/**If given, error texts will use locally-customized messages from the MediaWiki namespace.
 	 */
 	public AAPIMain errorsuselocal(Boolean errorsuselocal) {
-
 		this.errorsuselocal = errorsuselocal;
 
 		return this;

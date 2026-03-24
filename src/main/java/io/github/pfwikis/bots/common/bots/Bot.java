@@ -2,10 +2,16 @@ package io.github.pfwikis.bots.common.bots;
 
 import java.util.List;
 
+import org.slf4j.MDC;
+import org.slf4j.MDC.MDCCloseable;
+
 import com.beust.jcommander.Parameter;
 
+import io.github.pfwikis.bots.Runner;
 import io.github.pfwikis.bots.common.Discord;
 import io.github.pfwikis.bots.common.Wiki;
+import io.github.pfwikis.bots.common.bots.Run.DualRun;
+import io.github.pfwikis.bots.common.bots.Run.SingleRun;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -71,7 +77,7 @@ public abstract class Bot<RUN extends Run> {
 				this.run = currentRun;
 				this.run.setDiscord(discord);
 				
-				try {
+				try(var mdccloser = flavorLog()) {
 					run(new RunContext());
 				} catch (Exception e) {
 					reportException(e);
@@ -86,8 +92,16 @@ public abstract class Bot<RUN extends Run> {
 		}
 	}
 	
+	private MDCCloseable flavorLog() {
+		if(run instanceof SingleRun sr)
+			return MDC.putCloseable(Runner.MDC_KEY, sr.getServer().getCode());
+		else if (run instanceof DualRun dr)
+			return MDC.putCloseable(Runner.MDC_KEY, "dual");
+		return MDC.putCloseable(Runner.MDC_KEY, Runner.MDC_VALUE_NONE);
+	}
+	
 	public synchronized void startRun(Discord discord, RunContext ctx) {
-		try {
+		try(var mdccloser = flavorLog()) {
 			executeBeforeRuns();
 			this.run.setDiscord(discord);
 			try {

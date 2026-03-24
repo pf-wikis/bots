@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import com.beust.jcommander.Parameters;
 
 import io.github.pfwikis.bots.common.Wiki;
+import io.github.pfwikis.bots.common.api.generated.params.NS;
 import io.github.pfwikis.bots.common.api.model.PageRef;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
@@ -34,7 +35,7 @@ public class FactsTemplates extends SimpleBot {
 		handleAutomaticCategorization();
 		
 		if(run.getServer()==Wiki.PF) {
-			make(run.getWiki(), "Template:Facts/Helper/Create page buttons", MakeTemplateCreatePageButtons.template(concepts));
+			make(run.getWiki(), PageRef.of("Template:Facts/Helper/Create page buttons"), MakeTemplateCreatePageButtons.template(concepts));
 		}
 		
 		handlePropertyDefinitions();
@@ -46,7 +47,7 @@ public class FactsTemplates extends SimpleBot {
 	
 	private void handleAutomaticCategorization() {
 		run.getWiki().editIfChange(
-				run.getServer().getWikiNamespace()+":Automatic categorization",
+				PageRef.of(NS.PROJECT, "Automatic categorization"),
 				"{{Bot created|"+botName+"}}"
 				+ "{{tl|Infobox}} adds automatic categories based on the facts page. "
 				+ "This page explains what categories are added.\n\n"
@@ -70,18 +71,18 @@ public class FactsTemplates extends SimpleBot {
 		run.getWiki().editIfChange(PageRef.of("MediaWiki:Smw_allows_pattern"), patterns, "Update facts patterns");
 		
 		for(var p:SProperty.getAll()) {
-			make(run.getWiki(), "Property:"+p.getName(), MakeProperty.template(p));
+			make(run.getWiki(), PageRef.of(NS.PROPERTY,p.getName()), MakeProperty.template(p));
 		}
 	}
 
 	private void handleConcept(SConcept c) {
 		try {
-			make(run.getWiki(), "Template:Facts/"+c.getName(), MakeTemplate.template(c));
-			make(run.getWiki(), "Template:Facts/"+c.getName()+"/Input", MakeTemplateInput.template(c));
-			make(run.getWiki(), "Template:Facts/"+c.getName()+"/Ask", MakeTemplateAsk.template(c.getName(), c));
-			make(run.getWiki(), "Template:Facts/"+c.getName()+"/Show", MakeTemplateShow.template(c.getName(), c));
-			make(run.getWiki(), "Form:"+c.getName(), MakeForm.template(c.getName(), c.getPluralName(), c, false));
-			make(run.getWiki(), "Category:Facts about "+c.getPluralName(), MakeCategory.template(c.getName(), c.getPluralName(), c));
+			make(run.getWiki(), PageRef.of("Template:Facts/"+c.getName()), MakeTemplate.template(c));
+			make(run.getWiki(), PageRef.of("Template:Facts/"+c.getName()+"/Input"), MakeTemplateInput.template(c));
+			make(run.getWiki(), PageRef.of("Template:Facts/"+c.getName()+"/Ask"), MakeTemplateAsk.template(c.getName(), c));
+			make(run.getWiki(), PageRef.of("Template:Facts/"+c.getName()+"/Show"), MakeTemplateShow.template(c.getName(), c));
+			make(run.getWiki(), PageRef.of("Form:"+c.getName()), MakeForm.template(c.getName(), c.getPluralName(), c, false));
+			make(run.getWiki(), PageRef.of("Category:Facts about "+c.getPluralName()), MakeCategory.template(c.getName(), c.getPluralName(), c));
 			
 			for(var subForm:c.getSubConcepts()) {
 				handleSubForm(c, subForm);
@@ -95,11 +96,11 @@ public class FactsTemplates extends SimpleBot {
 		try {
 			var slashName = parent.getName()+"/"+subForm.getName();
 			var spaceName = parent.getName()+" "+subForm.getPluralName();
-			make(run.getWiki(), "Template:Facts/"+slashName, MakeSubTemplate.template(parent, subForm));
-			make(run.getWiki(), "Template:Facts/"+slashName+"/Ask", MakeTemplateAsk.template(slashName, subForm));
-			make(run.getWiki(), "Template:Facts/"+slashName+"/Show", MakeTemplateShow.template(slashName, subForm));
-			make(run.getWiki(), "Form:"+slashName, MakeForm.template(slashName, spaceName, subForm, true));
-			make(run.getWiki(), "Category:Facts about "+spaceName, MakeCategory.template(slashName, spaceName, subForm));
+			make(run.getWiki(), PageRef.of("Template:Facts/"+slashName), MakeSubTemplate.template(parent, subForm));
+			make(run.getWiki(), PageRef.of("Template:Facts/"+slashName+"/Ask"), MakeTemplateAsk.template(slashName, subForm));
+			make(run.getWiki(), PageRef.of("Template:Facts/"+slashName+"/Show"), MakeTemplateShow.template(slashName, subForm));
+			make(run.getWiki(), PageRef.of("Form:"+slashName), MakeForm.template(slashName, spaceName, subForm, true));
+			make(run.getWiki(), PageRef.of("Category:Facts about "+spaceName), MakeCategory.template(slashName, spaceName, subForm));
 		} catch(Exception e) {
 			this.reportException(new RuntimeException("Failed to create facts utilities for "+subForm.getName(), e));
 		}

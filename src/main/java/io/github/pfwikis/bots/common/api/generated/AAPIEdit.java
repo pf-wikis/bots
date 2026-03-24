@@ -101,7 +101,6 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	/**Section identifier. <kbd>0</kbd> for the top section, <kbd>new</kbd> for a new section. Often a positive integer, but can also be non-numeric.
 	 */
 	public AAPIEdit section(String section) {
-
 		this.section = section;
 
 		return this;
@@ -116,7 +115,6 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	/**The title for a new section when using <var>section=new</var>.
 	 */
 	public AAPIEdit sectiontitle(String sectiontitle) {
-
 		this.sectiontitle = sectiontitle;
 
 		return this;
@@ -131,7 +129,6 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	/**Page content.
 	 */
 	public AAPIEdit text(String text) {
-
 		this.text = text;
 
 		return this;
@@ -149,7 +146,6 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	 * </p>
 	 */
 	public AAPIEdit summary(String summary) {
-
 		this.summary = summary;
 
 		return this;
@@ -166,10 +162,16 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 
 	/**Change tags to apply to the revision.
 	 */
-	public AAPIEdit tags(String... tags) {
-
+	public AAPIEdit tags(String tags) {
 		this.tags = List.of(tags);
 
+		return this;
+	}
+
+	/**Change tags to apply to the revision.
+	 */
+	public AAPIEdit tags(String... tags) {
+		this.tags = List.of(tags);
 		return this;
 	}
 
@@ -182,7 +184,6 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	/**Mark this edit as a minor edit.
 	 */
 	public AAPIEdit minor(Boolean minor) {
-
 		this.minor = minor;
 
 		return this;
@@ -197,7 +198,6 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	/**Do not mark this edit as a minor edit even if the "Mark all edits minor by default" user preference is set.
 	 */
 	public AAPIEdit notminor(Boolean notminor) {
-
 		this.notminor = notminor;
 
 		return this;
@@ -212,7 +212,6 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	/**Mark this edit as a bot edit.
 	 */
 	public AAPIEdit bot(Boolean bot) {
-
 		this.bot = bot;
 
 		return this;
@@ -227,7 +226,6 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	/**ID of the base revision, used to detect edit conflicts. May be obtained through <a href="/wiki/Special:ApiHelp/query%2Brevisions" title="Special:ApiHelp/query+revisions">action=query&amp;prop=revisions</a>. Self-conflicts cause the edit to fail unless basetimestamp is set.
 	 */
 	public AAPIEdit baserevid(Long baserevid) {
-
 		this.baserevid = baserevid;
 
 		return this;
@@ -242,7 +240,6 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	/**Timestamp of the base revision, used to detect edit conflicts. May be obtained through <a href="/wiki/Special:ApiHelp/query%2Brevisions" title="Special:ApiHelp/query+revisions">action=query&amp;prop=revisions&amp;rvprop=timestamp</a>. Self-conflicts are ignored.
 	 */
 	public AAPIEdit basetimestamp(java.time.Instant basetimestamp) {
-
 		this.basetimestamp = basetimestamp;
 
 		return this;
@@ -257,7 +254,6 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	/**Timestamp when the editing process began, used to detect edit conflicts. An appropriate value may be obtained using <var><a href="/wiki/Special:ApiHelp/main" title="Special:ApiHelp/main">curtimestamp</a></var> when beginning the edit process (e.g. when loading the page content to edit).
 	 */
 	public AAPIEdit starttimestamp(java.time.Instant starttimestamp) {
-
 		this.starttimestamp = starttimestamp;
 
 		return this;
@@ -272,7 +268,6 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	/**Override any errors about the page having been deleted in the meantime.
 	 */
 	public AAPIEdit recreate(Boolean recreate) {
-
 		this.recreate = recreate;
 
 		return this;
@@ -287,7 +282,6 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	/**Don't edit the page if it exists already.
 	 */
 	public AAPIEdit createonly(Boolean createonly) {
-
 		this.createonly = createonly;
 
 		return this;
@@ -302,7 +296,6 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	/**Throw an error if the page doesn't exist.
 	 */
 	public AAPIEdit nocreate(Boolean nocreate) {
-
 		this.nocreate = nocreate;
 
 		return this;
@@ -317,7 +310,6 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	/**Unconditionally add or remove the page from the current user's watchlist, use preferences (ignored for bot users) or do not change watch.
 	 */
 	public AAPIEdit watchlist(AAPIEditWatchlist watchlist) {
-
 		this.watchlist = watchlist;
 
 		return this;
@@ -332,7 +324,6 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	/**The MD5 hash of the text parameter, or the prependtext and appendtext parameters concatenated. If set, the edit won't be done unless the hash is correct.
 	 */
 	public AAPIEdit md5(String md5) {
-
 		this.md5 = md5;
 
 		return this;
@@ -347,7 +338,6 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	/**Add this text to the beginning of the page or section. Overrides text.
 	 */
 	public AAPIEdit prependtext(String prependtext) {
-
 		this.prependtext = prependtext;
 
 		return this;
@@ -364,7 +354,6 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	 * </p>
 	 */
 	public AAPIEdit appendtext(String appendtext) {
-
 		this.appendtext = appendtext;
 
 		return this;
@@ -381,7 +370,6 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	/**Undo this revision. Overrides text, prependtext and appendtext.
 	 */
 	public AAPIEdit undo(Long undo) {
-
 		this.undo = undo;
 
 		return this;
@@ -396,7 +384,6 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	/**Undo all revisions from undo to this one. If not set, just undo one revision.
 	 */
 	public AAPIEdit undoafter(Long undoafter) {
-
 		this.undoafter = undoafter;
 
 		return this;
@@ -411,7 +398,6 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	/**Automatically resolve redirects.
 	 */
 	public AAPIEdit redirect(Boolean redirect) {
-
 		this.redirect = redirect;
 
 		return this;
@@ -426,7 +412,6 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	/**Content serialization format used for the input text.
 	 */
 	public AAPIEdit contentformat(AAPIEditContentformat contentformat) {
-
 		this.contentformat = contentformat;
 
 		return this;
@@ -441,7 +426,6 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	/**Content model of the new content.
 	 */
 	public AAPIEdit contentmodel(AAPIEditContentmodel contentmodel) {
-
 		this.contentmodel = contentmodel;
 
 		return this;
@@ -459,7 +443,6 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	 * </p>
 	 */
 	public AAPIEdit token(String token) {
-
 		this.token = token;
 
 		return this;
@@ -477,7 +460,6 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	/**Page title. If saving the edit created a temporary account, the API may respond with an URL that the client should visit to complete logging in. If this parameter is provided, the URL will redirect to the given page, instead of the page that was edited.
 	 */
 	public AAPIEdit returnto(String returnto) {
-
 		this.returnto = returnto;
 
 		return this;
@@ -492,7 +474,6 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	/**URL query parameters (with leading <kbd>?</kbd>). If saving the edit created a temporary account, the API may respond with an URL that the client should visit to complete logging in. If this parameter is provided, the URL will redirect to a page with the given query parameters.
 	 */
 	public AAPIEdit returntoquery(String returntoquery) {
-
 		this.returntoquery = returntoquery;
 
 		return this;
@@ -507,7 +488,6 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	/**URL fragment (with leading <kbd>#</kbd>). If saving the edit created a temporary account, the API may respond with an URL that the client should visit to complete logging in. If this parameter is provided, the URL will redirect to a page with the given fragment.
 	 */
 	public AAPIEdit returntoanchor(String returntoanchor) {
-
 		this.returntoanchor = returntoanchor;
 
 		return this;
@@ -743,7 +723,7 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 				req.addParameter(
 						paramPrefix + "pageid", Integer.toString(title.toPageRef().getId()));
 			} else {
-				req.addParameter(paramPrefix + "title", title.toPageRef().getTitle().toFullTitle());
+				req.addParameter(paramPrefix + "title", title.toPageTitle().toFullTitle());
 			}
 		}
 

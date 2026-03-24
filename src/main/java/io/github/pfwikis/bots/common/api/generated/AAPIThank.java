@@ -45,7 +45,6 @@ public class AAPIThank implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 	/**Revision ID to thank someone for. This or 'log' must be provided.
 	 */
 	public AAPIThank rev(Long rev) {
-
 		this.rev = rev;
 
 		return this;
@@ -60,7 +59,6 @@ public class AAPIThank implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 	/**Log ID to thank someone for. This or 'rev' must be provided.
 	 */
 	public AAPIThank log(Long log) {
-
 		this.log = log;
 
 		return this;
@@ -75,7 +73,6 @@ public class AAPIThank implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 	/**A "csrf" token retrieved from <a href="/wiki/Special:ApiHelp/query%2Btokens" title="Special:ApiHelp/query+tokens">action=query&amp;meta=tokens</a>
 	 */
 	public AAPIThank token(String token) {
-
 		this.token = token;
 
 		return this;
@@ -90,7 +87,6 @@ public class AAPIThank implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 	/**A short string describing the source of the request, for example <kbd>diff</kbd> or <kbd>history</kbd>.
 	 */
 	public AAPIThank source(String source) {
-
 		this.source = source;
 
 		return this;

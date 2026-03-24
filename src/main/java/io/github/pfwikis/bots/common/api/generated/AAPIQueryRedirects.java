@@ -70,10 +70,18 @@ public class AAPIQueryRedirects
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryRedirects prop(AAPIQueryRedirectsProp... prop) {
-
+	public AAPIQueryRedirects prop(AAPIQueryRedirectsProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which properties to get:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryRedirects prop(AAPIQueryRedirectsProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -87,10 +95,16 @@ public class AAPIQueryRedirects
 
 	/**Only include pages in these namespaces.
 	 */
-	public AAPIQueryRedirects namespace(NS... namespace) {
-
+	public AAPIQueryRedirects namespace(NS namespace) {
 		this.namespace = List.of(namespace);
 
+		return this;
+	}
+
+	/**Only include pages in these namespaces.
+	 */
+	public AAPIQueryRedirects namespace(NS... namespace) {
+		this.namespace = List.of(namespace);
 		return this;
 	}
 
@@ -104,10 +118,18 @@ public class AAPIQueryRedirects
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryRedirects show(AAPIQueryRedirectsShow... show) {
-
+	public AAPIQueryRedirects show(AAPIQueryRedirectsShow show) {
 		this.show = List.of(show);
 
+		return this;
+	}
+
+	/**<p>Show only items that meet these criteria:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryRedirects show(AAPIQueryRedirectsShow... show) {
+		this.show = List.of(show);
 		return this;
 	}
 
@@ -122,7 +144,6 @@ public class AAPIQueryRedirects
 	/**How many redirects to return.
 	 */
 	public AAPIQueryRedirects limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -245,7 +266,7 @@ public class AAPIQueryRedirects
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

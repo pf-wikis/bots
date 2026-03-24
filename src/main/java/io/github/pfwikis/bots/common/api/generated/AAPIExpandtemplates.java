@@ -53,7 +53,6 @@ public class AAPIExpandtemplates implements AAPIModule, AAPIMainActionModule {
 	/**Title of the page.
 	 */
 	public AAPIExpandtemplates title(String title) {
-
 		this.title = title;
 
 		return this;
@@ -74,7 +73,6 @@ public class AAPIExpandtemplates implements AAPIModule, AAPIMainActionModule {
 	/**Revision ID, for <code>{{REVISIONID}}</code> and similar variables.
 	 */
 	public AAPIExpandtemplates revid(Long revid) {
-
 		this.revid = revid;
 
 		return this;
@@ -91,10 +89,19 @@ public class AAPIExpandtemplates implements AAPIModule, AAPIMainActionModule {
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIExpandtemplates prop(AAPIExpandtemplatesProp... prop) {
-
+	public AAPIExpandtemplates prop(AAPIExpandtemplatesProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which pieces of information to get.
+	 * </p><p>Note that if no values are selected, the result will contain the wikitext, but the output will be in a deprecated format.
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIExpandtemplates prop(AAPIExpandtemplatesProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -110,7 +117,6 @@ public class AAPIExpandtemplates implements AAPIModule, AAPIMainActionModule {
 	/**Whether to include HTML comments in the output.
 	 */
 	public AAPIExpandtemplates includecomments(Boolean includecomments) {
-
 		this.includecomments = includecomments;
 
 		return this;
@@ -125,7 +131,6 @@ public class AAPIExpandtemplates implements AAPIModule, AAPIMainActionModule {
 	/**Whether to include internal merge strategy information in jsconfigvars.
 	 */
 	public AAPIExpandtemplates showstrategykeys(Boolean showstrategykeys) {
-
 		this.showstrategykeys = showstrategykeys;
 
 		return this;

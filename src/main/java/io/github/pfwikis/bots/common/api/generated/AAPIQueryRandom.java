@@ -67,10 +67,16 @@ public class AAPIQueryRandom
 
 	/**Return pages in these namespaces only.
 	 */
-	public AAPIQueryRandom namespace(NS... namespace) {
-
+	public AAPIQueryRandom namespace(NS namespace) {
 		this.namespace = List.of(namespace);
 
+		return this;
+	}
+
+	/**Return pages in these namespaces only.
+	 */
+	public AAPIQueryRandom namespace(NS... namespace) {
+		this.namespace = List.of(namespace);
 		return this;
 	}
 
@@ -83,7 +89,6 @@ public class AAPIQueryRandom
 	/**How to filter for redirects.
 	 */
 	public AAPIQueryRandom filterredir(AAPIQueryRandomFilterredir filterredir) {
-
 		this.filterredir = filterredir;
 
 		return this;
@@ -98,7 +103,6 @@ public class AAPIQueryRandom
 	/**Limit how many random pages will be returned.
 	 */
 	public AAPIQueryRandom limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -195,7 +199,7 @@ public class AAPIQueryRandom
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

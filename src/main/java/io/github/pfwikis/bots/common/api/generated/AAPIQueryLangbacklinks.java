@@ -75,7 +75,6 @@ public class AAPIQueryLangbacklinks
 	/**Language for the language link.
 	 */
 	public AAPIQueryLangbacklinks lang(String lang) {
-
 		this.lang = lang;
 
 		return this;
@@ -90,7 +89,6 @@ public class AAPIQueryLangbacklinks
 	/**Language link to search for. Must be used with lbllang.
 	 */
 	public AAPIQueryLangbacklinks title(String title) {
-
 		this.title = title;
 
 		return this;
@@ -105,7 +103,6 @@ public class AAPIQueryLangbacklinks
 	/**How many total pages to return.
 	 */
 	public AAPIQueryLangbacklinks limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -121,10 +118,18 @@ public class AAPIQueryLangbacklinks
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryLangbacklinks prop(AAPIQueryLangbacklinksProp... prop) {
-
+	public AAPIQueryLangbacklinks prop(AAPIQueryLangbacklinksProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which properties to get:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryLangbacklinks prop(AAPIQueryLangbacklinksProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -139,7 +144,6 @@ public class AAPIQueryLangbacklinks
 	/**The direction in which to list.
 	 */
 	public AAPIQueryLangbacklinks dir(AAPIQueryLangbacklinksDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -258,7 +262,7 @@ public class AAPIQueryLangbacklinks
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

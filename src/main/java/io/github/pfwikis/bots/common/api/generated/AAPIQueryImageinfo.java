@@ -66,10 +66,18 @@ public class AAPIQueryImageinfo implements AAPIModule, AAPIQueryPropModule {
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryImageinfo prop(AAPIQueryImageinfoProp... prop) {
-
+	public AAPIQueryImageinfo prop(AAPIQueryImageinfoProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which file information to get:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryImageinfo prop(AAPIQueryImageinfoProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -84,7 +92,6 @@ public class AAPIQueryImageinfo implements AAPIModule, AAPIQueryPropModule {
 	/**How many file revisions to return per file.
 	 */
 	public AAPIQueryImageinfo limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -99,7 +106,6 @@ public class AAPIQueryImageinfo implements AAPIModule, AAPIQueryPropModule {
 	/**Timestamp to start listing from.
 	 */
 	public AAPIQueryImageinfo start(java.time.Instant start) {
-
 		this.start = start;
 
 		return this;
@@ -114,7 +120,6 @@ public class AAPIQueryImageinfo implements AAPIModule, AAPIQueryPropModule {
 	/**Timestamp to stop listing at.
 	 */
 	public AAPIQueryImageinfo end(java.time.Instant end) {
-
 		this.end = end;
 
 		return this;
@@ -130,7 +135,6 @@ public class AAPIQueryImageinfo implements AAPIModule, AAPIQueryPropModule {
 	 * For performance reasons if this option is used, no more than 50 scaled images will be returned.
 	 */
 	public AAPIQueryImageinfo urlwidth(Long urlwidth) {
-
 		this.urlwidth = urlwidth;
 
 		return this;
@@ -146,7 +150,6 @@ public class AAPIQueryImageinfo implements AAPIModule, AAPIQueryPropModule {
 	/**Similar to iiurlwidth.
 	 */
 	public AAPIQueryImageinfo urlheight(Long urlheight) {
-
 		this.urlheight = urlheight;
 
 		return this;
@@ -161,7 +164,6 @@ public class AAPIQueryImageinfo implements AAPIModule, AAPIQueryPropModule {
 	/**Version of metadata to use. If <kbd>latest</kbd> is specified, use latest version. Defaults to <kbd>1</kbd> for backwards compatibility.
 	 */
 	public AAPIQueryImageinfo metadataversion(String metadataversion) {
-
 		this.metadataversion = metadataversion;
 
 		return this;
@@ -176,7 +178,6 @@ public class AAPIQueryImageinfo implements AAPIModule, AAPIQueryPropModule {
 	/**What language to fetch extmetadata in. This affects both which translation to fetch, if multiple are available, as well as how things like numbers and various values are formatted.
 	 */
 	public AAPIQueryImageinfo extmetadatalanguage(String extmetadatalanguage) {
-
 		this.extmetadatalanguage = extmetadatalanguage;
 
 		return this;
@@ -191,7 +192,6 @@ public class AAPIQueryImageinfo implements AAPIModule, AAPIQueryPropModule {
 	/**If translations for extmetadata property are available, fetch all of them.
 	 */
 	public AAPIQueryImageinfo extmetadatamultilang(Boolean extmetadatamultilang) {
-
 		this.extmetadatamultilang = extmetadatamultilang;
 
 		return this;
@@ -205,10 +205,16 @@ public class AAPIQueryImageinfo implements AAPIModule, AAPIQueryPropModule {
 
 	/**If specified and non-empty, only these keys will be returned for iiprop=extmetadata.
 	 */
-	public AAPIQueryImageinfo extmetadatafilter(String... extmetadatafilter) {
-
+	public AAPIQueryImageinfo extmetadatafilter(String extmetadatafilter) {
 		this.extmetadatafilter = List.of(extmetadatafilter);
 
+		return this;
+	}
+
+	/**If specified and non-empty, only these keys will be returned for iiprop=extmetadata.
+	 */
+	public AAPIQueryImageinfo extmetadatafilter(String... extmetadatafilter) {
+		this.extmetadatafilter = List.of(extmetadatafilter);
 		return this;
 	}
 
@@ -221,7 +227,6 @@ public class AAPIQueryImageinfo implements AAPIModule, AAPIQueryPropModule {
 	/**A handler specific parameter string. For example, PDFs might use <kbd>page15-100px</kbd>. <var>iiurlwidth</var> must be used and be consistent with <var>iiurlparam</var>.
 	 */
 	public AAPIQueryImageinfo urlparam(String urlparam) {
-
 		this.urlparam = urlparam;
 
 		return this;
@@ -236,7 +241,6 @@ public class AAPIQueryImageinfo implements AAPIModule, AAPIQueryPropModule {
 	/**If <kbd>badfilecontexttitleprop=badfile</kbd> is set, this is the page title used when evaluating the <a href="/wiki/MediaWiki:Bad_image_list" title="MediaWiki:Bad image list">MediaWiki:Bad image list</a>
 	 */
 	public AAPIQueryImageinfo badfilecontexttitle(String badfilecontexttitle) {
-
 		this.badfilecontexttitle = badfilecontexttitle;
 
 		return this;
@@ -251,7 +255,6 @@ public class AAPIQueryImageinfo implements AAPIModule, AAPIQueryPropModule {
 	/**Look only for files in the local repository.
 	 */
 	public AAPIQueryImageinfo localonly(Boolean localonly) {
-
 		this.localonly = localonly;
 
 		return this;
@@ -482,7 +485,7 @@ public class AAPIQueryImageinfo implements AAPIModule, AAPIQueryPropModule {
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

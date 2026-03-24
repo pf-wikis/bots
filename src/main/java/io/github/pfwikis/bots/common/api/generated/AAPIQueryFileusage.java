@@ -70,10 +70,18 @@ public class AAPIQueryFileusage
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryFileusage prop(AAPIQueryFileusageProp... prop) {
-
+	public AAPIQueryFileusage prop(AAPIQueryFileusageProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which properties to get:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryFileusage prop(AAPIQueryFileusageProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -87,10 +95,16 @@ public class AAPIQueryFileusage
 
 	/**Only include pages in these namespaces.
 	 */
-	public AAPIQueryFileusage namespace(NS... namespace) {
-
+	public AAPIQueryFileusage namespace(NS namespace) {
 		this.namespace = List.of(namespace);
 
+		return this;
+	}
+
+	/**Only include pages in these namespaces.
+	 */
+	public AAPIQueryFileusage namespace(NS... namespace) {
+		this.namespace = List.of(namespace);
 		return this;
 	}
 
@@ -104,10 +118,18 @@ public class AAPIQueryFileusage
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryFileusage show(AAPIQueryFileusageShow... show) {
-
+	public AAPIQueryFileusage show(AAPIQueryFileusageShow show) {
 		this.show = List.of(show);
 
+		return this;
+	}
+
+	/**<p>Show only items that meet these criteria:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryFileusage show(AAPIQueryFileusageShow... show) {
+		this.show = List.of(show);
 		return this;
 	}
 
@@ -122,7 +144,6 @@ public class AAPIQueryFileusage
 	/**How many to return.
 	 */
 	public AAPIQueryFileusage limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -245,7 +266,7 @@ public class AAPIQueryFileusage
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

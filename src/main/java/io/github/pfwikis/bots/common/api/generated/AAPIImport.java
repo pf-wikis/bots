@@ -64,7 +64,6 @@ public class AAPIImport implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**Log entry import summary.
 	 */
 	public AAPIImport summary(String summary) {
-
 		this.summary = summary;
 
 		return this;
@@ -79,7 +78,6 @@ public class AAPIImport implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**Uploaded XML file.
 	 */
 	public AAPIImport xml(byte[] xml) {
-
 		this.xml = xml;
 
 		return this;
@@ -94,7 +92,6 @@ public class AAPIImport implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**For uploaded imports: interwiki prefix to apply to unknown usernames (and known users if <var>assignknownusers</var> is set).
 	 */
 	public AAPIImport interwikiprefix(String interwikiprefix) {
-
 		this.interwikiprefix = interwikiprefix;
 
 		return this;
@@ -109,7 +106,6 @@ public class AAPIImport implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**For interwiki imports: wiki to import from.
 	 */
 	public AAPIImport interwikisource(String interwikisource) {
-
 		this.interwikisource = interwikisource;
 
 		return this;
@@ -124,7 +120,6 @@ public class AAPIImport implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**For interwiki imports: page to import.
 	 */
 	public AAPIImport interwikipage(String interwikipage) {
-
 		this.interwikipage = interwikipage;
 
 		return this;
@@ -139,7 +134,6 @@ public class AAPIImport implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**For interwiki imports: import the full history, not just the current version.
 	 */
 	public AAPIImport fullhistory(Boolean fullhistory) {
-
 		this.fullhistory = fullhistory;
 
 		return this;
@@ -154,7 +148,6 @@ public class AAPIImport implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**For interwiki imports: import all included templates as well.
 	 */
 	public AAPIImport templates(Boolean templates) {
-
 		this.templates = templates;
 
 		return this;
@@ -169,7 +162,6 @@ public class AAPIImport implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**Import to this namespace. Cannot be used together with <var>rootpage</var>.
 	 */
 	public AAPIImport namespace(NS namespace) {
-
 		this.namespace = namespace;
 
 		return this;
@@ -184,7 +176,6 @@ public class AAPIImport implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**Assign edits to local users where the named user exists locally.
 	 */
 	public AAPIImport assignknownusers(Boolean assignknownusers) {
-
 		this.assignknownusers = assignknownusers;
 
 		return this;
@@ -199,7 +190,6 @@ public class AAPIImport implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**Import as subpage of this page. Cannot be used together with <var>namespace</var>.
 	 */
 	public AAPIImport rootpage(String rootpage) {
-
 		this.rootpage = rootpage;
 
 		return this;
@@ -213,10 +203,16 @@ public class AAPIImport implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 
 	/**Change tags to apply to the entry in the import log and to the null revision on the imported pages.
 	 */
-	public AAPIImport tags(String... tags) {
-
+	public AAPIImport tags(String tags) {
 		this.tags = List.of(tags);
 
+		return this;
+	}
+
+	/**Change tags to apply to the entry in the import log and to the null revision on the imported pages.
+	 */
+	public AAPIImport tags(String... tags) {
+		this.tags = List.of(tags);
 		return this;
 	}
 
@@ -229,7 +225,6 @@ public class AAPIImport implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**A "csrf" token retrieved from <a href="/wiki/Special:ApiHelp/query%2Btokens" title="Special:ApiHelp/query+tokens">action=query&amp;meta=tokens</a>
 	 */
 	public AAPIImport token(String token) {
-
 		this.token = token;
 
 		return this;

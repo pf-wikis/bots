@@ -96,17 +96,28 @@ public class @m.getJavaName() implements AAPIModule
 			/**@param.getDescription()
 			*/
 			public @m.getJavaName() @param.getSafeName()(@param.getJavaParamValueType() @param.getSafeName()) @{
-				@if(param.isSubmodule()) {
-					this.@param.getSafeName() = @(param.getJavaType()).createSubmodule(@param.getSafeName());
-				}
-				else if(param.isMulti()) {
-					this.@param.getSafeName() = List.of(@param.getSafeName());
-				}
-				else {
-					this.@param.getSafeName() = @param.getSafeName();
-				}
+				this.@param.getSafeName() = 
+				@if(param.isMulti()) {List.of(}
+				@if(param.isSubmodule()) {@(param.getJavaType()).createSubmodule(}
+				@param.getSafeName()
+				@if(param.isSubmodule()) {)}
+				@if(param.isMulti()) {)}
+				;
 				return this;
 			@}
+			
+			@if(param.isMulti()) {
+				/**@param.getDescription()
+				*/
+				public @m.getJavaName() @param.getSafeName()(@param.getJavaParamValueType()... @param.getSafeName()) @{
+					this.@param.getSafeName() =
+					@if(param.isSubmodule()) {@(param.getJavaType()).createSubmodule(}
+					else {List.of(}
+					@param.getSafeName()
+					);
+					return this;
+				@}
+			}
 		}
 		
 		/**@param.getDescription()
@@ -118,15 +129,17 @@ public class @m.getJavaName() implements AAPIModule
 	
 	@with?(set=m.getPageSetter()) {
 		@if(!set.required()) {
-			public @m.getJavaName() @set.pageField()(ContainsPageRef@if(set.multi()){...} @set.pageField()) @{
-				@if(set.multi()) {
-					this.@set.pageField() = List.of(@set.pageField());
-				}
-				else {
-					this.@set.pageField() = @set.pageField();
-				}
+			public @m.getJavaName() @set.pageField()(ContainsPageRef @set.pageField()) @{
+				this.@set.pageField() = @if(set.multi()) {List.of(@set.pageField())}else{@set.pageField()};
 				return this;
 			@}
+			
+			@if(set.multi()){
+				public @m.getJavaName() @set.pageField()(ContainsPageRef... @set.pageField()) @{
+					this.@set.pageField() = List.of(@set.pageField());
+					return this;
+				@}
+			}
 		}
 		public @if(set.multi()){List<ContainsPageRef>}else{ContainsPageRef} get@StringUtils.capitalize(set.pageField())() @{
 			return this.@set.pageField();
@@ -181,7 +194,7 @@ public class @m.getJavaName() implements AAPIModule
 						req.addParameter(paramPrefix+"@m.getModule().getPrefix()@set.idField()", val);
 					@}
 					else @{
-						String val = @(set.pageField()).stream().map(p->p.toPageRef().getTitle().toFullTitle()).collect(Collectors.joining("|"));
+						String val = @(set.pageField()).stream().map(p->p.toPageTitle().toFullTitle()).collect(Collectors.joining("|"));
 						req.addParameter(paramPrefix+"@m.getModule().getPrefix()@set.pageField()", val);
 					@}
 				}
@@ -190,7 +203,7 @@ public class @m.getJavaName() implements AAPIModule
 						req.addParameter(paramPrefix+"@m.getModule().getPrefix()@set.idField()", Integer.toString(@(set.pageField()).toPageRef().getId()));
 					@}
 					else @{
-						req.addParameter(paramPrefix+"@m.getModule().getPrefix()@set.pageField()", @(set.pageField()).toPageRef().getTitle().toFullTitle());
+						req.addParameter(paramPrefix+"@m.getModule().getPrefix()@set.pageField()", @(set.pageField()).toPageTitle().toFullTitle());
 					@}
 				}
 			@}
@@ -271,7 +284,7 @@ public class @m.getJavaName() implements AAPIModule
 		
 		@@Override
 		protected boolean internalRequiresPagination() @{
-			return @if(m.getResultLimitParam() == null) {true}else{@m.getResultLimitParam().getSafeName() != null};
+			return @if(m.getResultLimitParam() == null) {true}else{@m.getResultLimitParam().getSafeName() == null};
 		@}
 	}
 @}

@@ -66,10 +66,16 @@ public class AAPIQueryTemplates
 
 	/**Show templates in these namespaces only.
 	 */
-	public AAPIQueryTemplates namespace(NS... namespace) {
-
+	public AAPIQueryTemplates namespace(NS namespace) {
 		this.namespace = List.of(namespace);
 
+		return this;
+	}
+
+	/**Show templates in these namespaces only.
+	 */
+	public AAPIQueryTemplates namespace(NS... namespace) {
+		this.namespace = List.of(namespace);
 		return this;
 	}
 
@@ -82,7 +88,6 @@ public class AAPIQueryTemplates
 	/**How many templates to return.
 	 */
 	public AAPIQueryTemplates limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -96,10 +101,16 @@ public class AAPIQueryTemplates
 
 	/**Only list these templates. Useful for checking whether a certain page uses a certain template.
 	 */
-	public AAPIQueryTemplates templates(String... templates) {
-
+	public AAPIQueryTemplates templates(String templates) {
 		this.templates = List.of(templates);
 
+		return this;
+	}
+
+	/**Only list these templates. Useful for checking whether a certain page uses a certain template.
+	 */
+	public AAPIQueryTemplates templates(String... templates) {
+		this.templates = List.of(templates);
 		return this;
 	}
 
@@ -112,7 +123,6 @@ public class AAPIQueryTemplates
 	/**The direction in which to list.
 	 */
 	public AAPIQueryTemplates dir(AAPIQueryTemplatesDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -225,7 +235,7 @@ public class AAPIQueryTemplates
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

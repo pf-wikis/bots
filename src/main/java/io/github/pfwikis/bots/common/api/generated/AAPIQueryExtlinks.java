@@ -45,7 +45,6 @@ public class AAPIQueryExtlinks implements AAPIModule, AAPIQueryPropModule {
 	/**How many links to return.
 	 */
 	public AAPIQueryExtlinks limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -60,7 +59,6 @@ public class AAPIQueryExtlinks implements AAPIModule, AAPIQueryPropModule {
 	/**Protocol of the URL. If empty and <var>elquery</var> is set, the protocol is <kbd>http</kbd> and <kbd>https</kbd>. Leave both this and <var>elquery</var> empty to list all external links.
 	 */
 	public AAPIQueryExtlinks protocol(AAPIQueryExtlinksProtocol protocol) {
-
 		this.protocol = protocol;
 
 		return this;
@@ -75,7 +73,6 @@ public class AAPIQueryExtlinks implements AAPIModule, AAPIQueryPropModule {
 	/**Search string without protocol. Useful for checking whether a certain page contains a certain external url.
 	 */
 	public AAPIQueryExtlinks query(String query) {
-
 		this.query = query;
 
 		return this;
@@ -163,7 +160,7 @@ public class AAPIQueryExtlinks implements AAPIModule, AAPIQueryPropModule {
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

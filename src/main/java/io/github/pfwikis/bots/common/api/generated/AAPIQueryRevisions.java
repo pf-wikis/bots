@@ -94,10 +94,18 @@ public class AAPIQueryRevisions
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryRevisions prop(AAPIQueryRevisionsProp... prop) {
-
+	public AAPIQueryRevisions prop(AAPIQueryRevisionsProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which properties to get for each revision:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryRevisions prop(AAPIQueryRevisionsProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -111,10 +119,16 @@ public class AAPIQueryRevisions
 
 	/**Which revision slots to return data for, when slot-related properties are included in <var>rvprops</var>. If omitted, data from the <kbd>main</kbd> slot will be returned in a backwards-compatible format.
 	 */
-	public AAPIQueryRevisions slots(AAPIQueryRevisionsSlots... slots) {
-
+	public AAPIQueryRevisions slots(AAPIQueryRevisionsSlots slots) {
 		this.slots = List.of(slots);
 
+		return this;
+	}
+
+	/**Which revision slots to return data for, when slot-related properties are included in <var>rvprops</var>. If omitted, data from the <kbd>main</kbd> slot will be returned in a backwards-compatible format.
+	 */
+	public AAPIQueryRevisions slots(AAPIQueryRevisionsSlots... slots) {
+		this.slots = List.of(slots);
 		return this;
 	}
 
@@ -127,7 +141,6 @@ public class AAPIQueryRevisions
 	/**Limit how many revisions will be returned. If <var>rvprop=content</var>, <var>rvprop=parsetree</var>, <var>rvdiffto</var> or <var>rvdifftotext</var> is used, the limit is 50. If <var>rvparse</var> is used, the limit is 1.
 	 */
 	public AAPIQueryRevisions limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -142,7 +155,6 @@ public class AAPIQueryRevisions
 	/**Only retrieve the content of the section with this identifier.
 	 */
 	public AAPIQueryRevisions section(String section) {
-
 		this.section = section;
 
 		return this;
@@ -157,7 +169,6 @@ public class AAPIQueryRevisions
 	/**Start enumeration from this revision's timestamp. The revision must exist, but need not belong to this page.
 	 */
 	public AAPIQueryRevisions startid(Long startid) {
-
 		this.startid = startid;
 
 		return this;
@@ -172,7 +183,6 @@ public class AAPIQueryRevisions
 	/**Stop enumeration at this revision's timestamp. The revision must exist, but need not belong to this page.
 	 */
 	public AAPIQueryRevisions endid(Long endid) {
-
 		this.endid = endid;
 
 		return this;
@@ -187,7 +197,6 @@ public class AAPIQueryRevisions
 	/**From which revision timestamp to start enumeration.
 	 */
 	public AAPIQueryRevisions start(java.time.Instant start) {
-
 		this.start = start;
 
 		return this;
@@ -202,7 +211,6 @@ public class AAPIQueryRevisions
 	/**Enumerate up to this timestamp.
 	 */
 	public AAPIQueryRevisions end(java.time.Instant end) {
-
 		this.end = end;
 
 		return this;
@@ -219,7 +227,6 @@ public class AAPIQueryRevisions
 	 * <dl></dl>
 	 */
 	public AAPIQueryRevisions dir(AAPIQueryRevisionsDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -236,7 +243,6 @@ public class AAPIQueryRevisions
 	/**Only include revisions made by user.
 	 */
 	public AAPIQueryRevisions user(String user) {
-
 		this.user = user;
 
 		return this;
@@ -251,7 +257,6 @@ public class AAPIQueryRevisions
 	/**Exclude revisions made by user.
 	 */
 	public AAPIQueryRevisions excludeuser(String excludeuser) {
-
 		this.excludeuser = excludeuser;
 
 		return this;
@@ -266,7 +271,6 @@ public class AAPIQueryRevisions
 	/**Only list revisions tagged with this tag.
 	 */
 	public AAPIQueryRevisions tag(String tag) {
-
 		this.tag = tag;
 
 		return this;
@@ -484,7 +488,7 @@ public class AAPIQueryRevisions
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

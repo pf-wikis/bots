@@ -34,9 +34,7 @@ public enum Wiki {
 	private final String wikiNamespace = name+"Wiki";
 	private String masterAccount = "VirenerusBot";
 	@Setter
-	private String masterPassword;
-	@Setter
-	private WikiAPI masterApi;
+	private WikiAPI sharedApi;
 	
 	
 	private final SimpleCache<Object> cache = new SimpleCache<>(Duration.ofDays(1));

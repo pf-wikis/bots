@@ -49,7 +49,6 @@ public class AAPIUnblock implements AAPIModule, AAPITokenModule, AAPIMainActionM
 	/**ID of the block to unblock (obtained through <kbd>list=blocks</kbd>). Cannot be used together with <var>user</var>.
 	 */
 	public AAPIUnblock id(Long id) {
-
 		this.id = id;
 
 		return this;
@@ -64,7 +63,6 @@ public class AAPIUnblock implements AAPIModule, AAPITokenModule, AAPIMainActionM
 	/**User to unblock. Cannot be used together with <var>id</var>.
 	 */
 	public AAPIUnblock user(String user) {
-
 		this.user = user;
 
 		return this;
@@ -79,7 +77,6 @@ public class AAPIUnblock implements AAPIModule, AAPITokenModule, AAPIMainActionM
 	/**Reason for unblock.
 	 */
 	public AAPIUnblock reason(String reason) {
-
 		this.reason = reason;
 
 		return this;
@@ -93,10 +90,16 @@ public class AAPIUnblock implements AAPIModule, AAPITokenModule, AAPIMainActionM
 
 	/**Change tags to apply to the entry in the block log.
 	 */
-	public AAPIUnblock tags(String... tags) {
-
+	public AAPIUnblock tags(String tags) {
 		this.tags = List.of(tags);
 
+		return this;
+	}
+
+	/**Change tags to apply to the entry in the block log.
+	 */
+	public AAPIUnblock tags(String... tags) {
+		this.tags = List.of(tags);
 		return this;
 	}
 
@@ -109,7 +112,6 @@ public class AAPIUnblock implements AAPIModule, AAPITokenModule, AAPIMainActionM
 	/**Watch the user's or IP address's user and talk pages.
 	 */
 	public AAPIUnblock watchuser(Boolean watchuser) {
-
 		this.watchuser = watchuser;
 
 		return this;
@@ -124,7 +126,6 @@ public class AAPIUnblock implements AAPIModule, AAPITokenModule, AAPIMainActionM
 	/**A "csrf" token retrieved from <a href="/wiki/Special:ApiHelp/query%2Btokens" title="Special:ApiHelp/query+tokens">action=query&amp;meta=tokens</a>
 	 */
 	public AAPIUnblock token(String token) {
-
 		this.token = token;
 
 		return this;

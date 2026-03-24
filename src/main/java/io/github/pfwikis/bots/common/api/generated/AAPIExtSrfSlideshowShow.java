@@ -60,7 +60,6 @@ public class AAPIExtSrfSlideshowShow implements AAPIModule, AAPIMainActionModule
 	/**<span class="apihelp-empty">(no description)</span>
 	 */
 	public AAPIExtSrfSlideshowShow printouts(String printouts) {
-
 		this.printouts = printouts;
 
 		return this;

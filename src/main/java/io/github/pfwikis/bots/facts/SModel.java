@@ -136,8 +136,6 @@ public class SModel {
 					Series,
 					Follows,
 					Precedes,
-					Website,
-					Pubcode,
 					Serialized,
 					Pages,
 					Runtime,
@@ -224,7 +222,9 @@ public class SModel {
 							Isbn,
 							Pages,
 							Rule_system,
-							Price
+							Pubcode,
+							Price,
+							Website
 						)
 				)
 				.infoboxProperties(

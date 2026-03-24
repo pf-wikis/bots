@@ -74,10 +74,18 @@ public class AAPIQueryCategories
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryCategories prop(AAPIQueryCategoriesProp... prop) {
-
+	public AAPIQueryCategories prop(AAPIQueryCategoriesProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which additional properties to get for each category:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryCategories prop(AAPIQueryCategoriesProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -91,10 +99,16 @@ public class AAPIQueryCategories
 
 	/**Which kind of categories to show.
 	 */
-	public AAPIQueryCategories show(AAPIQueryCategoriesShow... show) {
-
+	public AAPIQueryCategories show(AAPIQueryCategoriesShow show) {
 		this.show = List.of(show);
 
+		return this;
+	}
+
+	/**Which kind of categories to show.
+	 */
+	public AAPIQueryCategories show(AAPIQueryCategoriesShow... show) {
+		this.show = List.of(show);
 		return this;
 	}
 
@@ -107,7 +121,6 @@ public class AAPIQueryCategories
 	/**How many categories to return.
 	 */
 	public AAPIQueryCategories limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -121,10 +134,16 @@ public class AAPIQueryCategories
 
 	/**Only list these categories. Useful for checking whether a certain page is in a certain category.
 	 */
-	public AAPIQueryCategories categories(String... categories) {
-
+	public AAPIQueryCategories categories(String categories) {
 		this.categories = List.of(categories);
 
+		return this;
+	}
+
+	/**Only list these categories. Useful for checking whether a certain page is in a certain category.
+	 */
+	public AAPIQueryCategories categories(String... categories) {
+		this.categories = List.of(categories);
 		return this;
 	}
 
@@ -137,7 +156,6 @@ public class AAPIQueryCategories
 	/**The direction in which to list.
 	 */
 	public AAPIQueryCategories dir(AAPIQueryCategoriesDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -267,7 +285,7 @@ public class AAPIQueryCategories
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

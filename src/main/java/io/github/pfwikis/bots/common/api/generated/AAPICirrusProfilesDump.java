@@ -39,7 +39,6 @@ public class AAPICirrusProfilesDump implements AAPIModule, AAPIMainActionModule 
 	/**Dump the profiles content
 	 */
 	public AAPICirrusProfilesDump verbose(Boolean verbose) {
-
 		this.verbose = verbose;
 
 		return this;

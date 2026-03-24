@@ -40,10 +40,16 @@ public class AAPIQueryPageprops implements AAPIModule, AAPIQueryPropModule {
 
 	/**Only list these page properties (<kbd><a href="/wiki/Special:ApiHelp/query%2Bpagepropnames" title="Special:ApiHelp/query+pagepropnames">action=query&amp;list=pagepropnames</a></kbd> returns page property names in use). Useful for checking whether pages use a certain page property.
 	 */
-	public AAPIQueryPageprops prop(AAPIQueryPagepropsProp... prop) {
-
+	public AAPIQueryPageprops prop(AAPIQueryPagepropsProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**Only list these page properties (<kbd><a href="/wiki/Special:ApiHelp/query%2Bpagepropnames" title="Special:ApiHelp/query+pagepropnames">action=query&amp;list=pagepropnames</a></kbd> returns page property names in use). Useful for checking whether pages use a certain page property.
+	 */
+	public AAPIQueryPageprops prop(AAPIQueryPagepropsProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 

@@ -33,8 +33,6 @@ public enum AAPIQueryLogeventsType {
 
 	MOVE("move"),
 
-	MWOAUTHCONSUMER("mwoauthconsumer"),
-
 	NEWUSERS("newusers"),
 
 	PATROL("patrol"),

@@ -49,18 +49,16 @@ public class AAPIQueryImageusage
 				AAPITemplatedataGeneratorModule,
 				AAPIWatchGeneratorModule {
 
-	public static AAPIQueryImageusage create() {
+	public static AAPIQueryImageusage create(@NonNull ContainsPageRef title) {
 
 		AAPIQueryImageusage v = new AAPIQueryImageusage();
+
+		v.title = title;
 
 		return v;
 	}
 
 	private AAPIQueryImageusage() {}
-
-	private String title;
-
-	private Long pageid;
 
 	private List<NS> namespace;
 
@@ -72,42 +70,20 @@ public class AAPIQueryImageusage
 
 	private Boolean redirect;
 
-	/**Title to search. Cannot be used together with iupageid.
-	 */
-	public AAPIQueryImageusage title(String title) {
+	private ContainsPageRef title;
 
-		this.title = title;
+	/**The namespace to enumerate.
+	 */
+	public AAPIQueryImageusage namespace(NS namespace) {
+		this.namespace = List.of(namespace);
 
 		return this;
-	}
-
-	/**Title to search. Cannot be used together with iupageid.
-	 */
-	public String getTitle() {
-		return this.title;
-	}
-
-	/**Page ID to search. Cannot be used together with iutitle.
-	 */
-	public AAPIQueryImageusage pageid(Long pageid) {
-
-		this.pageid = pageid;
-
-		return this;
-	}
-
-	/**Page ID to search. Cannot be used together with iutitle.
-	 */
-	public Long getPageid() {
-		return this.pageid;
 	}
 
 	/**The namespace to enumerate.
 	 */
 	public AAPIQueryImageusage namespace(NS... namespace) {
-
 		this.namespace = List.of(namespace);
-
 		return this;
 	}
 
@@ -120,7 +96,6 @@ public class AAPIQueryImageusage
 	/**The direction in which to list.
 	 */
 	public AAPIQueryImageusage dir(AAPIQueryImageusageDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -135,7 +110,6 @@ public class AAPIQueryImageusage
 	/**How to filter for redirects. If set to nonredirects when iuredirect is enabled, this is only applied to the second level.
 	 */
 	public AAPIQueryImageusage filterredir(AAPIQueryImageusageFilterredir filterredir) {
-
 		this.filterredir = filterredir;
 
 		return this;
@@ -150,7 +124,6 @@ public class AAPIQueryImageusage
 	/**How many total pages to return. If <var>iuredirect</var> is enabled, the limit applies to each level separately (which means up to 2 * <var>iulimit</var> results may be returned).
 	 */
 	public AAPIQueryImageusage limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -165,7 +138,6 @@ public class AAPIQueryImageusage
 	/**If linking page is a redirect, find all pages that link to that redirect as well. Maximum limit is halved.
 	 */
 	public AAPIQueryImageusage redirect(Boolean redirect) {
-
 		this.redirect = redirect;
 
 		return this;
@@ -177,21 +149,15 @@ public class AAPIQueryImageusage
 		return this.redirect;
 	}
 
+	public ContainsPageRef getTitle() {
+		return this.title;
+	}
+
 	public String toString() {
 		var sb = new StringBuilder().append("AAPIQueryImageusage(");
 
 		if (title != null) {
-
-			sb.append("iutitle").append("=").append(title);
-
-			sb.append(", ");
-		}
-
-		if (pageid != null) {
-
-			sb.append("iupageid").append("=").append(pageid.toString());
-
-			sb.append(", ");
+			sb.append("title=").append(title).append(", ");
 		}
 
 		if (namespace != null) {
@@ -242,12 +208,12 @@ public class AAPIQueryImageusage
 
 		if (title != null) {
 
-			req.addParameter(paramPrefix + "iutitle", title);
-		}
-
-		if (pageid != null) {
-
-			req.addParameter(paramPrefix + "iupageid", pageid.toString());
+			if (title.toPageRef().hasId()) {
+				req.addParameter(
+						paramPrefix + "iupageid", Integer.toString(title.toPageRef().getId()));
+			} else {
+				req.addParameter(paramPrefix + "iutitle", title.toPageTitle().toFullTitle());
+			}
 		}
 
 		if (namespace != null) {
@@ -310,7 +276,7 @@ public class AAPIQueryImageusage
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

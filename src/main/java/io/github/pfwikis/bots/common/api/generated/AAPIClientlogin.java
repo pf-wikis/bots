@@ -62,10 +62,16 @@ public class AAPIClientlogin implements AAPIModule, AAPITokenModule, AAPIMainAct
 
 	/**Only use these authentication requests, by the <samp>id</samp> returned from <kbd><a href="/wiki/Special:ApiHelp/query%2Bauthmanagerinfo" title="Special:ApiHelp/query+authmanagerinfo">action=query&amp;meta=authmanagerinfo</a></kbd> with <kbd>amirequestsfor=login</kbd> or from a previous response from this module.
 	 */
-	public AAPIClientlogin requests(String... requests) {
-
+	public AAPIClientlogin requests(String requests) {
 		this.requests = List.of(requests);
 
+		return this;
+	}
+
+	/**Only use these authentication requests, by the <samp>id</samp> returned from <kbd><a href="/wiki/Special:ApiHelp/query%2Bauthmanagerinfo" title="Special:ApiHelp/query+authmanagerinfo">action=query&amp;meta=authmanagerinfo</a></kbd> with <kbd>amirequestsfor=login</kbd> or from a previous response from this module.
+	 */
+	public AAPIClientlogin requests(String... requests) {
+		this.requests = List.of(requests);
 		return this;
 	}
 
@@ -78,7 +84,6 @@ public class AAPIClientlogin implements AAPIModule, AAPITokenModule, AAPIMainAct
 	/**Format to use for returning messages.
 	 */
 	public AAPIClientlogin messageformat(AAPIClientloginMessageformat messageformat) {
-
 		this.messageformat = messageformat;
 
 		return this;
@@ -93,7 +98,6 @@ public class AAPIClientlogin implements AAPIModule, AAPITokenModule, AAPIMainAct
 	/**Merge field information for all authentication requests into one array.
 	 */
 	public AAPIClientlogin mergerequestfields(Boolean mergerequestfields) {
-
 		this.mergerequestfields = mergerequestfields;
 
 		return this;
@@ -108,7 +112,6 @@ public class AAPIClientlogin implements AAPIModule, AAPITokenModule, AAPIMainAct
 	/**Preserve state from a previous failed login attempt, if possible.
 	 */
 	public AAPIClientlogin preservestate(Boolean preservestate) {
-
 		this.preservestate = preservestate;
 
 		return this;
@@ -125,7 +128,6 @@ public class AAPIClientlogin implements AAPIModule, AAPITokenModule, AAPIMainAct
 	 * </p>
 	 */
 	public AAPIClientlogin returnurl(String returnurl) {
-
 		this.returnurl = returnurl;
 
 		return this;
@@ -142,7 +144,6 @@ public class AAPIClientlogin implements AAPIModule, AAPITokenModule, AAPIMainAct
 	/**A "login" token retrieved from <a href="/wiki/Special:ApiHelp/query%2Btokens" title="Special:ApiHelp/query+tokens">action=query&amp;meta=tokens</a>
 	 */
 	public AAPIClientlogin token(String token) {
-
 		this.token = token;
 
 		return this;

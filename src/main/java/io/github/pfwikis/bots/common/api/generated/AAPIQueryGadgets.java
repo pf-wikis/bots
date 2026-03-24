@@ -50,10 +50,18 @@ public class AAPIQueryGadgets implements AAPIModule, AAPIQueryListModule {
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryGadgets prop(AAPIQueryGadgetsProp... prop) {
-
+	public AAPIQueryGadgets prop(AAPIQueryGadgetsProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>What gadget information to get:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryGadgets prop(AAPIQueryGadgetsProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -67,10 +75,16 @@ public class AAPIQueryGadgets implements AAPIModule, AAPIQueryListModule {
 
 	/**Gadgets from what categories to retrieve.
 	 */
-	public AAPIQueryGadgets categories(String... categories) {
-
+	public AAPIQueryGadgets categories(String categories) {
 		this.categories = List.of(categories);
 
+		return this;
+	}
+
+	/**Gadgets from what categories to retrieve.
+	 */
+	public AAPIQueryGadgets categories(String... categories) {
+		this.categories = List.of(categories);
 		return this;
 	}
 
@@ -82,10 +96,16 @@ public class AAPIQueryGadgets implements AAPIModule, AAPIQueryListModule {
 
 	/**IDs of gadgets to retrieve.
 	 */
-	public AAPIQueryGadgets ids(String... ids) {
-
+	public AAPIQueryGadgets ids(String ids) {
 		this.ids = List.of(ids);
 
+		return this;
+	}
+
+	/**IDs of gadgets to retrieve.
+	 */
+	public AAPIQueryGadgets ids(String... ids) {
+		this.ids = List.of(ids);
 		return this;
 	}
 
@@ -98,7 +118,6 @@ public class AAPIQueryGadgets implements AAPIModule, AAPIQueryListModule {
 	/**List only gadgets allowed to current user.
 	 */
 	public AAPIQueryGadgets allowedonly(Boolean allowedonly) {
-
 		this.allowedonly = allowedonly;
 
 		return this;
@@ -113,7 +132,6 @@ public class AAPIQueryGadgets implements AAPIModule, AAPIQueryListModule {
 	/**List only gadgets enabled by current user.
 	 */
 	public AAPIQueryGadgets enabledonly(Boolean enabledonly) {
-
 		this.enabledonly = enabledonly;
 
 		return this;

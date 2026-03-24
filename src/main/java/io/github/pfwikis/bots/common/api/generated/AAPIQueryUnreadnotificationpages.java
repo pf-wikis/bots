@@ -41,7 +41,6 @@ public class AAPIQueryUnreadnotificationpages implements AAPIModule, AAPIQueryMe
 	/**Group talk pages together with their subject page, and group notifications not associated with a page together with the current user's user page.
 	 */
 	public AAPIQueryUnreadnotificationpages grouppages(Boolean grouppages) {
-
 		this.grouppages = grouppages;
 
 		return this;
@@ -56,7 +55,6 @@ public class AAPIQueryUnreadnotificationpages implements AAPIModule, AAPIQueryMe
 	/**The maximum number of pages to return.
 	 */
 	public AAPIQueryUnreadnotificationpages limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;

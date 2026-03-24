@@ -47,10 +47,18 @@ public class AAPIQueryLanguageinfo implements AAPIModule, AAPIQueryMetaModule {
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryLanguageinfo prop(AAPIQueryLanguageinfoProp... prop) {
-
+	public AAPIQueryLanguageinfo prop(AAPIQueryLanguageinfoProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which information to get for each language.
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryLanguageinfo prop(AAPIQueryLanguageinfoProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -64,10 +72,16 @@ public class AAPIQueryLanguageinfo implements AAPIModule, AAPIQueryMetaModule {
 
 	/**Language codes of the languages that should be returned, or <code>*</code> for all languages.
 	 */
-	public AAPIQueryLanguageinfo code(String... code) {
-
+	public AAPIQueryLanguageinfo code(String code) {
 		this.code = List.of(code);
 
+		return this;
+	}
+
+	/**Language codes of the languages that should be returned, or <code>*</code> for all languages.
+	 */
+	public AAPIQueryLanguageinfo code(String... code) {
+		this.code = List.of(code);
 		return this;
 	}
 

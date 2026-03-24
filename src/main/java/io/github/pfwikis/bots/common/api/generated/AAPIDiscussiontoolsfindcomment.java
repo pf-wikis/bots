@@ -43,7 +43,6 @@ public class AAPIDiscussiontoolsfindcomment implements AAPIModule, AAPIMainActio
 	/**Comment ID or name
 	 */
 	public AAPIDiscussiontoolsfindcomment idorname(String idorname) {
-
 		this.idorname = idorname;
 
 		return this;
@@ -58,7 +57,6 @@ public class AAPIDiscussiontoolsfindcomment implements AAPIModule, AAPIMainActio
 	/**Heading hash fragment
 	 */
 	public AAPIDiscussiontoolsfindcomment heading(String heading) {
-
 		this.heading = heading;
 
 		return this;
@@ -73,7 +71,6 @@ public class AAPIDiscussiontoolsfindcomment implements AAPIModule, AAPIMainActio
 	/**Page that the heading hash fragment once existed on
 	 */
 	public AAPIDiscussiontoolsfindcomment page(String page) {
-
 		this.page = page;
 
 		return this;

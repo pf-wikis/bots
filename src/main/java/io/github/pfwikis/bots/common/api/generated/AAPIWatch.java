@@ -58,7 +58,6 @@ public class AAPIWatch implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 	/**If set the page will be unwatched rather than watched.
 	 */
 	public AAPIWatch unwatch(Boolean unwatch) {
-
 		this.unwatch = unwatch;
 
 		return this;
@@ -72,10 +71,16 @@ public class AAPIWatch implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 
 	/**A list of titles to work on.
 	 */
-	public AAPIWatch titles(String... titles) {
-
+	public AAPIWatch titles(String titles) {
 		this.titles = List.of(titles);
 
+		return this;
+	}
+
+	/**A list of titles to work on.
+	 */
+	public AAPIWatch titles(String... titles) {
+		this.titles = List.of(titles);
 		return this;
 	}
 
@@ -87,10 +92,16 @@ public class AAPIWatch implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 
 	/**A list of page IDs to work on.
 	 */
-	public AAPIWatch pageids(Long... pageids) {
-
+	public AAPIWatch pageids(Long pageids) {
 		this.pageids = List.of(pageids);
 
+		return this;
+	}
+
+	/**A list of page IDs to work on.
+	 */
+	public AAPIWatch pageids(Long... pageids) {
+		this.pageids = List.of(pageids);
 		return this;
 	}
 
@@ -102,10 +113,16 @@ public class AAPIWatch implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 
 	/**A list of revision IDs to work on. Note that almost all query modules will convert revision IDs to the corresponding page ID and work on the latest revision instead. Only <kbd>prop=revisions</kbd> uses exact revisions for its response.
 	 */
-	public AAPIWatch revids(Long... revids) {
-
+	public AAPIWatch revids(Long revids) {
 		this.revids = List.of(revids);
 
+		return this;
+	}
+
+	/**A list of revision IDs to work on. Note that almost all query modules will convert revision IDs to the corresponding page ID and work on the latest revision instead. Only <kbd>prop=revisions</kbd> uses exact revisions for its response.
+	 */
+	public AAPIWatch revids(Long... revids) {
+		this.revids = List.of(revids);
 		return this;
 	}
 
@@ -121,7 +138,6 @@ public class AAPIWatch implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 	 * <dl></dl>
 	 */
 	public AAPIWatch generator(AAPIWatchGeneratorModule generator) {
-
 		this.generator = AAPIWatchGenerator.createSubmodule(generator);
 
 		return this;
@@ -139,7 +155,6 @@ public class AAPIWatch implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 	/**Automatically resolve redirects in <var>titles</var>, <var>pageids</var>, and <var>revids</var>, and in pages returned by <var>generator</var>.
 	 */
 	public AAPIWatch redirects(Boolean redirects) {
-
 		this.redirects = redirects;
 
 		return this;
@@ -154,7 +169,6 @@ public class AAPIWatch implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 	/**Convert titles to other variants if necessary. Only works if the wiki's content language supports variant conversion. Languages that support variant conversion include ban, en, crh, gan, iu, ku, mni, sh, shi, sr, tg, tly, uz, wuu, zgh and zh.
 	 */
 	public AAPIWatch converttitles(Boolean converttitles) {
-
 		this.converttitles = converttitles;
 
 		return this;
@@ -169,7 +183,6 @@ public class AAPIWatch implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 	/**A "watch" token retrieved from <a href="/wiki/Special:ApiHelp/query%2Btokens" title="Special:ApiHelp/query+tokens">action=query&amp;meta=tokens</a>
 	 */
 	public AAPIWatch token(String token) {
-
 		this.token = token;
 
 		return this;

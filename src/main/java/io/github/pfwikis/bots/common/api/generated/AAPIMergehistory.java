@@ -51,7 +51,6 @@ public class AAPIMergehistory implements AAPIModule, AAPITokenModule, AAPIMainAc
 	/**Title of the page from which history will be merged. Cannot be used together with <var>fromid</var>.
 	 */
 	public AAPIMergehistory from(String from) {
-
 		this.from = from;
 
 		return this;
@@ -66,7 +65,6 @@ public class AAPIMergehistory implements AAPIModule, AAPITokenModule, AAPIMainAc
 	/**Page ID of the page from which history will be merged. Cannot be used together with <var>from</var>.
 	 */
 	public AAPIMergehistory fromid(Long fromid) {
-
 		this.fromid = fromid;
 
 		return this;
@@ -81,7 +79,6 @@ public class AAPIMergehistory implements AAPIModule, AAPITokenModule, AAPIMainAc
 	/**Title of the page to which history will be merged. Cannot be used together with <var>toid</var>.
 	 */
 	public AAPIMergehistory to(String to) {
-
 		this.to = to;
 
 		return this;
@@ -96,7 +93,6 @@ public class AAPIMergehistory implements AAPIModule, AAPITokenModule, AAPIMainAc
 	/**Page ID of the page to which history will be merged. Cannot be used together with <var>to</var>.
 	 */
 	public AAPIMergehistory toid(Long toid) {
-
 		this.toid = toid;
 
 		return this;
@@ -111,7 +107,6 @@ public class AAPIMergehistory implements AAPIModule, AAPITokenModule, AAPIMainAc
 	/**Timestamp up to which revisions will be moved from the source page's history to the destination page's history. If omitted, the entire page history of the source page will be merged into the destination page.
 	 */
 	public AAPIMergehistory timestamp(java.time.Instant timestamp) {
-
 		this.timestamp = timestamp;
 
 		return this;
@@ -126,7 +121,6 @@ public class AAPIMergehistory implements AAPIModule, AAPITokenModule, AAPIMainAc
 	/**Reason for the history merge.
 	 */
 	public AAPIMergehistory reason(String reason) {
-
 		this.reason = reason;
 
 		return this;
@@ -141,7 +135,6 @@ public class AAPIMergehistory implements AAPIModule, AAPITokenModule, AAPIMainAc
 	/**A "csrf" token retrieved from <a href="/wiki/Special:ApiHelp/query%2Btokens" title="Special:ApiHelp/query+tokens">action=query&amp;meta=tokens</a>
 	 */
 	public AAPIMergehistory token(String token) {
-
 		this.token = token;
 
 		return this;

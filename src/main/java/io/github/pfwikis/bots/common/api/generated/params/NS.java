@@ -13,28 +13,21 @@ import io.github.pfwikis.bots.common.Wiki;
 @Getter
 @RequiredArgsConstructor
 public enum NS {
-	FACTS(128, "Facts:", "Facts", null, null),
+	MEDIA(-2, false, "Media:", "Media", null, null),
 
-	MAIN(0, "", "Main", null, null),
+	SPECIAL(-1, false, "Special:", "Special", null, null),
 
-	SPECIAL(-1, "Special:", "Special", null, null),
+	MAIN(0, false, "", "Main", null, null),
 
-	FACTS_TALK(129, "Facts talk:", "Facts talk", null, null),
+	TALK(1, true, "Talk:", "Talk", null, null),
 
-	TALK(1, "Talk:", "Talk", null, null),
+	USER(2, false, "User:", "User", null, null),
 
-	MEDIA(-2, "Media:", "Media", null, null),
-
-	STYLE(130, "Style:", "Style", null, null),
-
-	USER(2, "User:", "User", null, null),
-
-	STYLE_TALK(131, "Style talk:", "Style talk", null, null),
-
-	USER_TALK(3, "User talk:", "User talk", null, null),
+	USER_TALK(3, true, "User talk:", "User talk", null, null),
 
 	PROJECT(
 			4,
+			false,
 			"Project:",
 			"Project",
 			new EnumMap<>(Map.of(Wiki.PF, "PathfinderWiki", Wiki.SF, "StarfinderWiki")),
@@ -42,63 +35,73 @@ public enum NS {
 
 	PROJECT_TALK(
 			5,
+			true,
 			"Project talk:",
 			"Project talk",
 			new EnumMap<>(Map.of(Wiki.PF, "PathfinderWiki talk", Wiki.SF, "StarfinderWiki talk")),
 			new EnumMap<>(
 					Map.of(Wiki.PF, "PathfinderWiki talk:", Wiki.SF, "StarfinderWiki talk:"))),
 
-	FILE(6, "File:", "File", null, null),
+	FILE(6, false, "File:", "File", null, null),
 
-	FILE_TALK(7, "File talk:", "File talk", null, null),
+	FILE_TALK(7, true, "File talk:", "File talk", null, null),
 
-	MEDIAWIKI(8, "MediaWiki:", "MediaWiki", null, null),
+	MEDIAWIKI(8, false, "MediaWiki:", "MediaWiki", null, null),
 
-	MEDIAWIKI_TALK(9, "MediaWiki talk:", "MediaWiki talk", null, null),
+	MEDIAWIKI_TALK(9, true, "MediaWiki talk:", "MediaWiki talk", null, null),
 
-	TEMPLATE(10, "Template:", "Template", null, null),
+	TEMPLATE(10, false, "Template:", "Template", null, null),
 
-	TEMPLATE_TALK(11, "Template talk:", "Template talk", null, null),
+	TEMPLATE_TALK(11, true, "Template talk:", "Template talk", null, null),
 
-	HELP(12, "Help:", "Help", null, null),
+	HELP(12, false, "Help:", "Help", null, null),
 
-	HELP_TALK(13, "Help talk:", "Help talk", null, null),
+	HELP_TALK(13, true, "Help talk:", "Help talk", null, null),
 
-	CATEGORY(14, "Category:", "Category", null, null),
+	CATEGORY(14, false, "Category:", "Category", null, null),
 
-	CATEGORY_TALK(15, "Category talk:", "Category talk", null, null),
+	CATEGORY_TALK(15, true, "Category talk:", "Category talk", null, null),
 
-	WIDGET(274, "Widget:", "Widget", null, null),
+	PROPERTY(102, false, "Property:", "Property", null, null),
 
-	WIDGET_TALK(275, "Widget talk:", "Widget talk", null, null),
+	PROPERTY_TALK(103, true, "Property talk:", "Property talk", null, null),
 
-	GEOJSON(420, "GeoJson:", "GeoJson", null, null),
+	FORM(106, false, "Form:", "Form", null, null),
 
-	GEOJSON_TALK(421, "GeoJson talk:", "GeoJson talk", null, null),
+	FORM_TALK(107, true, "Form talk:", "Form talk", null, null),
 
-	PROPERTY(102, "Property:", "Property", null, null),
+	CONCEPT(108, false, "Concept:", "Concept", null, null),
 
-	PROPERTY_TALK(103, "Property talk:", "Property talk", null, null),
+	CONCEPT_TALK(109, true, "Concept talk:", "Concept talk", null, null),
 
-	FORM(106, "Form:", "Form", null, null),
+	SMW_SCHEMA(112, false, "smw/schema:", "smw/schema", null, null),
 
-	FORM_TALK(107, "Form talk:", "Form talk", null, null),
+	SMW_SCHEMA_TALK(113, true, "smw/schema talk:", "smw/schema talk", null, null),
 
-	CONCEPT(108, "Concept:", "Concept", null, null),
+	META(126, false, "Meta:", "Meta", null, null),
 
-	CONCEPT_TALK(109, "Concept talk:", "Concept talk", null, null),
+	META_TALK(127, true, "Meta talk:", "Meta talk", null, null),
 
-	SMW_SCHEMA(112, "smw/schema:", "smw/schema", null, null),
+	FACTS(128, false, "Facts:", "Facts", null, null),
 
-	SMW_SCHEMA_TALK(113, "smw/schema talk:", "smw/schema talk", null, null),
+	FACTS_TALK(129, true, "Facts talk:", "Facts talk", null, null),
 
-	META(126, "Meta:", "Meta", null, null),
+	STYLE(130, false, "Style:", "Style", null, null),
 
-	META_TALK(127, "Meta talk:", "Meta talk", null, null);
+	STYLE_TALK(131, true, "Style talk:", "Style talk", null, null),
+
+	WIDGET(274, false, "Widget:", "Widget", null, null),
+
+	WIDGET_TALK(275, true, "Widget talk:", "Widget talk", null, null),
+
+	GEOJSON(420, false, "GeoJson:", "GeoJson", null, null),
+
+	GEOJSON_TALK(421, true, "GeoJson talk:", "GeoJson talk", null, null);
 
 	@Getter(onMethod_ = @JsonValue)
 	private final int id;
 
+	private final boolean talk;
 	private final String prefix;
 	private final String label;
 	private final EnumMap<Wiki, String> alternativeLabels;
@@ -106,23 +109,15 @@ public enum NS {
 
 	public static NS fromId(int id) {
 		return switch (id) {
-			case 128 -> FACTS;
-
-			case 0 -> MAIN;
+			case -2 -> MEDIA;
 
 			case -1 -> SPECIAL;
 
-			case 129 -> FACTS_TALK;
+			case 0 -> MAIN;
 
 			case 1 -> TALK;
 
-			case -2 -> MEDIA;
-
-			case 130 -> STYLE;
-
 			case 2 -> USER;
-
-			case 131 -> STYLE_TALK;
 
 			case 3 -> USER_TALK;
 
@@ -150,14 +145,6 @@ public enum NS {
 
 			case 15 -> CATEGORY_TALK;
 
-			case 274 -> WIDGET;
-
-			case 275 -> WIDGET_TALK;
-
-			case 420 -> GEOJSON;
-
-			case 421 -> GEOJSON_TALK;
-
 			case 102 -> PROPERTY;
 
 			case 103 -> PROPERTY_TALK;
@@ -178,6 +165,22 @@ public enum NS {
 
 			case 127 -> META_TALK;
 
+			case 128 -> FACTS;
+
+			case 129 -> FACTS_TALK;
+
+			case 130 -> STYLE;
+
+			case 131 -> STYLE_TALK;
+
+			case 274 -> WIDGET;
+
+			case 275 -> WIDGET_TALK;
+
+			case 420 -> GEOJSON;
+
+			case 421 -> GEOJSON_TALK;
+
 			default -> throw new IllegalArgumentException("Unknown namespace id " + id);
 		};
 	}
@@ -192,23 +195,15 @@ public enum NS {
 
 	public static NS fromNameOrNull(String name) {
 		return switch (name) {
-			case "Facts" -> FACTS;
-
-			case "Main" -> MAIN;
+			case "Media" -> MEDIA;
 
 			case "Special" -> SPECIAL;
 
-			case "Facts talk" -> FACTS_TALK;
+			case "Main" -> MAIN;
 
 			case "Talk" -> TALK;
 
-			case "Media" -> MEDIA;
-
-			case "Style" -> STYLE;
-
 			case "User" -> USER;
-
-			case "Style talk" -> STYLE_TALK;
 
 			case "User talk" -> USER_TALK;
 
@@ -236,14 +231,6 @@ public enum NS {
 
 			case "Category talk" -> CATEGORY_TALK;
 
-			case "Widget" -> WIDGET;
-
-			case "Widget talk" -> WIDGET_TALK;
-
-			case "GeoJson" -> GEOJSON;
-
-			case "GeoJson talk" -> GEOJSON_TALK;
-
 			case "Property" -> PROPERTY;
 
 			case "Property talk" -> PROPERTY_TALK;
@@ -263,6 +250,22 @@ public enum NS {
 			case "Meta" -> META;
 
 			case "Meta talk" -> META_TALK;
+
+			case "Facts" -> FACTS;
+
+			case "Facts talk" -> FACTS_TALK;
+
+			case "Style" -> STYLE;
+
+			case "Style talk" -> STYLE_TALK;
+
+			case "Widget" -> WIDGET;
+
+			case "Widget talk" -> WIDGET_TALK;
+
+			case "GeoJson" -> GEOJSON;
+
+			case "GeoJson talk" -> GEOJSON_TALK;
 
 			default -> null;
 		};

@@ -94,10 +94,18 @@ public class AAPIQueryAlldeletedrevisions
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryAlldeletedrevisions prop(AAPIQueryAlldeletedrevisionsProp... prop) {
-
+	public AAPIQueryAlldeletedrevisions prop(AAPIQueryAlldeletedrevisionsProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which properties to get for each revision:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryAlldeletedrevisions prop(AAPIQueryAlldeletedrevisionsProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -111,10 +119,16 @@ public class AAPIQueryAlldeletedrevisions
 
 	/**Which revision slots to return data for, when slot-related properties are included in <var>adrprops</var>. If omitted, data from the <kbd>main</kbd> slot will be returned in a backwards-compatible format.
 	 */
-	public AAPIQueryAlldeletedrevisions slots(AAPIQueryAlldeletedrevisionsSlots... slots) {
-
+	public AAPIQueryAlldeletedrevisions slots(AAPIQueryAlldeletedrevisionsSlots slots) {
 		this.slots = List.of(slots);
 
+		return this;
+	}
+
+	/**Which revision slots to return data for, when slot-related properties are included in <var>adrprops</var>. If omitted, data from the <kbd>main</kbd> slot will be returned in a backwards-compatible format.
+	 */
+	public AAPIQueryAlldeletedrevisions slots(AAPIQueryAlldeletedrevisionsSlots... slots) {
+		this.slots = List.of(slots);
 		return this;
 	}
 
@@ -127,7 +141,6 @@ public class AAPIQueryAlldeletedrevisions
 	/**Limit how many revisions will be returned. If <var>adrprop=content</var>, <var>adrprop=parsetree</var>, <var>adrdiffto</var> or <var>adrdifftotext</var> is used, the limit is 50. If <var>adrparse</var> is used, the limit is 1.
 	 */
 	public AAPIQueryAlldeletedrevisions limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -142,7 +155,6 @@ public class AAPIQueryAlldeletedrevisions
 	/**Only retrieve the content of the section with this identifier.
 	 */
 	public AAPIQueryAlldeletedrevisions section(String section) {
-
 		this.section = section;
 
 		return this;
@@ -157,7 +169,6 @@ public class AAPIQueryAlldeletedrevisions
 	/**Only list revisions by this user.
 	 */
 	public AAPIQueryAlldeletedrevisions user(String user) {
-
 		this.user = user;
 
 		return this;
@@ -171,10 +182,16 @@ public class AAPIQueryAlldeletedrevisions
 
 	/**Only list pages in this namespace.
 	 */
-	public AAPIQueryAlldeletedrevisions namespace(NS... namespace) {
-
+	public AAPIQueryAlldeletedrevisions namespace(NS namespace) {
 		this.namespace = List.of(namespace);
 
+		return this;
+	}
+
+	/**Only list pages in this namespace.
+	 */
+	public AAPIQueryAlldeletedrevisions namespace(NS... namespace) {
+		this.namespace = List.of(namespace);
 		return this;
 	}
 
@@ -187,7 +204,6 @@ public class AAPIQueryAlldeletedrevisions
 	/**The timestamp to start enumerating from.
 	 */
 	public AAPIQueryAlldeletedrevisions start(java.time.Instant start) {
-
 		this.start = start;
 
 		return this;
@@ -202,7 +218,6 @@ public class AAPIQueryAlldeletedrevisions
 	/**The timestamp to stop enumerating at.
 	 */
 	public AAPIQueryAlldeletedrevisions end(java.time.Instant end) {
-
 		this.end = end;
 
 		return this;
@@ -219,7 +234,6 @@ public class AAPIQueryAlldeletedrevisions
 	 * <dl></dl>
 	 */
 	public AAPIQueryAlldeletedrevisions dir(AAPIQueryAlldeletedrevisionsDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -236,7 +250,6 @@ public class AAPIQueryAlldeletedrevisions
 	/**Start listing at this title.
 	 */
 	public AAPIQueryAlldeletedrevisions from(String from) {
-
 		this.from = from;
 
 		return this;
@@ -251,7 +264,6 @@ public class AAPIQueryAlldeletedrevisions
 	/**Stop listing at this title.
 	 */
 	public AAPIQueryAlldeletedrevisions to(String to) {
-
 		this.to = to;
 
 		return this;
@@ -266,7 +278,6 @@ public class AAPIQueryAlldeletedrevisions
 	/**Search for all page titles that begin with this value.
 	 */
 	public AAPIQueryAlldeletedrevisions prefix(String prefix) {
-
 		this.prefix = prefix;
 
 		return this;
@@ -281,7 +292,6 @@ public class AAPIQueryAlldeletedrevisions
 	/**Don't list revisions by this user.
 	 */
 	public AAPIQueryAlldeletedrevisions excludeuser(String excludeuser) {
-
 		this.excludeuser = excludeuser;
 
 		return this;
@@ -296,7 +306,6 @@ public class AAPIQueryAlldeletedrevisions
 	/**Only list revisions tagged with this tag.
 	 */
 	public AAPIQueryAlldeletedrevisions tag(String tag) {
-
 		this.tag = tag;
 
 		return this;
@@ -311,7 +320,6 @@ public class AAPIQueryAlldeletedrevisions
 	/**When being used as a generator, generate titles rather than revision IDs.
 	 */
 	public AAPIQueryAlldeletedrevisions generatetitles(Boolean generatetitles) {
-
 		this.generatetitles = generatetitles;
 
 		return this;
@@ -574,7 +582,7 @@ public class AAPIQueryAlldeletedrevisions
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

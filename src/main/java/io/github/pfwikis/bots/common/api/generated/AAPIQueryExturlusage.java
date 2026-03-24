@@ -72,10 +72,18 @@ public class AAPIQueryExturlusage
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryExturlusage prop(AAPIQueryExturlusageProp... prop) {
-
+	public AAPIQueryExturlusage prop(AAPIQueryExturlusageProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which pieces of information to include:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryExturlusage prop(AAPIQueryExturlusageProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -90,7 +98,6 @@ public class AAPIQueryExturlusage
 	/**Protocol of the URL. If empty and <var>euquery</var> is set, the protocol is <kbd>http</kbd> and <kbd>https</kbd>. Leave both this and <var>euquery</var> empty to list all external links.
 	 */
 	public AAPIQueryExturlusage protocol(AAPIQueryExturlusageProtocol protocol) {
-
 		this.protocol = protocol;
 
 		return this;
@@ -105,7 +112,6 @@ public class AAPIQueryExturlusage
 	/**Search string without protocol. See <a href="/wiki/Special:LinkSearch" title="Special:LinkSearch">Special:LinkSearch</a>. Leave empty to list all external links.
 	 */
 	public AAPIQueryExturlusage query(String query) {
-
 		this.query = query;
 
 		return this;
@@ -119,10 +125,16 @@ public class AAPIQueryExturlusage
 
 	/**The page namespaces to enumerate.
 	 */
-	public AAPIQueryExturlusage namespace(NS... namespace) {
-
+	public AAPIQueryExturlusage namespace(NS namespace) {
 		this.namespace = List.of(namespace);
 
+		return this;
+	}
+
+	/**The page namespaces to enumerate.
+	 */
+	public AAPIQueryExturlusage namespace(NS... namespace) {
+		this.namespace = List.of(namespace);
 		return this;
 	}
 
@@ -135,7 +147,6 @@ public class AAPIQueryExturlusage
 	/**How many pages to return.
 	 */
 	public AAPIQueryExturlusage limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -263,7 +274,7 @@ public class AAPIQueryExturlusage
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

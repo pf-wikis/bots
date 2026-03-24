@@ -42,10 +42,18 @@ public class AAPIQueryFilerepoinfo implements AAPIModule, AAPIQueryMetaModule {
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryFilerepoinfo prop(AAPIQueryFilerepoinfoProp... prop) {
-
+	public AAPIQueryFilerepoinfo prop(AAPIQueryFilerepoinfoProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which repository properties to get (properties available may vary on other wikis).
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryFilerepoinfo prop(AAPIQueryFilerepoinfoProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 

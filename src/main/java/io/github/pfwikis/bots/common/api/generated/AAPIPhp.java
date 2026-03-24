@@ -43,7 +43,6 @@ public class AAPIPhp implements AAPIModule, AAPIMainFormatModule {
 	 * <dl></dl>
 	 */
 	public AAPIPhp formatversion(AAPIPhpFormatversion formatversion) {
-
 		this.formatversion = formatversion;
 
 		return this;

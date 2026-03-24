@@ -58,7 +58,6 @@ public class AAPIOptions implements AAPIModule, AAPITokenModule, AAPIMainActionM
 	/**Resets preferences to the site defaults.
 	 */
 	public AAPIOptions reset(Boolean reset) {
-
 		this.reset = reset;
 
 		return this;
@@ -72,10 +71,16 @@ public class AAPIOptions implements AAPIModule, AAPITokenModule, AAPIMainActionM
 
 	/**List of types of options to reset when the <var>reset</var> option is set.
 	 */
-	public AAPIOptions resetkinds(AAPIOptionsResetkinds... resetkinds) {
-
+	public AAPIOptions resetkinds(AAPIOptionsResetkinds resetkinds) {
 		this.resetkinds = List.of(resetkinds);
 
+		return this;
+	}
+
+	/**List of types of options to reset when the <var>reset</var> option is set.
+	 */
+	public AAPIOptions resetkinds(AAPIOptionsResetkinds... resetkinds) {
+		this.resetkinds = List.of(resetkinds);
 		return this;
 	}
 
@@ -87,10 +92,16 @@ public class AAPIOptions implements AAPIModule, AAPITokenModule, AAPIMainActionM
 
 	/**List of changes, formatted name=value (e.g. skin=vector). If no value is given (not even an equals sign), e.g., optionname|otheroption|..., the option will be reset to its default value. If any value passed contains the pipe character (<kbd>|</kbd>), use the <a href="/wiki/Special:ApiHelp/main#main/datatypes" title="Special:ApiHelp/main">alternative multiple-value separator</a> for correct operation.
 	 */
-	public AAPIOptions change(String... change) {
-
+	public AAPIOptions change(String change) {
 		this.change = List.of(change);
 
+		return this;
+	}
+
+	/**List of changes, formatted name=value (e.g. skin=vector). If no value is given (not even an equals sign), e.g., optionname|otheroption|..., the option will be reset to its default value. If any value passed contains the pipe character (<kbd>|</kbd>), use the <a href="/wiki/Special:ApiHelp/main#main/datatypes" title="Special:ApiHelp/main">alternative multiple-value separator</a> for correct operation.
+	 */
+	public AAPIOptions change(String... change) {
+		this.change = List.of(change);
 		return this;
 	}
 
@@ -103,7 +114,6 @@ public class AAPIOptions implements AAPIModule, AAPITokenModule, AAPIMainActionM
 	/**The name of the option that should be set to the value given by <var>optionvalue</var>.
 	 */
 	public AAPIOptions optionname(String optionname) {
-
 		this.optionname = optionname;
 
 		return this;
@@ -118,7 +128,6 @@ public class AAPIOptions implements AAPIModule, AAPITokenModule, AAPIMainActionM
 	/**The value for the option specified by <var>optionname</var>. When <var>optionname</var> is set but <var>optionvalue</var> is omitted, the option will be reset to its default value.
 	 */
 	public AAPIOptions optionvalue(String optionvalue) {
-
 		this.optionvalue = optionvalue;
 
 		return this;
@@ -137,7 +146,6 @@ public class AAPIOptions implements AAPIModule, AAPITokenModule, AAPIMainActionM
 	 * <li><kbd>update</kbd>: Update the option globally.</li></ul>
 	 */
 	public AAPIOptions global(AAPIOptionsGlobal global) {
-
 		this.global = global;
 
 		return this;
@@ -156,7 +164,6 @@ public class AAPIOptions implements AAPIModule, AAPITokenModule, AAPIMainActionM
 	/**A "csrf" token retrieved from <a href="/wiki/Special:ApiHelp/query%2Btokens" title="Special:ApiHelp/query+tokens">action=query&amp;meta=tokens</a>
 	 */
 	public AAPIOptions token(String token) {
-
 		this.token = token;
 
 		return this;

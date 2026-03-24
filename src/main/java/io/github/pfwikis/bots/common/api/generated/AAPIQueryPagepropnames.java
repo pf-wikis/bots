@@ -39,7 +39,6 @@ public class AAPIQueryPagepropnames implements AAPIModule, AAPIQueryListModule {
 	/**The maximum number of names to return.
 	 */
 	public AAPIQueryPagepropnames limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -103,7 +102,7 @@ public class AAPIQueryPagepropnames implements AAPIModule, AAPIQueryListModule {
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

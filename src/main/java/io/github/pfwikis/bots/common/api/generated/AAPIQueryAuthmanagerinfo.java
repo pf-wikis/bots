@@ -49,7 +49,6 @@ public class AAPIQueryAuthmanagerinfo implements AAPIModule, AAPIQueryMetaModule
 	/**Test whether the user's current authentication status is sufficient for the specified security-sensitive operation.
 	 */
 	public AAPIQueryAuthmanagerinfo securitysensitiveoperation(String securitysensitiveoperation) {
-
 		this.securitysensitiveoperation = securitysensitiveoperation;
 
 		return this;
@@ -64,7 +63,6 @@ public class AAPIQueryAuthmanagerinfo implements AAPIModule, AAPIQueryMetaModule
 	/**Fetch information about the authentication requests needed for the specified authentication action.
 	 */
 	public AAPIQueryAuthmanagerinfo requestsfor(AAPIQueryAuthmanagerinfoRequestsfor requestsfor) {
-
 		this.requestsfor = requestsfor;
 
 		return this;
@@ -79,7 +77,6 @@ public class AAPIQueryAuthmanagerinfo implements AAPIModule, AAPIQueryMetaModule
 	/**Merge field information for all authentication requests into one array.
 	 */
 	public AAPIQueryAuthmanagerinfo mergerequestfields(Boolean mergerequestfields) {
-
 		this.mergerequestfields = mergerequestfields;
 
 		return this;
@@ -95,7 +92,6 @@ public class AAPIQueryAuthmanagerinfo implements AAPIModule, AAPIQueryMetaModule
 	 */
 	public AAPIQueryAuthmanagerinfo messageformat(
 			AAPIQueryAuthmanagerinfoMessageformat messageformat) {
-
 		this.messageformat = messageformat;
 
 		return this;

@@ -69,7 +69,6 @@ public class AAPIEmbedvideo implements AAPIModule, AAPIMainActionModule {
 	/**Either a numeric width (100) or width by height (100x100)
 	 */
 	public AAPIEmbedvideo dimensions(String dimensions) {
-
 		this.dimensions = dimensions;
 
 		return this;
@@ -84,7 +83,6 @@ public class AAPIEmbedvideo implements AAPIModule, AAPIMainActionModule {
 	/**Alignment of video
 	 */
 	public AAPIEmbedvideo alignment(String alignment) {
-
 		this.alignment = alignment;
 
 		return this;
@@ -99,7 +97,6 @@ public class AAPIEmbedvideo implements AAPIModule, AAPIMainActionModule {
 	/**Description of video
 	 */
 	public AAPIEmbedvideo description(String description) {
-
 		this.description = description;
 
 		return this;
@@ -114,7 +111,6 @@ public class AAPIEmbedvideo implements AAPIModule, AAPIMainActionModule {
 	/**Accepts frame, or leave empty
 	 */
 	public AAPIEmbedvideo container(String container) {
-
 		this.container = container;
 
 		return this;
@@ -129,7 +125,6 @@ public class AAPIEmbedvideo implements AAPIModule, AAPIMainActionModule {
 	/**Additional arguments to pass in the video url (for some services)
 	 */
 	public AAPIEmbedvideo urlargs(String urlargs) {
-
 		this.urlargs = urlargs;
 
 		return this;
@@ -144,7 +139,6 @@ public class AAPIEmbedvideo implements AAPIModule, AAPIMainActionModule {
 	/**Auto resize video? (true or false)
 	 */
 	public AAPIEmbedvideo autoresize(String autoresize) {
-
 		this.autoresize = autoresize;
 
 		return this;

@@ -42,10 +42,16 @@ public class AAPIQueryCirrusbuilddoc implements AAPIModule, AAPIQueryPropModule 
 
 	/**Type of data to extract
 	 */
-	public AAPIQueryCirrusbuilddoc builders(AAPIQueryCirrusbuilddocBuilders... builders) {
-
+	public AAPIQueryCirrusbuilddoc builders(AAPIQueryCirrusbuilddocBuilders builders) {
 		this.builders = List.of(builders);
 
+		return this;
+	}
+
+	/**Type of data to extract
+	 */
+	public AAPIQueryCirrusbuilddoc builders(AAPIQueryCirrusbuilddocBuilders... builders) {
+		this.builders = List.of(builders);
 		return this;
 	}
 
@@ -58,7 +64,6 @@ public class AAPIQueryCirrusbuilddoc implements AAPIModule, AAPIQueryPropModule 
 	/**Profile to use when limiting the size of the document
 	 */
 	public AAPIQueryCirrusbuilddoc limiterprofile(String limiterprofile) {
-
 		this.limiterprofile = limiterprofile;
 
 		return this;

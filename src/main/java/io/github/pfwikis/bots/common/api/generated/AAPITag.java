@@ -52,10 +52,16 @@ public class AAPITag implements AAPIModule, AAPITokenModule, AAPIMainActionModul
 
 	/**One or more recent changes IDs from which to add or remove the tag.
 	 */
-	public AAPITag rcid(Long... rcid) {
-
+	public AAPITag rcid(Long rcid) {
 		this.rcid = List.of(rcid);
 
+		return this;
+	}
+
+	/**One or more recent changes IDs from which to add or remove the tag.
+	 */
+	public AAPITag rcid(Long... rcid) {
+		this.rcid = List.of(rcid);
 		return this;
 	}
 
@@ -67,10 +73,16 @@ public class AAPITag implements AAPIModule, AAPITokenModule, AAPIMainActionModul
 
 	/**One or more revision IDs from which to add or remove the tag.
 	 */
-	public AAPITag revid(Long... revid) {
-
+	public AAPITag revid(Long revid) {
 		this.revid = List.of(revid);
 
+		return this;
+	}
+
+	/**One or more revision IDs from which to add or remove the tag.
+	 */
+	public AAPITag revid(Long... revid) {
+		this.revid = List.of(revid);
 		return this;
 	}
 
@@ -82,10 +94,16 @@ public class AAPITag implements AAPIModule, AAPITokenModule, AAPIMainActionModul
 
 	/**One or more log entry IDs from which to add or remove the tag.
 	 */
-	public AAPITag logid(Long... logid) {
-
+	public AAPITag logid(Long logid) {
 		this.logid = List.of(logid);
 
+		return this;
+	}
+
+	/**One or more log entry IDs from which to add or remove the tag.
+	 */
+	public AAPITag logid(Long... logid) {
+		this.logid = List.of(logid);
 		return this;
 	}
 
@@ -97,10 +115,16 @@ public class AAPITag implements AAPIModule, AAPITokenModule, AAPIMainActionModul
 
 	/**Tags to add. Only manually defined tags can be added.
 	 */
-	public AAPITag add(String... add) {
-
+	public AAPITag add(String add) {
 		this.add = List.of(add);
 
+		return this;
+	}
+
+	/**Tags to add. Only manually defined tags can be added.
+	 */
+	public AAPITag add(String... add) {
+		this.add = List.of(add);
 		return this;
 	}
 
@@ -112,10 +136,16 @@ public class AAPITag implements AAPIModule, AAPITokenModule, AAPIMainActionModul
 
 	/**Tags to remove. Only tags that are either manually defined or completely undefined can be removed.
 	 */
-	public AAPITag remove(String... remove) {
-
+	public AAPITag remove(String remove) {
 		this.remove = List.of(remove);
 
+		return this;
+	}
+
+	/**Tags to remove. Only tags that are either manually defined or completely undefined can be removed.
+	 */
+	public AAPITag remove(String... remove) {
+		this.remove = List.of(remove);
 		return this;
 	}
 
@@ -128,7 +158,6 @@ public class AAPITag implements AAPIModule, AAPITokenModule, AAPIMainActionModul
 	/**Reason for the change.
 	 */
 	public AAPITag reason(String reason) {
-
 		this.reason = reason;
 
 		return this;
@@ -142,10 +171,16 @@ public class AAPITag implements AAPIModule, AAPITokenModule, AAPIMainActionModul
 
 	/**Tags to apply to the log entry that will be created as a result of this action.
 	 */
-	public AAPITag tags(String... tags) {
-
+	public AAPITag tags(String tags) {
 		this.tags = List.of(tags);
 
+		return this;
+	}
+
+	/**Tags to apply to the log entry that will be created as a result of this action.
+	 */
+	public AAPITag tags(String... tags) {
+		this.tags = List.of(tags);
 		return this;
 	}
 
@@ -158,7 +193,6 @@ public class AAPITag implements AAPIModule, AAPITokenModule, AAPIMainActionModul
 	/**A "csrf" token retrieved from <a href="/wiki/Special:ApiHelp/query%2Btokens" title="Special:ApiHelp/query+tokens">action=query&amp;meta=tokens</a>
 	 */
 	public AAPITag token(String token) {
-
 		this.token = token;
 
 		return this;

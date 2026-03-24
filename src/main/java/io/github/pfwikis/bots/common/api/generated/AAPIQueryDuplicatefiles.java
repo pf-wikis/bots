@@ -65,7 +65,6 @@ public class AAPIQueryDuplicatefiles
 	/**How many duplicate files to return.
 	 */
 	public AAPIQueryDuplicatefiles limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -80,7 +79,6 @@ public class AAPIQueryDuplicatefiles
 	/**The direction in which to list.
 	 */
 	public AAPIQueryDuplicatefiles dir(AAPIQueryDuplicatefilesDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -95,7 +93,6 @@ public class AAPIQueryDuplicatefiles
 	/**Look only for files in the local repository.
 	 */
 	public AAPIQueryDuplicatefiles localonly(Boolean localonly) {
-
 		this.localonly = localonly;
 
 		return this;
@@ -183,7 +180,7 @@ public class AAPIQueryDuplicatefiles
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

@@ -25,7 +25,7 @@ import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryList.AAPIQuer
  */
 public class AAPIQueryEditcount implements AAPIModule, AAPIQueryListModule {
 
-	public static AAPIQueryEditcount create(@NonNull String... user) {
+	public static AAPIQueryEditcount create(@NonNull String user) {
 
 		AAPIQueryEditcount v = new AAPIQueryEditcount();
 
@@ -48,10 +48,16 @@ public class AAPIQueryEditcount implements AAPIModule, AAPIQueryListModule {
 
 	/**Only list number of edits in these namespaces.
 	 */
-	public AAPIQueryEditcount namespace(NS... namespace) {
-
+	public AAPIQueryEditcount namespace(NS namespace) {
 		this.namespace = List.of(namespace);
 
+		return this;
+	}
+
+	/**Only list number of edits in these namespaces.
+	 */
+	public AAPIQueryEditcount namespace(NS... namespace) {
+		this.namespace = List.of(namespace);
 		return this;
 	}
 

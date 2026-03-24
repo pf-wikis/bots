@@ -91,10 +91,17 @@ public class AAPIQuery implements AAPIModule, AAPIMainActionModule {
 	 * </p>
 	 * <dl></dl>
 	 */
+	public AAPIQuery prop(AAPIQueryPropModule prop) {
+		this.prop = List.of(AAPIQueryProp.createSubmodule(prop));
+		return this;
+	}
+
+	/**<p>Which properties to get for the queried pages.
+	 * </p>
+	 * <dl></dl>
+	 */
 	public AAPIQuery prop(AAPIQueryPropModule... prop) {
-
 		this.prop = AAPIQueryProp.createSubmodule(prop);
-
 		return this;
 	}
 
@@ -110,10 +117,17 @@ public class AAPIQuery implements AAPIModule, AAPIMainActionModule {
 	 * </p>
 	 * <dl></dl>
 	 */
+	public AAPIQuery list(AAPIQueryListModule list) {
+		this.list = List.of(AAPIQueryList.createSubmodule(list));
+		return this;
+	}
+
+	/**<p>Which lists to get.
+	 * </p>
+	 * <dl></dl>
+	 */
 	public AAPIQuery list(AAPIQueryListModule... list) {
-
 		this.list = AAPIQueryList.createSubmodule(list);
-
 		return this;
 	}
 
@@ -129,10 +143,17 @@ public class AAPIQuery implements AAPIModule, AAPIMainActionModule {
 	 * </p>
 	 * <dl></dl>
 	 */
+	public AAPIQuery meta(AAPIQueryMetaModule meta) {
+		this.meta = List.of(AAPIQueryMeta.createSubmodule(meta));
+		return this;
+	}
+
+	/**<p>Which metadata to get.
+	 * </p>
+	 * <dl></dl>
+	 */
 	public AAPIQuery meta(AAPIQueryMetaModule... meta) {
-
 		this.meta = AAPIQueryMeta.createSubmodule(meta);
-
 		return this;
 	}
 
@@ -147,7 +168,6 @@ public class AAPIQuery implements AAPIModule, AAPIMainActionModule {
 	/**Include an additional pageids section listing all returned page IDs.
 	 */
 	public AAPIQuery indexpageids(Boolean indexpageids) {
-
 		this.indexpageids = indexpageids;
 
 		return this;
@@ -162,7 +182,6 @@ public class AAPIQuery implements AAPIModule, AAPIMainActionModule {
 	/**Export the current revisions of all given or generated pages.
 	 */
 	public AAPIQuery export(Boolean export) {
-
 		this.export = export;
 
 		return this;
@@ -177,7 +196,6 @@ public class AAPIQuery implements AAPIModule, AAPIMainActionModule {
 	/**Return the export XML without wrapping it in an XML result (same format as <a href="/wiki/Special:Export" title="Special:Export">Special:Export</a>). Can only be used with query+export.
 	 */
 	public AAPIQuery exportnowrap(Boolean exportnowrap) {
-
 		this.exportnowrap = exportnowrap;
 
 		return this;
@@ -192,7 +210,6 @@ public class AAPIQuery implements AAPIModule, AAPIMainActionModule {
 	/**Target the given version of the XML dump format when exporting. Can only be used with <var>query+export</var>.
 	 */
 	public AAPIQuery exportschema(AAPIQueryExportschema exportschema) {
-
 		this.exportschema = exportschema;
 
 		return this;
@@ -207,7 +224,6 @@ public class AAPIQuery implements AAPIModule, AAPIMainActionModule {
 	/**Whether to get the full URL if the title is an interwiki link.
 	 */
 	public AAPIQuery iwurl(Boolean iwurl) {
-
 		this.iwurl = iwurl;
 
 		return this;
@@ -222,7 +238,6 @@ public class AAPIQuery implements AAPIModule, AAPIMainActionModule {
 	/**Return raw <samp>query-continue</samp> data for continuation.
 	 */
 	public AAPIQuery rawcontinue(Boolean rawcontinue) {
-
 		this.rawcontinue = rawcontinue;
 
 		return this;
@@ -236,10 +251,16 @@ public class AAPIQuery implements AAPIModule, AAPIMainActionModule {
 
 	/**A list of revision IDs to work on. Note that almost all query modules will convert revision IDs to the corresponding page ID and work on the latest revision instead. Only <kbd>prop=revisions</kbd> uses exact revisions for its response.
 	 */
-	public AAPIQuery revids(Long... revids) {
-
+	public AAPIQuery revids(Long revids) {
 		this.revids = List.of(revids);
 
+		return this;
+	}
+
+	/**A list of revision IDs to work on. Note that almost all query modules will convert revision IDs to the corresponding page ID and work on the latest revision instead. Only <kbd>prop=revisions</kbd> uses exact revisions for its response.
+	 */
+	public AAPIQuery revids(Long... revids) {
+		this.revids = List.of(revids);
 		return this;
 	}
 
@@ -255,7 +276,6 @@ public class AAPIQuery implements AAPIModule, AAPIMainActionModule {
 	 * <dl></dl>
 	 */
 	public AAPIQuery generator(AAPIQueryGeneratorModule generator) {
-
 		this.generator = AAPIQueryGenerator.createSubmodule(generator);
 
 		return this;
@@ -273,7 +293,6 @@ public class AAPIQuery implements AAPIModule, AAPIMainActionModule {
 	/**Automatically resolve redirects in <var>query+titles</var>, <var>query+pageids</var>, and <var>query+revids</var>, and in pages returned by <var>query+generator</var>.
 	 */
 	public AAPIQuery redirects(Boolean redirects) {
-
 		this.redirects = redirects;
 
 		return this;
@@ -288,7 +307,6 @@ public class AAPIQuery implements AAPIModule, AAPIMainActionModule {
 	/**Convert titles to other variants if necessary. Only works if the wiki's content language supports variant conversion. Languages that support variant conversion include ban, en, crh, gan, iu, ku, mni, sh, shi, sr, tg, tly, uz, wuu, zgh and zh.
 	 */
 	public AAPIQuery converttitles(Boolean converttitles) {
-
 		this.converttitles = converttitles;
 
 		return this;
@@ -300,10 +318,13 @@ public class AAPIQuery implements AAPIModule, AAPIMainActionModule {
 		return this.converttitles;
 	}
 
-	public AAPIQuery titles(ContainsPageRef... titles) {
-
+	public AAPIQuery titles(ContainsPageRef titles) {
 		this.titles = List.of(titles);
+		return this;
+	}
 
+	public AAPIQuery titles(ContainsPageRef... titles) {
+		this.titles = List.of(titles);
 		return this;
 	}
 
@@ -446,7 +467,7 @@ public class AAPIQuery implements AAPIModule, AAPIMainActionModule {
 			} else {
 				String val =
 						titles.stream()
-								.map(p -> p.toPageRef().getTitle().toFullTitle())
+								.map(p -> p.toPageTitle().toFullTitle())
 								.collect(Collectors.joining("|"));
 				req.addParameter(paramPrefix + "titles", val);
 			}

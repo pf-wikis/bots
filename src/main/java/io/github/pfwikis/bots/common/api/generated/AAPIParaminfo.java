@@ -42,10 +42,16 @@ public class AAPIParaminfo implements AAPIModule, AAPIMainActionModule {
 
 	/**List of module names (values of the <var>action</var> and <var>format</var> parameters, or <kbd>main</kbd>). Can specify submodules with a <kbd>+</kbd>, or all submodules with <kbd>+*</kbd>, or all submodules recursively with <kbd>+**</kbd>.
 	 */
-	public AAPIParaminfo modules(String... modules) {
-
+	public AAPIParaminfo modules(String modules) {
 		this.modules = List.of(modules);
 
+		return this;
+	}
+
+	/**List of module names (values of the <var>action</var> and <var>format</var> parameters, or <kbd>main</kbd>). Can specify submodules with a <kbd>+</kbd>, or all submodules with <kbd>+*</kbd>, or all submodules recursively with <kbd>+**</kbd>.
+	 */
+	public AAPIParaminfo modules(String... modules) {
+		this.modules = List.of(modules);
 		return this;
 	}
 
@@ -58,7 +64,6 @@ public class AAPIParaminfo implements AAPIModule, AAPIMainActionModule {
 	/**Format of help strings.
 	 */
 	public AAPIParaminfo helpformat(AAPIParaminfoHelpformat helpformat) {
-
 		this.helpformat = helpformat;
 
 		return this;

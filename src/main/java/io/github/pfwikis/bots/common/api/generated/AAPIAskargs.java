@@ -27,7 +27,7 @@ import io.github.pfwikis.bots.common.api.generated.params.AAPIMainAction.AAPIMai
  */
 public class AAPIAskargs implements AAPIModule, AAPIMainActionModule {
 
-	public static AAPIAskargs create(@NonNull String... conditions) {
+	public static AAPIAskargs create(@NonNull String conditions) {
 
 		AAPIAskargs v = new AAPIAskargs();
 
@@ -54,10 +54,16 @@ public class AAPIAskargs implements AAPIModule, AAPIMainActionModule {
 
 	/**<span class="apihelp-empty">(no description)</span>
 	 */
-	public AAPIAskargs printouts(String... printouts) {
-
+	public AAPIAskargs printouts(String printouts) {
 		this.printouts = List.of(printouts);
 
+		return this;
+	}
+
+	/**<span class="apihelp-empty">(no description)</span>
+	 */
+	public AAPIAskargs printouts(String... printouts) {
+		this.printouts = List.of(printouts);
 		return this;
 	}
 
@@ -69,10 +75,16 @@ public class AAPIAskargs implements AAPIModule, AAPIMainActionModule {
 
 	/**<span class="apihelp-empty">(no description)</span>
 	 */
-	public AAPIAskargs parameters(String... parameters) {
-
+	public AAPIAskargs parameters(String parameters) {
 		this.parameters = List.of(parameters);
 
+		return this;
+	}
+
+	/**<span class="apihelp-empty">(no description)</span>
+	 */
+	public AAPIAskargs parameters(String... parameters) {
+		this.parameters = List.of(parameters);
 		return this;
 	}
 
@@ -90,7 +102,6 @@ public class AAPIAskargs implements AAPIModule, AAPIMainActionModule {
 	 * <dd>Experimental format using [] as result list.</dd></dl>
 	 */
 	public AAPIAskargs api_version(AAPIAskargsApi_version api_version) {
-
 		this.api_version = api_version;
 
 		return this;

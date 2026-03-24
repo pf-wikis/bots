@@ -80,10 +80,16 @@ public class AAPIQueryWatchlistraw
 
 	/**Only list pages in the given namespaces.
 	 */
-	public AAPIQueryWatchlistraw namespace(NS... namespace) {
-
+	public AAPIQueryWatchlistraw namespace(NS namespace) {
 		this.namespace = List.of(namespace);
 
+		return this;
+	}
+
+	/**Only list pages in the given namespaces.
+	 */
+	public AAPIQueryWatchlistraw namespace(NS... namespace) {
+		this.namespace = List.of(namespace);
 		return this;
 	}
 
@@ -96,7 +102,6 @@ public class AAPIQueryWatchlistraw
 	/**How many total results to return per request.
 	 */
 	public AAPIQueryWatchlistraw limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -112,10 +117,18 @@ public class AAPIQueryWatchlistraw
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryWatchlistraw prop(AAPIQueryWatchlistrawProp... prop) {
-
+	public AAPIQueryWatchlistraw prop(AAPIQueryWatchlistrawProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which additional properties to get:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryWatchlistraw prop(AAPIQueryWatchlistrawProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -129,10 +142,16 @@ public class AAPIQueryWatchlistraw
 
 	/**Only list items that meet these criteria.
 	 */
-	public AAPIQueryWatchlistraw show(AAPIQueryWatchlistrawShow... show) {
-
+	public AAPIQueryWatchlistraw show(AAPIQueryWatchlistrawShow show) {
 		this.show = List.of(show);
 
+		return this;
+	}
+
+	/**Only list items that meet these criteria.
+	 */
+	public AAPIQueryWatchlistraw show(AAPIQueryWatchlistrawShow... show) {
+		this.show = List.of(show);
 		return this;
 	}
 
@@ -145,7 +164,6 @@ public class AAPIQueryWatchlistraw
 	/**Used along with wrtoken to access a different user's watchlist.
 	 */
 	public AAPIQueryWatchlistraw owner(String owner) {
-
 		this.owner = owner;
 
 		return this;
@@ -160,7 +178,6 @@ public class AAPIQueryWatchlistraw
 	/**A security token (available in the user's <a href="/wiki/Special:Preferences#mw-prefsection-watchlist" title="Special:Preferences">preferences</a>) to allow access to another user's watchlist.
 	 */
 	public AAPIQueryWatchlistraw token(String token) {
-
 		this.token = token;
 
 		return this;
@@ -175,7 +192,6 @@ public class AAPIQueryWatchlistraw
 	/**The direction in which to list.
 	 */
 	public AAPIQueryWatchlistraw dir(AAPIQueryWatchlistrawDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -190,7 +206,6 @@ public class AAPIQueryWatchlistraw
 	/**Title (with namespace prefix) to begin enumerating from.
 	 */
 	public AAPIQueryWatchlistraw fromtitle(String fromtitle) {
-
 		this.fromtitle = fromtitle;
 
 		return this;
@@ -205,7 +220,6 @@ public class AAPIQueryWatchlistraw
 	/**Title (with namespace prefix) to stop enumerating at.
 	 */
 	public AAPIQueryWatchlistraw totitle(String totitle) {
-
 		this.totitle = totitle;
 
 		return this;
@@ -388,7 +402,7 @@ public class AAPIQueryWatchlistraw
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

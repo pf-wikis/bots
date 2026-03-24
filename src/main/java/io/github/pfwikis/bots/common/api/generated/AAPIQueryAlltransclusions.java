@@ -77,7 +77,6 @@ public class AAPIQueryAlltransclusions
 	/**The title of the transclusion to start enumerating from.
 	 */
 	public AAPIQueryAlltransclusions from(String from) {
-
 		this.from = from;
 
 		return this;
@@ -92,7 +91,6 @@ public class AAPIQueryAlltransclusions
 	/**The title of the transclusion to stop enumerating at.
 	 */
 	public AAPIQueryAlltransclusions to(String to) {
-
 		this.to = to;
 
 		return this;
@@ -107,7 +105,6 @@ public class AAPIQueryAlltransclusions
 	/**Search for all transcluded titles that begin with this value.
 	 */
 	public AAPIQueryAlltransclusions prefix(String prefix) {
-
 		this.prefix = prefix;
 
 		return this;
@@ -123,7 +120,6 @@ public class AAPIQueryAlltransclusions
 	 * When used as a generator, yields target pages instead of source pages.
 	 */
 	public AAPIQueryAlltransclusions unique(Boolean unique) {
-
 		this.unique = unique;
 
 		return this;
@@ -140,10 +136,18 @@ public class AAPIQueryAlltransclusions
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryAlltransclusions prop(AAPIQueryAlltransclusionsProp... prop) {
-
+	public AAPIQueryAlltransclusions prop(AAPIQueryAlltransclusionsProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which pieces of information to include:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryAlltransclusions prop(AAPIQueryAlltransclusionsProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -158,7 +162,6 @@ public class AAPIQueryAlltransclusions
 	/**The namespace to enumerate.
 	 */
 	public AAPIQueryAlltransclusions namespace(NS namespace) {
-
 		this.namespace = namespace;
 
 		return this;
@@ -173,7 +176,6 @@ public class AAPIQueryAlltransclusions
 	/**How many total items to return.
 	 */
 	public AAPIQueryAlltransclusions limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -188,7 +190,6 @@ public class AAPIQueryAlltransclusions
 	/**The direction in which to list.
 	 */
 	public AAPIQueryAlltransclusions dir(AAPIQueryAlltransclusionsDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -343,7 +344,7 @@ public class AAPIQueryAlltransclusions
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

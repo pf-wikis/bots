@@ -8,18 +8,21 @@ import io.github.pfwikis.bots.common.api.generated.AAPIQuery;
 import io.github.pfwikis.bots.common.api.generated.params.AAPIMainAction.AAPIMainActionModule;
 import io.github.pfwikis.bots.common.api.generated.params.AAPIParseProp;
 import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryProp.AAPIQueryPropModule;
+import io.github.pfwikis.bots.common.api.model.AAPIExceptions.AAPIMissingPageException;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
 import io.github.pfwikis.bots.common.api.responses.EditResponse;
 import io.github.pfwikis.bots.common.api.responses.IResponse;
 import io.github.pfwikis.bots.common.api.responses.ParseResponse;
 import io.github.pfwikis.bots.common.api.responses.QueryResponse;
 import io.github.pfwikis.bots.common.api.responses.QueryResponse.QRPage;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import tools.jackson.databind.JavaType;
 
 @Slf4j
 public class MWApi {
 
+	@Getter
 	private final String botname;
 	private final AAPI api;
 
@@ -28,7 +31,7 @@ public class MWApi {
 		this.botname = botname;
 	}
 
-	public String getWikitext(ContainsPageRef page) {
+	public String getWikitext(ContainsPageRef page) throws AAPIMissingPageException {
 		var q = AAPIParse.create()
 				.prop(AAPIParseProp.WIKITEXT)
 				.page(page);

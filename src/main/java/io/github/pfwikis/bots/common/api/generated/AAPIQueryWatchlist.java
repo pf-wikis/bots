@@ -91,7 +91,6 @@ public class AAPIQueryWatchlist
 	/**Include multiple revisions of the same page within given timeframe.
 	 */
 	public AAPIQueryWatchlist allrev(Boolean allrev) {
-
 		this.allrev = allrev;
 
 		return this;
@@ -106,7 +105,6 @@ public class AAPIQueryWatchlist
 	/**The timestamp to start enumerating from.
 	 */
 	public AAPIQueryWatchlist start(java.time.Instant start) {
-
 		this.start = start;
 
 		return this;
@@ -121,7 +119,6 @@ public class AAPIQueryWatchlist
 	/**The timestamp to end enumerating.
 	 */
 	public AAPIQueryWatchlist end(java.time.Instant end) {
-
 		this.end = end;
 
 		return this;
@@ -135,10 +132,16 @@ public class AAPIQueryWatchlist
 
 	/**Filter changes to only the given namespaces.
 	 */
-	public AAPIQueryWatchlist namespace(NS... namespace) {
-
+	public AAPIQueryWatchlist namespace(NS namespace) {
 		this.namespace = List.of(namespace);
 
+		return this;
+	}
+
+	/**Filter changes to only the given namespaces.
+	 */
+	public AAPIQueryWatchlist namespace(NS... namespace) {
+		this.namespace = List.of(namespace);
 		return this;
 	}
 
@@ -151,7 +154,6 @@ public class AAPIQueryWatchlist
 	/**Only list changes by this user.
 	 */
 	public AAPIQueryWatchlist user(String user) {
-
 		this.user = user;
 
 		return this;
@@ -166,7 +168,6 @@ public class AAPIQueryWatchlist
 	/**Don't list changes by this user.
 	 */
 	public AAPIQueryWatchlist excludeuser(String excludeuser) {
-
 		this.excludeuser = excludeuser;
 
 		return this;
@@ -183,7 +184,6 @@ public class AAPIQueryWatchlist
 	 * <dl></dl>
 	 */
 	public AAPIQueryWatchlist dir(AAPIQueryWatchlistDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -200,7 +200,6 @@ public class AAPIQueryWatchlist
 	/**How many total results to return per request.
 	 */
 	public AAPIQueryWatchlist limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -216,10 +215,18 @@ public class AAPIQueryWatchlist
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryWatchlist prop(AAPIQueryWatchlistProp... prop) {
-
+	public AAPIQueryWatchlist prop(AAPIQueryWatchlistProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which additional properties to get:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryWatchlist prop(AAPIQueryWatchlistProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -233,10 +240,16 @@ public class AAPIQueryWatchlist
 
 	/**Show only items that meet these criteria. For example, to see only minor edits done by logged-in users, set wlshow=minor|!anon.
 	 */
-	public AAPIQueryWatchlist show(AAPIQueryWatchlistShow... show) {
-
+	public AAPIQueryWatchlist show(AAPIQueryWatchlistShow show) {
 		this.show = List.of(show);
 
+		return this;
+	}
+
+	/**Show only items that meet these criteria. For example, to see only minor edits done by logged-in users, set wlshow=minor|!anon.
+	 */
+	public AAPIQueryWatchlist show(AAPIQueryWatchlistShow... show) {
+		this.show = List.of(show);
 		return this;
 	}
 
@@ -250,10 +263,18 @@ public class AAPIQueryWatchlist
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryWatchlist type(AAPIQueryWatchlistType... type) {
-
+	public AAPIQueryWatchlist type(AAPIQueryWatchlistType type) {
 		this.type = List.of(type);
 
+		return this;
+	}
+
+	/**<p>Which types of changes to show:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryWatchlist type(AAPIQueryWatchlistType... type) {
+		this.type = List.of(type);
 		return this;
 	}
 
@@ -268,7 +289,6 @@ public class AAPIQueryWatchlist
 	/**Used along with wltoken to access a different user's watchlist.
 	 */
 	public AAPIQueryWatchlist owner(String owner) {
-
 		this.owner = owner;
 
 		return this;
@@ -283,7 +303,6 @@ public class AAPIQueryWatchlist
 	/**A security token (available in the user's <a href="/wiki/Special:Preferences#mw-prefsection-watchlist" title="Special:Preferences">preferences</a>) to allow access to another user's watchlist.
 	 */
 	public AAPIQueryWatchlist token(String token) {
-
 		this.token = token;
 
 		return this;
@@ -529,7 +548,7 @@ public class AAPIQueryWatchlist
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

@@ -57,7 +57,6 @@ public class AAPIUserrights implements AAPIModule, AAPITokenModule, AAPIMainActi
 	/**User.
 	 */
 	public AAPIUserrights user(String user) {
-
 		this.user = user;
 
 		return this;
@@ -71,10 +70,16 @@ public class AAPIUserrights implements AAPIModule, AAPITokenModule, AAPIMainActi
 
 	/**Add the user to these groups, or if they are already a member, update the expiry of their membership in that group.
 	 */
-	public AAPIUserrights add(AAPIUserrightsAdd... add) {
-
+	public AAPIUserrights add(AAPIUserrightsAdd add) {
 		this.add = List.of(add);
 
+		return this;
+	}
+
+	/**Add the user to these groups, or if they are already a member, update the expiry of their membership in that group.
+	 */
+	public AAPIUserrights add(AAPIUserrightsAdd... add) {
+		this.add = List.of(add);
 		return this;
 	}
 
@@ -86,10 +91,16 @@ public class AAPIUserrights implements AAPIModule, AAPITokenModule, AAPIMainActi
 
 	/**Expiry timestamps. May be relative (e.g. <kbd>5 months</kbd> or <kbd>2 weeks</kbd>) or absolute (e.g. <kbd>2014-09-18T12:34:56Z</kbd>). If only one timestamp is set, it will be used for all groups passed to the <var>add</var> parameter. Use <kbd>infinite</kbd>, <kbd>indefinite</kbd>, <kbd>infinity</kbd>, or <kbd>never</kbd> for a never-expiring user group.
 	 */
-	public AAPIUserrights expiry(String... expiry) {
-
+	public AAPIUserrights expiry(String expiry) {
 		this.expiry = List.of(expiry);
 
+		return this;
+	}
+
+	/**Expiry timestamps. May be relative (e.g. <kbd>5 months</kbd> or <kbd>2 weeks</kbd>) or absolute (e.g. <kbd>2014-09-18T12:34:56Z</kbd>). If only one timestamp is set, it will be used for all groups passed to the <var>add</var> parameter. Use <kbd>infinite</kbd>, <kbd>indefinite</kbd>, <kbd>infinity</kbd>, or <kbd>never</kbd> for a never-expiring user group.
+	 */
+	public AAPIUserrights expiry(String... expiry) {
+		this.expiry = List.of(expiry);
 		return this;
 	}
 
@@ -101,10 +112,16 @@ public class AAPIUserrights implements AAPIModule, AAPITokenModule, AAPIMainActi
 
 	/**Remove the user from these groups.
 	 */
-	public AAPIUserrights remove(AAPIUserrightsRemove... remove) {
-
+	public AAPIUserrights remove(AAPIUserrightsRemove remove) {
 		this.remove = List.of(remove);
 
+		return this;
+	}
+
+	/**Remove the user from these groups.
+	 */
+	public AAPIUserrights remove(AAPIUserrightsRemove... remove) {
+		this.remove = List.of(remove);
 		return this;
 	}
 
@@ -117,7 +134,6 @@ public class AAPIUserrights implements AAPIModule, AAPITokenModule, AAPIMainActi
 	/**Reason for the change.
 	 */
 	public AAPIUserrights reason(String reason) {
-
 		this.reason = reason;
 
 		return this;
@@ -135,7 +151,6 @@ public class AAPIUserrights implements AAPIModule, AAPITokenModule, AAPIMainActi
 	 * </p>
 	 */
 	public AAPIUserrights token(String token) {
-
 		this.token = token;
 
 		return this;
@@ -152,10 +167,16 @@ public class AAPIUserrights implements AAPIModule, AAPITokenModule, AAPIMainActi
 
 	/**Change tags to apply to the entry in the user rights log.
 	 */
-	public AAPIUserrights tags(String... tags) {
-
+	public AAPIUserrights tags(String tags) {
 		this.tags = List.of(tags);
 
+		return this;
+	}
+
+	/**Change tags to apply to the entry in the user rights log.
+	 */
+	public AAPIUserrights tags(String... tags) {
+		this.tags = List.of(tags);
 		return this;
 	}
 
@@ -168,7 +189,6 @@ public class AAPIUserrights implements AAPIModule, AAPITokenModule, AAPIMainActi
 	/**Watch the user's user and talk pages.
 	 */
 	public AAPIUserrights watchuser(Boolean watchuser) {
-
 		this.watchuser = watchuser;
 
 		return this;

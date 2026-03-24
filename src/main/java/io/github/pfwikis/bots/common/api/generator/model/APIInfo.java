@@ -1,9 +1,12 @@
 package io.github.pfwikis.bots.common.api.generator.model;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.fizzed.rocker.RockerContent;
 
 import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.api.generator.api.GenAPIInterwiki;
@@ -29,6 +32,7 @@ public class APIInfo {
 			.entrySet()
 			.stream()
 			.map(e->new APINamespace(e.getKey(), e.getValue()))
+			.sorted(Comparator.comparing(e->e.getId()))
 			.toList();
 		
 		res.interwikis = Arrays.stream(infos)
@@ -87,6 +91,11 @@ public class APIInfo {
 					alt.put(Wiki.SF, sources.getLast().getName());
 				}
 			}
+		}
+
+
+		public boolean isTalk() {
+			return id>0&&id%2==1;
 		}
 		
 	}

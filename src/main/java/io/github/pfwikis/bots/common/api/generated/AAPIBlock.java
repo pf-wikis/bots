@@ -69,7 +69,6 @@ public class AAPIBlock implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 	/**User to block.
 	 */
 	public AAPIBlock user(String user) {
-
 		this.user = user;
 
 		return this;
@@ -84,7 +83,6 @@ public class AAPIBlock implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 	/**Expiry time. May be relative (e.g. <kbd>5 months</kbd> or <kbd>2 weeks</kbd>) or absolute (e.g. <kbd>2014-09-18T12:34:56Z</kbd>). If set to <kbd>infinite</kbd>, <kbd>indefinite</kbd>, or <kbd>never</kbd>, the block will never expire.
 	 */
 	public AAPIBlock expiry(String expiry) {
-
 		this.expiry = expiry;
 
 		return this;
@@ -99,7 +97,6 @@ public class AAPIBlock implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 	/**Reason for block.
 	 */
 	public AAPIBlock reason(String reason) {
-
 		this.reason = reason;
 
 		return this;
@@ -114,7 +111,6 @@ public class AAPIBlock implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 	/**Block anonymous users only (i.e. disable anonymous edits for this IP address, including temporary account edits).
 	 */
 	public AAPIBlock anononly(Boolean anononly) {
-
 		this.anononly = anononly;
 
 		return this;
@@ -129,7 +125,6 @@ public class AAPIBlock implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 	/**Prevent account creation.
 	 */
 	public AAPIBlock nocreate(Boolean nocreate) {
-
 		this.nocreate = nocreate;
 
 		return this;
@@ -144,7 +139,6 @@ public class AAPIBlock implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 	/**Automatically block the last used IP address, and any subsequent IP addresses they try to login from.
 	 */
 	public AAPIBlock autoblock(Boolean autoblock) {
-
 		this.autoblock = autoblock;
 
 		return this;
@@ -159,7 +153,6 @@ public class AAPIBlock implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 	/**Prevent user from sending email through the wiki. (Requires the <code>blockemail</code> right).
 	 */
 	public AAPIBlock noemail(Boolean noemail) {
-
 		this.noemail = noemail;
 
 		return this;
@@ -174,7 +167,6 @@ public class AAPIBlock implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 	/**Hide the username from the block log. (Requires the <code>hideuser</code> right).
 	 */
 	public AAPIBlock hidename(Boolean hidename) {
-
 		this.hidename = hidename;
 
 		return this;
@@ -189,7 +181,6 @@ public class AAPIBlock implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 	/**Allow the user to edit their own talk page (depends on <var><a href="/w/index.php?title=Mw:Special:MyLanguage/Manual:$wgBlockAllowsUTEdit&amp;action=edit&amp;redlink=1" class="new" title="Mw:Special:MyLanguage/Manual:$wgBlockAllowsUTEdit (page does not exist)">$wgBlockAllowsUTEdit</a></var>).
 	 */
 	public AAPIBlock allowusertalk(Boolean allowusertalk) {
-
 		this.allowusertalk = allowusertalk;
 
 		return this;
@@ -204,7 +195,6 @@ public class AAPIBlock implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 	/**If the user is already blocked, overwrite the existing block.
 	 */
 	public AAPIBlock reblock(Boolean reblock) {
-
 		this.reblock = reblock;
 
 		return this;
@@ -219,7 +209,6 @@ public class AAPIBlock implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 	/**Watch the user's or IP address's user and talk pages.
 	 */
 	public AAPIBlock watchuser(Boolean watchuser) {
-
 		this.watchuser = watchuser;
 
 		return this;
@@ -233,10 +222,16 @@ public class AAPIBlock implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 
 	/**Change tags to apply to the entry in the block log.
 	 */
-	public AAPIBlock tags(String... tags) {
-
+	public AAPIBlock tags(String tags) {
 		this.tags = List.of(tags);
 
+		return this;
+	}
+
+	/**Change tags to apply to the entry in the block log.
+	 */
+	public AAPIBlock tags(String... tags) {
+		this.tags = List.of(tags);
 		return this;
 	}
 
@@ -249,7 +244,6 @@ public class AAPIBlock implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 	/**Block user from specific pages or namespaces rather than the entire site.
 	 */
 	public AAPIBlock partial(Boolean partial) {
-
 		this.partial = partial;
 
 		return this;
@@ -263,10 +257,16 @@ public class AAPIBlock implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 
 	/**List of titles to block the user from editing. Only applies when <var>partial</var> is set to true.
 	 */
-	public AAPIBlock pagerestrictions(String... pagerestrictions) {
-
+	public AAPIBlock pagerestrictions(String pagerestrictions) {
 		this.pagerestrictions = List.of(pagerestrictions);
 
+		return this;
+	}
+
+	/**List of titles to block the user from editing. Only applies when <var>partial</var> is set to true.
+	 */
+	public AAPIBlock pagerestrictions(String... pagerestrictions) {
+		this.pagerestrictions = List.of(pagerestrictions);
 		return this;
 	}
 
@@ -278,10 +278,16 @@ public class AAPIBlock implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 
 	/**List of namespace IDs to block the user from editing. Only applies when <var>partial</var> is set to true.
 	 */
-	public AAPIBlock namespacerestrictions(NS... namespacerestrictions) {
-
+	public AAPIBlock namespacerestrictions(NS namespacerestrictions) {
 		this.namespacerestrictions = List.of(namespacerestrictions);
 
+		return this;
+	}
+
+	/**List of namespace IDs to block the user from editing. Only applies when <var>partial</var> is set to true.
+	 */
+	public AAPIBlock namespacerestrictions(NS... namespacerestrictions) {
+		this.namespacerestrictions = List.of(namespacerestrictions);
 		return this;
 	}
 
@@ -294,7 +300,6 @@ public class AAPIBlock implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 	/**A "csrf" token retrieved from <a href="/wiki/Special:ApiHelp/query%2Btokens" title="Special:ApiHelp/query+tokens">action=query&amp;meta=tokens</a>
 	 */
 	public AAPIBlock token(String token) {
-
 		this.token = token;
 
 		return this;

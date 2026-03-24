@@ -75,7 +75,6 @@ public class AAPIQueryBacklinks
 	/**Title to search. Cannot be used together with <var>blpageid</var>.
 	 */
 	public AAPIQueryBacklinks title(String title) {
-
 		this.title = title;
 
 		return this;
@@ -90,7 +89,6 @@ public class AAPIQueryBacklinks
 	/**Page ID to search. Cannot be used together with <var>bltitle</var>.
 	 */
 	public AAPIQueryBacklinks pageid(Long pageid) {
-
 		this.pageid = pageid;
 
 		return this;
@@ -104,10 +102,16 @@ public class AAPIQueryBacklinks
 
 	/**The namespace to enumerate.
 	 */
-	public AAPIQueryBacklinks namespace(NS... namespace) {
-
+	public AAPIQueryBacklinks namespace(NS namespace) {
 		this.namespace = List.of(namespace);
 
+		return this;
+	}
+
+	/**The namespace to enumerate.
+	 */
+	public AAPIQueryBacklinks namespace(NS... namespace) {
+		this.namespace = List.of(namespace);
 		return this;
 	}
 
@@ -120,7 +124,6 @@ public class AAPIQueryBacklinks
 	/**The direction in which to list.
 	 */
 	public AAPIQueryBacklinks dir(AAPIQueryBacklinksDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -135,7 +138,6 @@ public class AAPIQueryBacklinks
 	/**How to filter for redirects. If set to <kbd>nonredirects</kbd> when <var>blredirect</var> is enabled, this is only applied to the second level.
 	 */
 	public AAPIQueryBacklinks filterredir(AAPIQueryBacklinksFilterredir filterredir) {
-
 		this.filterredir = filterredir;
 
 		return this;
@@ -150,7 +152,6 @@ public class AAPIQueryBacklinks
 	/**How many total pages to return. If <var>blredirect</var> is enabled, the limit applies to each level separately (which means up to 2 * <var>bllimit</var> results may be returned).
 	 */
 	public AAPIQueryBacklinks limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -165,7 +166,6 @@ public class AAPIQueryBacklinks
 	/**If linking page is a redirect, find all pages that link to that redirect as well. Maximum limit is halved.
 	 */
 	public AAPIQueryBacklinks redirect(Boolean redirect) {
-
 		this.redirect = redirect;
 
 		return this;
@@ -310,7 +310,7 @@ public class AAPIQueryBacklinks
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

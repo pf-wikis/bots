@@ -70,7 +70,6 @@ public class AAPIManagetags implements AAPIModule, AAPITokenModule, AAPIMainActi
 	/**An optional reason for creating, deleting, activating or deactivating the tag.
 	 */
 	public AAPIManagetags reason(String reason) {
-
 		this.reason = reason;
 
 		return this;
@@ -85,7 +84,6 @@ public class AAPIManagetags implements AAPIModule, AAPITokenModule, AAPIMainActi
 	/**Whether to ignore any warnings that are issued during the operation.
 	 */
 	public AAPIManagetags ignorewarnings(Boolean ignorewarnings) {
-
 		this.ignorewarnings = ignorewarnings;
 
 		return this;
@@ -99,10 +97,16 @@ public class AAPIManagetags implements AAPIModule, AAPITokenModule, AAPIMainActi
 
 	/**Change tags to apply to the entry in the tag management log.
 	 */
-	public AAPIManagetags tags(String... tags) {
-
+	public AAPIManagetags tags(String tags) {
 		this.tags = List.of(tags);
 
+		return this;
+	}
+
+	/**Change tags to apply to the entry in the tag management log.
+	 */
+	public AAPIManagetags tags(String... tags) {
+		this.tags = List.of(tags);
 		return this;
 	}
 
@@ -115,7 +119,6 @@ public class AAPIManagetags implements AAPIModule, AAPITokenModule, AAPIMainActi
 	/**A "csrf" token retrieved from <a href="/wiki/Special:ApiHelp/query%2Btokens" title="Special:ApiHelp/query+tokens">action=query&amp;meta=tokens</a>
 	 */
 	public AAPIManagetags token(String token) {
-
 		this.token = token;
 
 		return this;

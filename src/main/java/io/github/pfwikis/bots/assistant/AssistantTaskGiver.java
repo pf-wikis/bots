@@ -1,30 +1,18 @@
 package io.github.pfwikis.bots.assistant;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.beust.jcommander.Parameters;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.github.pfwikis.bots.common.Discord;
-import io.github.pfwikis.bots.common.Wiki;
-import io.github.pfwikis.bots.common.api.responses.SemanticAsk;
+import io.github.pfwikis.bots.common.api.generated.params.NS;
 import io.github.pfwikis.bots.common.api.responses.SemanticAsk.Result;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
-import io.github.pfwikis.bots.common.model.Page;
-import io.github.pfwikis.bots.facts.model.SFactType;
-import io.github.pfwikis.bots.facts.model.SMWPropertyType;
-import io.github.pfwikis.bots.utils.Jackson;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,7 +33,6 @@ public class AssistantTaskGiver extends SimpleBot {
 
 	@Override
 	public void run(RunContext ctx) throws Exception {
-		/*
 		var cats = run.getWiki().semanticAsk(Object.class, "[[:Category:+]][[Subcategory of::Category:Pages with errors]]")
 			.stream()
 			.map(c->c.getPage())
@@ -54,7 +41,7 @@ public class AssistantTaskGiver extends SimpleBot {
 		
 		
 		var res = run.getWiki().semanticAsk(Printouts.class, "[[Category:Pages with errors]]|?Category=categories");
-		res.removeIf(r->r.getPage().startsWith("User:"));
+		res.removeIf(r->r.getPage().getTitle().getNs().equals(NS.USER));
 		if(res.isEmpty()) {
 			return;
 		}
@@ -66,14 +53,14 @@ public class AssistantTaskGiver extends SimpleBot {
 			errors.retainAll(p.getPrintouts().getCategories().stream().map(c->c.getPage()).toList());
 			sb
 				.append("* ")
-				.append(Discord.wikiLink(run.getServer(), p.getPage(), p.getFullurl()))
+				.append(Discord.wikiLink(run.getServer(), p.getPage().getTitle().toString(), p.getFullurl()))
 				.append(" for ");
 			if(errors.isEmpty()) {
 				sb.append("an uncategorized error, please check the page");
 			}
 			else {
 				sb.append(errors.stream()
-						.map(c->StringUtils.removeStart(c, "Category:"))
+						.map(c->c.getTitle().getName())
 						.map(c->StringUtils.removeStart(c, "Pages "))
 						.map(c->StringUtils.removeStart(c, "with "))
 						.collect(Collectors.joining(", ")));
@@ -88,7 +75,6 @@ public class AssistantTaskGiver extends SimpleBot {
 		}
 		log.info("New human task:\n{}", sb);
 		discord.reportToTalkChannel(run.getServer(), this, sb.toString(), true);
-		*/
 	}
 	
 	@Data

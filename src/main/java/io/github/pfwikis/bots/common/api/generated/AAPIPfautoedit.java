@@ -45,7 +45,6 @@ public class AAPIPfautoedit implements AAPIModule, AAPIMainActionModule {
 	/**The Page Forms form to use
 	 */
 	public AAPIPfautoedit form(String form) {
-
 		this.form = form;
 
 		return this;
@@ -60,7 +59,6 @@ public class AAPIPfautoedit implements AAPIModule, AAPIMainActionModule {
 	/**The name of the page to be created or edited
 	 */
 	public AAPIPfautoedit target(String target) {
-
 		this.target = target;
 
 		return this;
@@ -75,7 +73,6 @@ public class AAPIPfautoedit implements AAPIModule, AAPIMainActionModule {
 	/**The query string
 	 */
 	public AAPIPfautoedit query(String query) {
-
 		this.query = query;
 
 		return this;
@@ -90,7 +87,6 @@ public class AAPIPfautoedit implements AAPIModule, AAPIMainActionModule {
 	/**The name of a page to preload in the form
 	 */
 	public AAPIPfautoedit preload(String preload) {
-
 		this.preload = preload;
 
 		return this;

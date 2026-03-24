@@ -28,6 +28,11 @@ public class AAPIExceptions {
 		private AAPIError aapiError;
 	}
 	
+	@Getter
+	@StandardException
+	public static class AAPIMissingPageException extends AAPIException {
+	}
+	
 	public static class AAPIMultipleExceptions extends AAPIException {
 		public AAPIMultipleExceptions(List<AAPIException> list) {
 			super(list.size()+" AAPI errors occurred");
@@ -39,7 +44,10 @@ public class AAPIExceptions {
 	public static class AAPIRuntimeException extends RuntimeException {}
 
 	public static AAPIException from(AAPIError error) {
-		var e = new AAPIException(error.getCode()+": "+error.getText());
+		AAPIException e = switch(error.getCode()) {
+			case "missingtitle" -> new AAPIMissingPageException(error.getText()); 
+			default -> new AAPIException(error.getCode()+": "+error.getText());
+		};
 		e.aapiError = error;
 		return e;
 	}

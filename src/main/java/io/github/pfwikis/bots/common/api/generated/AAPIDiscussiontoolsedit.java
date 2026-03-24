@@ -99,7 +99,6 @@ public class AAPIDiscussiontoolsedit implements AAPIModule, AAPITokenModule, AAP
 	 */
 	public AAPIDiscussiontoolsedit autosubscribe(
 			AAPIDiscussiontoolseditAutosubscribe autosubscribe) {
-
 		this.autosubscribe = autosubscribe;
 
 		return this;
@@ -120,7 +119,6 @@ public class AAPIDiscussiontoolsedit implements AAPIModule, AAPITokenModule, AAP
 	/**A "csrf" token retrieved from <a href="/wiki/Special:ApiHelp/query%2Btokens" title="Special:ApiHelp/query+tokens">action=query&amp;meta=tokens</a>
 	 */
 	public AAPIDiscussiontoolsedit token(String token) {
-
 		this.token = token;
 
 		return this;
@@ -135,7 +133,6 @@ public class AAPIDiscussiontoolsedit implements AAPIModule, AAPITokenModule, AAP
 	/**An optional unique ID generated in the client to prevent double-posting.
 	 */
 	public AAPIDiscussiontoolsedit formtoken(String formtoken) {
-
 		this.formtoken = formtoken;
 
 		return this;
@@ -150,7 +147,6 @@ public class AAPIDiscussiontoolsedit implements AAPIModule, AAPITokenModule, AAP
 	/**Name of the comment to reply to. Only used when <var>paction</var> is <var>addcomment</var>.
 	 */
 	public AAPIDiscussiontoolsedit commentname(String commentname) {
-
 		this.commentname = commentname;
 
 		return this;
@@ -165,7 +161,6 @@ public class AAPIDiscussiontoolsedit implements AAPIModule, AAPITokenModule, AAP
 	/**ID of the comment to reply to. Only used when <var>paction</var> is <var>addcomment</var>. Overrides <var>commentname</var>.
 	 */
 	public AAPIDiscussiontoolsedit commentid(String commentid) {
-
 		this.commentid = commentid;
 
 		return this;
@@ -180,7 +175,6 @@ public class AAPIDiscussiontoolsedit implements AAPIModule, AAPITokenModule, AAP
 	/**Content to post, as wikitext. Cannot be used together with <var>html</var>.
 	 */
 	public AAPIDiscussiontoolsedit wikitext(String wikitext) {
-
 		this.wikitext = wikitext;
 
 		return this;
@@ -195,7 +189,6 @@ public class AAPIDiscussiontoolsedit implements AAPIModule, AAPITokenModule, AAP
 	/**Content to post, as HTML. Cannot be used together with <var>wikitext</var>.
 	 */
 	public AAPIDiscussiontoolsedit html(String html) {
-
 		this.html = html;
 
 		return this;
@@ -210,7 +203,6 @@ public class AAPIDiscussiontoolsedit implements AAPIModule, AAPITokenModule, AAP
 	/**Edit summary.
 	 */
 	public AAPIDiscussiontoolsedit summary(String summary) {
-
 		this.summary = summary;
 
 		return this;
@@ -225,7 +217,6 @@ public class AAPIDiscussiontoolsedit implements AAPIModule, AAPITokenModule, AAP
 	/**The title for a new section when using <var>$1section=new</var>. Only used when <var>paction</var> is <var>addtopic</var>.
 	 */
 	public AAPIDiscussiontoolsedit sectiontitle(String sectiontitle) {
-
 		this.sectiontitle = sectiontitle;
 
 		return this;
@@ -240,7 +231,6 @@ public class AAPIDiscussiontoolsedit implements AAPIModule, AAPITokenModule, AAP
 	/**Allow posting a new section without a title.
 	 */
 	public AAPIDiscussiontoolsedit allownosectiontitle(Boolean allownosectiontitle) {
-
 		this.allownosectiontitle = allownosectiontitle;
 
 		return this;
@@ -255,7 +245,6 @@ public class AAPIDiscussiontoolsedit implements AAPIModule, AAPITokenModule, AAP
 	/**Apply the selected skin to the parser output. May affect the following properties: <kbd>text</kbd>, <kbd>langlinks</kbd>, <kbd>headitems</kbd>, <kbd>modules</kbd>, <kbd>jsconfigvars</kbd>, <kbd>indicators</kbd>.
 	 */
 	public AAPIDiscussiontoolsedit useskin(AAPIDiscussiontoolseditUseskin useskin) {
-
 		this.useskin = useskin;
 
 		return this;
@@ -270,7 +259,6 @@ public class AAPIDiscussiontoolsedit implements AAPIModule, AAPITokenModule, AAP
 	/**Unconditionally add or remove the page from the current user's watchlist, use preferences (ignored for bot users) or do not change watch.
 	 */
 	public AAPIDiscussiontoolsedit watchlist(String watchlist) {
-
 		this.watchlist = watchlist;
 
 		return this;
@@ -285,7 +273,6 @@ public class AAPIDiscussiontoolsedit implements AAPIModule, AAPITokenModule, AAP
 	/**Captcha ID (when saving with a captcha response).
 	 */
 	public AAPIDiscussiontoolsedit captchaid(String captchaid) {
-
 		this.captchaid = captchaid;
 
 		return this;
@@ -300,7 +287,6 @@ public class AAPIDiscussiontoolsedit implements AAPIModule, AAPITokenModule, AAP
 	/**Answer to the captcha (when saving with a captcha response).
 	 */
 	public AAPIDiscussiontoolsedit captchaword(String captchaword) {
-
 		this.captchaword = captchaword;
 
 		return this;
@@ -315,7 +301,6 @@ public class AAPIDiscussiontoolsedit implements AAPIModule, AAPITokenModule, AAP
 	/**Omit the HTML content of the new revision in the response.
 	 */
 	public AAPIDiscussiontoolsedit nocontent(String nocontent) {
-
 		this.nocontent = nocontent;
 
 		return this;
@@ -329,10 +314,16 @@ public class AAPIDiscussiontoolsedit implements AAPIModule, AAPITokenModule, AAP
 
 	/**Change tags to apply to the edit.
 	 */
-	public AAPIDiscussiontoolsedit tags(String... tags) {
-
+	public AAPIDiscussiontoolsedit tags(String tags) {
 		this.tags = List.of(tags);
 
+		return this;
+	}
+
+	/**Change tags to apply to the edit.
+	 */
+	public AAPIDiscussiontoolsedit tags(String... tags) {
+		this.tags = List.of(tags);
 		return this;
 	}
 
@@ -345,7 +336,6 @@ public class AAPIDiscussiontoolsedit implements AAPIModule, AAPITokenModule, AAP
 	/**Page title. If saving the edit created a temporary account, the API may respond with an URL that the client should visit to complete logging in. If this parameter is provided, the URL will redirect to the given page, instead of the page that was edited.
 	 */
 	public AAPIDiscussiontoolsedit returnto(String returnto) {
-
 		this.returnto = returnto;
 
 		return this;
@@ -360,7 +350,6 @@ public class AAPIDiscussiontoolsedit implements AAPIModule, AAPITokenModule, AAP
 	/**URL query parameters (with leading <kbd>?</kbd>). If saving the edit created a temporary account, the API may respond with an URL that the client should visit to complete logging in. If this parameter is provided, the URL will redirect to a page with the given query parameters.
 	 */
 	public AAPIDiscussiontoolsedit returntoquery(String returntoquery) {
-
 		this.returntoquery = returntoquery;
 
 		return this;
@@ -375,7 +364,6 @@ public class AAPIDiscussiontoolsedit implements AAPIModule, AAPITokenModule, AAP
 	/**URL fragment (with leading <kbd>#</kbd>). If saving the edit created a temporary account, the API may respond with an URL that the client should visit to complete logging in. If this parameter is provided, the URL will redirect to a page with the given fragment.
 	 */
 	public AAPIDiscussiontoolsedit returntoanchor(String returntoanchor) {
-
 		this.returntoanchor = returntoanchor;
 
 		return this;

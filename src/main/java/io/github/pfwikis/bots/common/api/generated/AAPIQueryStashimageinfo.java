@@ -48,10 +48,16 @@ public class AAPIQueryStashimageinfo implements AAPIModule, AAPIQueryPropModule 
 
 	/**Key that identifies a previous upload that was stashed temporarily.
 	 */
-	public AAPIQueryStashimageinfo filekey(String... filekey) {
-
+	public AAPIQueryStashimageinfo filekey(String filekey) {
 		this.filekey = List.of(filekey);
 
+		return this;
+	}
+
+	/**Key that identifies a previous upload that was stashed temporarily.
+	 */
+	public AAPIQueryStashimageinfo filekey(String... filekey) {
+		this.filekey = List.of(filekey);
 		return this;
 	}
 
@@ -65,10 +71,18 @@ public class AAPIQueryStashimageinfo implements AAPIModule, AAPIQueryPropModule 
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryStashimageinfo prop(AAPIQueryStashimageinfoProp... prop) {
-
+	public AAPIQueryStashimageinfo prop(AAPIQueryStashimageinfoProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which file information to get:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryStashimageinfo prop(AAPIQueryStashimageinfoProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -84,7 +98,6 @@ public class AAPIQueryStashimageinfo implements AAPIModule, AAPIQueryPropModule 
 	 * For performance reasons if this option is used, no more than 50 scaled images will be returned.
 	 */
 	public AAPIQueryStashimageinfo urlwidth(Long urlwidth) {
-
 		this.urlwidth = urlwidth;
 
 		return this;
@@ -100,7 +113,6 @@ public class AAPIQueryStashimageinfo implements AAPIModule, AAPIQueryPropModule 
 	/**Similar to siiurlwidth.
 	 */
 	public AAPIQueryStashimageinfo urlheight(Long urlheight) {
-
 		this.urlheight = urlheight;
 
 		return this;
@@ -115,7 +127,6 @@ public class AAPIQueryStashimageinfo implements AAPIModule, AAPIQueryPropModule 
 	/**A handler specific parameter string. For example, PDFs might use <kbd>page15-100px</kbd>. <var>siiurlwidth</var> must be used and be consistent with <var>siiurlparam</var>.
 	 */
 	public AAPIQueryStashimageinfo urlparam(String urlparam) {
-
 		this.urlparam = urlparam;
 
 		return this;

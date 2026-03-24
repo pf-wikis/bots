@@ -1,11 +1,11 @@
-package io.github.pfwikis.bots.common.model;
+package io.github.pfwikis.bots.common.api.responses;
 
 import java.util.Collections;
 import java.util.List;
 
 import com.google.common.collect.MoreCollectors;
 
-import io.github.pfwikis.bots.common.model.subject.SemanticSubject.Property;
+import io.github.pfwikis.bots.common.api.responses.SemanticSubject.Property;
 import io.github.pfwikis.bots.facts.model.SProperty;
 
 public interface SemanticObject {

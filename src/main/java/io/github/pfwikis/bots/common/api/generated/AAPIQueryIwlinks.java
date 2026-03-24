@@ -52,10 +52,18 @@ public class AAPIQueryIwlinks implements AAPIModule, AAPIQueryPropModule {
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryIwlinks prop(AAPIQueryIwlinksProp... prop) {
-
+	public AAPIQueryIwlinks prop(AAPIQueryIwlinksProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which additional properties to get for each interwiki link:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryIwlinks prop(AAPIQueryIwlinksProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -70,7 +78,6 @@ public class AAPIQueryIwlinks implements AAPIModule, AAPIQueryPropModule {
 	/**Only return interwiki links with this prefix.
 	 */
 	public AAPIQueryIwlinks prefix(String prefix) {
-
 		this.prefix = prefix;
 
 		return this;
@@ -85,7 +92,6 @@ public class AAPIQueryIwlinks implements AAPIModule, AAPIQueryPropModule {
 	/**Interwiki link to search for. Must be used with <var>iwprefix</var>.
 	 */
 	public AAPIQueryIwlinks title(String title) {
-
 		this.title = title;
 
 		return this;
@@ -100,7 +106,6 @@ public class AAPIQueryIwlinks implements AAPIModule, AAPIQueryPropModule {
 	/**The direction in which to list.
 	 */
 	public AAPIQueryIwlinks dir(AAPIQueryIwlinksDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -115,7 +120,6 @@ public class AAPIQueryIwlinks implements AAPIModule, AAPIQueryPropModule {
 	/**How many interwiki links to return.
 	 */
 	public AAPIQueryIwlinks limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -234,7 +238,7 @@ public class AAPIQueryIwlinks implements AAPIModule, AAPIQueryPropModule {
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

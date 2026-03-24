@@ -27,18 +27,16 @@ import io.github.pfwikis.bots.common.api.generated.params.AAPIMainAction.AAPIMai
  */
 public class AAPIDelete implements AAPIModule, AAPITokenModule, AAPIMainActionModule {
 
-	public static AAPIDelete create() {
+	public static AAPIDelete create(@NonNull ContainsPageRef title) {
 
 		AAPIDelete v = new AAPIDelete();
+
+		v.title = title;
 
 		return v;
 	}
 
 	private AAPIDelete() {}
-
-	private String title;
-
-	private Long pageid;
 
 	private String reason;
 
@@ -52,40 +50,11 @@ public class AAPIDelete implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 
 	private String token;
 
-	/**Title of the page to delete. Cannot be used together with <var>pageid</var>.
-	 */
-	public AAPIDelete title(String title) {
-
-		this.title = title;
-
-		return this;
-	}
-
-	/**Title of the page to delete. Cannot be used together with <var>pageid</var>.
-	 */
-	public String getTitle() {
-		return this.title;
-	}
-
-	/**Page ID of the page to delete. Cannot be used together with <var>title</var>.
-	 */
-	public AAPIDelete pageid(Long pageid) {
-
-		this.pageid = pageid;
-
-		return this;
-	}
-
-	/**Page ID of the page to delete. Cannot be used together with <var>title</var>.
-	 */
-	public Long getPageid() {
-		return this.pageid;
-	}
+	private ContainsPageRef title;
 
 	/**Reason for the deletion. If not set, an automatically generated reason will be used.
 	 */
 	public AAPIDelete reason(String reason) {
-
 		this.reason = reason;
 
 		return this;
@@ -99,10 +68,16 @@ public class AAPIDelete implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 
 	/**Change tags to apply to the entry in the deletion log.
 	 */
-	public AAPIDelete tags(String... tags) {
-
+	public AAPIDelete tags(String tags) {
 		this.tags = List.of(tags);
 
+		return this;
+	}
+
+	/**Change tags to apply to the entry in the deletion log.
+	 */
+	public AAPIDelete tags(String... tags) {
+		this.tags = List.of(tags);
 		return this;
 	}
 
@@ -115,7 +90,6 @@ public class AAPIDelete implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**Delete the talk page, if it exists.
 	 */
 	public AAPIDelete deletetalk(Boolean deletetalk) {
-
 		this.deletetalk = deletetalk;
 
 		return this;
@@ -130,7 +104,6 @@ public class AAPIDelete implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**Unconditionally add or remove the page from the current user's watchlist, use preferences (ignored for bot users) or do not change watch.
 	 */
 	public AAPIDelete watchlist(AAPIDeleteWatchlist watchlist) {
-
 		this.watchlist = watchlist;
 
 		return this;
@@ -145,7 +118,6 @@ public class AAPIDelete implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**The name of the old image to delete as provided by <a href="/wiki/Special:ApiHelp/query%2Bimageinfo" title="Special:ApiHelp/query+imageinfo">action=query&amp;prop=imageinfo&amp;iiprop=archivename</a>.
 	 */
 	public AAPIDelete oldimage(String oldimage) {
-
 		this.oldimage = oldimage;
 
 		return this;
@@ -160,7 +132,6 @@ public class AAPIDelete implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**A "csrf" token retrieved from <a href="/wiki/Special:ApiHelp/query%2Btokens" title="Special:ApiHelp/query+tokens">action=query&amp;meta=tokens</a>
 	 */
 	public AAPIDelete token(String token) {
-
 		this.token = token;
 
 		return this;
@@ -172,21 +143,15 @@ public class AAPIDelete implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 		return this.token;
 	}
 
+	public ContainsPageRef getTitle() {
+		return this.title;
+	}
+
 	public String toString() {
 		var sb = new StringBuilder().append("AAPIDelete(");
 
 		if (title != null) {
-
-			sb.append("title").append("=").append(title);
-
-			sb.append(", ");
-		}
-
-		if (pageid != null) {
-
-			sb.append("pageid").append("=").append(pageid.toString());
-
-			sb.append(", ");
+			sb.append("title=").append(title).append(", ");
 		}
 
 		if (reason != null) {
@@ -241,12 +206,12 @@ public class AAPIDelete implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 
 		if (title != null) {
 
-			req.addParameter(paramPrefix + "title", title);
-		}
-
-		if (pageid != null) {
-
-			req.addParameter(paramPrefix + "pageid", pageid.toString());
+			if (title.toPageRef().hasId()) {
+				req.addParameter(
+						paramPrefix + "pageid", Integer.toString(title.toPageRef().getId()));
+			} else {
+				req.addParameter(paramPrefix + "title", title.toPageTitle().toFullTitle());
+			}
 		}
 
 		if (reason != null) {

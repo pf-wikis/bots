@@ -49,7 +49,10 @@ public class APIModule {
 			case "AAPIParse" -> new PageSetter("pageid", "page", false, false);
 			case "AAPIQuery" -> new PageSetter("pageids", "titles", true, false);
 			case "AAPIEdit",
-				"AAPIQueryCategorymembers"
+				"AAPIQueryCategorymembers",
+				"AAPIProtect",
+				"AAPIQueryImageusage",
+				"AAPIDelete"
 				-> new PageSetter("pageid", "title", false, true);
 			default -> null;
 		};

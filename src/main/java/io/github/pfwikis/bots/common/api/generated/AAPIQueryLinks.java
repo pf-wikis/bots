@@ -66,10 +66,16 @@ public class AAPIQueryLinks
 
 	/**Show links in these namespaces only.
 	 */
-	public AAPIQueryLinks namespace(NS... namespace) {
-
+	public AAPIQueryLinks namespace(NS namespace) {
 		this.namespace = List.of(namespace);
 
+		return this;
+	}
+
+	/**Show links in these namespaces only.
+	 */
+	public AAPIQueryLinks namespace(NS... namespace) {
+		this.namespace = List.of(namespace);
 		return this;
 	}
 
@@ -82,7 +88,6 @@ public class AAPIQueryLinks
 	/**How many links to return.
 	 */
 	public AAPIQueryLinks limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -96,10 +101,16 @@ public class AAPIQueryLinks
 
 	/**Only list links to these titles. Useful for checking whether a certain page links to a certain title.
 	 */
-	public AAPIQueryLinks titles(String... titles) {
-
+	public AAPIQueryLinks titles(String titles) {
 		this.titles = List.of(titles);
 
+		return this;
+	}
+
+	/**Only list links to these titles. Useful for checking whether a certain page links to a certain title.
+	 */
+	public AAPIQueryLinks titles(String... titles) {
+		this.titles = List.of(titles);
 		return this;
 	}
 
@@ -112,7 +123,6 @@ public class AAPIQueryLinks
 	/**The direction in which to list.
 	 */
 	public AAPIQueryLinks dir(AAPIQueryLinksDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -225,7 +235,7 @@ public class AAPIQueryLinks
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

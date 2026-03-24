@@ -54,10 +54,16 @@ public class AAPIEchomute implements AAPIModule, AAPITokenModule, AAPIMainAction
 
 	/**Pages or users to add to the mute list
 	 */
-	public AAPIEchomute mute(String... mute) {
-
+	public AAPIEchomute mute(String mute) {
 		this.mute = List.of(mute);
 
+		return this;
+	}
+
+	/**Pages or users to add to the mute list
+	 */
+	public AAPIEchomute mute(String... mute) {
+		this.mute = List.of(mute);
 		return this;
 	}
 
@@ -69,10 +75,16 @@ public class AAPIEchomute implements AAPIModule, AAPITokenModule, AAPIMainAction
 
 	/**Pages or users to remove from the mute list
 	 */
-	public AAPIEchomute unmute(String... unmute) {
-
+	public AAPIEchomute unmute(String unmute) {
 		this.unmute = List.of(unmute);
 
+		return this;
+	}
+
+	/**Pages or users to remove from the mute list
+	 */
+	public AAPIEchomute unmute(String... unmute) {
+		this.unmute = List.of(unmute);
 		return this;
 	}
 
@@ -85,7 +97,6 @@ public class AAPIEchomute implements AAPIModule, AAPITokenModule, AAPIMainAction
 	/**A "csrf" token retrieved from <a href="/wiki/Special:ApiHelp/query%2Btokens" title="Special:ApiHelp/query+tokens">action=query&amp;meta=tokens</a>
 	 */
 	public AAPIEchomute token(String token) {
-
 		this.token = token;
 
 		return this;

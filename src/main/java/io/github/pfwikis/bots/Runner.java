@@ -5,8 +5,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.MDC;
+
+import com.beust.jcommander.IDefaultProvider;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.MissingCommandException;
+import com.google.common.base.CaseFormat;
 
 import io.github.classgraph.ClassGraph;
 import io.github.pfwikis.bots.common.bots.Bot;
@@ -16,10 +21,22 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Runner {
+	
+	public static final String MDC_KEY = "wiki";
+	public static final String MDC_VALUE_NONE = "none";
 
 	public static void main(String[] args) throws Exception {
+		MDC.put(MDC_KEY, MDC_VALUE_NONE);
 		Locale.setDefault(Locale.ROOT);
 		var commands = JCommander.newBuilder();
+		commands.defaultProvider(new IDefaultProvider() {
+			@Override
+			public String getDefaultValueFor(String optionName) {
+				var name = StringUtils.removeStart(optionName, "--");
+				name = CaseFormat.LOWER_CAMEL.converterTo(CaseFormat.UPPER_UNDERSCORE).convert(name);
+				return System.getenv("BOT_"+name);
+			}
+		});
 		commands.addCommand("scheduler", new Scheduler());
 		for(var bot : Runner.getAllBots()) {
 			commands.addCommand(bot.getId(), bot);

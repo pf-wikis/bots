@@ -49,7 +49,6 @@ public class AAPIJsonfm implements AAPIModule, AAPIMainFormatModule {
 	/**Return the pretty-printed HTML and associated ResourceLoader modules as a JSON object.
 	 */
 	public AAPIJsonfm wrappedhtml(Boolean wrappedhtml) {
-
 		this.wrappedhtml = wrappedhtml;
 
 		return this;
@@ -64,7 +63,6 @@ public class AAPIJsonfm implements AAPIModule, AAPIMainFormatModule {
 	/**If specified, wraps the output into a given function call. For safety, all user-specific data will be restricted.
 	 */
 	public AAPIJsonfm callback(String callback) {
-
 		this.callback = callback;
 
 		return this;
@@ -79,7 +77,6 @@ public class AAPIJsonfm implements AAPIModule, AAPIMainFormatModule {
 	/**If specified, encodes most (but not all) non-ASCII characters as UTF-8 instead of replacing them with hexadecimal escape sequences. Default when <var>formatversion</var> is not <kbd>1</kbd>.
 	 */
 	public AAPIJsonfm utf8(Boolean utf8) {
-
 		this.utf8 = utf8;
 
 		return this;
@@ -94,7 +91,6 @@ public class AAPIJsonfm implements AAPIModule, AAPIMainFormatModule {
 	/**If specified, encodes all non-ASCII using hexadecimal escape sequences. Default when <var>formatversion</var> is <kbd>1</kbd>.
 	 */
 	public AAPIJsonfm ascii(Boolean ascii) {
-
 		this.ascii = ascii;
 
 		return this;
@@ -111,7 +107,6 @@ public class AAPIJsonfm implements AAPIModule, AAPIMainFormatModule {
 	 * <dl></dl>
 	 */
 	public AAPIJsonfm formatversion(AAPIJsonfmFormatversion formatversion) {
-
 		this.formatversion = formatversion;
 
 		return this;

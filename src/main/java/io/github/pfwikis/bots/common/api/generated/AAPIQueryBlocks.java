@@ -61,7 +61,6 @@ public class AAPIQueryBlocks implements AAPIModule, AAPIQueryListModule {
 	/**The timestamp to start enumerating from.
 	 */
 	public AAPIQueryBlocks start(java.time.Instant start) {
-
 		this.start = start;
 
 		return this;
@@ -76,7 +75,6 @@ public class AAPIQueryBlocks implements AAPIModule, AAPIQueryListModule {
 	/**The timestamp to stop enumerating at.
 	 */
 	public AAPIQueryBlocks end(java.time.Instant end) {
-
 		this.end = end;
 
 		return this;
@@ -93,7 +91,6 @@ public class AAPIQueryBlocks implements AAPIModule, AAPIQueryListModule {
 	 * <dl></dl>
 	 */
 	public AAPIQueryBlocks dir(AAPIQueryBlocksDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -109,10 +106,16 @@ public class AAPIQueryBlocks implements AAPIModule, AAPIQueryListModule {
 
 	/**List of block IDs to list (optional).
 	 */
-	public AAPIQueryBlocks ids(Long... ids) {
-
+	public AAPIQueryBlocks ids(Long ids) {
 		this.ids = List.of(ids);
 
+		return this;
+	}
+
+	/**List of block IDs to list (optional).
+	 */
+	public AAPIQueryBlocks ids(Long... ids) {
+		this.ids = List.of(ids);
 		return this;
 	}
 
@@ -124,10 +127,16 @@ public class AAPIQueryBlocks implements AAPIModule, AAPIQueryListModule {
 
 	/**List of users to search for (optional).
 	 */
-	public AAPIQueryBlocks users(String... users) {
-
+	public AAPIQueryBlocks users(String users) {
 		this.users = List.of(users);
 
+		return this;
+	}
+
+	/**List of users to search for (optional).
+	 */
+	public AAPIQueryBlocks users(String... users) {
+		this.users = List.of(users);
 		return this;
 	}
 
@@ -141,7 +150,6 @@ public class AAPIQueryBlocks implements AAPIModule, AAPIQueryListModule {
 	 * Cannot be used together with <var>bkusers</var>. CIDR ranges broader than IPv4/16 or IPv6/19 are not accepted.
 	 */
 	public AAPIQueryBlocks ip(String ip) {
-
 		this.ip = ip;
 
 		return this;
@@ -157,7 +165,6 @@ public class AAPIQueryBlocks implements AAPIModule, AAPIQueryListModule {
 	/**The maximum number of blocks to list.
 	 */
 	public AAPIQueryBlocks limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -173,10 +180,18 @@ public class AAPIQueryBlocks implements AAPIModule, AAPIQueryListModule {
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryBlocks prop(AAPIQueryBlocksProp... prop) {
-
+	public AAPIQueryBlocks prop(AAPIQueryBlocksProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which properties to get:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryBlocks prop(AAPIQueryBlocksProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -191,10 +206,17 @@ public class AAPIQueryBlocks implements AAPIModule, AAPIQueryListModule {
 	/**Show only items that meet these criteria.
 	 * For example, to see only indefinite blocks on IP addresses, set <kbd>bkshow=ip|!temp</kbd>.
 	 */
-	public AAPIQueryBlocks show(AAPIQueryBlocksShow... show) {
-
+	public AAPIQueryBlocks show(AAPIQueryBlocksShow show) {
 		this.show = List.of(show);
 
+		return this;
+	}
+
+	/**Show only items that meet these criteria.
+	 * For example, to see only indefinite blocks on IP addresses, set <kbd>bkshow=ip|!temp</kbd>.
+	 */
+	public AAPIQueryBlocks show(AAPIQueryBlocksShow... show) {
+		this.show = List.of(show);
 		return this;
 	}
 
@@ -383,7 +405,7 @@ public class AAPIQueryBlocks implements AAPIModule, AAPIQueryListModule {
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

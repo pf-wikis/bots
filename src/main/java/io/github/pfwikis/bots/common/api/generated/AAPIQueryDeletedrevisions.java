@@ -89,10 +89,18 @@ public class AAPIQueryDeletedrevisions
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryDeletedrevisions prop(AAPIQueryDeletedrevisionsProp... prop) {
-
+	public AAPIQueryDeletedrevisions prop(AAPIQueryDeletedrevisionsProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which properties to get for each revision:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryDeletedrevisions prop(AAPIQueryDeletedrevisionsProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -106,10 +114,16 @@ public class AAPIQueryDeletedrevisions
 
 	/**Which revision slots to return data for, when slot-related properties are included in <var>drvprops</var>. If omitted, data from the <kbd>main</kbd> slot will be returned in a backwards-compatible format.
 	 */
-	public AAPIQueryDeletedrevisions slots(AAPIQueryDeletedrevisionsSlots... slots) {
-
+	public AAPIQueryDeletedrevisions slots(AAPIQueryDeletedrevisionsSlots slots) {
 		this.slots = List.of(slots);
 
+		return this;
+	}
+
+	/**Which revision slots to return data for, when slot-related properties are included in <var>drvprops</var>. If omitted, data from the <kbd>main</kbd> slot will be returned in a backwards-compatible format.
+	 */
+	public AAPIQueryDeletedrevisions slots(AAPIQueryDeletedrevisionsSlots... slots) {
+		this.slots = List.of(slots);
 		return this;
 	}
 
@@ -122,7 +136,6 @@ public class AAPIQueryDeletedrevisions
 	/**Limit how many revisions will be returned. If <var>drvprop=content</var>, <var>drvprop=parsetree</var>, <var>drvdiffto</var> or <var>drvdifftotext</var> is used, the limit is 50. If <var>drvparse</var> is used, the limit is 1.
 	 */
 	public AAPIQueryDeletedrevisions limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -137,7 +150,6 @@ public class AAPIQueryDeletedrevisions
 	/**Only retrieve the content of the section with this identifier.
 	 */
 	public AAPIQueryDeletedrevisions section(String section) {
-
 		this.section = section;
 
 		return this;
@@ -152,7 +164,6 @@ public class AAPIQueryDeletedrevisions
 	/**The timestamp to start enumerating from. Ignored when processing a list of revision IDs.
 	 */
 	public AAPIQueryDeletedrevisions start(java.time.Instant start) {
-
 		this.start = start;
 
 		return this;
@@ -167,7 +178,6 @@ public class AAPIQueryDeletedrevisions
 	/**The timestamp to stop enumerating at. Ignored when processing a list of revision IDs.
 	 */
 	public AAPIQueryDeletedrevisions end(java.time.Instant end) {
-
 		this.end = end;
 
 		return this;
@@ -184,7 +194,6 @@ public class AAPIQueryDeletedrevisions
 	 * <dl></dl>
 	 */
 	public AAPIQueryDeletedrevisions dir(AAPIQueryDeletedrevisionsDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -201,7 +210,6 @@ public class AAPIQueryDeletedrevisions
 	/**Only list revisions tagged with this tag.
 	 */
 	public AAPIQueryDeletedrevisions tag(String tag) {
-
 		this.tag = tag;
 
 		return this;
@@ -216,7 +224,6 @@ public class AAPIQueryDeletedrevisions
 	/**Only list revisions by this user.
 	 */
 	public AAPIQueryDeletedrevisions user(String user) {
-
 		this.user = user;
 
 		return this;
@@ -231,7 +238,6 @@ public class AAPIQueryDeletedrevisions
 	/**Don't list revisions by this user.
 	 */
 	public AAPIQueryDeletedrevisions excludeuser(String excludeuser) {
-
 		this.excludeuser = excludeuser;
 
 		return this;
@@ -425,7 +431,7 @@ public class AAPIQueryDeletedrevisions
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

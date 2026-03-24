@@ -39,7 +39,6 @@ public class AAPIRawfm implements AAPIModule, AAPIMainFormatModule {
 	/**Return the pretty-printed HTML and associated ResourceLoader modules as a JSON object.
 	 */
 	public AAPIRawfm wrappedhtml(Boolean wrappedhtml) {
-
 		this.wrappedhtml = wrappedhtml;
 
 		return this;

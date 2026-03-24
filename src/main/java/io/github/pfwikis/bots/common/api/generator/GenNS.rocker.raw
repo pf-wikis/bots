@@ -24,6 +24,7 @@ public enum NS {
 	@for((it,ns):info.getNamespaces()) {
 		@ns.getJavaName()(
 			@ns.getId(),
+			@ns.isTalk(),
 			"@ns.getPrefix()",
 			"@ns.getLabel()",
 			@if(ns.getAlt() != null) {new EnumMap<>(Map.of(@for((i,en):ns.getAlt().entrySet()) {Wiki.@en.getKey().name(), "@en.getValue()"@if(!i.last()){,}}))}else{null},
@@ -33,6 +34,7 @@ public enum NS {
 	
 	@@Getter(onMethod_=@@JsonValue)
 	private final int id;
+	private final boolean talk;
 	private final String prefix;
 	private final String label;
 	private final EnumMap<Wiki, String> alternativeLabels;

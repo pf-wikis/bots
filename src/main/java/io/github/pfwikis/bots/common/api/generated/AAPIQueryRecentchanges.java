@@ -97,7 +97,6 @@ public class AAPIQueryRecentchanges
 	/**The timestamp to start enumerating from.
 	 */
 	public AAPIQueryRecentchanges start(java.time.Instant start) {
-
 		this.start = start;
 
 		return this;
@@ -112,7 +111,6 @@ public class AAPIQueryRecentchanges
 	/**The timestamp to end enumerating.
 	 */
 	public AAPIQueryRecentchanges end(java.time.Instant end) {
-
 		this.end = end;
 
 		return this;
@@ -129,7 +127,6 @@ public class AAPIQueryRecentchanges
 	 * <dl></dl>
 	 */
 	public AAPIQueryRecentchanges dir(AAPIQueryRecentchangesDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -145,10 +142,16 @@ public class AAPIQueryRecentchanges
 
 	/**Filter changes to only these namespaces.
 	 */
-	public AAPIQueryRecentchanges namespace(NS... namespace) {
-
+	public AAPIQueryRecentchanges namespace(NS namespace) {
 		this.namespace = List.of(namespace);
 
+		return this;
+	}
+
+	/**Filter changes to only these namespaces.
+	 */
+	public AAPIQueryRecentchanges namespace(NS... namespace) {
+		this.namespace = List.of(namespace);
 		return this;
 	}
 
@@ -161,7 +164,6 @@ public class AAPIQueryRecentchanges
 	/**Only list changes by this user.
 	 */
 	public AAPIQueryRecentchanges user(String user) {
-
 		this.user = user;
 
 		return this;
@@ -176,7 +178,6 @@ public class AAPIQueryRecentchanges
 	/**Don't list changes by this user.
 	 */
 	public AAPIQueryRecentchanges excludeuser(String excludeuser) {
-
 		this.excludeuser = excludeuser;
 
 		return this;
@@ -191,7 +192,6 @@ public class AAPIQueryRecentchanges
 	/**Only list changes tagged with this tag.
 	 */
 	public AAPIQueryRecentchanges tag(String tag) {
-
 		this.tag = tag;
 
 		return this;
@@ -207,10 +207,18 @@ public class AAPIQueryRecentchanges
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryRecentchanges prop(AAPIQueryRecentchangesProp... prop) {
-
+	public AAPIQueryRecentchanges prop(AAPIQueryRecentchangesProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Include additional pieces of information:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryRecentchanges prop(AAPIQueryRecentchangesProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -224,10 +232,16 @@ public class AAPIQueryRecentchanges
 
 	/**Show only items that meet these criteria. For example, to see only minor edits done by logged-in users, set rcshow=minor|!anon.
 	 */
-	public AAPIQueryRecentchanges show(AAPIQueryRecentchangesShow... show) {
-
+	public AAPIQueryRecentchanges show(AAPIQueryRecentchangesShow show) {
 		this.show = List.of(show);
 
+		return this;
+	}
+
+	/**Show only items that meet these criteria. For example, to see only minor edits done by logged-in users, set rcshow=minor|!anon.
+	 */
+	public AAPIQueryRecentchanges show(AAPIQueryRecentchangesShow... show) {
+		this.show = List.of(show);
 		return this;
 	}
 
@@ -240,7 +254,6 @@ public class AAPIQueryRecentchanges
 	/**How many total changes to return.
 	 */
 	public AAPIQueryRecentchanges limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -254,10 +267,16 @@ public class AAPIQueryRecentchanges
 
 	/**Which types of changes to show.
 	 */
-	public AAPIQueryRecentchanges type(AAPIQueryRecentchangesType... type) {
-
+	public AAPIQueryRecentchanges type(AAPIQueryRecentchangesType type) {
 		this.type = List.of(type);
 
+		return this;
+	}
+
+	/**Which types of changes to show.
+	 */
+	public AAPIQueryRecentchanges type(AAPIQueryRecentchangesType... type) {
+		this.type = List.of(type);
 		return this;
 	}
 
@@ -270,7 +289,6 @@ public class AAPIQueryRecentchanges
 	/**Only list changes which are the latest revision.
 	 */
 	public AAPIQueryRecentchanges toponly(Boolean toponly) {
-
 		this.toponly = toponly;
 
 		return this;
@@ -285,7 +303,6 @@ public class AAPIQueryRecentchanges
 	/**Filter entries to those related to a page.
 	 */
 	public AAPIQueryRecentchanges title(String title) {
-
 		this.title = title;
 
 		return this;
@@ -300,7 +317,6 @@ public class AAPIQueryRecentchanges
 	/**When being used as a generator, generate revision IDs rather than titles. Recent change entries without associated revision IDs (e.g. most log entries) will generate nothing.
 	 */
 	public AAPIQueryRecentchanges generaterevisions(Boolean generaterevisions) {
-
 		this.generaterevisions = generaterevisions;
 
 		return this;
@@ -315,7 +331,6 @@ public class AAPIQueryRecentchanges
 	/**Only list changes that touch the named slot.
 	 */
 	public AAPIQueryRecentchanges slot(AAPIQueryRecentchangesSlot slot) {
-
 		this.slot = slot;
 
 		return this;
@@ -585,7 +600,7 @@ public class AAPIQueryRecentchanges
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

@@ -40,10 +40,16 @@ public class AAPISmwinfo implements AAPIModule, AAPIMainActionModule {
 
 	/**<span class="apihelp-empty">(no description)</span>
 	 */
-	public AAPISmwinfo info(AAPISmwinfoInfo... info) {
-
+	public AAPISmwinfo info(AAPISmwinfoInfo info) {
 		this.info = List.of(info);
 
+		return this;
+	}
+
+	/**<span class="apihelp-empty">(no description)</span>
+	 */
+	public AAPISmwinfo info(AAPISmwinfoInfo... info) {
+		this.info = List.of(info);
 		return this;
 	}
 

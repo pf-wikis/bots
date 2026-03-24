@@ -70,10 +70,18 @@ public class AAPIQueryLogevents implements AAPIModule, AAPIQueryListModule {
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryLogevents prop(AAPIQueryLogeventsProp... prop) {
-
+	public AAPIQueryLogevents prop(AAPIQueryLogeventsProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which properties to get:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryLogevents prop(AAPIQueryLogeventsProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -88,7 +96,6 @@ public class AAPIQueryLogevents implements AAPIModule, AAPIQueryListModule {
 	/**Filter log entries to only this type.
 	 */
 	public AAPIQueryLogevents type(AAPIQueryLogeventsType type) {
-
 		this.type = type;
 
 		return this;
@@ -103,7 +110,6 @@ public class AAPIQueryLogevents implements AAPIModule, AAPIQueryListModule {
 	/**Filter log actions to only this action. Overrides <var>letype</var>. In the list of possible values, values with the asterisk wildcard such as <kbd>action/*</kbd> can have different strings after the slash (/).
 	 */
 	public AAPIQueryLogevents action(AAPIQueryLogeventsAction action) {
-
 		this.action = action;
 
 		return this;
@@ -118,7 +124,6 @@ public class AAPIQueryLogevents implements AAPIModule, AAPIQueryListModule {
 	/**The timestamp to start enumerating from.
 	 */
 	public AAPIQueryLogevents start(java.time.Instant start) {
-
 		this.start = start;
 
 		return this;
@@ -133,7 +138,6 @@ public class AAPIQueryLogevents implements AAPIModule, AAPIQueryListModule {
 	/**The timestamp to end enumerating.
 	 */
 	public AAPIQueryLogevents end(java.time.Instant end) {
-
 		this.end = end;
 
 		return this;
@@ -150,7 +154,6 @@ public class AAPIQueryLogevents implements AAPIModule, AAPIQueryListModule {
 	 * <dl></dl>
 	 */
 	public AAPIQueryLogevents dir(AAPIQueryLogeventsDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -167,7 +170,6 @@ public class AAPIQueryLogevents implements AAPIModule, AAPIQueryListModule {
 	/**Filter entries to those made by the given user.
 	 */
 	public AAPIQueryLogevents user(String user) {
-
 		this.user = user;
 
 		return this;
@@ -182,7 +184,6 @@ public class AAPIQueryLogevents implements AAPIModule, AAPIQueryListModule {
 	/**Filter entries to those related to a page.
 	 */
 	public AAPIQueryLogevents title(String title) {
-
 		this.title = title;
 
 		return this;
@@ -197,7 +198,6 @@ public class AAPIQueryLogevents implements AAPIModule, AAPIQueryListModule {
 	/**Filter entries to those in the given namespace.
 	 */
 	public AAPIQueryLogevents namespace(NS namespace) {
-
 		this.namespace = namespace;
 
 		return this;
@@ -212,7 +212,6 @@ public class AAPIQueryLogevents implements AAPIModule, AAPIQueryListModule {
 	/**Filter entries that start with this prefix.
 	 */
 	public AAPIQueryLogevents prefix(String prefix) {
-
 		this.prefix = prefix;
 
 		return this;
@@ -227,7 +226,6 @@ public class AAPIQueryLogevents implements AAPIModule, AAPIQueryListModule {
 	/**Only list event entries tagged with this tag.
 	 */
 	public AAPIQueryLogevents tag(String tag) {
-
 		this.tag = tag;
 
 		return this;
@@ -242,7 +240,6 @@ public class AAPIQueryLogevents implements AAPIModule, AAPIQueryListModule {
 	/**How many total event entries to return.
 	 */
 	public AAPIQueryLogevents limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -453,7 +450,7 @@ public class AAPIQueryLogevents implements AAPIModule, AAPIQueryListModule {
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

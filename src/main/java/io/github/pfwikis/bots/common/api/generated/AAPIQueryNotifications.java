@@ -74,10 +74,16 @@ public class AAPIQueryNotifications implements AAPIModule, AAPIQueryMetaModule {
 
 	/**Filter notifications returned.
 	 */
-	public AAPIQueryNotifications filter(AAPIQueryNotificationsFilter... filter) {
-
+	public AAPIQueryNotifications filter(AAPIQueryNotificationsFilter filter) {
 		this.filter = List.of(filter);
 
+		return this;
+	}
+
+	/**Filter notifications returned.
+	 */
+	public AAPIQueryNotifications filter(AAPIQueryNotificationsFilter... filter) {
+		this.filter = List.of(filter);
 		return this;
 	}
 
@@ -89,10 +95,16 @@ public class AAPIQueryNotifications implements AAPIModule, AAPIQueryMetaModule {
 
 	/**Details to request.
 	 */
-	public AAPIQueryNotifications prop(AAPIQueryNotificationsProp... prop) {
-
+	public AAPIQueryNotifications prop(AAPIQueryNotificationsProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**Details to request.
+	 */
+	public AAPIQueryNotifications prop(AAPIQueryNotificationsProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -104,10 +116,16 @@ public class AAPIQueryNotifications implements AAPIModule, AAPIQueryMetaModule {
 
 	/**The notification sections to query (i.e. some combination of 'alert' and 'message').
 	 */
-	public AAPIQueryNotifications sections(AAPIQueryNotificationsSections... sections) {
-
+	public AAPIQueryNotifications sections(AAPIQueryNotificationsSections sections) {
 		this.sections = List.of(sections);
 
+		return this;
+	}
+
+	/**The notification sections to query (i.e. some combination of 'alert' and 'message').
+	 */
+	public AAPIQueryNotifications sections(AAPIQueryNotificationsSections... sections) {
+		this.sections = List.of(sections);
 		return this;
 	}
 
@@ -120,7 +138,6 @@ public class AAPIQueryNotifications implements AAPIModule, AAPIQueryMetaModule {
 	/**Whether to group the result by section. Each section is fetched separately if set.
 	 */
 	public AAPIQueryNotifications groupbysection(Boolean groupbysection) {
-
 		this.groupbysection = groupbysection;
 
 		return this;
@@ -137,7 +154,6 @@ public class AAPIQueryNotifications implements AAPIModule, AAPIQueryMetaModule {
 	 * <dl></dl>
 	 */
 	public AAPIQueryNotifications format(AAPIQueryNotificationsFormat format) {
-
 		this.format = format;
 
 		return this;
@@ -154,7 +170,6 @@ public class AAPIQueryNotifications implements AAPIModule, AAPIQueryMetaModule {
 	/**The maximum number of notifications to return.
 	 */
 	public AAPIQueryNotifications limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -169,7 +184,6 @@ public class AAPIQueryNotifications implements AAPIModule, AAPIQueryMetaModule {
 	/**Whether to show unread notifications first (only used if groupbysection is not set).
 	 */
 	public AAPIQueryNotifications unreadfirst(Boolean unreadfirst) {
-
 		this.unreadfirst = unreadfirst;
 
 		return this;
@@ -183,10 +197,16 @@ public class AAPIQueryNotifications implements AAPIModule, AAPIQueryMetaModule {
 
 	/**Only return notifications for these pages. To get notifications not associated with any page, use [] as a title.
 	 */
-	public AAPIQueryNotifications titles(String... titles) {
-
+	public AAPIQueryNotifications titles(String titles) {
 		this.titles = List.of(titles);
 
+		return this;
+	}
+
+	/**Only return notifications for these pages. To get notifications not associated with any page, use [] as a title.
+	 */
+	public AAPIQueryNotifications titles(String... titles) {
+		this.titles = List.of(titles);
 		return this;
 	}
 
@@ -199,7 +219,6 @@ public class AAPIQueryNotifications implements AAPIModule, AAPIQueryMetaModule {
 	/**Whether to show bundle compatible unread notifications according to notification types bundling rules.
 	 */
 	public AAPIQueryNotifications bundle(Boolean bundle) {
-
 		this.bundle = bundle;
 
 		return this;
@@ -213,11 +232,17 @@ public class AAPIQueryNotifications implements AAPIModule, AAPIQueryMetaModule {
 
 	/**Notifier types for which to return notifications.
 	 */
-	public AAPIQueryNotifications notifiertypes(
-			AAPIQueryNotificationsNotifiertypes... notifiertypes) {
-
+	public AAPIQueryNotifications notifiertypes(AAPIQueryNotificationsNotifiertypes notifiertypes) {
 		this.notifiertypes = List.of(notifiertypes);
 
+		return this;
+	}
+
+	/**Notifier types for which to return notifications.
+	 */
+	public AAPIQueryNotifications notifiertypes(
+			AAPIQueryNotificationsNotifiertypes... notifiertypes) {
+		this.notifiertypes = List.of(notifiertypes);
 		return this;
 	}
 
@@ -230,7 +255,6 @@ public class AAPIQueryNotifications implements AAPIModule, AAPIQueryMetaModule {
 	/**When more alert results are available, use this to continue.
 	 */
 	public AAPIQueryNotifications alertcontinue(String alertcontinue) {
-
 		this.alertcontinue = alertcontinue;
 
 		return this;
@@ -245,7 +269,6 @@ public class AAPIQueryNotifications implements AAPIModule, AAPIQueryMetaModule {
 	/**Whether to show unread message notifications first (only used if groupbysection is set).
 	 */
 	public AAPIQueryNotifications alertunreadfirst(Boolean alertunreadfirst) {
-
 		this.alertunreadfirst = alertunreadfirst;
 
 		return this;
@@ -260,7 +283,6 @@ public class AAPIQueryNotifications implements AAPIModule, AAPIQueryMetaModule {
 	/**When more message results are available, use this to continue.
 	 */
 	public AAPIQueryNotifications messagecontinue(String messagecontinue) {
-
 		this.messagecontinue = messagecontinue;
 
 		return this;
@@ -275,7 +297,6 @@ public class AAPIQueryNotifications implements AAPIModule, AAPIQueryMetaModule {
 	/**Whether to show unread alert notifications first (only used if groupbysection is set).
 	 */
 	public AAPIQueryNotifications messageunreadfirst(Boolean messageunreadfirst) {
-
 		this.messageunreadfirst = messageunreadfirst;
 
 		return this;
@@ -529,7 +550,7 @@ public class AAPIQueryNotifications implements AAPIModule, AAPIQueryMetaModule {
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

@@ -56,7 +56,6 @@ public class AAPIValidatepassword implements AAPIModule, AAPIMainActionModule {
 	/**Username, for use when testing account creation. The named user must not exist.
 	 */
 	public AAPIValidatepassword user(String user) {
-
 		this.user = user;
 
 		return this;
@@ -71,7 +70,6 @@ public class AAPIValidatepassword implements AAPIModule, AAPIMainActionModule {
 	/**Email address, for use when testing account creation.
 	 */
 	public AAPIValidatepassword email(String email) {
-
 		this.email = email;
 
 		return this;
@@ -86,7 +84,6 @@ public class AAPIValidatepassword implements AAPIModule, AAPIMainActionModule {
 	/**Real name, for use when testing account creation.
 	 */
 	public AAPIValidatepassword realname(String realname) {
-
 		this.realname = realname;
 
 		return this;

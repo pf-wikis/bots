@@ -57,7 +57,6 @@ public class AAPIQueryFilearchive implements AAPIModule, AAPIQueryListModule {
 	/**The image title to start enumerating from.
 	 */
 	public AAPIQueryFilearchive from(String from) {
-
 		this.from = from;
 
 		return this;
@@ -72,7 +71,6 @@ public class AAPIQueryFilearchive implements AAPIModule, AAPIQueryListModule {
 	/**The image title to stop enumerating at.
 	 */
 	public AAPIQueryFilearchive to(String to) {
-
 		this.to = to;
 
 		return this;
@@ -87,7 +85,6 @@ public class AAPIQueryFilearchive implements AAPIModule, AAPIQueryListModule {
 	/**Search for all image titles that begin with this value.
 	 */
 	public AAPIQueryFilearchive prefix(String prefix) {
-
 		this.prefix = prefix;
 
 		return this;
@@ -102,7 +99,6 @@ public class AAPIQueryFilearchive implements AAPIModule, AAPIQueryListModule {
 	/**The direction in which to list.
 	 */
 	public AAPIQueryFilearchive dir(AAPIQueryFilearchiveDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -117,7 +113,6 @@ public class AAPIQueryFilearchive implements AAPIModule, AAPIQueryListModule {
 	/**SHA1 hash of image. Overrides fasha1base36.
 	 */
 	public AAPIQueryFilearchive sha1(String sha1) {
-
 		this.sha1 = sha1;
 
 		return this;
@@ -132,7 +127,6 @@ public class AAPIQueryFilearchive implements AAPIModule, AAPIQueryListModule {
 	/**SHA1 hash of image in base 36 (used in MediaWiki).
 	 */
 	public AAPIQueryFilearchive sha1base36(String sha1base36) {
-
 		this.sha1base36 = sha1base36;
 
 		return this;
@@ -148,10 +142,18 @@ public class AAPIQueryFilearchive implements AAPIModule, AAPIQueryListModule {
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryFilearchive prop(AAPIQueryFilearchiveProp... prop) {
-
+	public AAPIQueryFilearchive prop(AAPIQueryFilearchiveProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which image information to get:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryFilearchive prop(AAPIQueryFilearchiveProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -166,7 +168,6 @@ public class AAPIQueryFilearchive implements AAPIModule, AAPIQueryListModule {
 	/**How many images to return in total.
 	 */
 	public AAPIQueryFilearchive limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -321,7 +322,7 @@ public class AAPIQueryFilearchive implements AAPIModule, AAPIQueryListModule {
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

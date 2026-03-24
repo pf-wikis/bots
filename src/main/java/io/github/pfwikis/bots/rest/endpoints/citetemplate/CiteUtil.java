@@ -18,7 +18,7 @@ public class CiteUtil {
 	);
 
 	public static boolean isCiteable(PageTitle type) {
-		return TYPES_WITH_CITE.contains(type.getTitle());
+		return TYPES_WITH_CITE.contains(type.getName());
 	}
 
 	public static boolean isCiteable(SConcept c) {

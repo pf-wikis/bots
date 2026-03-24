@@ -20,8 +20,9 @@ import com.beust.jcommander.internal.Lists;
 import io.github.pfwikis.bots.common.Discord;
 import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryRecentchangesShow;
 import io.github.pfwikis.bots.common.api.generated.params.NS;
+import io.github.pfwikis.bots.common.api.model.AAPIExceptions.AAPIMissingPageException;
 import io.github.pfwikis.bots.common.api.model.PageRef;
-import io.github.pfwikis.bots.common.api.responses.ParseResponse.Content;
+import io.github.pfwikis.bots.common.api.responses.ParseResponse;
 import io.github.pfwikis.bots.common.api.responses.QueryResponse.RecentChange;
 import io.github.pfwikis.bots.common.api.responses.SemanticAsk.Result;
 import io.github.pfwikis.bots.common.bots.Run.SingleRun;
@@ -73,7 +74,7 @@ public class ArticleOfTheWeek extends SimpleBot {
 	}
 
 	private static Pattern FEATURED_PATTERN = Pattern.compile("\\| *featured *[\\}\\|]");
-	private void addBadge(Candidate article) {
+	private void addBadge(Candidate article) throws AAPIMissingPageException {
 		var wikitext = run.getWiki().getWikitext(article.getTitle());
 		
 		if(!FEATURED_PATTERN.matcher(wikitext.toLowerCase()).find()) {
@@ -243,8 +244,8 @@ public class ArticleOfTheWeek extends SimpleBot {
 		private final PageRef title;
 		private final List<RecentChange> changes;
 		private long changeSize;
-		private Content parsed;
-		private Content beforeEditsParsed;
+		private ParseResponse parsed;
+		private ParseResponse beforeEditsParsed;
 		private Document html;
 		private Document beforeEditsHtml;
 		
@@ -259,13 +260,13 @@ public class ArticleOfTheWeek extends SimpleBot {
 				changeSize = 0;
 				return;
 			}
-			beforeEditsParsed = run.getWiki().getHTML(oldestChange.getOld_revid());
 			
 			//new page
-			if(beforeEditsParsed == null) {
+			if(oldestChange.getOld_revid() == 0) {
 				changeSize = html.text().length();
 			}
 			else {
+				beforeEditsParsed = run.getWiki().getHTML(oldestChange.getOld_revid());
 				beforeEditsHtml=cleanHTML(beforeEditsParsed.getText());
 				changeSize = Math.max(0, html.text().length()-beforeEditsHtml.text().length());
 			}

@@ -78,10 +78,18 @@ public class AAPIQueryPageswithprop
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryPageswithprop prop(AAPIQueryPageswithpropProp... prop) {
-
+	public AAPIQueryPageswithprop prop(AAPIQueryPageswithpropProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which pieces of information to include:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryPageswithprop prop(AAPIQueryPageswithpropProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -96,7 +104,6 @@ public class AAPIQueryPageswithprop
 	/**The maximum number of pages to return.
 	 */
 	public AAPIQueryPageswithprop limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -111,7 +118,6 @@ public class AAPIQueryPageswithprop
 	/**In which direction to sort.
 	 */
 	public AAPIQueryPageswithprop dir(AAPIQueryPageswithpropDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -218,7 +224,7 @@ public class AAPIQueryPageswithprop
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

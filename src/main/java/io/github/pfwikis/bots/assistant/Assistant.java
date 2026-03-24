@@ -1,11 +1,8 @@
 package io.github.pfwikis.bots.assistant;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.util.Objects;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -14,10 +11,11 @@ import com.beust.jcommander.Parameters;
 import io.github.pfwikis.bots.common.Discord;
 import io.github.pfwikis.bots.common.api.generated.params.NS;
 import io.github.pfwikis.bots.common.api.model.PageRef;
+import io.github.pfwikis.bots.common.api.model.PageTitle;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
-import io.github.pfwikis.bots.common.model.Page;
 import io.github.pfwikis.bots.utils.Jackson;
+import io.github.pfwikis.bots.utils.StringHelper;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -87,37 +85,32 @@ public class Assistant extends SimpleBot {
 			
 			
 			var description = run.getWiki().getWikitext(oldFile);
-			var name = PageRef.of(NS.FILE, oldFile.getTitle().getName().substring(0, oldFile.getTitle().getName().lastIndexOf('.'))+"."+newExt);
+			var name = PageTitle.of(NS.FILE, oldFile.getTitle().getName().substring(0, oldFile.getTitle().getName().lastIndexOf('.'))+"."+newExt);
 			
 			if(!run.getWiki().exists(name)) {
-				var tmp = File.createTempFile("upload_", "."+newExt);
-				FileUtils.copyInputStreamToFile(URI.create(task.getReplaceWith()).toURL().openStream(), tmp);
-				if(!run.getWiki().upload(
-					tmp.toPath(),
+				run.getWiki().upload(
+					task.getReplaceWith(),
 					name,
 					description,
 					"Higher resolution version of "+task.getImage()
-				)) {
-					throw new IllegalStateException();
-				}
-				tmp.delete();
+				);
 			}
 			
-			for(Page p:run.getWiki().getImageUsage(oldFile)) {
-				var oldTxt = run.getWiki().getPageText(p.getTitle());
-				var nameMatcher = StringUtils.removeStart(oldFile.replaceAll("[ _]", "[ _]").replace(".", "\\."), "File:");
-				var txt = oldTxt.replaceAll(nameMatcher, StringUtils.removeStart(name.replace('_', ' '), "File:"));
+			for(PageRef p:run.getWiki().getImageUsage(oldFile)) {
+				var oldTxt = run.getWiki().getWikitext(p.getTitle());
+				var nameMatcher = StringHelper.titleToPattern(oldFile.getTitle().getName(), false);
+				var txt = oldTxt.replaceAll(nameMatcher, StringUtils.removeStart(name.getName(), "File:"));
 				if(!oldTxt.equals(txt)) {
-					run.getWiki().edit(p.getTitle(), txt, "Replace image with new version");
+					run.getWiki().edit(p, txt, "Replace image with new version");
 				}
 			}
 			run.getWiki().delete(oldFile, "Replaced with [[:"+name+"]]");
 			discord.report(
 				this,
 				"I replaced "
-				+ Discord.wikiLink(run.getServer(), oldFile, "/wiki/"+oldFile)
+				+ Discord.wikiLink(run.getServer(), oldFile.getTitle().toString(), "/wiki/"+oldFile)
 				+ " with "
-				+ Discord.wikiLink(run.getServer(), name, "/wiki/"+name)
+				+ Discord.wikiLink(run.getServer(), name.toString(), "/wiki/"+name)
 			);
 		}
 		else {

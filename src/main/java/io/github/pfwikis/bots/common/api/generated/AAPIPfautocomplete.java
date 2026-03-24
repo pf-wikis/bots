@@ -69,7 +69,6 @@ public class AAPIPfautocomplete implements AAPIModule, AAPIMainActionModule {
 	/**A limit on the number of results returned
 	 */
 	public AAPIPfautocomplete limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -84,7 +83,6 @@ public class AAPIPfautocomplete implements AAPIModule, AAPIMainActionModule {
 	/**The substring to autocomplete on
 	 */
 	public AAPIPfautocomplete substr(String substr) {
-
 		this.substr = substr;
 
 		return this;
@@ -99,7 +97,6 @@ public class AAPIPfautocomplete implements AAPIModule, AAPIMainActionModule {
 	/**A Semantic MediaWiki property whose values will be autocompleted on
 	 */
 	public AAPIPfautocomplete property(String property) {
-
 		this.property = property;
 
 		return this;
@@ -114,7 +111,6 @@ public class AAPIPfautocomplete implements AAPIModule, AAPIMainActionModule {
 	/**A category whose pages will be autocompleted on
 	 */
 	public AAPIPfautocomplete category(String category) {
-
 		this.category = category;
 
 		return this;
@@ -129,7 +125,6 @@ public class AAPIPfautocomplete implements AAPIModule, AAPIMainActionModule {
 	/**A Semantic MediaWiki "concept" whose pages will be autocompleted on
 	 */
 	public AAPIPfautocomplete concept(String concept) {
-
 		this.concept = concept;
 
 		return this;
@@ -144,7 +139,6 @@ public class AAPIPfautocomplete implements AAPIModule, AAPIMainActionModule {
 	/**Search string for getting values from Wikidata
 	 */
 	public AAPIPfautocomplete wikidata(String wikidata) {
-
 		this.wikidata = wikidata;
 
 		return this;
@@ -159,7 +153,6 @@ public class AAPIPfautocomplete implements AAPIModule, AAPIMainActionModule {
 	/**A Semantic MediaWiki query whose results will be autocompleted on
 	 */
 	public AAPIPfautocomplete semantic_query(String semantic_query) {
-
 		this.semantic_query = semantic_query;
 
 		return this;
@@ -174,7 +167,6 @@ public class AAPIPfautocomplete implements AAPIModule, AAPIMainActionModule {
 	/**A database table, defined by the Cargo extension, whose values will be autocompleted on
 	 */
 	public AAPIPfautocomplete cargo_table(String cargo_table) {
-
 		this.cargo_table = cargo_table;
 
 		return this;
@@ -189,7 +181,6 @@ public class AAPIPfautocomplete implements AAPIModule, AAPIMainActionModule {
 	/**The field of the Cargo table whose values will be autocompleted on
 	 */
 	public AAPIPfautocomplete cargo_field(String cargo_field) {
-
 		this.cargo_field = cargo_field;
 
 		return this;
@@ -204,7 +195,6 @@ public class AAPIPfautocomplete implements AAPIModule, AAPIMainActionModule {
 	/**A filter to apply, if the cargo_table and cargo_field parameters are set
 	 */
 	public AAPIPfautocomplete cargo_where(String cargo_where) {
-
 		this.cargo_where = cargo_where;
 
 		return this;
@@ -219,7 +209,6 @@ public class AAPIPfautocomplete implements AAPIModule, AAPIMainActionModule {
 	/**A namespace whose pages will be autocompleted on
 	 */
 	public AAPIPfautocomplete namespace(String namespace) {
-
 		this.namespace = namespace;
 
 		return this;
@@ -234,7 +223,6 @@ public class AAPIPfautocomplete implements AAPIModule, AAPIMainActionModule {
 	/**An alias for an external URL from which to get values
 	 */
 	public AAPIPfautocomplete external_url(String external_url) {
-
 		this.external_url = external_url;
 
 		return this;
@@ -249,7 +237,6 @@ public class AAPIPfautocomplete implements AAPIModule, AAPIMainActionModule {
 	/**A previous Semantic MediaWiki property in the form to check against
 	 */
 	public AAPIPfautocomplete baseprop(String baseprop) {
-
 		this.baseprop = baseprop;
 
 		return this;
@@ -264,7 +251,6 @@ public class AAPIPfautocomplete implements AAPIModule, AAPIMainActionModule {
 	/**The Cargo table for a previous field in the form to check against
 	 */
 	public AAPIPfautocomplete base_cargo_table(String base_cargo_table) {
-
 		this.base_cargo_table = base_cargo_table;
 
 		return this;
@@ -279,7 +265,6 @@ public class AAPIPfautocomplete implements AAPIModule, AAPIMainActionModule {
 	/**The Cargo field for a previous field in the form to check against
 	 */
 	public AAPIPfautocomplete base_cargo_field(String base_cargo_field) {
-
 		this.base_cargo_field = base_cargo_field;
 
 		return this;
@@ -294,7 +279,6 @@ public class AAPIPfautocomplete implements AAPIModule, AAPIMainActionModule {
 	/**The value to check for the previous property or field
 	 */
 	public AAPIPfautocomplete basevalue(String basevalue) {
-
 		this.basevalue = basevalue;
 
 		return this;

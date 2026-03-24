@@ -14,13 +14,12 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import tools.jackson.databind.JsonNode;
 
+@Getter
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class PageTitle implements Comparable<PageTitle> {
+public class PageTitle implements Comparable<PageTitle>, ContainsPageRef {
 	private final Interwiki interwiki;
-	@Getter
 	private final NS ns;
-	@Getter
 	private final String name;
 	private final String hash;
 
@@ -46,18 +45,29 @@ public class PageTitle implements Comparable<PageTitle> {
 		NS ns = NS.MAIN;
 		String name = txt;
 		String hash = null;
+		Interwiki interwiki = null;
 		
-		int ind = txt.indexOf(':');
+		int ind = name.indexOf(':');
 		if(ind != -1) {
-			ns = NS.fromName(name.substring(0, ind));
-			name = name.substring(ind+1);
+			interwiki = Interwiki.fromPrefixOrNull(name.substring(0, ind));
+			if(interwiki != null) {
+				name = name.substring(ind+1);
+				ind = name.indexOf(':');
+			}
 		}
-		ind = txt.indexOf('#');
+		if(ind != -1) {
+			var potNs = NS.fromNameOrNull(name.substring(0, ind));
+			if(potNs != null) {
+				name = name.substring(ind+1);
+				ns = potNs;
+			}
+		}
+		ind = name.indexOf('#');
 		if(ind != -1) {
 			hash = name.substring(ind+1);
 			name = name.substring(0, ind);
 		}
-		return new PageTitle(null, ns, name, hash);
+		return new PageTitle(interwiki, ns, name, hash);
 	}
 
 	public static PageTitle of(NS ns, String title) {
@@ -100,6 +110,13 @@ public class PageTitle implements Comparable<PageTitle> {
 	public String toDisplayTitleWikitext() {
 		return "{{#getdisplaytitle:"+this.toFullTitle()+"}}";
 	}
+	
+	public String toDisplayName() {
+		if(name.contains("(")) {
+			return name.replaceFirst(" *\\(.*", "");
+		}
+		return name;
+	}
 
 	@Override
 	public int compareTo(PageTitle o) {
@@ -125,5 +142,15 @@ public class PageTitle implements Comparable<PageTitle> {
 	public PageTitle withoutHash() {
 		if(hash == null) return this;
 		return new PageTitle(interwiki, ns, name, null);
+	}
+
+	@Override
+	public PageRef toPageRef() {
+		return PageRef.of(this);
+	}
+	
+	@Override
+	public PageTitle toPageTitle() {
+		return this;
 	}
 }

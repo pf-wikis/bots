@@ -17,8 +17,7 @@ import com.google.common.collect.RangeMap;
 import com.google.common.collect.TreeRangeMap;
 
 import io.github.pfwikis.bots.common.api.model.PageTitle;
-import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
-import io.github.pfwikis.bots.utils.StringHelper;
+import io.github.pfwikis.bots.common.api.responses.SemanticSubject;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,7 +30,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class BookDef extends BookPart {
-	private String factsPage;
+	private PageTitle factsPage;
 	private SemanticSubject subject;
 	@Builder.Default
 	private List<PageTitle> authors = new ArrayList<>();
@@ -134,6 +133,6 @@ public class BookDef extends BookPart {
 	public String getName() {
 		if(subject.has(Name))
 			return subject.get(Name);
-		return StringHelper.pageToTitle(subject.getSubject().getTitle());
+		return subject.getSubject().toDisplayName();
 	}
 }

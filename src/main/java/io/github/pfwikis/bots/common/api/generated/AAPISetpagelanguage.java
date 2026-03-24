@@ -57,7 +57,6 @@ public class AAPISetpagelanguage implements AAPIModule, AAPITokenModule, AAPIMai
 	/**Title of the page whose language you wish to change. Cannot be used together with <var>pageid</var>.
 	 */
 	public AAPISetpagelanguage title(String title) {
-
 		this.title = title;
 
 		return this;
@@ -72,7 +71,6 @@ public class AAPISetpagelanguage implements AAPIModule, AAPITokenModule, AAPIMai
 	/**Page ID of the page whose language you wish to change. Cannot be used together with <var>title</var>.
 	 */
 	public AAPISetpagelanguage pageid(Long pageid) {
-
 		this.pageid = pageid;
 
 		return this;
@@ -93,7 +91,6 @@ public class AAPISetpagelanguage implements AAPIModule, AAPITokenModule, AAPIMai
 	/**Reason for the change.
 	 */
 	public AAPISetpagelanguage reason(String reason) {
-
 		this.reason = reason;
 
 		return this;
@@ -107,10 +104,16 @@ public class AAPISetpagelanguage implements AAPIModule, AAPITokenModule, AAPIMai
 
 	/**Change tags to apply to the log entry resulting from this action.
 	 */
-	public AAPISetpagelanguage tags(String... tags) {
-
+	public AAPISetpagelanguage tags(String tags) {
 		this.tags = List.of(tags);
 
+		return this;
+	}
+
+	/**Change tags to apply to the log entry resulting from this action.
+	 */
+	public AAPISetpagelanguage tags(String... tags) {
+		this.tags = List.of(tags);
 		return this;
 	}
 
@@ -123,7 +126,6 @@ public class AAPISetpagelanguage implements AAPIModule, AAPITokenModule, AAPIMai
 	/**A "csrf" token retrieved from <a href="/wiki/Special:ApiHelp/query%2Btokens" title="Special:ApiHelp/query+tokens">action=query&amp;meta=tokens</a>
 	 */
 	public AAPISetpagelanguage token(String token) {
-
 		this.token = token;
 
 		return this;

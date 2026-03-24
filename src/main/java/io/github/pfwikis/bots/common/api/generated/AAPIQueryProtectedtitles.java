@@ -76,10 +76,16 @@ public class AAPIQueryProtectedtitles
 
 	/**Only list titles in these namespaces.
 	 */
-	public AAPIQueryProtectedtitles namespace(NS... namespace) {
-
+	public AAPIQueryProtectedtitles namespace(NS namespace) {
 		this.namespace = List.of(namespace);
 
+		return this;
+	}
+
+	/**Only list titles in these namespaces.
+	 */
+	public AAPIQueryProtectedtitles namespace(NS... namespace) {
+		this.namespace = List.of(namespace);
 		return this;
 	}
 
@@ -91,10 +97,16 @@ public class AAPIQueryProtectedtitles
 
 	/**Only list titles with these protection levels.
 	 */
-	public AAPIQueryProtectedtitles level(AAPIQueryProtectedtitlesLevel... level) {
-
+	public AAPIQueryProtectedtitles level(AAPIQueryProtectedtitlesLevel level) {
 		this.level = List.of(level);
 
+		return this;
+	}
+
+	/**Only list titles with these protection levels.
+	 */
+	public AAPIQueryProtectedtitles level(AAPIQueryProtectedtitlesLevel... level) {
+		this.level = List.of(level);
 		return this;
 	}
 
@@ -107,7 +119,6 @@ public class AAPIQueryProtectedtitles
 	/**How many total pages to return.
 	 */
 	public AAPIQueryProtectedtitles limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -124,7 +135,6 @@ public class AAPIQueryProtectedtitles
 	 * <dl></dl>
 	 */
 	public AAPIQueryProtectedtitles dir(AAPIQueryProtectedtitlesDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -141,7 +151,6 @@ public class AAPIQueryProtectedtitles
 	/**Start listing at this protection timestamp.
 	 */
 	public AAPIQueryProtectedtitles start(java.time.Instant start) {
-
 		this.start = start;
 
 		return this;
@@ -156,7 +165,6 @@ public class AAPIQueryProtectedtitles
 	/**Stop listing at this protection timestamp.
 	 */
 	public AAPIQueryProtectedtitles end(java.time.Instant end) {
-
 		this.end = end;
 
 		return this;
@@ -172,10 +180,18 @@ public class AAPIQueryProtectedtitles
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryProtectedtitles prop(AAPIQueryProtectedtitlesProp... prop) {
-
+	public AAPIQueryProtectedtitles prop(AAPIQueryProtectedtitlesProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which properties to get:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryProtectedtitles prop(AAPIQueryProtectedtitlesProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -342,7 +358,7 @@ public class AAPIQueryProtectedtitles
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

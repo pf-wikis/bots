@@ -46,10 +46,16 @@ public class AAPIHelp implements AAPIModule, AAPIMainActionModule {
 
 	/**Modules to display help for (values of the <var>action</var> and <var>format</var> parameters, or <kbd>main</kbd>). Can specify submodules with a <kbd>+</kbd>.
 	 */
-	public AAPIHelp modules(String... modules) {
-
+	public AAPIHelp modules(String modules) {
 		this.modules = List.of(modules);
 
+		return this;
+	}
+
+	/**Modules to display help for (values of the <var>action</var> and <var>format</var> parameters, or <kbd>main</kbd>). Can specify submodules with a <kbd>+</kbd>.
+	 */
+	public AAPIHelp modules(String... modules) {
+		this.modules = List.of(modules);
 		return this;
 	}
 
@@ -62,7 +68,6 @@ public class AAPIHelp implements AAPIModule, AAPIMainActionModule {
 	/**Include help for submodules of the named module.
 	 */
 	public AAPIHelp submodules(Boolean submodules) {
-
 		this.submodules = submodules;
 
 		return this;
@@ -77,7 +82,6 @@ public class AAPIHelp implements AAPIModule, AAPIMainActionModule {
 	/**Include help for submodules recursively.
 	 */
 	public AAPIHelp recursivesubmodules(Boolean recursivesubmodules) {
-
 		this.recursivesubmodules = recursivesubmodules;
 
 		return this;
@@ -92,7 +96,6 @@ public class AAPIHelp implements AAPIModule, AAPIMainActionModule {
 	/**Wrap the output in a standard API response structure.
 	 */
 	public AAPIHelp wrap(Boolean wrap) {
-
 		this.wrap = wrap;
 
 		return this;
@@ -107,7 +110,6 @@ public class AAPIHelp implements AAPIModule, AAPIMainActionModule {
 	/**Include a table of contents in the HTML output.
 	 */
 	public AAPIHelp toc(Boolean toc) {
-
 		this.toc = toc;
 
 		return this;

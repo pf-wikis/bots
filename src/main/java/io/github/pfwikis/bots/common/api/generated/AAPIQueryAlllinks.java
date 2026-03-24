@@ -77,7 +77,6 @@ public class AAPIQueryAlllinks
 	/**The title of the link to start enumerating from.
 	 */
 	public AAPIQueryAlllinks from(String from) {
-
 		this.from = from;
 
 		return this;
@@ -92,7 +91,6 @@ public class AAPIQueryAlllinks
 	/**The title of the link to stop enumerating at.
 	 */
 	public AAPIQueryAlllinks to(String to) {
-
 		this.to = to;
 
 		return this;
@@ -107,7 +105,6 @@ public class AAPIQueryAlllinks
 	/**Search for all linked titles that begin with this value.
 	 */
 	public AAPIQueryAlllinks prefix(String prefix) {
-
 		this.prefix = prefix;
 
 		return this;
@@ -123,7 +120,6 @@ public class AAPIQueryAlllinks
 	 * When used as a generator, yields target pages instead of source pages.
 	 */
 	public AAPIQueryAlllinks unique(Boolean unique) {
-
 		this.unique = unique;
 
 		return this;
@@ -140,10 +136,18 @@ public class AAPIQueryAlllinks
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryAlllinks prop(AAPIQueryAlllinksProp... prop) {
-
+	public AAPIQueryAlllinks prop(AAPIQueryAlllinksProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which pieces of information to include:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryAlllinks prop(AAPIQueryAlllinksProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -158,7 +162,6 @@ public class AAPIQueryAlllinks
 	/**The namespace to enumerate.
 	 */
 	public AAPIQueryAlllinks namespace(NS namespace) {
-
 		this.namespace = namespace;
 
 		return this;
@@ -173,7 +176,6 @@ public class AAPIQueryAlllinks
 	/**How many total items to return.
 	 */
 	public AAPIQueryAlllinks limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -188,7 +190,6 @@ public class AAPIQueryAlllinks
 	/**The direction in which to list.
 	 */
 	public AAPIQueryAlllinks dir(AAPIQueryAlllinksDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -343,7 +344,7 @@ public class AAPIQueryAlllinks
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

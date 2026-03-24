@@ -38,10 +38,16 @@ public class AAPIQueryCirrusdoc implements AAPIModule, AAPIQueryPropModule {
 
 	/**Define which fields should be returned by the search.
 	 */
-	public AAPIQueryCirrusdoc includes(String... includes) {
-
+	public AAPIQueryCirrusdoc includes(String includes) {
 		this.includes = List.of(includes);
 
+		return this;
+	}
+
+	/**Define which fields should be returned by the search.
+	 */
+	public AAPIQueryCirrusdoc includes(String... includes) {
+		this.includes = List.of(includes);
 		return this;
 	}
 

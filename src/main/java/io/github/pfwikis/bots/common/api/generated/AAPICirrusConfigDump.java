@@ -40,10 +40,16 @@ public class AAPICirrusConfigDump implements AAPIModule, AAPIMainActionModule {
 
 	/**Type of configuration variables to dump
 	 */
-	public AAPICirrusConfigDump prop(AAPICirrusConfigDumpProp... prop) {
-
+	public AAPICirrusConfigDump prop(AAPICirrusConfigDumpProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**Type of configuration variables to dump
+	 */
+	public AAPICirrusConfigDump prop(AAPICirrusConfigDumpProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 

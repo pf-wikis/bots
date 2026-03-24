@@ -99,7 +99,6 @@ public class AAPIQueryAllpages
 	/**The page title to start enumerating from.
 	 */
 	public AAPIQueryAllpages from(String from) {
-
 		this.from = from;
 
 		return this;
@@ -114,7 +113,6 @@ public class AAPIQueryAllpages
 	/**The page title to stop enumerating at.
 	 */
 	public AAPIQueryAllpages to(String to) {
-
 		this.to = to;
 
 		return this;
@@ -129,7 +127,6 @@ public class AAPIQueryAllpages
 	/**Search for all page titles that begin with this value.
 	 */
 	public AAPIQueryAllpages prefix(String prefix) {
-
 		this.prefix = prefix;
 
 		return this;
@@ -144,7 +141,6 @@ public class AAPIQueryAllpages
 	/**The namespace to enumerate.
 	 */
 	public AAPIQueryAllpages namespace(NS namespace) {
-
 		this.namespace = namespace;
 
 		return this;
@@ -159,7 +155,6 @@ public class AAPIQueryAllpages
 	/**Which pages to list.
 	 */
 	public AAPIQueryAllpages filterredir(AAPIQueryAllpagesFilterredir filterredir) {
-
 		this.filterredir = filterredir;
 
 		return this;
@@ -174,7 +169,6 @@ public class AAPIQueryAllpages
 	/**Filter based on whether a page has langlinks. Note that this may not consider langlinks added by extensions.
 	 */
 	public AAPIQueryAllpages filterlanglinks(AAPIQueryAllpagesFilterlanglinks filterlanglinks) {
-
 		this.filterlanglinks = filterlanglinks;
 
 		return this;
@@ -189,7 +183,6 @@ public class AAPIQueryAllpages
 	/**Limit to pages with at least this many bytes.
 	 */
 	public AAPIQueryAllpages minsize(Long minsize) {
-
 		this.minsize = minsize;
 
 		return this;
@@ -204,7 +197,6 @@ public class AAPIQueryAllpages
 	/**Limit to pages with at most this many bytes.
 	 */
 	public AAPIQueryAllpages maxsize(Long maxsize) {
-
 		this.maxsize = maxsize;
 
 		return this;
@@ -218,10 +210,16 @@ public class AAPIQueryAllpages
 
 	/**Limit to protected pages only.
 	 */
-	public AAPIQueryAllpages prtype(AAPIQueryAllpagesPrtype... prtype) {
-
+	public AAPIQueryAllpages prtype(AAPIQueryAllpagesPrtype prtype) {
 		this.prtype = List.of(prtype);
 
+		return this;
+	}
+
+	/**Limit to protected pages only.
+	 */
+	public AAPIQueryAllpages prtype(AAPIQueryAllpagesPrtype... prtype) {
+		this.prtype = List.of(prtype);
 		return this;
 	}
 
@@ -233,10 +231,16 @@ public class AAPIQueryAllpages
 
 	/**Filter protections based on protection level (must be used with apprtype= parameter).
 	 */
-	public AAPIQueryAllpages prlevel(AAPIQueryAllpagesPrlevel... prlevel) {
-
+	public AAPIQueryAllpages prlevel(AAPIQueryAllpagesPrlevel prlevel) {
 		this.prlevel = List.of(prlevel);
 
+		return this;
+	}
+
+	/**Filter protections based on protection level (must be used with apprtype= parameter).
+	 */
+	public AAPIQueryAllpages prlevel(AAPIQueryAllpagesPrlevel... prlevel) {
+		this.prlevel = List.of(prlevel);
 		return this;
 	}
 
@@ -249,7 +253,6 @@ public class AAPIQueryAllpages
 	/**Filter protections based on cascadingness (ignored when apprtype isn't set).
 	 */
 	public AAPIQueryAllpages prfiltercascade(AAPIQueryAllpagesPrfiltercascade prfiltercascade) {
-
 		this.prfiltercascade = prfiltercascade;
 
 		return this;
@@ -266,7 +269,6 @@ public class AAPIQueryAllpages
 	 * <dl></dl>
 	 */
 	public AAPIQueryAllpages prexpiry(AAPIQueryAllpagesPrexpiry prexpiry) {
-
 		this.prexpiry = prexpiry;
 
 		return this;
@@ -283,7 +285,6 @@ public class AAPIQueryAllpages
 	/**How many total pages to return.
 	 */
 	public AAPIQueryAllpages limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -298,7 +299,6 @@ public class AAPIQueryAllpages
 	/**The direction in which to list.
 	 */
 	public AAPIQueryAllpages dir(AAPIQueryAllpagesDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -532,7 +532,7 @@ public class AAPIQueryAllpages
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

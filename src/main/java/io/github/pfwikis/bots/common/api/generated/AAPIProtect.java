@@ -27,9 +27,11 @@ import io.github.pfwikis.bots.common.api.generated.params.AAPIMainAction.AAPIMai
  */
 public class AAPIProtect implements AAPIModule, AAPITokenModule, AAPIMainActionModule {
 
-	public static AAPIProtect create(@NonNull String... protections) {
+	public static AAPIProtect create(@NonNull ContainsPageRef title, @NonNull String protections) {
 
 		AAPIProtect v = new AAPIProtect();
+
+		v.title = title;
 
 		v.protections = List.of(protections);
 
@@ -37,10 +39,6 @@ public class AAPIProtect implements AAPIModule, AAPITokenModule, AAPIMainActionM
 	}
 
 	private AAPIProtect() {}
-
-	private String title;
-
-	private Long pageid;
 
 	private List<String> protections;
 
@@ -56,35 +54,7 @@ public class AAPIProtect implements AAPIModule, AAPITokenModule, AAPIMainActionM
 
 	private String token;
 
-	/**Title of the page to (un)protect. Cannot be used together with pageid.
-	 */
-	public AAPIProtect title(String title) {
-
-		this.title = title;
-
-		return this;
-	}
-
-	/**Title of the page to (un)protect. Cannot be used together with pageid.
-	 */
-	public String getTitle() {
-		return this.title;
-	}
-
-	/**ID of the page to (un)protect. Cannot be used together with title.
-	 */
-	public AAPIProtect pageid(Long pageid) {
-
-		this.pageid = pageid;
-
-		return this;
-	}
-
-	/**ID of the page to (un)protect. Cannot be used together with title.
-	 */
-	public Long getPageid() {
-		return this.pageid;
-	}
+	private ContainsPageRef title;
 
 	/**<p>List of protection levels, formatted <kbd>action=level</kbd> (e.g. <kbd>edit=sysop</kbd>). A level of <kbd>all</kbd> means everyone is allowed to take the action, i.e. no restriction.
 	 * </p><p><strong>Note:</strong> Any actions not listed will have restrictions removed.
@@ -96,10 +66,16 @@ public class AAPIProtect implements AAPIModule, AAPITokenModule, AAPIMainActionM
 
 	/**Expiry timestamps. If only one timestamp is set, it'll be used for all protections. Use <kbd>infinite</kbd>, <kbd>indefinite</kbd>, <kbd>infinity</kbd>, or <kbd>never</kbd>, for a never-expiring protection.
 	 */
-	public AAPIProtect expiry(String... expiry) {
-
+	public AAPIProtect expiry(String expiry) {
 		this.expiry = List.of(expiry);
 
+		return this;
+	}
+
+	/**Expiry timestamps. If only one timestamp is set, it'll be used for all protections. Use <kbd>infinite</kbd>, <kbd>indefinite</kbd>, <kbd>infinity</kbd>, or <kbd>never</kbd>, for a never-expiring protection.
+	 */
+	public AAPIProtect expiry(String... expiry) {
+		this.expiry = List.of(expiry);
 		return this;
 	}
 
@@ -112,7 +88,6 @@ public class AAPIProtect implements AAPIModule, AAPITokenModule, AAPIMainActionM
 	/**Reason for (un)protecting.
 	 */
 	public AAPIProtect reason(String reason) {
-
 		this.reason = reason;
 
 		return this;
@@ -126,10 +101,16 @@ public class AAPIProtect implements AAPIModule, AAPITokenModule, AAPIMainActionM
 
 	/**Change tags to apply to the entry in the protection log.
 	 */
-	public AAPIProtect tags(String... tags) {
-
+	public AAPIProtect tags(String tags) {
 		this.tags = List.of(tags);
 
+		return this;
+	}
+
+	/**Change tags to apply to the entry in the protection log.
+	 */
+	public AAPIProtect tags(String... tags) {
+		this.tags = List.of(tags);
 		return this;
 	}
 
@@ -142,7 +123,6 @@ public class AAPIProtect implements AAPIModule, AAPITokenModule, AAPIMainActionM
 	/**Enable cascading protection (i.e. protect transcluded templates and images used in this page). Ignored if none of the given protection levels support cascading.
 	 */
 	public AAPIProtect cascade(Boolean cascade) {
-
 		this.cascade = cascade;
 
 		return this;
@@ -157,7 +137,6 @@ public class AAPIProtect implements AAPIModule, AAPITokenModule, AAPIMainActionM
 	/**Unconditionally add or remove the page from the current user's watchlist, use preferences (ignored for bot users) or do not change watch.
 	 */
 	public AAPIProtect watchlist(AAPIProtectWatchlist watchlist) {
-
 		this.watchlist = watchlist;
 
 		return this;
@@ -172,7 +151,6 @@ public class AAPIProtect implements AAPIModule, AAPITokenModule, AAPIMainActionM
 	/**A "csrf" token retrieved from <a href="/wiki/Special:ApiHelp/query%2Btokens" title="Special:ApiHelp/query+tokens">action=query&amp;meta=tokens</a>
 	 */
 	public AAPIProtect token(String token) {
-
 		this.token = token;
 
 		return this;
@@ -184,21 +162,15 @@ public class AAPIProtect implements AAPIModule, AAPITokenModule, AAPIMainActionM
 		return this.token;
 	}
 
+	public ContainsPageRef getTitle() {
+		return this.title;
+	}
+
 	public String toString() {
 		var sb = new StringBuilder().append("AAPIProtect(");
 
 		if (title != null) {
-
-			sb.append("title").append("=").append(title);
-
-			sb.append(", ");
-		}
-
-		if (pageid != null) {
-
-			sb.append("pageid").append("=").append(pageid.toString());
-
-			sb.append(", ");
+			sb.append("title=").append(title).append(", ");
 		}
 
 		if (protections != null) {
@@ -264,12 +236,12 @@ public class AAPIProtect implements AAPIModule, AAPITokenModule, AAPIMainActionM
 
 		if (title != null) {
 
-			req.addParameter(paramPrefix + "title", title);
-		}
-
-		if (pageid != null) {
-
-			req.addParameter(paramPrefix + "pageid", pageid.toString());
+			if (title.toPageRef().hasId()) {
+				req.addParameter(
+						paramPrefix + "pageid", Integer.toString(title.toPageRef().getId()));
+			} else {
+				req.addParameter(paramPrefix + "title", title.toPageTitle().toFullTitle());
+			}
 		}
 
 		if (protections != null) {

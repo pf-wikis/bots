@@ -70,10 +70,18 @@ public class AAPIQueryTranscludedin
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryTranscludedin prop(AAPIQueryTranscludedinProp... prop) {
-
+	public AAPIQueryTranscludedin prop(AAPIQueryTranscludedinProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which properties to get:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryTranscludedin prop(AAPIQueryTranscludedinProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -87,10 +95,16 @@ public class AAPIQueryTranscludedin
 
 	/**Only include pages in these namespaces.
 	 */
-	public AAPIQueryTranscludedin namespace(NS... namespace) {
-
+	public AAPIQueryTranscludedin namespace(NS namespace) {
 		this.namespace = List.of(namespace);
 
+		return this;
+	}
+
+	/**Only include pages in these namespaces.
+	 */
+	public AAPIQueryTranscludedin namespace(NS... namespace) {
+		this.namespace = List.of(namespace);
 		return this;
 	}
 
@@ -104,10 +118,18 @@ public class AAPIQueryTranscludedin
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryTranscludedin show(AAPIQueryTranscludedinShow... show) {
-
+	public AAPIQueryTranscludedin show(AAPIQueryTranscludedinShow show) {
 		this.show = List.of(show);
 
+		return this;
+	}
+
+	/**<p>Show only items that meet these criteria:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryTranscludedin show(AAPIQueryTranscludedinShow... show) {
+		this.show = List.of(show);
 		return this;
 	}
 
@@ -122,7 +144,6 @@ public class AAPIQueryTranscludedin
 	/**How many to return.
 	 */
 	public AAPIQueryTranscludedin limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -245,7 +266,7 @@ public class AAPIQueryTranscludedin
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

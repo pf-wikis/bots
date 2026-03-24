@@ -52,10 +52,18 @@ public class AAPIQueryPageimages implements AAPIModule, AAPIQueryPropModule {
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryPageimages prop(AAPIQueryPageimagesProp... prop) {
-
+	public AAPIQueryPageimages prop(AAPIQueryPageimagesProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which information to return:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryPageimages prop(AAPIQueryPageimagesProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -70,7 +78,6 @@ public class AAPIQueryPageimages implements AAPIModule, AAPIQueryPropModule {
 	/**Maximum width in pixels of thumbnail images.
 	 */
 	public AAPIQueryPageimages thumbsize(Long thumbsize) {
-
 		this.thumbsize = thumbsize;
 
 		return this;
@@ -85,7 +92,6 @@ public class AAPIQueryPageimages implements AAPIModule, AAPIQueryPropModule {
 	/**Properties of how many pages to return.
 	 */
 	public AAPIQueryPageimages limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -102,7 +108,6 @@ public class AAPIQueryPageimages implements AAPIModule, AAPIQueryPropModule {
 	 * <dl></dl>
 	 */
 	public AAPIQueryPageimages license(AAPIQueryPageimagesLicense license) {
-
 		this.license = license;
 
 		return this;
@@ -119,7 +124,6 @@ public class AAPIQueryPageimages implements AAPIModule, AAPIQueryPropModule {
 	/**Code for the language the image is going to be rendered in if multiple languages are supported
 	 */
 	public AAPIQueryPageimages langcode(String langcode) {
-
 		this.langcode = langcode;
 
 		return this;
@@ -238,7 +242,7 @@ public class AAPIQueryPageimages implements AAPIModule, AAPIQueryPropModule {
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

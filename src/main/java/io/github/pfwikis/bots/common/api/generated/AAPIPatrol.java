@@ -45,7 +45,6 @@ public class AAPIPatrol implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**Recentchanges ID to patrol.
 	 */
 	public AAPIPatrol rcid(Long rcid) {
-
 		this.rcid = rcid;
 
 		return this;
@@ -60,7 +59,6 @@ public class AAPIPatrol implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**Revision ID to patrol.
 	 */
 	public AAPIPatrol revid(Long revid) {
-
 		this.revid = revid;
 
 		return this;
@@ -74,10 +72,16 @@ public class AAPIPatrol implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 
 	/**Change tags to apply to the entry in the patrol log.
 	 */
-	public AAPIPatrol tags(String... tags) {
-
+	public AAPIPatrol tags(String tags) {
 		this.tags = List.of(tags);
 
+		return this;
+	}
+
+	/**Change tags to apply to the entry in the patrol log.
+	 */
+	public AAPIPatrol tags(String... tags) {
+		this.tags = List.of(tags);
 		return this;
 	}
 
@@ -90,7 +94,6 @@ public class AAPIPatrol implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**A "patrol" token retrieved from <a href="/wiki/Special:ApiHelp/query%2Btokens" title="Special:ApiHelp/query+tokens">action=query&amp;meta=tokens</a>
 	 */
 	public AAPIPatrol token(String token) {
-
 		this.token = token;
 
 		return this;

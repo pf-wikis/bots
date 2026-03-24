@@ -41,7 +41,6 @@ public class AAPIXml implements AAPIModule, AAPIMainFormatModule {
 	/**If specified, adds the named page as an XSL stylesheet. The value must be a title in the MediaWiki namespace ending in <code>.xsl</code>.
 	 */
 	public AAPIXml xslt(String xslt) {
-
 		this.xslt = xslt;
 
 		return this;
@@ -56,7 +55,6 @@ public class AAPIXml implements AAPIModule, AAPIMainFormatModule {
 	/**If specified, adds an XML namespace.
 	 */
 	public AAPIXml includexmlnamespace(Boolean includexmlnamespace) {
-
 		this.includexmlnamespace = includexmlnamespace;
 
 		return this;

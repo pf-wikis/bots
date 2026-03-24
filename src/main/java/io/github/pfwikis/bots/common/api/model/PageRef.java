@@ -12,7 +12,6 @@ import tools.jackson.core.JsonParser;
 import tools.jackson.databind.DeserializationContext;
 import tools.jackson.databind.deser.std.StdScalarDeserializer;
 
-@ToString
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class PageRef implements ContainsPageRef, Comparable<PageRef> {
 	
@@ -78,6 +77,11 @@ public class PageRef implements ContainsPageRef, Comparable<PageRef> {
 	@Override
 	public int compareTo(PageRef o) {
 		return title.compareTo(o.title);
+	}
+	
+	@Override
+	public String toString() {
+		return title.toString();
 	}
 	
 	private static class WithId extends PageRef {

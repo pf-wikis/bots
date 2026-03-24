@@ -57,8 +57,6 @@ public enum AAPIQueryLogeventsAction {
 
 	MOVE_MOVE_REDIR("move/move_redir"),
 
-	MWOAUTHCONSUMER_("mwoauthconsumer/*"),
-
 	NEWUSERS_AUTOCREATE("newusers/autocreate"),
 
 	NEWUSERS_BYEMAIL("newusers/byemail"),

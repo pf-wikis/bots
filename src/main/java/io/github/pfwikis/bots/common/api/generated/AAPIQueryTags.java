@@ -43,7 +43,6 @@ public class AAPIQueryTags implements AAPIModule, AAPIQueryListModule {
 	/**The maximum number of tags to list.
 	 */
 	public AAPIQueryTags limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -59,10 +58,18 @@ public class AAPIQueryTags implements AAPIModule, AAPIQueryListModule {
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryTags prop(AAPIQueryTagsProp... prop) {
-
+	public AAPIQueryTags prop(AAPIQueryTagsProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which properties to get:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryTags prop(AAPIQueryTagsProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -145,7 +152,7 @@ public class AAPIQueryTags implements AAPIModule, AAPIQueryListModule {
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

@@ -54,10 +54,18 @@ public class AAPIQueryLanglinks implements AAPIModule, AAPIQueryPropModule {
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryLanglinks prop(AAPIQueryLanglinksProp... prop) {
-
+	public AAPIQueryLanglinks prop(AAPIQueryLanglinksProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which additional properties to get for each interlanguage link:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryLanglinks prop(AAPIQueryLanglinksProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -72,7 +80,6 @@ public class AAPIQueryLanglinks implements AAPIModule, AAPIQueryPropModule {
 	/**Only return language links with this language code.
 	 */
 	public AAPIQueryLanglinks lang(String lang) {
-
 		this.lang = lang;
 
 		return this;
@@ -87,7 +94,6 @@ public class AAPIQueryLanglinks implements AAPIModule, AAPIQueryPropModule {
 	/**Link to search for. Must be used with <var>lllang</var>.
 	 */
 	public AAPIQueryLanglinks title(String title) {
-
 		this.title = title;
 
 		return this;
@@ -102,7 +108,6 @@ public class AAPIQueryLanglinks implements AAPIModule, AAPIQueryPropModule {
 	/**The direction in which to list.
 	 */
 	public AAPIQueryLanglinks dir(AAPIQueryLanglinksDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -117,7 +122,6 @@ public class AAPIQueryLanglinks implements AAPIModule, AAPIQueryPropModule {
 	/**Language code for localised language names.
 	 */
 	public AAPIQueryLanglinks inlanguagecode(String inlanguagecode) {
-
 		this.inlanguagecode = inlanguagecode;
 
 		return this;
@@ -132,7 +136,6 @@ public class AAPIQueryLanglinks implements AAPIModule, AAPIQueryPropModule {
 	/**How many langlinks to return.
 	 */
 	public AAPIQueryLanglinks limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -263,7 +266,7 @@ public class AAPIQueryLanglinks implements AAPIModule, AAPIQueryPropModule {
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

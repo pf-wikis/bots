@@ -29,7 +29,6 @@ import com.google.common.util.concurrent.Uninterruptibles;
 
 import io.github.pfwikis.bots.common.WikiAPI;
 import io.github.pfwikis.bots.common.api.model.PageRef;
-import io.github.pfwikis.bots.common.api.model.PageTitle;
 import io.github.pfwikis.bots.common.bots.DualBot;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.paizoretriever.LdJson.Product;
@@ -52,7 +51,7 @@ public class PaizoRetriever extends DualBot {
 	private static final long SLEEP = Duration.ofMillis(250).toMillis();
 	private static final File STATE_FILE = new File("outputs/crawl/state.yaml");
 	private static final String[] ENTRY_SHOP_URLS =  {
-			 "https://store.paizo.com/pathfinder/",
+			"https://store.paizo.com/pathfinder/",
 			"https://store.paizo.com/pathfinder/pathfinder-second-edition/coming-soon/",
 			"https://store.paizo.com/pathfinder/pathfinder-society/",
 			"https://store.paizo.com/starfinder/",

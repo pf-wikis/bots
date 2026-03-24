@@ -14,7 +14,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import com.google.common.collect.Lists;
 
 import io.github.pfwikis.bots.common.api.model.PageTitle;
-import io.github.pfwikis.bots.common.model.subject.SemanticSubject;
+import io.github.pfwikis.bots.common.api.responses.SemanticSubject;
 
 public class SFactTypes {
 	public static final SFactType<String> STRING = new SFactType<>(
@@ -67,7 +67,7 @@ public class SFactTypes {
 	) {
 		@Override
 		public String toInfoboxDisplay(PageTitle v) {
-			return v.toWikiLink(false);
+			return v.toWikitextLink(false);
 		}
 
 		@Override

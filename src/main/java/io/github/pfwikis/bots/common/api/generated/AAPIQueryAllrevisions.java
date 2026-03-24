@@ -86,10 +86,18 @@ public class AAPIQueryAllrevisions
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryAllrevisions prop(AAPIQueryAllrevisionsProp... prop) {
-
+	public AAPIQueryAllrevisions prop(AAPIQueryAllrevisionsProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which properties to get for each revision:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryAllrevisions prop(AAPIQueryAllrevisionsProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -103,10 +111,16 @@ public class AAPIQueryAllrevisions
 
 	/**Which revision slots to return data for, when slot-related properties are included in <var>arvprops</var>. If omitted, data from the <kbd>main</kbd> slot will be returned in a backwards-compatible format.
 	 */
-	public AAPIQueryAllrevisions slots(AAPIQueryAllrevisionsSlots... slots) {
-
+	public AAPIQueryAllrevisions slots(AAPIQueryAllrevisionsSlots slots) {
 		this.slots = List.of(slots);
 
+		return this;
+	}
+
+	/**Which revision slots to return data for, when slot-related properties are included in <var>arvprops</var>. If omitted, data from the <kbd>main</kbd> slot will be returned in a backwards-compatible format.
+	 */
+	public AAPIQueryAllrevisions slots(AAPIQueryAllrevisionsSlots... slots) {
+		this.slots = List.of(slots);
 		return this;
 	}
 
@@ -119,7 +133,6 @@ public class AAPIQueryAllrevisions
 	/**Limit how many revisions will be returned. If <var>arvprop=content</var>, <var>arvprop=parsetree</var>, <var>arvdiffto</var> or <var>arvdifftotext</var> is used, the limit is 50. If <var>arvparse</var> is used, the limit is 1.
 	 */
 	public AAPIQueryAllrevisions limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -134,7 +147,6 @@ public class AAPIQueryAllrevisions
 	/**Only retrieve the content of the section with this identifier.
 	 */
 	public AAPIQueryAllrevisions section(String section) {
-
 		this.section = section;
 
 		return this;
@@ -149,7 +161,6 @@ public class AAPIQueryAllrevisions
 	/**Only list revisions by this user.
 	 */
 	public AAPIQueryAllrevisions user(String user) {
-
 		this.user = user;
 
 		return this;
@@ -163,10 +174,16 @@ public class AAPIQueryAllrevisions
 
 	/**Only list pages in this namespace.
 	 */
-	public AAPIQueryAllrevisions namespace(NS... namespace) {
-
+	public AAPIQueryAllrevisions namespace(NS namespace) {
 		this.namespace = List.of(namespace);
 
+		return this;
+	}
+
+	/**Only list pages in this namespace.
+	 */
+	public AAPIQueryAllrevisions namespace(NS... namespace) {
+		this.namespace = List.of(namespace);
 		return this;
 	}
 
@@ -179,7 +196,6 @@ public class AAPIQueryAllrevisions
 	/**The timestamp to start enumerating from.
 	 */
 	public AAPIQueryAllrevisions start(java.time.Instant start) {
-
 		this.start = start;
 
 		return this;
@@ -194,7 +210,6 @@ public class AAPIQueryAllrevisions
 	/**The timestamp to stop enumerating at.
 	 */
 	public AAPIQueryAllrevisions end(java.time.Instant end) {
-
 		this.end = end;
 
 		return this;
@@ -211,7 +226,6 @@ public class AAPIQueryAllrevisions
 	 * <dl></dl>
 	 */
 	public AAPIQueryAllrevisions dir(AAPIQueryAllrevisionsDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -228,7 +242,6 @@ public class AAPIQueryAllrevisions
 	/**Don't list revisions by this user.
 	 */
 	public AAPIQueryAllrevisions excludeuser(String excludeuser) {
-
 		this.excludeuser = excludeuser;
 
 		return this;
@@ -243,7 +256,6 @@ public class AAPIQueryAllrevisions
 	/**When being used as a generator, generate titles rather than revision IDs.
 	 */
 	public AAPIQueryAllrevisions generatetitles(Boolean generatetitles) {
-
 		this.generatetitles = generatetitles;
 
 		return this;
@@ -458,7 +470,7 @@ public class AAPIQueryAllrevisions
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

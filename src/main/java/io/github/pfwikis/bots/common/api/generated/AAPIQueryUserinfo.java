@@ -44,10 +44,18 @@ public class AAPIQueryUserinfo implements AAPIModule, AAPIQueryMetaModule {
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryUserinfo prop(AAPIQueryUserinfoProp... prop) {
-
+	public AAPIQueryUserinfo prop(AAPIQueryUserinfoProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which pieces of information to include:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryUserinfo prop(AAPIQueryUserinfoProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -62,7 +70,6 @@ public class AAPIQueryUserinfo implements AAPIModule, AAPIQueryMetaModule {
 	/**With <kbd>uiprop=centralids</kbd>, indicate whether the user is attached with the wiki identified by this ID.
 	 */
 	public AAPIQueryUserinfo attachedwiki(String attachedwiki) {
-
 		this.attachedwiki = attachedwiki;
 
 		return this;

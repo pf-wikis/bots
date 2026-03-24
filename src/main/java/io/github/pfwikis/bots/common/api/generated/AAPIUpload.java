@@ -80,7 +80,6 @@ public class AAPIUpload implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**Target filename.
 	 */
 	public AAPIUpload filename(String filename) {
-
 		this.filename = filename;
 
 		return this;
@@ -95,7 +94,6 @@ public class AAPIUpload implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**Upload comment. Also used as the initial page text for new files if <var>text</var> is not specified.
 	 */
 	public AAPIUpload comment(String comment) {
-
 		this.comment = comment;
 
 		return this;
@@ -109,10 +107,16 @@ public class AAPIUpload implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 
 	/**Change tags to apply to the upload log entry and file page revision.
 	 */
-	public AAPIUpload tags(String... tags) {
-
+	public AAPIUpload tags(String tags) {
 		this.tags = List.of(tags);
 
+		return this;
+	}
+
+	/**Change tags to apply to the upload log entry and file page revision.
+	 */
+	public AAPIUpload tags(String... tags) {
+		this.tags = List.of(tags);
 		return this;
 	}
 
@@ -125,7 +129,6 @@ public class AAPIUpload implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**Initial page text for new files.
 	 */
 	public AAPIUpload text(String text) {
-
 		this.text = text;
 
 		return this;
@@ -140,7 +143,6 @@ public class AAPIUpload implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**Unconditionally add or remove the page from the current user's watchlist, use preferences (ignored for bot users) or do not change watch.
 	 */
 	public AAPIUpload watchlist(AAPIUploadWatchlist watchlist) {
-
 		this.watchlist = watchlist;
 
 		return this;
@@ -155,7 +157,6 @@ public class AAPIUpload implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**Ignore any warnings.
 	 */
 	public AAPIUpload ignorewarnings(Boolean ignorewarnings) {
-
 		this.ignorewarnings = ignorewarnings;
 
 		return this;
@@ -170,7 +171,6 @@ public class AAPIUpload implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**File contents.
 	 */
 	public AAPIUpload file(byte[] file) {
-
 		this.file = file;
 
 		return this;
@@ -185,7 +185,6 @@ public class AAPIUpload implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**URL to fetch the file from.
 	 */
 	public AAPIUpload url(String url) {
-
 		this.url = url;
 
 		return this;
@@ -200,7 +199,6 @@ public class AAPIUpload implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**Key that identifies a previous upload that was stashed temporarily.
 	 */
 	public AAPIUpload filekey(String filekey) {
-
 		this.filekey = filekey;
 
 		return this;
@@ -215,7 +213,6 @@ public class AAPIUpload implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**If set, the server will stash the file temporarily instead of adding it to the repository.
 	 */
 	public AAPIUpload stash(Boolean stash) {
-
 		this.stash = stash;
 
 		return this;
@@ -230,7 +227,6 @@ public class AAPIUpload implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**Filesize of entire upload.
 	 */
 	public AAPIUpload filesize(Long filesize) {
-
 		this.filesize = filesize;
 
 		return this;
@@ -245,7 +241,6 @@ public class AAPIUpload implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**Offset of chunk in bytes.
 	 */
 	public AAPIUpload offset(Long offset) {
-
 		this.offset = offset;
 
 		return this;
@@ -260,7 +255,6 @@ public class AAPIUpload implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**Chunk contents.
 	 */
 	public AAPIUpload chunk(byte[] chunk) {
-
 		this.chunk = chunk;
 
 		return this;
@@ -275,7 +269,6 @@ public class AAPIUpload implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**Make potentially large file operations asynchronous when possible.
 	 */
 	public AAPIUpload async(Boolean async) {
-
 		this.async = async;
 
 		return this;
@@ -290,7 +283,6 @@ public class AAPIUpload implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**Only fetch the upload status for the given file key.
 	 */
 	public AAPIUpload checkstatus(Boolean checkstatus) {
-
 		this.checkstatus = checkstatus;
 
 		return this;
@@ -305,7 +297,6 @@ public class AAPIUpload implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	/**A "csrf" token retrieved from <a href="/wiki/Special:ApiHelp/query%2Btokens" title="Special:ApiHelp/query+tokens">action=query&amp;meta=tokens</a>
 	 */
 	public AAPIUpload token(String token) {
-
 		this.token = token;
 
 		return this;

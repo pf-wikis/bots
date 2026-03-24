@@ -55,7 +55,6 @@ public class AAPIChangecontentmodel implements AAPIModule, AAPITokenModule, AAPI
 	/**Title of the page to change the contentmodel of. Cannot be used together with <var>pageid</var>.
 	 */
 	public AAPIChangecontentmodel title(String title) {
-
 		this.title = title;
 
 		return this;
@@ -70,7 +69,6 @@ public class AAPIChangecontentmodel implements AAPIModule, AAPITokenModule, AAPI
 	/**Page ID of the page to change the contentmodel of. Cannot be used together with <var>title</var>.
 	 */
 	public AAPIChangecontentmodel pageid(Long pageid) {
-
 		this.pageid = pageid;
 
 		return this;
@@ -85,7 +83,6 @@ public class AAPIChangecontentmodel implements AAPIModule, AAPITokenModule, AAPI
 	/**Edit summary and log entry reason
 	 */
 	public AAPIChangecontentmodel summary(String summary) {
-
 		this.summary = summary;
 
 		return this;
@@ -99,10 +96,16 @@ public class AAPIChangecontentmodel implements AAPIModule, AAPITokenModule, AAPI
 
 	/**Change tags to apply to the log entry and edit.
 	 */
-	public AAPIChangecontentmodel tags(String... tags) {
-
+	public AAPIChangecontentmodel tags(String tags) {
 		this.tags = List.of(tags);
 
+		return this;
+	}
+
+	/**Change tags to apply to the log entry and edit.
+	 */
+	public AAPIChangecontentmodel tags(String... tags) {
+		this.tags = List.of(tags);
 		return this;
 	}
 
@@ -121,7 +124,6 @@ public class AAPIChangecontentmodel implements AAPIModule, AAPITokenModule, AAPI
 	/**Mark the content model change with a bot flag.
 	 */
 	public AAPIChangecontentmodel bot(Boolean bot) {
-
 		this.bot = bot;
 
 		return this;
@@ -136,7 +138,6 @@ public class AAPIChangecontentmodel implements AAPIModule, AAPITokenModule, AAPI
 	/**A "csrf" token retrieved from <a href="/wiki/Special:ApiHelp/query%2Btokens" title="Special:ApiHelp/query+tokens">action=query&amp;meta=tokens</a>
 	 */
 	public AAPIChangecontentmodel token(String token) {
-
 		this.token = token;
 
 		return this;

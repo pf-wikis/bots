@@ -73,7 +73,6 @@ public class AAPIQueryAllusers implements AAPIModule, AAPIQueryListModule {
 	/**The username to stop enumerating at.
 	 */
 	public AAPIQueryAllusers to(String to) {
-
 		this.to = to;
 
 		return this;
@@ -88,7 +87,6 @@ public class AAPIQueryAllusers implements AAPIModule, AAPIQueryListModule {
 	/**Search for all users that begin with this value.
 	 */
 	public AAPIQueryAllusers prefix(String prefix) {
-
 		this.prefix = prefix;
 
 		return this;
@@ -103,7 +101,6 @@ public class AAPIQueryAllusers implements AAPIModule, AAPIQueryListModule {
 	/**Direction to sort in.
 	 */
 	public AAPIQueryAllusers dir(AAPIQueryAllusersDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -117,10 +114,16 @@ public class AAPIQueryAllusers implements AAPIModule, AAPIQueryListModule {
 
 	/**Only include users in the given groups. Does not include implicit or auto-promoted groups like *, user, or autoconfirmed.
 	 */
-	public AAPIQueryAllusers group(AAPIQueryAllusersGroup... group) {
-
+	public AAPIQueryAllusers group(AAPIQueryAllusersGroup group) {
 		this.group = List.of(group);
 
+		return this;
+	}
+
+	/**Only include users in the given groups. Does not include implicit or auto-promoted groups like *, user, or autoconfirmed.
+	 */
+	public AAPIQueryAllusers group(AAPIQueryAllusersGroup... group) {
+		this.group = List.of(group);
 		return this;
 	}
 
@@ -132,10 +135,16 @@ public class AAPIQueryAllusers implements AAPIModule, AAPIQueryListModule {
 
 	/**Exclude users in the given groups.
 	 */
-	public AAPIQueryAllusers excludegroup(AAPIQueryAllusersExcludegroup... excludegroup) {
-
+	public AAPIQueryAllusers excludegroup(AAPIQueryAllusersExcludegroup excludegroup) {
 		this.excludegroup = List.of(excludegroup);
 
+		return this;
+	}
+
+	/**Exclude users in the given groups.
+	 */
+	public AAPIQueryAllusers excludegroup(AAPIQueryAllusersExcludegroup... excludegroup) {
+		this.excludegroup = List.of(excludegroup);
 		return this;
 	}
 
@@ -147,10 +156,16 @@ public class AAPIQueryAllusers implements AAPIModule, AAPIQueryListModule {
 
 	/**Only include users with the given rights. Does not include rights granted by implicit or auto-promoted groups like *, user, or autoconfirmed.
 	 */
-	public AAPIQueryAllusers rights(AAPIQueryAllusersRights... rights) {
-
+	public AAPIQueryAllusers rights(AAPIQueryAllusersRights rights) {
 		this.rights = List.of(rights);
 
+		return this;
+	}
+
+	/**Only include users with the given rights. Does not include rights granted by implicit or auto-promoted groups like *, user, or autoconfirmed.
+	 */
+	public AAPIQueryAllusers rights(AAPIQueryAllusersRights... rights) {
+		this.rights = List.of(rights);
 		return this;
 	}
 
@@ -164,10 +179,18 @@ public class AAPIQueryAllusers implements AAPIModule, AAPIQueryListModule {
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryAllusers prop(AAPIQueryAllusersProp... prop) {
-
+	public AAPIQueryAllusers prop(AAPIQueryAllusersProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which pieces of information to include:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryAllusers prop(AAPIQueryAllusersProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -182,7 +205,6 @@ public class AAPIQueryAllusers implements AAPIModule, AAPIQueryListModule {
 	/**How many total usernames to return.
 	 */
 	public AAPIQueryAllusers limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -197,7 +219,6 @@ public class AAPIQueryAllusers implements AAPIModule, AAPIQueryListModule {
 	/**Only list users who have made edits.
 	 */
 	public AAPIQueryAllusers witheditsonly(Boolean witheditsonly) {
-
 		this.witheditsonly = witheditsonly;
 
 		return this;
@@ -212,7 +233,6 @@ public class AAPIQueryAllusers implements AAPIModule, AAPIQueryListModule {
 	/**Only list users active in the last 30 days.
 	 */
 	public AAPIQueryAllusers activeusers(Boolean activeusers) {
-
 		this.activeusers = activeusers;
 
 		return this;
@@ -227,7 +247,6 @@ public class AAPIQueryAllusers implements AAPIModule, AAPIQueryListModule {
 	/**With <kbd>auprop=centralids</kbd>, also indicate whether the user is attached with the wiki identified by this ID.
 	 */
 	public AAPIQueryAllusers attachedwiki(String attachedwiki) {
-
 		this.attachedwiki = attachedwiki;
 
 		return this;
@@ -242,7 +261,6 @@ public class AAPIQueryAllusers implements AAPIModule, AAPIQueryListModule {
 	/**Exclude users of named accounts.
 	 */
 	public AAPIQueryAllusers excludenamed(Boolean excludenamed) {
-
 		this.excludenamed = excludenamed;
 
 		return this;
@@ -257,7 +275,6 @@ public class AAPIQueryAllusers implements AAPIModule, AAPIQueryListModule {
 	/**Exclude users of temporary accounts.
 	 */
 	public AAPIQueryAllusers excludetemp(Boolean excludetemp) {
-
 		this.excludetemp = excludetemp;
 
 		return this;
@@ -495,7 +512,7 @@ public class AAPIQueryAllusers implements AAPIModule, AAPIQueryListModule {
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

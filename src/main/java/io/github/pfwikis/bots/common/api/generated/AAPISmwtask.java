@@ -53,7 +53,6 @@ public class AAPISmwtask implements AAPIModule, AAPITokenModule, AAPIMainActionM
 	/**JSON encoded parameters that match the selected task type requirement
 	 */
 	public AAPISmwtask params(String params) {
-
 		this.params = params;
 
 		return this;
@@ -68,7 +67,6 @@ public class AAPISmwtask implements AAPIModule, AAPITokenModule, AAPIMainActionM
 	/**A "csrf" token retrieved from <a href="/wiki/Special:ApiHelp/query%2Btokens" title="Special:ApiHelp/query+tokens">action=query&amp;meta=tokens</a>
 	 */
 	public AAPISmwtask token(String token) {
-
 		this.token = token;
 
 		return this;

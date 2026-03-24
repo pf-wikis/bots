@@ -60,7 +60,6 @@ public class AAPIRollback implements AAPIModule, AAPITokenModule, AAPIMainAction
 	/**Title of the page to roll back. Cannot be used together with <var>pageid</var>.
 	 */
 	public AAPIRollback title(String title) {
-
 		this.title = title;
 
 		return this;
@@ -75,7 +74,6 @@ public class AAPIRollback implements AAPIModule, AAPITokenModule, AAPIMainAction
 	/**Page ID of the page to roll back. Cannot be used together with <var>title</var>.
 	 */
 	public AAPIRollback pageid(Long pageid) {
-
 		this.pageid = pageid;
 
 		return this;
@@ -89,10 +87,16 @@ public class AAPIRollback implements AAPIModule, AAPITokenModule, AAPIMainAction
 
 	/**Tags to apply to the rollback.
 	 */
-	public AAPIRollback tags(String... tags) {
-
+	public AAPIRollback tags(String tags) {
 		this.tags = List.of(tags);
 
+		return this;
+	}
+
+	/**Tags to apply to the rollback.
+	 */
+	public AAPIRollback tags(String... tags) {
+		this.tags = List.of(tags);
 		return this;
 	}
 
@@ -111,7 +115,6 @@ public class AAPIRollback implements AAPIModule, AAPITokenModule, AAPIMainAction
 	/**Custom edit summary. If empty, default summary will be used.
 	 */
 	public AAPIRollback summary(String summary) {
-
 		this.summary = summary;
 
 		return this;
@@ -126,7 +129,6 @@ public class AAPIRollback implements AAPIModule, AAPITokenModule, AAPIMainAction
 	/**Mark the reverted edits and the revert as bot edits.
 	 */
 	public AAPIRollback markbot(Boolean markbot) {
-
 		this.markbot = markbot;
 
 		return this;
@@ -141,7 +143,6 @@ public class AAPIRollback implements AAPIModule, AAPITokenModule, AAPIMainAction
 	/**Unconditionally add or remove the page from the current user's watchlist, use preferences (ignored for bot users) or do not change watch.
 	 */
 	public AAPIRollback watchlist(AAPIRollbackWatchlist watchlist) {
-
 		this.watchlist = watchlist;
 
 		return this;
@@ -159,7 +160,6 @@ public class AAPIRollback implements AAPIModule, AAPITokenModule, AAPIMainAction
 	 * </p>
 	 */
 	public AAPIRollback token(String token) {
-
 		this.token = token;
 
 		return this;

@@ -94,10 +94,18 @@ public class AAPIQueryCategorymembers
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryCategorymembers prop(AAPIQueryCategorymembersProp... prop) {
-
+	public AAPIQueryCategorymembers prop(AAPIQueryCategorymembersProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which pieces of information to include:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryCategorymembers prop(AAPIQueryCategorymembersProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -111,10 +119,16 @@ public class AAPIQueryCategorymembers
 
 	/**Only include pages in these namespaces. Note that <kbd>cmtype=subcat</kbd> or <kbd>cmtype=file</kbd> may be used instead of <kbd>cmnamespace=14</kbd> or <kbd>6</kbd>.
 	 */
-	public AAPIQueryCategorymembers namespace(NS... namespace) {
-
+	public AAPIQueryCategorymembers namespace(NS namespace) {
 		this.namespace = List.of(namespace);
 
+		return this;
+	}
+
+	/**Only include pages in these namespaces. Note that <kbd>cmtype=subcat</kbd> or <kbd>cmtype=file</kbd> may be used instead of <kbd>cmnamespace=14</kbd> or <kbd>6</kbd>.
+	 */
+	public AAPIQueryCategorymembers namespace(NS... namespace) {
+		this.namespace = List.of(namespace);
 		return this;
 	}
 
@@ -126,10 +140,16 @@ public class AAPIQueryCategorymembers
 
 	/**Which type of category members to include. Ignored when <kbd>cmsort=timestamp</kbd> is set.
 	 */
-	public AAPIQueryCategorymembers type(AAPIQueryCategorymembersType... type) {
-
+	public AAPIQueryCategorymembers type(AAPIQueryCategorymembersType type) {
 		this.type = List.of(type);
 
+		return this;
+	}
+
+	/**Which type of category members to include. Ignored when <kbd>cmsort=timestamp</kbd> is set.
+	 */
+	public AAPIQueryCategorymembers type(AAPIQueryCategorymembersType... type) {
+		this.type = List.of(type);
 		return this;
 	}
 
@@ -142,7 +162,6 @@ public class AAPIQueryCategorymembers
 	/**The maximum number of pages to return.
 	 */
 	public AAPIQueryCategorymembers limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -157,7 +176,6 @@ public class AAPIQueryCategorymembers
 	/**Property to sort by.
 	 */
 	public AAPIQueryCategorymembers sort(AAPIQueryCategorymembersSort sort) {
-
 		this.sort = sort;
 
 		return this;
@@ -172,7 +190,6 @@ public class AAPIQueryCategorymembers
 	/**In which direction to sort.
 	 */
 	public AAPIQueryCategorymembers dir(AAPIQueryCategorymembersDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -187,7 +204,6 @@ public class AAPIQueryCategorymembers
 	/**Timestamp to start listing from. Can only be used with <kbd>cmsort=timestamp</kbd>.
 	 */
 	public AAPIQueryCategorymembers start(java.time.Instant start) {
-
 		this.start = start;
 
 		return this;
@@ -202,7 +218,6 @@ public class AAPIQueryCategorymembers
 	/**Timestamp to end listing at. Can only be used with <kbd>cmsort=timestamp</kbd>.
 	 */
 	public AAPIQueryCategorymembers end(java.time.Instant end) {
-
 		this.end = end;
 
 		return this;
@@ -217,7 +232,6 @@ public class AAPIQueryCategorymembers
 	/**Sortkey to start listing from, as returned by <kbd>cmprop=sortkey</kbd>. Can only be used with <kbd>cmsort=sortkey</kbd>.
 	 */
 	public AAPIQueryCategorymembers starthexsortkey(String starthexsortkey) {
-
 		this.starthexsortkey = starthexsortkey;
 
 		return this;
@@ -232,7 +246,6 @@ public class AAPIQueryCategorymembers
 	/**Sortkey to end listing at, as returned by <kbd>cmprop=sortkey</kbd>. Can only be used with <kbd>cmsort=sortkey</kbd>.
 	 */
 	public AAPIQueryCategorymembers endhexsortkey(String endhexsortkey) {
-
 		this.endhexsortkey = endhexsortkey;
 
 		return this;
@@ -247,7 +260,6 @@ public class AAPIQueryCategorymembers
 	/**Sortkey prefix to start listing from. Can only be used with <kbd>cmsort=sortkey</kbd>. Overrides <var>cmstarthexsortkey</var>.
 	 */
 	public AAPIQueryCategorymembers startsortkeyprefix(String startsortkeyprefix) {
-
 		this.startsortkeyprefix = startsortkeyprefix;
 
 		return this;
@@ -262,7 +274,6 @@ public class AAPIQueryCategorymembers
 	/**Sortkey prefix to end listing <strong>before</strong> (not <strong>at</strong>; if this value occurs it will not be included!). Can only be used with cmsort=sortkey. Overrides cmendhexsortkey.
 	 */
 	public AAPIQueryCategorymembers endsortkeyprefix(String endsortkeyprefix) {
-
 		this.endsortkeyprefix = endsortkeyprefix;
 
 		return this;
@@ -400,8 +411,7 @@ public class AAPIQueryCategorymembers
 				req.addParameter(
 						paramPrefix + "cmpageid", Integer.toString(title.toPageRef().getId()));
 			} else {
-				req.addParameter(
-						paramPrefix + "cmtitle", title.toPageRef().getTitle().toFullTitle());
+				req.addParameter(paramPrefix + "cmtitle", title.toPageTitle().toFullTitle());
 			}
 		}
 
@@ -508,7 +518,7 @@ public class AAPIQueryCategorymembers
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

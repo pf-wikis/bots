@@ -55,7 +55,6 @@ public class AAPIFilerevert implements AAPIModule, AAPITokenModule, AAPIMainActi
 	/**Upload comment.
 	 */
 	public AAPIFilerevert comment(String comment) {
-
 		this.comment = comment;
 
 		return this;
@@ -76,7 +75,6 @@ public class AAPIFilerevert implements AAPIModule, AAPITokenModule, AAPIMainActi
 	/**A "csrf" token retrieved from <a href="/wiki/Special:ApiHelp/query%2Btokens" title="Special:ApiHelp/query+tokens">action=query&amp;meta=tokens</a>
 	 */
 	public AAPIFilerevert token(String token) {
-
 		this.token = token;
 
 		return this;

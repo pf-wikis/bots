@@ -66,10 +66,18 @@ public class AAPIQueryInfo implements AAPIModule, AAPIQueryPropModule {
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryInfo prop(AAPIQueryInfoProp... prop) {
-
+	public AAPIQueryInfo prop(AAPIQueryInfoProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which additional properties to get:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryInfo prop(AAPIQueryInfoProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -84,7 +92,6 @@ public class AAPIQueryInfo implements AAPIModule, AAPIQueryPropModule {
 	/**The context title to use when determining extra CSS classes (e.g. link colors) when <var>inprop</var> contains <var>linkclasses</var>.
 	 */
 	public AAPIQueryInfo linkcontext(String linkcontext) {
-
 		this.linkcontext = linkcontext;
 
 		return this;
@@ -98,10 +105,16 @@ public class AAPIQueryInfo implements AAPIModule, AAPIQueryPropModule {
 
 	/**Test whether the current user can perform certain actions on the page.
 	 */
-	public AAPIQueryInfo testactions(String... testactions) {
-
+	public AAPIQueryInfo testactions(String testactions) {
 		this.testactions = List.of(testactions);
 
+		return this;
+	}
+
+	/**Test whether the current user can perform certain actions on the page.
+	 */
+	public AAPIQueryInfo testactions(String... testactions) {
+		this.testactions = List.of(testactions);
 		return this;
 	}
 
@@ -116,7 +129,6 @@ public class AAPIQueryInfo implements AAPIModule, AAPIQueryPropModule {
 	 * <dl></dl>
 	 */
 	public AAPIQueryInfo testactionsdetail(AAPIQueryInfoTestactionsdetail testactionsdetail) {
-
 		this.testactionsdetail = testactionsdetail;
 
 		return this;
@@ -133,7 +145,6 @@ public class AAPIQueryInfo implements AAPIModule, AAPIQueryPropModule {
 	/**Test whether performing <var>intestactions</var> would automatically create a temporary account.
 	 */
 	public AAPIQueryInfo testactionsautocreate(Boolean testactionsautocreate) {
-
 		this.testactionsautocreate = testactionsautocreate;
 
 		return this;
@@ -148,7 +159,6 @@ public class AAPIQueryInfo implements AAPIModule, AAPIQueryPropModule {
 	/**Title of a custom page to use as preloaded content.
 	 */
 	public AAPIQueryInfo preloadcustom(String preloadcustom) {
-
 		this.preloadcustom = preloadcustom;
 
 		return this;
@@ -162,10 +172,16 @@ public class AAPIQueryInfo implements AAPIModule, AAPIQueryPropModule {
 
 	/**Parameters for the custom page being used as preloaded content.
 	 */
-	public AAPIQueryInfo preloadparams(String... preloadparams) {
-
+	public AAPIQueryInfo preloadparams(String preloadparams) {
 		this.preloadparams = List.of(preloadparams);
 
+		return this;
+	}
+
+	/**Parameters for the custom page being used as preloaded content.
+	 */
+	public AAPIQueryInfo preloadparams(String... preloadparams) {
+		this.preloadparams = List.of(preloadparams);
 		return this;
 	}
 
@@ -178,7 +194,6 @@ public class AAPIQueryInfo implements AAPIModule, AAPIQueryPropModule {
 	/**Return preloaded content for a new section on the page, rather than a new page.
 	 */
 	public AAPIQueryInfo preloadnewsection(Boolean preloadnewsection) {
-
 		this.preloadnewsection = preloadnewsection;
 
 		return this;
@@ -193,7 +208,6 @@ public class AAPIQueryInfo implements AAPIModule, AAPIQueryPropModule {
 	/**Some intro messages come with optional wrapper frames. Use <kbd>moreframes</kbd> to include them or <kbd>lessframes</kbd> to omit them.
 	 */
 	public AAPIQueryInfo editintrostyle(AAPIQueryInfoEditintrostyle editintrostyle) {
-
 		this.editintrostyle = editintrostyle;
 
 		return this;
@@ -207,10 +221,16 @@ public class AAPIQueryInfo implements AAPIModule, AAPIQueryPropModule {
 
 	/**List of intro messages to remove from the response. Use this if a specific message is not relevant to your tool, or if the information is conveyed in a different way.
 	 */
-	public AAPIQueryInfo editintroskip(String... editintroskip) {
-
+	public AAPIQueryInfo editintroskip(String editintroskip) {
 		this.editintroskip = List.of(editintroskip);
 
+		return this;
+	}
+
+	/**List of intro messages to remove from the response. Use this if a specific message is not relevant to your tool, or if the information is conveyed in a different way.
+	 */
+	public AAPIQueryInfo editintroskip(String... editintroskip) {
+		this.editintroskip = List.of(editintroskip);
 		return this;
 	}
 
@@ -223,7 +243,6 @@ public class AAPIQueryInfo implements AAPIModule, AAPIQueryPropModule {
 	/**Title of a custom page to use as an additional intro message.
 	 */
 	public AAPIQueryInfo editintrocustom(String editintrocustom) {
-
 		this.editintrocustom = editintrocustom;
 
 		return this;

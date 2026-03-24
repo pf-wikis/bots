@@ -66,10 +66,16 @@ public class AAPIQueryAllmessages implements AAPIModule, AAPIQueryMetaModule {
 
 	/**Which messages to output. <kbd>*</kbd> (default) means all messages.
 	 */
-	public AAPIQueryAllmessages messages(String... messages) {
-
+	public AAPIQueryAllmessages messages(String messages) {
 		this.messages = List.of(messages);
 
+		return this;
+	}
+
+	/**Which messages to output. <kbd>*</kbd> (default) means all messages.
+	 */
+	public AAPIQueryAllmessages messages(String... messages) {
+		this.messages = List.of(messages);
 		return this;
 	}
 
@@ -81,10 +87,16 @@ public class AAPIQueryAllmessages implements AAPIModule, AAPIQueryMetaModule {
 
 	/**Which properties to get.
 	 */
-	public AAPIQueryAllmessages prop(AAPIQueryAllmessagesProp... prop) {
-
+	public AAPIQueryAllmessages prop(AAPIQueryAllmessagesProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**Which properties to get.
+	 */
+	public AAPIQueryAllmessages prop(AAPIQueryAllmessagesProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -97,7 +109,6 @@ public class AAPIQueryAllmessages implements AAPIModule, AAPIQueryMetaModule {
 	/**Set to enable parser, will preprocess the wikitext of message (substitute magic words, handle templates, etc.).
 	 */
 	public AAPIQueryAllmessages enableparser(Boolean enableparser) {
-
 		this.enableparser = enableparser;
 
 		return this;
@@ -112,7 +123,6 @@ public class AAPIQueryAllmessages implements AAPIModule, AAPIQueryMetaModule {
 	/**If set, do not include the content of the messages in the output.
 	 */
 	public AAPIQueryAllmessages nocontent(Boolean nocontent) {
-
 		this.nocontent = nocontent;
 
 		return this;
@@ -128,7 +138,6 @@ public class AAPIQueryAllmessages implements AAPIModule, AAPIQueryMetaModule {
 	 * This lists all MediaWiki-namespace pages, so it will also list those that aren't really messages such as <a href="/wiki/MediaWiki:Common.js" title="MediaWiki:Common.js">Common.js</a>.
 	 */
 	public AAPIQueryAllmessages includelocal(Boolean includelocal) {
-
 		this.includelocal = includelocal;
 
 		return this;
@@ -143,10 +152,16 @@ public class AAPIQueryAllmessages implements AAPIModule, AAPIQueryMetaModule {
 
 	/**Arguments to be substituted into message.
 	 */
-	public AAPIQueryAllmessages args(String... args) {
-
+	public AAPIQueryAllmessages args(String args) {
 		this.args = List.of(args);
 
+		return this;
+	}
+
+	/**Arguments to be substituted into message.
+	 */
+	public AAPIQueryAllmessages args(String... args) {
+		this.args = List.of(args);
 		return this;
 	}
 
@@ -159,7 +174,6 @@ public class AAPIQueryAllmessages implements AAPIModule, AAPIQueryMetaModule {
 	/**Return only messages with names that contain this string.
 	 */
 	public AAPIQueryAllmessages filter(String filter) {
-
 		this.filter = filter;
 
 		return this;
@@ -174,7 +188,6 @@ public class AAPIQueryAllmessages implements AAPIModule, AAPIQueryMetaModule {
 	/**Return only messages in this customisation state.
 	 */
 	public AAPIQueryAllmessages customised(AAPIQueryAllmessagesCustomised customised) {
-
 		this.customised = customised;
 
 		return this;
@@ -189,7 +202,6 @@ public class AAPIQueryAllmessages implements AAPIModule, AAPIQueryMetaModule {
 	/**Return messages in this language.
 	 */
 	public AAPIQueryAllmessages lang(String lang) {
-
 		this.lang = lang;
 
 		return this;
@@ -204,7 +216,6 @@ public class AAPIQueryAllmessages implements AAPIModule, AAPIQueryMetaModule {
 	/**Return messages starting at this message.
 	 */
 	public AAPIQueryAllmessages from(String from) {
-
 		this.from = from;
 
 		return this;
@@ -219,7 +230,6 @@ public class AAPIQueryAllmessages implements AAPIModule, AAPIQueryMetaModule {
 	/**Return messages ending at this message.
 	 */
 	public AAPIQueryAllmessages to(String to) {
-
 		this.to = to;
 
 		return this;
@@ -234,7 +244,6 @@ public class AAPIQueryAllmessages implements AAPIModule, AAPIQueryMetaModule {
 	/**Page name to use as context when parsing message (for amenableparser option).
 	 */
 	public AAPIQueryAllmessages title(String title) {
-
 		this.title = title;
 
 		return this;
@@ -249,7 +258,6 @@ public class AAPIQueryAllmessages implements AAPIModule, AAPIQueryMetaModule {
 	/**Return messages with this prefix.
 	 */
 	public AAPIQueryAllmessages prefix(String prefix) {
-
 		this.prefix = prefix;
 
 		return this;

@@ -77,7 +77,6 @@ public class AAPIQueryAllcategories
 	/**The category to start enumerating from.
 	 */
 	public AAPIQueryAllcategories from(String from) {
-
 		this.from = from;
 
 		return this;
@@ -92,7 +91,6 @@ public class AAPIQueryAllcategories
 	/**The category to stop enumerating at.
 	 */
 	public AAPIQueryAllcategories to(String to) {
-
 		this.to = to;
 
 		return this;
@@ -107,7 +105,6 @@ public class AAPIQueryAllcategories
 	/**Search for all category titles that begin with this value.
 	 */
 	public AAPIQueryAllcategories prefix(String prefix) {
-
 		this.prefix = prefix;
 
 		return this;
@@ -122,7 +119,6 @@ public class AAPIQueryAllcategories
 	/**Direction to sort in.
 	 */
 	public AAPIQueryAllcategories dir(AAPIQueryAllcategoriesDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -137,7 +133,6 @@ public class AAPIQueryAllcategories
 	/**Only return categories with at least this many members.
 	 */
 	public AAPIQueryAllcategories min(Long min) {
-
 		this.min = min;
 
 		return this;
@@ -152,7 +147,6 @@ public class AAPIQueryAllcategories
 	/**Only return categories with at most this many members.
 	 */
 	public AAPIQueryAllcategories max(Long max) {
-
 		this.max = max;
 
 		return this;
@@ -167,7 +161,6 @@ public class AAPIQueryAllcategories
 	/**How many categories to return.
 	 */
 	public AAPIQueryAllcategories limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -183,10 +176,18 @@ public class AAPIQueryAllcategories
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryAllcategories prop(AAPIQueryAllcategoriesProp... prop) {
-
+	public AAPIQueryAllcategories prop(AAPIQueryAllcategoriesProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which properties to get:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryAllcategories prop(AAPIQueryAllcategoriesProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -341,7 +342,7 @@ public class AAPIQueryAllcategories
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

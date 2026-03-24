@@ -80,7 +80,6 @@ public class AAPICompare implements AAPIModule, AAPIMainActionModule {
 	/**First title to compare.
 	 */
 	public AAPICompare fromtitle(String fromtitle) {
-
 		this.fromtitle = fromtitle;
 
 		return this;
@@ -95,7 +94,6 @@ public class AAPICompare implements AAPIModule, AAPIMainActionModule {
 	/**First page ID to compare.
 	 */
 	public AAPICompare fromid(Long fromid) {
-
 		this.fromid = fromid;
 
 		return this;
@@ -110,7 +108,6 @@ public class AAPICompare implements AAPIModule, AAPIMainActionModule {
 	/**First revision to compare.
 	 */
 	public AAPICompare fromrev(Long fromrev) {
-
 		this.fromrev = fromrev;
 
 		return this;
@@ -126,10 +123,18 @@ public class AAPICompare implements AAPIModule, AAPIMainActionModule {
 	 * </p><p>This parameter specifies the slots that are to be modified. Use <var>fromtext-&#x7b;slot}</var>, <var>fromcontentmodel-&#x7b;slot}</var>, and <var>fromcontentformat-&#x7b;slot}</var> to specify content for each slot.
 	 * </p>
 	 */
-	public AAPICompare fromslots(AAPICompareFromslots... fromslots) {
-
+	public AAPICompare fromslots(AAPICompareFromslots fromslots) {
 		this.fromslots = List.of(fromslots);
 
+		return this;
+	}
+
+	/**<p>Override content of the revision specified by <var>fromtitle</var>, <var>fromid</var> or <var>fromrev</var>.
+	 * </p><p>This parameter specifies the slots that are to be modified. Use <var>fromtext-&#x7b;slot}</var>, <var>fromcontentmodel-&#x7b;slot}</var>, and <var>fromcontentformat-&#x7b;slot}</var> to specify content for each slot.
+	 * </p>
+	 */
+	public AAPICompare fromslots(AAPICompareFromslots... fromslots) {
+		this.fromslots = List.of(fromslots);
 		return this;
 	}
 
@@ -144,7 +149,6 @@ public class AAPICompare implements AAPIModule, AAPIMainActionModule {
 	/**Do a pre-save transform on <var>fromtext-&#x7b;slot}</var>.
 	 */
 	public AAPICompare frompst(Boolean frompst) {
-
 		this.frompst = frompst;
 
 		return this;
@@ -159,7 +163,6 @@ public class AAPICompare implements AAPIModule, AAPIMainActionModule {
 	/**Second title to compare.
 	 */
 	public AAPICompare totitle(String totitle) {
-
 		this.totitle = totitle;
 
 		return this;
@@ -174,7 +177,6 @@ public class AAPICompare implements AAPIModule, AAPIMainActionModule {
 	/**Second page ID to compare.
 	 */
 	public AAPICompare toid(Long toid) {
-
 		this.toid = toid;
 
 		return this;
@@ -189,7 +191,6 @@ public class AAPICompare implements AAPIModule, AAPIMainActionModule {
 	/**Second revision to compare.
 	 */
 	public AAPICompare torev(Long torev) {
-
 		this.torev = torev;
 
 		return this;
@@ -204,7 +205,6 @@ public class AAPICompare implements AAPIModule, AAPIMainActionModule {
 	/**Use a revision relative to the revision determined from <var>fromtitle</var>, <var>fromid</var> or <var>fromrev</var>. All of the other 'to' options will be ignored.
 	 */
 	public AAPICompare torelative(AAPICompareTorelative torelative) {
-
 		this.torelative = torelative;
 
 		return this;
@@ -220,10 +220,18 @@ public class AAPICompare implements AAPIModule, AAPIMainActionModule {
 	 * </p><p>This parameter specifies the slots that are to be modified. Use <var>totext-&#x7b;slot}</var>, <var>tocontentmodel-&#x7b;slot}</var>, and <var>tocontentformat-&#x7b;slot}</var> to specify content for each slot.
 	 * </p>
 	 */
-	public AAPICompare toslots(AAPICompareToslots... toslots) {
-
+	public AAPICompare toslots(AAPICompareToslots toslots) {
 		this.toslots = List.of(toslots);
 
+		return this;
+	}
+
+	/**<p>Override content of the revision specified by <var>totitle</var>, <var>toid</var> or <var>torev</var>.
+	 * </p><p>This parameter specifies the slots that are to be modified. Use <var>totext-&#x7b;slot}</var>, <var>tocontentmodel-&#x7b;slot}</var>, and <var>tocontentformat-&#x7b;slot}</var> to specify content for each slot.
+	 * </p>
+	 */
+	public AAPICompare toslots(AAPICompareToslots... toslots) {
+		this.toslots = List.of(toslots);
 		return this;
 	}
 
@@ -238,7 +246,6 @@ public class AAPICompare implements AAPIModule, AAPIMainActionModule {
 	/**Do a pre-save transform on <var>totext</var>.
 	 */
 	public AAPICompare topst(Boolean topst) {
-
 		this.topst = topst;
 
 		return this;
@@ -254,10 +261,18 @@ public class AAPICompare implements AAPIModule, AAPIMainActionModule {
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPICompare prop(AAPICompareProp... prop) {
-
+	public AAPICompare prop(AAPICompareProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which pieces of information to get.
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPICompare prop(AAPICompareProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -271,10 +286,16 @@ public class AAPICompare implements AAPIModule, AAPIMainActionModule {
 
 	/**Return individual diffs for these slots, rather than one combined diff for all slots.
 	 */
-	public AAPICompare slots(AAPICompareSlots... slots) {
-
+	public AAPICompare slots(AAPICompareSlots slots) {
 		this.slots = List.of(slots);
 
+		return this;
+	}
+
+	/**Return individual diffs for these slots, rather than one combined diff for all slots.
+	 */
+	public AAPICompare slots(AAPICompareSlots... slots) {
+		this.slots = List.of(slots);
 		return this;
 	}
 
@@ -287,7 +308,6 @@ public class AAPICompare implements AAPIModule, AAPIMainActionModule {
 	/**Return the comparison formatted as inline HTML.
 	 */
 	public AAPICompare difftype(AAPICompareDifftype difftype) {
-
 		this.difftype = difftype;
 
 		return this;

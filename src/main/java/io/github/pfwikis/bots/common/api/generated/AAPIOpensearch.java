@@ -60,10 +60,16 @@ public class AAPIOpensearch implements AAPIModule, AAPIMainActionModule {
 
 	/**Namespaces to search. Ignored if <var>search</var> begins with a valid namespace prefix.
 	 */
-	public AAPIOpensearch namespace(NS... namespace) {
-
+	public AAPIOpensearch namespace(NS namespace) {
 		this.namespace = List.of(namespace);
 
+		return this;
+	}
+
+	/**Namespaces to search. Ignored if <var>search</var> begins with a valid namespace prefix.
+	 */
+	public AAPIOpensearch namespace(NS... namespace) {
+		this.namespace = List.of(namespace);
 		return this;
 	}
 
@@ -76,7 +82,6 @@ public class AAPIOpensearch implements AAPIModule, AAPIMainActionModule {
 	/**Maximum number of results to return.
 	 */
 	public AAPIOpensearch limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -95,7 +100,6 @@ public class AAPIOpensearch implements AAPIModule, AAPIMainActionModule {
 	 * </p>
 	 */
 	public AAPIOpensearch redirects(AAPIOpensearchRedirects redirects) {
-
 		this.redirects = redirects;
 
 		return this;
@@ -114,7 +118,6 @@ public class AAPIOpensearch implements AAPIModule, AAPIMainActionModule {
 	/**The format of the output.
 	 */
 	public AAPIOpensearch format(AAPIOpensearchFormat format) {
-
 		this.format = format;
 
 		return this;
@@ -129,7 +132,6 @@ public class AAPIOpensearch implements AAPIModule, AAPIMainActionModule {
 	/**If warnings are raised with <kbd>format=json</kbd>, return an API error instead of ignoring them.
 	 */
 	public AAPIOpensearch warningsaserror(Boolean warningsaserror) {
-
 		this.warningsaserror = warningsaserror;
 
 		return this;

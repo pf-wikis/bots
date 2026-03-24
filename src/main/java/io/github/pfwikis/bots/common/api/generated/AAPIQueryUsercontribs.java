@@ -67,7 +67,6 @@ public class AAPIQueryUsercontribs implements AAPIModule, AAPIQueryListModule {
 	/**The maximum number of contributions to return.
 	 */
 	public AAPIQueryUsercontribs limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -82,7 +81,6 @@ public class AAPIQueryUsercontribs implements AAPIModule, AAPIQueryListModule {
 	/**The start timestamp to return from, i.e. revisions before this timestamp.
 	 */
 	public AAPIQueryUsercontribs start(java.time.Instant start) {
-
 		this.start = start;
 
 		return this;
@@ -97,7 +95,6 @@ public class AAPIQueryUsercontribs implements AAPIModule, AAPIQueryListModule {
 	/**The end timestamp to return to, i.e. revisions after this timestamp.
 	 */
 	public AAPIQueryUsercontribs end(java.time.Instant end) {
-
 		this.end = end;
 
 		return this;
@@ -111,10 +108,16 @@ public class AAPIQueryUsercontribs implements AAPIModule, AAPIQueryListModule {
 
 	/**The users to retrieve contributions for. Cannot be used with <var>ucuserids</var>, <var>ucuserprefix</var>, or <var>uciprange</var>.
 	 */
-	public AAPIQueryUsercontribs user(String... user) {
-
+	public AAPIQueryUsercontribs user(String user) {
 		this.user = List.of(user);
 
+		return this;
+	}
+
+	/**The users to retrieve contributions for. Cannot be used with <var>ucuserids</var>, <var>ucuserprefix</var>, or <var>uciprange</var>.
+	 */
+	public AAPIQueryUsercontribs user(String... user) {
+		this.user = List.of(user);
 		return this;
 	}
 
@@ -126,10 +129,16 @@ public class AAPIQueryUsercontribs implements AAPIModule, AAPIQueryListModule {
 
 	/**The user IDs to retrieve contributions for. Cannot be used with <var>ucuser</var>, <var>ucuserprefix</var>, or <var>uciprange</var>.
 	 */
-	public AAPIQueryUsercontribs userids(Long... userids) {
-
+	public AAPIQueryUsercontribs userids(Long userids) {
 		this.userids = List.of(userids);
 
+		return this;
+	}
+
+	/**The user IDs to retrieve contributions for. Cannot be used with <var>ucuser</var>, <var>ucuserprefix</var>, or <var>uciprange</var>.
+	 */
+	public AAPIQueryUsercontribs userids(Long... userids) {
+		this.userids = List.of(userids);
 		return this;
 	}
 
@@ -142,7 +151,6 @@ public class AAPIQueryUsercontribs implements AAPIModule, AAPIQueryListModule {
 	/**Retrieve contributions for all users whose names begin with this value. Cannot be used with <var>ucuser</var>, <var>ucuserids</var>, or <var>uciprange</var>.
 	 */
 	public AAPIQueryUsercontribs userprefix(String userprefix) {
-
 		this.userprefix = userprefix;
 
 		return this;
@@ -157,7 +165,6 @@ public class AAPIQueryUsercontribs implements AAPIModule, AAPIQueryListModule {
 	/**The CIDR range to retrieve contributions for. Cannot be used with <var>ucuser</var>, <var>ucuserprefix</var>, or <var>ucuserids</var>.
 	 */
 	public AAPIQueryUsercontribs iprange(String iprange) {
-
 		this.iprange = iprange;
 
 		return this;
@@ -174,7 +181,6 @@ public class AAPIQueryUsercontribs implements AAPIModule, AAPIQueryListModule {
 	 * <dl></dl>
 	 */
 	public AAPIQueryUsercontribs dir(AAPIQueryUsercontribsDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -190,10 +196,16 @@ public class AAPIQueryUsercontribs implements AAPIModule, AAPIQueryListModule {
 
 	/**Only list contributions in these namespaces.
 	 */
-	public AAPIQueryUsercontribs namespace(NS... namespace) {
-
+	public AAPIQueryUsercontribs namespace(NS namespace) {
 		this.namespace = List.of(namespace);
 
+		return this;
+	}
+
+	/**Only list contributions in these namespaces.
+	 */
+	public AAPIQueryUsercontribs namespace(NS... namespace) {
+		this.namespace = List.of(namespace);
 		return this;
 	}
 
@@ -207,10 +219,18 @@ public class AAPIQueryUsercontribs implements AAPIModule, AAPIQueryListModule {
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryUsercontribs prop(AAPIQueryUsercontribsProp... prop) {
-
+	public AAPIQueryUsercontribs prop(AAPIQueryUsercontribsProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Include additional pieces of information:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryUsercontribs prop(AAPIQueryUsercontribsProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -226,10 +246,18 @@ public class AAPIQueryUsercontribs implements AAPIModule, AAPIQueryListModule {
 	 * </p><p>If <kbd>ucshow=patrolled</kbd> or <kbd>ucshow=!patrolled</kbd> is set, revisions older than <var><a href="/w/index.php?title=Mw:Special:MyLanguage/Manual:$wgRCMaxAge&amp;action=edit&amp;redlink=1" class="new" title="Mw:Special:MyLanguage/Manual:$wgRCMaxAge (page does not exist)">$wgRCMaxAge</a></var> (7776000 seconds) won't be shown.
 	 * </p>
 	 */
-	public AAPIQueryUsercontribs show(AAPIQueryUsercontribsShow... show) {
-
+	public AAPIQueryUsercontribs show(AAPIQueryUsercontribsShow show) {
 		this.show = List.of(show);
 
+		return this;
+	}
+
+	/**<p>Show only items that meet these criteria, e.g. non minor edits only: <kbd>ucshow=!minor</kbd>.
+	 * </p><p>If <kbd>ucshow=patrolled</kbd> or <kbd>ucshow=!patrolled</kbd> is set, revisions older than <var><a href="/w/index.php?title=Mw:Special:MyLanguage/Manual:$wgRCMaxAge&amp;action=edit&amp;redlink=1" class="new" title="Mw:Special:MyLanguage/Manual:$wgRCMaxAge (page does not exist)">$wgRCMaxAge</a></var> (7776000 seconds) won't be shown.
+	 * </p>
+	 */
+	public AAPIQueryUsercontribs show(AAPIQueryUsercontribsShow... show) {
+		this.show = List.of(show);
 		return this;
 	}
 
@@ -244,7 +272,6 @@ public class AAPIQueryUsercontribs implements AAPIModule, AAPIQueryListModule {
 	/**Only list revisions tagged with this tag.
 	 */
 	public AAPIQueryUsercontribs tag(String tag) {
-
 		this.tag = tag;
 
 		return this;
@@ -482,7 +509,7 @@ public class AAPIQueryUsercontribs implements AAPIModule, AAPIQueryListModule {
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

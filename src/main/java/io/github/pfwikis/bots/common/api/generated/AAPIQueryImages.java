@@ -65,7 +65,6 @@ public class AAPIQueryImages
 	/**How many files to return.
 	 */
 	public AAPIQueryImages limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -79,10 +78,16 @@ public class AAPIQueryImages
 
 	/**Only list these files. Useful for checking whether a certain page has a certain file.
 	 */
-	public AAPIQueryImages images(String... images) {
-
+	public AAPIQueryImages images(String images) {
 		this.images = List.of(images);
 
+		return this;
+	}
+
+	/**Only list these files. Useful for checking whether a certain page has a certain file.
+	 */
+	public AAPIQueryImages images(String... images) {
+		this.images = List.of(images);
 		return this;
 	}
 
@@ -95,7 +100,6 @@ public class AAPIQueryImages
 	/**The direction in which to list.
 	 */
 	public AAPIQueryImages dir(AAPIQueryImagesDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -187,7 +191,7 @@ public class AAPIQueryImages
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

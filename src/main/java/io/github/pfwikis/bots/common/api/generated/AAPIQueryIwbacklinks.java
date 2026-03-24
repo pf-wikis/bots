@@ -74,7 +74,6 @@ public class AAPIQueryIwbacklinks
 	/**Prefix for the interwiki.
 	 */
 	public AAPIQueryIwbacklinks prefix(String prefix) {
-
 		this.prefix = prefix;
 
 		return this;
@@ -89,7 +88,6 @@ public class AAPIQueryIwbacklinks
 	/**Interwiki link to search for. Must be used with <var>iwblblprefix</var>.
 	 */
 	public AAPIQueryIwbacklinks title(String title) {
-
 		this.title = title;
 
 		return this;
@@ -104,7 +102,6 @@ public class AAPIQueryIwbacklinks
 	/**How many total pages to return.
 	 */
 	public AAPIQueryIwbacklinks limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -120,10 +117,18 @@ public class AAPIQueryIwbacklinks
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryIwbacklinks prop(AAPIQueryIwbacklinksProp... prop) {
-
+	public AAPIQueryIwbacklinks prop(AAPIQueryIwbacklinksProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which properties to get:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryIwbacklinks prop(AAPIQueryIwbacklinksProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -138,7 +143,6 @@ public class AAPIQueryIwbacklinks
 	/**The direction in which to list.
 	 */
 	public AAPIQueryIwbacklinks dir(AAPIQueryIwbacklinksDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -257,7 +261,7 @@ public class AAPIQueryIwbacklinks
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

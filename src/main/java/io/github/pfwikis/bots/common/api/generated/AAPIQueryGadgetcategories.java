@@ -44,10 +44,18 @@ public class AAPIQueryGadgetcategories implements AAPIModule, AAPIQueryListModul
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryGadgetcategories prop(AAPIQueryGadgetcategoriesProp... prop) {
-
+	public AAPIQueryGadgetcategories prop(AAPIQueryGadgetcategoriesProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>What gadget category information to get:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryGadgetcategories prop(AAPIQueryGadgetcategoriesProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -61,10 +69,16 @@ public class AAPIQueryGadgetcategories implements AAPIModule, AAPIQueryListModul
 
 	/**Names of categories to retrieve.
 	 */
-	public AAPIQueryGadgetcategories names(String... names) {
-
+	public AAPIQueryGadgetcategories names(String names) {
 		this.names = List.of(names);
 
+		return this;
+	}
+
+	/**Names of categories to retrieve.
+	 */
+	public AAPIQueryGadgetcategories names(String... names) {
+		this.names = List.of(names);
 		return this;
 	}
 

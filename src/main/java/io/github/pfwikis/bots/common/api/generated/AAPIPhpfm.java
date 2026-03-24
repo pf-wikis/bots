@@ -43,7 +43,6 @@ public class AAPIPhpfm implements AAPIModule, AAPIMainFormatModule {
 	/**Return the pretty-printed HTML and associated ResourceLoader modules as a JSON object.
 	 */
 	public AAPIPhpfm wrappedhtml(Boolean wrappedhtml) {
-
 		this.wrappedhtml = wrappedhtml;
 
 		return this;
@@ -60,7 +59,6 @@ public class AAPIPhpfm implements AAPIModule, AAPIMainFormatModule {
 	 * <dl></dl>
 	 */
 	public AAPIPhpfm formatversion(AAPIPhpfmFormatversion formatversion) {
-
 		this.formatversion = formatversion;
 
 		return this;

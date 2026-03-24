@@ -58,7 +58,6 @@ public class AAPIPurge implements AAPIModule, AAPIMainActionModule {
 	/**Update the links tables and do other secondary data updates.
 	 */
 	public AAPIPurge forcelinkupdate(Boolean forcelinkupdate) {
-
 		this.forcelinkupdate = forcelinkupdate;
 
 		return this;
@@ -73,7 +72,6 @@ public class AAPIPurge implements AAPIModule, AAPIMainActionModule {
 	/**Same as <kbd>forcelinkupdate</kbd>, and update the links tables for any page that uses this page as a template.
 	 */
 	public AAPIPurge forcerecursivelinkupdate(Boolean forcerecursivelinkupdate) {
-
 		this.forcerecursivelinkupdate = forcerecursivelinkupdate;
 
 		return this;
@@ -87,10 +85,16 @@ public class AAPIPurge implements AAPIModule, AAPIMainActionModule {
 
 	/**A list of titles to work on.
 	 */
-	public AAPIPurge titles(String... titles) {
-
+	public AAPIPurge titles(String titles) {
 		this.titles = List.of(titles);
 
+		return this;
+	}
+
+	/**A list of titles to work on.
+	 */
+	public AAPIPurge titles(String... titles) {
+		this.titles = List.of(titles);
 		return this;
 	}
 
@@ -102,10 +106,16 @@ public class AAPIPurge implements AAPIModule, AAPIMainActionModule {
 
 	/**A list of page IDs to work on.
 	 */
-	public AAPIPurge pageids(Long... pageids) {
-
+	public AAPIPurge pageids(Long pageids) {
 		this.pageids = List.of(pageids);
 
+		return this;
+	}
+
+	/**A list of page IDs to work on.
+	 */
+	public AAPIPurge pageids(Long... pageids) {
+		this.pageids = List.of(pageids);
 		return this;
 	}
 
@@ -117,10 +127,16 @@ public class AAPIPurge implements AAPIModule, AAPIMainActionModule {
 
 	/**A list of revision IDs to work on. Note that almost all query modules will convert revision IDs to the corresponding page ID and work on the latest revision instead. Only <kbd>prop=revisions</kbd> uses exact revisions for its response.
 	 */
-	public AAPIPurge revids(Long... revids) {
-
+	public AAPIPurge revids(Long revids) {
 		this.revids = List.of(revids);
 
+		return this;
+	}
+
+	/**A list of revision IDs to work on. Note that almost all query modules will convert revision IDs to the corresponding page ID and work on the latest revision instead. Only <kbd>prop=revisions</kbd> uses exact revisions for its response.
+	 */
+	public AAPIPurge revids(Long... revids) {
+		this.revids = List.of(revids);
 		return this;
 	}
 
@@ -136,7 +152,6 @@ public class AAPIPurge implements AAPIModule, AAPIMainActionModule {
 	 * <dl></dl>
 	 */
 	public AAPIPurge generator(AAPIPurgeGeneratorModule generator) {
-
 		this.generator = AAPIPurgeGenerator.createSubmodule(generator);
 
 		return this;
@@ -154,7 +169,6 @@ public class AAPIPurge implements AAPIModule, AAPIMainActionModule {
 	/**Automatically resolve redirects in <var>titles</var>, <var>pageids</var>, and <var>revids</var>, and in pages returned by <var>generator</var>.
 	 */
 	public AAPIPurge redirects(Boolean redirects) {
-
 		this.redirects = redirects;
 
 		return this;
@@ -169,7 +183,6 @@ public class AAPIPurge implements AAPIModule, AAPIMainActionModule {
 	/**Convert titles to other variants if necessary. Only works if the wiki's content language supports variant conversion. Languages that support variant conversion include ban, en, crh, gan, iu, ku, mni, sh, shi, sr, tg, tly, uz, wuu, zgh and zh.
 	 */
 	public AAPIPurge converttitles(Boolean converttitles) {
-
 		this.converttitles = converttitles;
 
 		return this;

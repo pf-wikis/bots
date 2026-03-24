@@ -73,7 +73,6 @@ public class AAPIFeedrecentchanges implements AAPIModule, AAPIMainActionModule {
 	/**The format of the feed.
 	 */
 	public AAPIFeedrecentchanges feedformat(AAPIFeedrecentchangesFeedformat feedformat) {
-
 		this.feedformat = feedformat;
 
 		return this;
@@ -88,7 +87,6 @@ public class AAPIFeedrecentchanges implements AAPIModule, AAPIMainActionModule {
 	/**Namespace to limit the results to.
 	 */
 	public AAPIFeedrecentchanges namespace(NS namespace) {
-
 		this.namespace = namespace;
 
 		return this;
@@ -103,7 +101,6 @@ public class AAPIFeedrecentchanges implements AAPIModule, AAPIMainActionModule {
 	/**All namespaces but the selected one.
 	 */
 	public AAPIFeedrecentchanges invert(Boolean invert) {
-
 		this.invert = invert;
 
 		return this;
@@ -118,7 +115,6 @@ public class AAPIFeedrecentchanges implements AAPIModule, AAPIMainActionModule {
 	/**Include associated (talk or main) namespace.
 	 */
 	public AAPIFeedrecentchanges associated(Boolean associated) {
-
 		this.associated = associated;
 
 		return this;
@@ -133,7 +129,6 @@ public class AAPIFeedrecentchanges implements AAPIModule, AAPIMainActionModule {
 	/**Days to limit the results to.
 	 */
 	public AAPIFeedrecentchanges days(Long days) {
-
 		this.days = days;
 
 		return this;
@@ -148,7 +143,6 @@ public class AAPIFeedrecentchanges implements AAPIModule, AAPIMainActionModule {
 	/**Maximum number of results to return.
 	 */
 	public AAPIFeedrecentchanges limit(Long limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -163,7 +157,6 @@ public class AAPIFeedrecentchanges implements AAPIModule, AAPIMainActionModule {
 	/**Hide minor changes.
 	 */
 	public AAPIFeedrecentchanges hideminor(Boolean hideminor) {
-
 		this.hideminor = hideminor;
 
 		return this;
@@ -178,7 +171,6 @@ public class AAPIFeedrecentchanges implements AAPIModule, AAPIMainActionModule {
 	/**Hide changes made by bots.
 	 */
 	public AAPIFeedrecentchanges hidebots(Boolean hidebots) {
-
 		this.hidebots = hidebots;
 
 		return this;
@@ -193,7 +185,6 @@ public class AAPIFeedrecentchanges implements AAPIModule, AAPIMainActionModule {
 	/**Hide changes made by anonymous users.
 	 */
 	public AAPIFeedrecentchanges hideanons(Boolean hideanons) {
-
 		this.hideanons = hideanons;
 
 		return this;
@@ -208,7 +199,6 @@ public class AAPIFeedrecentchanges implements AAPIModule, AAPIMainActionModule {
 	/**Hide changes made by registered users.
 	 */
 	public AAPIFeedrecentchanges hideliu(Boolean hideliu) {
-
 		this.hideliu = hideliu;
 
 		return this;
@@ -223,7 +213,6 @@ public class AAPIFeedrecentchanges implements AAPIModule, AAPIMainActionModule {
 	/**Hide patrolled changes.
 	 */
 	public AAPIFeedrecentchanges hidepatrolled(Boolean hidepatrolled) {
-
 		this.hidepatrolled = hidepatrolled;
 
 		return this;
@@ -238,7 +227,6 @@ public class AAPIFeedrecentchanges implements AAPIModule, AAPIMainActionModule {
 	/**Hide changes made by the current user.
 	 */
 	public AAPIFeedrecentchanges hidemyself(Boolean hidemyself) {
-
 		this.hidemyself = hidemyself;
 
 		return this;
@@ -253,7 +241,6 @@ public class AAPIFeedrecentchanges implements AAPIModule, AAPIMainActionModule {
 	/**Hide category membership changes.
 	 */
 	public AAPIFeedrecentchanges hidecategorization(Boolean hidecategorization) {
-
 		this.hidecategorization = hidecategorization;
 
 		return this;
@@ -268,7 +255,6 @@ public class AAPIFeedrecentchanges implements AAPIModule, AAPIMainActionModule {
 	/**Filter by tag.
 	 */
 	public AAPIFeedrecentchanges tagfilter(String tagfilter) {
-
 		this.tagfilter = tagfilter;
 
 		return this;
@@ -283,7 +269,6 @@ public class AAPIFeedrecentchanges implements AAPIModule, AAPIMainActionModule {
 	/**All edits except ones tagged with the selected ones.
 	 */
 	public AAPIFeedrecentchanges inverttags(Boolean inverttags) {
-
 		this.inverttags = inverttags;
 
 		return this;
@@ -298,7 +283,6 @@ public class AAPIFeedrecentchanges implements AAPIModule, AAPIMainActionModule {
 	/**Show only changes on pages linked from this page.
 	 */
 	public AAPIFeedrecentchanges target(String target) {
-
 		this.target = target;
 
 		return this;
@@ -313,7 +297,6 @@ public class AAPIFeedrecentchanges implements AAPIModule, AAPIMainActionModule {
 	/**Show changes on pages linked to the selected page instead.
 	 */
 	public AAPIFeedrecentchanges showlinkedto(Boolean showlinkedto) {
-
 		this.showlinkedto = showlinkedto;
 
 		return this;
@@ -566,7 +549,7 @@ public class AAPIFeedrecentchanges implements AAPIModule, AAPIMainActionModule {
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

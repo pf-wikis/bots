@@ -153,20 +153,6 @@ public enum AAPIQueryAllusersRights {
 
 	MULTIPAGEEDIT("multipageedit"),
 
-	MWOAUTHMANAGECONSUMER("mwoauthmanageconsumer"),
-
-	MWOAUTHMANAGEMYGRANTS("mwoauthmanagemygrants"),
-
-	MWOAUTHPROPOSECONSUMER("mwoauthproposeconsumer"),
-
-	MWOAUTHSUPPRESS("mwoauthsuppress"),
-
-	MWOAUTHUPDATEOWNCONSUMER("mwoauthupdateownconsumer"),
-
-	MWOAUTHVIEWPRIVATE("mwoauthviewprivate"),
-
-	MWOAUTHVIEWSUPPRESSED("mwoauthviewsuppressed"),
-
 	NOMINORNEWTALK("nominornewtalk"),
 
 	NORATELIMIT("noratelimit"),
@@ -620,41 +606,6 @@ public enum AAPIQueryAllusersRights {
 
 		public Builder MULTIPAGEEDIT() {
 			set.add(MULTIPAGEEDIT);
-			return this;
-		}
-
-		public Builder MWOAUTHMANAGECONSUMER() {
-			set.add(MWOAUTHMANAGECONSUMER);
-			return this;
-		}
-
-		public Builder MWOAUTHMANAGEMYGRANTS() {
-			set.add(MWOAUTHMANAGEMYGRANTS);
-			return this;
-		}
-
-		public Builder MWOAUTHPROPOSECONSUMER() {
-			set.add(MWOAUTHPROPOSECONSUMER);
-			return this;
-		}
-
-		public Builder MWOAUTHSUPPRESS() {
-			set.add(MWOAUTHSUPPRESS);
-			return this;
-		}
-
-		public Builder MWOAUTHUPDATEOWNCONSUMER() {
-			set.add(MWOAUTHUPDATEOWNCONSUMER);
-			return this;
-		}
-
-		public Builder MWOAUTHVIEWPRIVATE() {
-			set.add(MWOAUTHVIEWPRIVATE);
-			return this;
-		}
-
-		public Builder MWOAUTHVIEWSUPPRESSED() {
-			set.add(MWOAUTHVIEWSUPPRESSED);
 			return this;
 		}
 

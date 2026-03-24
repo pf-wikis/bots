@@ -62,10 +62,16 @@ public class AAPICreateaccount implements AAPIModule, AAPITokenModule, AAPIMainA
 
 	/**Only use these authentication requests, by the <samp>id</samp> returned from <kbd><a href="/wiki/Special:ApiHelp/query%2Bauthmanagerinfo" title="Special:ApiHelp/query+authmanagerinfo">action=query&amp;meta=authmanagerinfo</a></kbd> with <kbd>amirequestsfor=create</kbd> or from a previous response from this module.
 	 */
-	public AAPICreateaccount requests(String... requests) {
-
+	public AAPICreateaccount requests(String requests) {
 		this.requests = List.of(requests);
 
+		return this;
+	}
+
+	/**Only use these authentication requests, by the <samp>id</samp> returned from <kbd><a href="/wiki/Special:ApiHelp/query%2Bauthmanagerinfo" title="Special:ApiHelp/query+authmanagerinfo">action=query&amp;meta=authmanagerinfo</a></kbd> with <kbd>amirequestsfor=create</kbd> or from a previous response from this module.
+	 */
+	public AAPICreateaccount requests(String... requests) {
+		this.requests = List.of(requests);
 		return this;
 	}
 
@@ -78,7 +84,6 @@ public class AAPICreateaccount implements AAPIModule, AAPITokenModule, AAPIMainA
 	/**Format to use for returning messages.
 	 */
 	public AAPICreateaccount messageformat(AAPICreateaccountMessageformat messageformat) {
-
 		this.messageformat = messageformat;
 
 		return this;
@@ -93,7 +98,6 @@ public class AAPICreateaccount implements AAPIModule, AAPITokenModule, AAPIMainA
 	/**Merge field information for all authentication requests into one array.
 	 */
 	public AAPICreateaccount mergerequestfields(Boolean mergerequestfields) {
-
 		this.mergerequestfields = mergerequestfields;
 
 		return this;
@@ -111,7 +115,6 @@ public class AAPICreateaccount implements AAPIModule, AAPITokenModule, AAPIMainA
 	 * </p>
 	 */
 	public AAPICreateaccount preservestate(Boolean preservestate) {
-
 		this.preservestate = preservestate;
 
 		return this;
@@ -131,7 +134,6 @@ public class AAPICreateaccount implements AAPIModule, AAPITokenModule, AAPIMainA
 	 * </p>
 	 */
 	public AAPICreateaccount returnurl(String returnurl) {
-
 		this.returnurl = returnurl;
 
 		return this;
@@ -148,7 +150,6 @@ public class AAPICreateaccount implements AAPIModule, AAPITokenModule, AAPIMainA
 	/**A "createaccount" token retrieved from <a href="/wiki/Special:ApiHelp/query%2Btokens" title="Special:ApiHelp/query+tokens">action=query&amp;meta=tokens</a>
 	 */
 	public AAPICreateaccount token(String token) {
-
 		this.token = token;
 
 		return this;

@@ -77,7 +77,6 @@ public class AAPIQueryAllredirects
 	/**The title of the redirect to start enumerating from.
 	 */
 	public AAPIQueryAllredirects from(String from) {
-
 		this.from = from;
 
 		return this;
@@ -92,7 +91,6 @@ public class AAPIQueryAllredirects
 	/**The title of the redirect to stop enumerating at.
 	 */
 	public AAPIQueryAllredirects to(String to) {
-
 		this.to = to;
 
 		return this;
@@ -107,7 +105,6 @@ public class AAPIQueryAllredirects
 	/**Search for all target pages that begin with this value.
 	 */
 	public AAPIQueryAllredirects prefix(String prefix) {
-
 		this.prefix = prefix;
 
 		return this;
@@ -123,7 +120,6 @@ public class AAPIQueryAllredirects
 	 * When used as a generator, yields target pages instead of source pages.
 	 */
 	public AAPIQueryAllredirects unique(Boolean unique) {
-
 		this.unique = unique;
 
 		return this;
@@ -140,10 +136,18 @@ public class AAPIQueryAllredirects
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryAllredirects prop(AAPIQueryAllredirectsProp... prop) {
-
+	public AAPIQueryAllredirects prop(AAPIQueryAllredirectsProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which pieces of information to include:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryAllredirects prop(AAPIQueryAllredirectsProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -158,7 +162,6 @@ public class AAPIQueryAllredirects
 	/**The namespace to enumerate.
 	 */
 	public AAPIQueryAllredirects namespace(NS namespace) {
-
 		this.namespace = namespace;
 
 		return this;
@@ -173,7 +176,6 @@ public class AAPIQueryAllredirects
 	/**How many total items to return.
 	 */
 	public AAPIQueryAllredirects limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -188,7 +190,6 @@ public class AAPIQueryAllredirects
 	/**The direction in which to list.
 	 */
 	public AAPIQueryAllredirects dir(AAPIQueryAllredirectsDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -343,7 +344,7 @@ public class AAPIQueryAllredirects
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

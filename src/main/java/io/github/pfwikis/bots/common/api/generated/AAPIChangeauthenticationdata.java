@@ -50,7 +50,6 @@ public class AAPIChangeauthenticationdata
 	/**A "csrf" token retrieved from <a href="/wiki/Special:ApiHelp/query%2Btokens" title="Special:ApiHelp/query+tokens">action=query&amp;meta=tokens</a>
 	 */
 	public AAPIChangeauthenticationdata token(String token) {
-
 		this.token = token;
 
 		return this;

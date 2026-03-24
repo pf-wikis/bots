@@ -47,7 +47,6 @@ public class AAPIJson implements AAPIModule, AAPIMainFormatModule {
 	/**If specified, wraps the output into a given function call. For safety, all user-specific data will be restricted.
 	 */
 	public AAPIJson callback(String callback) {
-
 		this.callback = callback;
 
 		return this;
@@ -62,7 +61,6 @@ public class AAPIJson implements AAPIModule, AAPIMainFormatModule {
 	/**If specified, encodes most (but not all) non-ASCII characters as UTF-8 instead of replacing them with hexadecimal escape sequences. Default when <var>formatversion</var> is not <kbd>1</kbd>.
 	 */
 	public AAPIJson utf8(Boolean utf8) {
-
 		this.utf8 = utf8;
 
 		return this;
@@ -77,7 +75,6 @@ public class AAPIJson implements AAPIModule, AAPIMainFormatModule {
 	/**If specified, encodes all non-ASCII using hexadecimal escape sequences. Default when <var>formatversion</var> is <kbd>1</kbd>.
 	 */
 	public AAPIJson ascii(Boolean ascii) {
-
 		this.ascii = ascii;
 
 		return this;
@@ -94,7 +91,6 @@ public class AAPIJson implements AAPIModule, AAPIMainFormatModule {
 	 * <dl></dl>
 	 */
 	public AAPIJson formatversion(AAPIJsonFormatversion formatversion) {
-
 		this.formatversion = formatversion;
 
 		return this;

@@ -39,7 +39,6 @@ public class AAPIQueryCirruscompsuggestbuilddoc implements AAPIModule, AAPIQuery
 	/**Provide a score method name to be used by the completion suggester
 	 */
 	public AAPIQueryCirruscompsuggestbuilddoc method(String method) {
-
 		this.method = method;
 
 		return this;

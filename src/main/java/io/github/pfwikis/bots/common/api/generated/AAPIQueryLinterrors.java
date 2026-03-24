@@ -48,10 +48,16 @@ public class AAPIQueryLinterrors implements AAPIModule, AAPIQueryListModule {
 
 	/**Categories of lint errors
 	 */
-	public AAPIQueryLinterrors categories(AAPIQueryLinterrorsCategories... categories) {
-
+	public AAPIQueryLinterrors categories(AAPIQueryLinterrorsCategories categories) {
 		this.categories = List.of(categories);
 
+		return this;
+	}
+
+	/**Categories of lint errors
+	 */
+	public AAPIQueryLinterrors categories(AAPIQueryLinterrorsCategories... categories) {
+		this.categories = List.of(categories);
 		return this;
 	}
 
@@ -64,7 +70,6 @@ public class AAPIQueryLinterrors implements AAPIModule, AAPIQueryListModule {
 	/**Number of results to query
 	 */
 	public AAPIQueryLinterrors limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -78,10 +83,16 @@ public class AAPIQueryLinterrors implements AAPIModule, AAPIQueryListModule {
 
 	/**Only include lint errors from the specified namespaces
 	 */
-	public AAPIQueryLinterrors namespace(NS... namespace) {
-
+	public AAPIQueryLinterrors namespace(NS namespace) {
 		this.namespace = List.of(namespace);
 
+		return this;
+	}
+
+	/**Only include lint errors from the specified namespaces
+	 */
+	public AAPIQueryLinterrors namespace(NS... namespace) {
+		this.namespace = List.of(namespace);
 		return this;
 	}
 
@@ -93,10 +104,16 @@ public class AAPIQueryLinterrors implements AAPIModule, AAPIQueryListModule {
 
 	/**Only include lint errors from the specified page IDs
 	 */
-	public AAPIQueryLinterrors pageid(Long... pageid) {
-
+	public AAPIQueryLinterrors pageid(Long pageid) {
 		this.pageid = List.of(pageid);
 
+		return this;
+	}
+
+	/**Only include lint errors from the specified page IDs
+	 */
+	public AAPIQueryLinterrors pageid(Long... pageid) {
+		this.pageid = List.of(pageid);
 		return this;
 	}
 
@@ -109,7 +126,6 @@ public class AAPIQueryLinterrors implements AAPIModule, AAPIQueryListModule {
 	/**Only include lint errors from the specified page title
 	 */
 	public AAPIQueryLinterrors title(String title) {
-
 		this.title = title;
 
 		return this;
@@ -246,7 +262,7 @@ public class AAPIQueryLinterrors implements AAPIModule, AAPIQueryListModule {
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

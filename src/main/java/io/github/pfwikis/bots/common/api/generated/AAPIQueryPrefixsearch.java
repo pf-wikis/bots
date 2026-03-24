@@ -73,10 +73,16 @@ public class AAPIQueryPrefixsearch
 
 	/**Namespaces to search. Ignored if <var>pssearch</var> begins with a valid namespace prefix.
 	 */
-	public AAPIQueryPrefixsearch namespace(NS... namespace) {
-
+	public AAPIQueryPrefixsearch namespace(NS namespace) {
 		this.namespace = List.of(namespace);
 
+		return this;
+	}
+
+	/**Namespaces to search. Ignored if <var>pssearch</var> begins with a valid namespace prefix.
+	 */
+	public AAPIQueryPrefixsearch namespace(NS... namespace) {
+		this.namespace = List.of(namespace);
 		return this;
 	}
 
@@ -89,7 +95,6 @@ public class AAPIQueryPrefixsearch
 	/**Maximum number of results to return.
 	 */
 	public AAPIQueryPrefixsearch limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -186,7 +191,7 @@ public class AAPIQueryPrefixsearch
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

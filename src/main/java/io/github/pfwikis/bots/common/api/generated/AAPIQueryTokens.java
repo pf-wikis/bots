@@ -40,10 +40,16 @@ public class AAPIQueryTokens implements AAPIModule, AAPIQueryMetaModule {
 
 	/**Types of token to request.
 	 */
-	public AAPIQueryTokens type(AAPIQueryTokensType... type) {
-
+	public AAPIQueryTokens type(AAPIQueryTokensType type) {
 		this.type = List.of(type);
 
+		return this;
+	}
+
+	/**Types of token to request.
+	 */
+	public AAPIQueryTokens type(AAPIQueryTokensType... type) {
+		this.type = List.of(type);
 		return this;
 	}
 

@@ -56,7 +56,6 @@ public class AAPIAsk implements AAPIModule, AAPIMainActionModule {
 	 * <dd>Experimental format using [] as result list.</dd></dl>
 	 */
 	public AAPIAsk api_version(AAPIAskApi_version api_version) {
-
 		this.api_version = api_version;
 
 		return this;

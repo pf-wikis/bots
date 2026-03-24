@@ -52,10 +52,18 @@ public class AAPIQuerySiteinfo implements AAPIModule, AAPIQueryMetaModule {
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQuerySiteinfo prop(AAPIQuerySiteinfoProp... prop) {
-
+	public AAPIQuerySiteinfo prop(AAPIQuerySiteinfoProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which information to get:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQuerySiteinfo prop(AAPIQuerySiteinfoProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -70,7 +78,6 @@ public class AAPIQuerySiteinfo implements AAPIModule, AAPIQueryMetaModule {
 	/**Return only local or only nonlocal entries of the interwiki map.
 	 */
 	public AAPIQuerySiteinfo filteriw(AAPIQuerySiteinfoFilteriw filteriw) {
-
 		this.filteriw = filteriw;
 
 		return this;
@@ -85,7 +92,6 @@ public class AAPIQuerySiteinfo implements AAPIModule, AAPIQueryMetaModule {
 	/**List all database servers, not just the one lagging the most.
 	 */
 	public AAPIQuerySiteinfo showalldb(Boolean showalldb) {
-
 		this.showalldb = showalldb;
 
 		return this;
@@ -100,7 +106,6 @@ public class AAPIQuerySiteinfo implements AAPIModule, AAPIQueryMetaModule {
 	/**Lists the number of users in user groups.
 	 */
 	public AAPIQuerySiteinfo numberingroup(Boolean numberingroup) {
-
 		this.numberingroup = numberingroup;
 
 		return this;
@@ -115,7 +120,6 @@ public class AAPIQuerySiteinfo implements AAPIModule, AAPIQueryMetaModule {
 	/**Language code for localised language names (best effort) and skin names.
 	 */
 	public AAPIQuerySiteinfo inlanguagecode(String inlanguagecode) {
-
 		this.inlanguagecode = inlanguagecode;
 
 		return this;

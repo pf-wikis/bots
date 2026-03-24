@@ -75,7 +75,6 @@ public class AAPIQueryAllfileusages
 	/**The title of the file to start enumerating from.
 	 */
 	public AAPIQueryAllfileusages from(String from) {
-
 		this.from = from;
 
 		return this;
@@ -90,7 +89,6 @@ public class AAPIQueryAllfileusages
 	/**The title of the file to stop enumerating at.
 	 */
 	public AAPIQueryAllfileusages to(String to) {
-
 		this.to = to;
 
 		return this;
@@ -105,7 +103,6 @@ public class AAPIQueryAllfileusages
 	/**Search for all file titles that begin with this value.
 	 */
 	public AAPIQueryAllfileusages prefix(String prefix) {
-
 		this.prefix = prefix;
 
 		return this;
@@ -121,7 +118,6 @@ public class AAPIQueryAllfileusages
 	 * When used as a generator, yields target pages instead of source pages.
 	 */
 	public AAPIQueryAllfileusages unique(Boolean unique) {
-
 		this.unique = unique;
 
 		return this;
@@ -138,10 +134,18 @@ public class AAPIQueryAllfileusages
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryAllfileusages prop(AAPIQueryAllfileusagesProp... prop) {
-
+	public AAPIQueryAllfileusages prop(AAPIQueryAllfileusagesProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which pieces of information to include:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryAllfileusages prop(AAPIQueryAllfileusagesProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -156,7 +160,6 @@ public class AAPIQueryAllfileusages
 	/**How many total items to return.
 	 */
 	public AAPIQueryAllfileusages limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -171,7 +174,6 @@ public class AAPIQueryAllfileusages
 	/**The direction in which to list.
 	 */
 	public AAPIQueryAllfileusages dir(AAPIQueryAllfileusagesDir dir) {
-
 		this.dir = dir;
 
 		return this;
@@ -314,7 +316,7 @@ public class AAPIQueryAllfileusages
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

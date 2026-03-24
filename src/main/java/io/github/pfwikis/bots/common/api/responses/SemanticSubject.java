@@ -1,4 +1,4 @@
-package io.github.pfwikis.bots.common.model.subject;
+package io.github.pfwikis.bots.common.api.responses;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,9 +9,9 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.github.pfwikis.bots.common.api.model.AnyJson;
 import io.github.pfwikis.bots.common.api.model.PageTitle;
-import io.github.pfwikis.bots.common.model.JsonModel;
-import io.github.pfwikis.bots.common.model.SemanticObject;
+
 import static io.github.pfwikis.bots.facts.SFactsProperties.Fact_type;
 import io.github.pfwikis.bots.facts.model.SConcept;
 import io.github.pfwikis.bots.facts.model.SMWPropertyType;
@@ -22,7 +22,7 @@ import tools.jackson.databind.annotation.JsonDeserialize;
 import tools.jackson.databind.util.StdConverter;
 
 @Data
-public class SemanticSubject extends JsonModel implements SemanticObject, Comparable<SemanticSubject> {
+public class SemanticSubject extends AnyJson implements SemanticObject, Comparable<SemanticSubject> {
 	
 	private PageTitle subject;
 	private List<Property> data;
@@ -32,14 +32,14 @@ public class SemanticSubject extends JsonModel implements SemanticObject, Compar
 	
 	public boolean hasConcept(SConcept concept) {
 		if(!has(Fact_type)) return false;
-		return ("Facts/"+concept.getName()).equals(get(Fact_type).getTitle());
+		return ("Facts/"+concept.getName()).equals(get(Fact_type).getName());
 	}
 	
 	public List<SemanticSubject> getSubObjects(String factType) {
 		var res = subObjects.stream()
 			.filter(e->e.has(Fact_type))
 			.filter(e->
-				e.get(Fact_type).getTitle()
+				e.get(Fact_type).getName()
 					.equals(factType))
 			.sorted()
 			.toList();
@@ -53,7 +53,7 @@ public class SemanticSubject extends JsonModel implements SemanticObject, Compar
 	}
 	
 	@Setter
-	public static class Container extends JsonModel {
+	public static class Container extends AnyJson {
 		private Root query;
 
 		public SemanticSubject postProcess() {

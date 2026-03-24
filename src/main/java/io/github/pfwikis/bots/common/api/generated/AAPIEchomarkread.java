@@ -48,10 +48,16 @@ public class AAPIEchomarkread implements AAPIModule, AAPITokenModule, AAPIMainAc
 
 	/**A list of notification IDs to mark as read.
 	 */
-	public AAPIEchomarkread list(String... list) {
-
+	public AAPIEchomarkread list(String list) {
 		this.list = List.of(list);
 
+		return this;
+	}
+
+	/**A list of notification IDs to mark as read.
+	 */
+	public AAPIEchomarkread list(String... list) {
+		this.list = List.of(list);
 		return this;
 	}
 
@@ -63,10 +69,16 @@ public class AAPIEchomarkread implements AAPIModule, AAPITokenModule, AAPIMainAc
 
 	/**A list of notification IDs to mark as unread.
 	 */
-	public AAPIEchomarkread unreadlist(String... unreadlist) {
-
+	public AAPIEchomarkread unreadlist(String unreadlist) {
 		this.unreadlist = List.of(unreadlist);
 
+		return this;
+	}
+
+	/**A list of notification IDs to mark as unread.
+	 */
+	public AAPIEchomarkread unreadlist(String... unreadlist) {
+		this.unreadlist = List.of(unreadlist);
 		return this;
 	}
 
@@ -79,7 +91,6 @@ public class AAPIEchomarkread implements AAPIModule, AAPITokenModule, AAPIMainAc
 	/**If set, marks all of a user's notifications as read.
 	 */
 	public AAPIEchomarkread all(Boolean all) {
-
 		this.all = all;
 
 		return this;
@@ -93,10 +104,16 @@ public class AAPIEchomarkread implements AAPIModule, AAPITokenModule, AAPIMainAc
 
 	/**A list of sections to mark as read.
 	 */
-	public AAPIEchomarkread sections(AAPIEchomarkreadSections... sections) {
-
+	public AAPIEchomarkread sections(AAPIEchomarkreadSections sections) {
 		this.sections = List.of(sections);
 
+		return this;
+	}
+
+	/**A list of sections to mark as read.
+	 */
+	public AAPIEchomarkread sections(AAPIEchomarkreadSections... sections) {
+		this.sections = List.of(sections);
 		return this;
 	}
 
@@ -109,7 +126,6 @@ public class AAPIEchomarkread implements AAPIModule, AAPITokenModule, AAPIMainAc
 	/**A "csrf" token retrieved from <a href="/wiki/Special:ApiHelp/query%2Btokens" title="Special:ApiHelp/query+tokens">action=query&amp;meta=tokens</a>
 	 */
 	public AAPIEchomarkread token(String token) {
-
 		this.token = token;
 
 		return this;

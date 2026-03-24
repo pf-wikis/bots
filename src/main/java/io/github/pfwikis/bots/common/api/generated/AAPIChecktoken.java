@@ -61,7 +61,6 @@ public class AAPIChecktoken implements AAPIModule, AAPIMainActionModule {
 	/**Maximum allowed age of the token, in seconds.
 	 */
 	public AAPIChecktoken maxtokenage(Long maxtokenage) {
-
 		this.maxtokenage = maxtokenage;
 
 		return this;

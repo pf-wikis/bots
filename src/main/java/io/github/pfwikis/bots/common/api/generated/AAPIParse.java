@@ -102,7 +102,6 @@ public class AAPIParse implements AAPIModule, AAPIMainActionModule {
 	/**Title of page the text belongs to. If omitted, <var>contentmodel</var> must be specified, and <a href="/w/index.php?title=API&amp;action=edit&amp;redlink=1" class="new" title="API (page does not exist)">API</a> will be used as the title.
 	 */
 	public AAPIParse title(String title) {
-
 		this.title = title;
 
 		return this;
@@ -117,7 +116,6 @@ public class AAPIParse implements AAPIModule, AAPIMainActionModule {
 	/**Text to parse. Use <var>title</var> or <var>contentmodel</var> to control the content model.
 	 */
 	public AAPIParse text(String text) {
-
 		this.text = text;
 
 		return this;
@@ -132,7 +130,6 @@ public class AAPIParse implements AAPIModule, AAPIMainActionModule {
 	/**Revision ID, for <code>{{REVISIONID}}</code> and similar variables.
 	 */
 	public AAPIParse revid(Long revid) {
-
 		this.revid = revid;
 
 		return this;
@@ -147,7 +144,6 @@ public class AAPIParse implements AAPIModule, AAPIMainActionModule {
 	/**Summary to parse.
 	 */
 	public AAPIParse summary(String summary) {
-
 		this.summary = summary;
 
 		return this;
@@ -162,7 +158,6 @@ public class AAPIParse implements AAPIModule, AAPIMainActionModule {
 	/**If <var>page</var> or <var>pageid</var> is set to a redirect, resolve it.
 	 */
 	public AAPIParse redirects(Boolean redirects) {
-
 		this.redirects = redirects;
 
 		return this;
@@ -177,7 +172,6 @@ public class AAPIParse implements AAPIModule, AAPIMainActionModule {
 	/**Parse the content of this revision. Overrides <var>page</var> and <var>pageid</var>.
 	 */
 	public AAPIParse oldid(Long oldid) {
-
 		this.oldid = oldid;
 
 		return this;
@@ -193,10 +187,18 @@ public class AAPIParse implements AAPIModule, AAPIMainActionModule {
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIParse prop(AAPIParseProp... prop) {
-
+	public AAPIParse prop(AAPIParseProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which pieces of information to get:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIParse prop(AAPIParseProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -211,7 +213,6 @@ public class AAPIParse implements AAPIModule, AAPIMainActionModule {
 	/**CSS class to use to wrap the parser output.
 	 */
 	public AAPIParse wrapoutputclass(String wrapoutputclass) {
-
 		this.wrapoutputclass = wrapoutputclass;
 
 		return this;
@@ -226,7 +227,6 @@ public class AAPIParse implements AAPIModule, AAPIMainActionModule {
 	/**Use the ArticleParserOptions hook to ensure the options used match those used for article page views
 	 */
 	public AAPIParse usearticle(Boolean usearticle) {
-
 		this.usearticle = usearticle;
 
 		return this;
@@ -241,7 +241,6 @@ public class AAPIParse implements AAPIModule, AAPIMainActionModule {
 	/**Generate HTML conforming to the <a href="/w/index.php?title=Mw:Specs/HTML&amp;action=edit&amp;redlink=1" class="new" title="Mw:Specs/HTML (page does not exist)">MediaWiki DOM spec</a> using <a href="/w/index.php?title=Mw:Parsoid&amp;action=edit&amp;redlink=1" class="new" title="Mw:Parsoid (page does not exist)">Parsoid</a>.
 	 */
 	public AAPIParse parsoid(Boolean parsoid) {
-
 		this.parsoid = parsoid;
 
 		return this;
@@ -256,7 +255,6 @@ public class AAPIParse implements AAPIModule, AAPIMainActionModule {
 	/**Do a pre-save transform on the input before parsing it. Only valid when used with text.
 	 */
 	public AAPIParse pst(Boolean pst) {
-
 		this.pst = pst;
 
 		return this;
@@ -271,7 +269,6 @@ public class AAPIParse implements AAPIModule, AAPIMainActionModule {
 	/**Do a pre-save transform (PST) on the input, but don't parse it. Returns the same wikitext, after a PST has been applied. Only valid when used with <var>text</var>.
 	 */
 	public AAPIParse onlypst(Boolean onlypst) {
-
 		this.onlypst = onlypst;
 
 		return this;
@@ -289,7 +286,6 @@ public class AAPIParse implements AAPIModule, AAPIMainActionModule {
 	 * </p>
 	 */
 	public AAPIParse section(String section) {
-
 		this.section = section;
 
 		return this;
@@ -309,7 +305,6 @@ public class AAPIParse implements AAPIModule, AAPIMainActionModule {
 	 * </p>
 	 */
 	public AAPIParse sectiontitle(String sectiontitle) {
-
 		this.sectiontitle = sectiontitle;
 
 		return this;
@@ -326,7 +321,6 @@ public class AAPIParse implements AAPIModule, AAPIMainActionModule {
 	/**Omit the limit report ("NewPP limit report") from the parser output.
 	 */
 	public AAPIParse disablelimitreport(Boolean disablelimitreport) {
-
 		this.disablelimitreport = disablelimitreport;
 
 		return this;
@@ -341,7 +335,6 @@ public class AAPIParse implements AAPIModule, AAPIMainActionModule {
 	/**Omit edit section links from the parser output.
 	 */
 	public AAPIParse disableeditsection(Boolean disableeditsection) {
-
 		this.disableeditsection = disableeditsection;
 
 		return this;
@@ -356,7 +349,6 @@ public class AAPIParse implements AAPIModule, AAPIMainActionModule {
 	/**Do not deduplicate inline stylesheets in the parser output.
 	 */
 	public AAPIParse disablestylededuplication(Boolean disablestylededuplication) {
-
 		this.disablestylededuplication = disablestylededuplication;
 
 		return this;
@@ -371,7 +363,6 @@ public class AAPIParse implements AAPIModule, AAPIMainActionModule {
 	/**Whether to include internal merge strategy information in jsconfigvars.
 	 */
 	public AAPIParse showstrategykeys(Boolean showstrategykeys) {
-
 		this.showstrategykeys = showstrategykeys;
 
 		return this;
@@ -386,7 +377,6 @@ public class AAPIParse implements AAPIModule, AAPIMainActionModule {
 	/**Parse in preview mode.
 	 */
 	public AAPIParse preview(Boolean preview) {
-
 		this.preview = preview;
 
 		return this;
@@ -401,7 +391,6 @@ public class AAPIParse implements AAPIModule, AAPIMainActionModule {
 	/**Parse in section preview mode (enables preview mode too).
 	 */
 	public AAPIParse sectionpreview(Boolean sectionpreview) {
-
 		this.sectionpreview = sectionpreview;
 
 		return this;
@@ -416,7 +405,6 @@ public class AAPIParse implements AAPIModule, AAPIMainActionModule {
 	/**Omit table of contents in output.
 	 */
 	public AAPIParse disabletoc(Boolean disabletoc) {
-
 		this.disabletoc = disabletoc;
 
 		return this;
@@ -431,7 +419,6 @@ public class AAPIParse implements AAPIModule, AAPIMainActionModule {
 	/**Apply the selected skin to the parser output. May affect the following properties: <kbd>text</kbd>, <kbd>langlinks</kbd>, <kbd>headitems</kbd>, <kbd>modules</kbd>, <kbd>jsconfigvars</kbd>, <kbd>indicators</kbd>.
 	 */
 	public AAPIParse useskin(AAPIParseUseskin useskin) {
-
 		this.useskin = useskin;
 
 		return this;
@@ -446,7 +433,6 @@ public class AAPIParse implements AAPIModule, AAPIMainActionModule {
 	/**Content serialization format used for the input text. Only valid when used with text.
 	 */
 	public AAPIParse contentformat(AAPIParseContentformat contentformat) {
-
 		this.contentformat = contentformat;
 
 		return this;
@@ -461,7 +447,6 @@ public class AAPIParse implements AAPIModule, AAPIMainActionModule {
 	/**Content model of the input text. If omitted, title must be specified, and default will be the model of the specified title. Only valid when used with text.
 	 */
 	public AAPIParse contentmodel(AAPIParseContentmodel contentmodel) {
-
 		this.contentmodel = contentmodel;
 
 		return this;
@@ -474,9 +459,7 @@ public class AAPIParse implements AAPIModule, AAPIMainActionModule {
 	}
 
 	public AAPIParse page(ContainsPageRef page) {
-
 		this.page = page;
-
 		return this;
 	}
 
@@ -678,7 +661,7 @@ public class AAPIParse implements AAPIModule, AAPIMainActionModule {
 				req.addParameter(
 						paramPrefix + "pageid", Integer.toString(page.toPageRef().getId()));
 			} else {
-				req.addParameter(paramPrefix + "page", page.toPageRef().getTitle().toFullTitle());
+				req.addParameter(paramPrefix + "page", page.toPageTitle().toFullTitle());
 			}
 		}
 

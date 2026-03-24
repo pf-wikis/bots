@@ -60,10 +60,16 @@ public class AAPILinkaccount implements AAPIModule, AAPITokenModule, AAPIMainAct
 
 	/**Only use these authentication requests, by the <samp>id</samp> returned from <kbd><a href="/wiki/Special:ApiHelp/query%2Bauthmanagerinfo" title="Special:ApiHelp/query+authmanagerinfo">action=query&amp;meta=authmanagerinfo</a></kbd> with <kbd>amirequestsfor=link</kbd> or from a previous response from this module.
 	 */
-	public AAPILinkaccount requests(String... requests) {
-
+	public AAPILinkaccount requests(String requests) {
 		this.requests = List.of(requests);
 
+		return this;
+	}
+
+	/**Only use these authentication requests, by the <samp>id</samp> returned from <kbd><a href="/wiki/Special:ApiHelp/query%2Bauthmanagerinfo" title="Special:ApiHelp/query+authmanagerinfo">action=query&amp;meta=authmanagerinfo</a></kbd> with <kbd>amirequestsfor=link</kbd> or from a previous response from this module.
+	 */
+	public AAPILinkaccount requests(String... requests) {
+		this.requests = List.of(requests);
 		return this;
 	}
 
@@ -76,7 +82,6 @@ public class AAPILinkaccount implements AAPIModule, AAPITokenModule, AAPIMainAct
 	/**Format to use for returning messages.
 	 */
 	public AAPILinkaccount messageformat(AAPILinkaccountMessageformat messageformat) {
-
 		this.messageformat = messageformat;
 
 		return this;
@@ -91,7 +96,6 @@ public class AAPILinkaccount implements AAPIModule, AAPITokenModule, AAPIMainAct
 	/**Merge field information for all authentication requests into one array.
 	 */
 	public AAPILinkaccount mergerequestfields(Boolean mergerequestfields) {
-
 		this.mergerequestfields = mergerequestfields;
 
 		return this;
@@ -108,7 +112,6 @@ public class AAPILinkaccount implements AAPIModule, AAPITokenModule, AAPIMainAct
 	 * </p>
 	 */
 	public AAPILinkaccount returnurl(String returnurl) {
-
 		this.returnurl = returnurl;
 
 		return this;
@@ -125,7 +128,6 @@ public class AAPILinkaccount implements AAPIModule, AAPITokenModule, AAPIMainAct
 	/**A "csrf" token retrieved from <a href="/wiki/Special:ApiHelp/query%2Btokens" title="Special:ApiHelp/query+tokens">action=query&amp;meta=tokens</a>
 	 */
 	public AAPILinkaccount token(String token) {
-
 		this.token = token;
 
 		return this;

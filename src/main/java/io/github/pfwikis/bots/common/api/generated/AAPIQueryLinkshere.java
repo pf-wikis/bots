@@ -70,10 +70,18 @@ public class AAPIQueryLinkshere
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryLinkshere prop(AAPIQueryLinkshereProp... prop) {
-
+	public AAPIQueryLinkshere prop(AAPIQueryLinkshereProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which properties to get:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryLinkshere prop(AAPIQueryLinkshereProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -87,10 +95,16 @@ public class AAPIQueryLinkshere
 
 	/**Only include pages in these namespaces.
 	 */
-	public AAPIQueryLinkshere namespace(NS... namespace) {
-
+	public AAPIQueryLinkshere namespace(NS namespace) {
 		this.namespace = List.of(namespace);
 
+		return this;
+	}
+
+	/**Only include pages in these namespaces.
+	 */
+	public AAPIQueryLinkshere namespace(NS... namespace) {
+		this.namespace = List.of(namespace);
 		return this;
 	}
 
@@ -104,10 +118,18 @@ public class AAPIQueryLinkshere
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryLinkshere show(AAPIQueryLinkshereShow... show) {
-
+	public AAPIQueryLinkshere show(AAPIQueryLinkshereShow show) {
 		this.show = List.of(show);
 
+		return this;
+	}
+
+	/**<p>Show only items that meet these criteria:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryLinkshere show(AAPIQueryLinkshereShow... show) {
+		this.show = List.of(show);
 		return this;
 	}
 
@@ -122,7 +144,6 @@ public class AAPIQueryLinkshere
 	/**How many to return.
 	 */
 	public AAPIQueryLinkshere limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -245,7 +266,7 @@ public class AAPIQueryLinkshere
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

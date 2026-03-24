@@ -61,7 +61,6 @@ public class AAPIFeedwatchlist implements AAPIModule, AAPIMainActionModule {
 	/**The format of the feed.
 	 */
 	public AAPIFeedwatchlist feedformat(AAPIFeedwatchlistFeedformat feedformat) {
-
 		this.feedformat = feedformat;
 
 		return this;
@@ -76,7 +75,6 @@ public class AAPIFeedwatchlist implements AAPIModule, AAPIMainActionModule {
 	/**List pages modified within this many hours from now.
 	 */
 	public AAPIFeedwatchlist hours(Long hours) {
-
 		this.hours = hours;
 
 		return this;
@@ -91,7 +89,6 @@ public class AAPIFeedwatchlist implements AAPIModule, AAPIMainActionModule {
 	/**Link directly to changed sections if possible.
 	 */
 	public AAPIFeedwatchlist linktosections(Boolean linktosections) {
-
 		this.linktosections = linktosections;
 
 		return this;
@@ -106,7 +103,6 @@ public class AAPIFeedwatchlist implements AAPIModule, AAPIMainActionModule {
 	/**Include multiple revisions of the same page within given timeframe.
 	 */
 	public AAPIFeedwatchlist allrev(Boolean allrev) {
-
 		this.allrev = allrev;
 
 		return this;
@@ -121,7 +117,6 @@ public class AAPIFeedwatchlist implements AAPIModule, AAPIMainActionModule {
 	/**Used along with token to access a different user's watchlist.
 	 */
 	public AAPIFeedwatchlist wlowner(String wlowner) {
-
 		this.wlowner = wlowner;
 
 		return this;
@@ -136,7 +131,6 @@ public class AAPIFeedwatchlist implements AAPIModule, AAPIMainActionModule {
 	/**A security token (available in the user's <a href="/wiki/Special:Preferences#mw-prefsection-watchlist" title="Special:Preferences">preferences</a>) to allow access to another user's watchlist.
 	 */
 	public AAPIFeedwatchlist wltoken(String wltoken) {
-
 		this.wltoken = wltoken;
 
 		return this;
@@ -150,10 +144,16 @@ public class AAPIFeedwatchlist implements AAPIModule, AAPIMainActionModule {
 
 	/**Show only items that meet these criteria. For example, to see only minor edits done by logged-in users, set show=minor|!anon.
 	 */
-	public AAPIFeedwatchlist wlshow(AAPIFeedwatchlistWlshow... wlshow) {
-
+	public AAPIFeedwatchlist wlshow(AAPIFeedwatchlistWlshow wlshow) {
 		this.wlshow = List.of(wlshow);
 
+		return this;
+	}
+
+	/**Show only items that meet these criteria. For example, to see only minor edits done by logged-in users, set show=minor|!anon.
+	 */
+	public AAPIFeedwatchlist wlshow(AAPIFeedwatchlistWlshow... wlshow) {
+		this.wlshow = List.of(wlshow);
 		return this;
 	}
 
@@ -167,10 +167,18 @@ public class AAPIFeedwatchlist implements AAPIModule, AAPIMainActionModule {
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIFeedwatchlist wltype(AAPIFeedwatchlistWltype... wltype) {
-
+	public AAPIFeedwatchlist wltype(AAPIFeedwatchlistWltype wltype) {
 		this.wltype = List.of(wltype);
 
+		return this;
+	}
+
+	/**<p>Which types of changes to show:
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIFeedwatchlist wltype(AAPIFeedwatchlistWltype... wltype) {
+		this.wltype = List.of(wltype);
 		return this;
 	}
 
@@ -185,7 +193,6 @@ public class AAPIFeedwatchlist implements AAPIModule, AAPIMainActionModule {
 	/**Don't list changes by this user.
 	 */
 	public AAPIFeedwatchlist wlexcludeuser(String wlexcludeuser) {
-
 		this.wlexcludeuser = wlexcludeuser;
 
 		return this;

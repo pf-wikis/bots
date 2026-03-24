@@ -44,10 +44,18 @@ public class AAPIQueryMystashedfiles implements AAPIModule, AAPIQueryListModule 
 	 * </p>
 	 * <dl></dl>
 	 */
-	public AAPIQueryMystashedfiles prop(AAPIQueryMystashedfilesProp... prop) {
-
+	public AAPIQueryMystashedfiles prop(AAPIQueryMystashedfilesProp prop) {
 		this.prop = List.of(prop);
 
+		return this;
+	}
+
+	/**<p>Which properties to fetch for the files.
+	 * </p>
+	 * <dl></dl>
+	 */
+	public AAPIQueryMystashedfiles prop(AAPIQueryMystashedfilesProp... prop) {
+		this.prop = List.of(prop);
 		return this;
 	}
 
@@ -62,7 +70,6 @@ public class AAPIQueryMystashedfiles implements AAPIModule, AAPIQueryListModule 
 	/**How many files to get.
 	 */
 	public AAPIQueryMystashedfiles limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -145,7 +152,7 @@ public class AAPIQueryMystashedfiles implements AAPIModule, AAPIQueryListModule 
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

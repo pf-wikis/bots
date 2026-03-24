@@ -43,7 +43,6 @@ public class AAPIResetpassword implements AAPIModule, AAPITokenModule, AAPIMainA
 	/**User being reset.
 	 */
 	public AAPIResetpassword user(String user) {
-
 		this.user = user;
 
 		return this;
@@ -58,7 +57,6 @@ public class AAPIResetpassword implements AAPIModule, AAPITokenModule, AAPIMainA
 	/**Email address of the user being reset.
 	 */
 	public AAPIResetpassword email(String email) {
-
 		this.email = email;
 
 		return this;
@@ -73,7 +71,6 @@ public class AAPIResetpassword implements AAPIModule, AAPITokenModule, AAPIMainA
 	/**A "csrf" token retrieved from <a href="/wiki/Special:ApiHelp/query%2Btokens" title="Special:ApiHelp/query+tokens">action=query&amp;meta=tokens</a>
 	 */
 	public AAPIResetpassword token(String token) {
-
 		this.token = token;
 
 		return this;

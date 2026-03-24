@@ -51,7 +51,6 @@ public class AAPIQueryExtracts implements AAPIModule, AAPIQueryPropModule {
 	/**How many characters to return. Actual text returned might be slightly longer.
 	 */
 	public AAPIQueryExtracts chars(Long chars) {
-
 		this.chars = chars;
 
 		return this;
@@ -66,7 +65,6 @@ public class AAPIQueryExtracts implements AAPIModule, AAPIQueryPropModule {
 	/**How many sentences to return.
 	 */
 	public AAPIQueryExtracts sentences(Long sentences) {
-
 		this.sentences = sentences;
 
 		return this;
@@ -81,7 +79,6 @@ public class AAPIQueryExtracts implements AAPIModule, AAPIQueryPropModule {
 	/**How many extracts to return. (Multiple extracts can only be returned if exintro is set to true.)
 	 */
 	public AAPIQueryExtracts limit(Integer limit) {
-
 		this.limit = limit;
 
 		return this;
@@ -96,7 +93,6 @@ public class AAPIQueryExtracts implements AAPIModule, AAPIQueryPropModule {
 	/**Return only content before the first section.
 	 */
 	public AAPIQueryExtracts intro(Boolean intro) {
-
 		this.intro = intro;
 
 		return this;
@@ -111,7 +107,6 @@ public class AAPIQueryExtracts implements AAPIModule, AAPIQueryPropModule {
 	/**Return extracts as plain text instead of limited HTML.
 	 */
 	public AAPIQueryExtracts plaintext(Boolean plaintext) {
-
 		this.plaintext = plaintext;
 
 		return this;
@@ -128,7 +123,6 @@ public class AAPIQueryExtracts implements AAPIModule, AAPIQueryPropModule {
 	 * <dl></dl>
 	 */
 	public AAPIQueryExtracts sectionformat(AAPIQueryExtractsSectionformat sectionformat) {
-
 		this.sectionformat = sectionformat;
 
 		return this;
@@ -251,7 +245,7 @@ public class AAPIQueryExtracts implements AAPIModule, AAPIQueryPropModule {
 
 		@Override
 		protected boolean internalRequiresPagination() {
-			return limit != null;
+			return limit == null;
 		}
 	}
 }

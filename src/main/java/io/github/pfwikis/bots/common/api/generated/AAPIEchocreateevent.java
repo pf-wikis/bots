@@ -62,7 +62,6 @@ public class AAPIEchocreateevent implements AAPIModule, AAPITokenModule, AAPIMai
 	/**User to send the notification to
 	 */
 	public AAPIEchocreateevent user(String user) {
-
 		this.user = user;
 
 		return this;
@@ -89,7 +88,6 @@ public class AAPIEchocreateevent implements AAPIModule, AAPITokenModule, AAPIMai
 	/**Page to link to in the notification
 	 */
 	public AAPIEchocreateevent page(String page) {
-
 		this.page = page;
 
 		return this;
@@ -110,7 +108,6 @@ public class AAPIEchocreateevent implements AAPIModule, AAPITokenModule, AAPIMai
 	/**Whether to send an email as well
 	 */
 	public AAPIEchocreateevent email(Boolean email) {
-
 		this.email = email;
 
 		return this;
@@ -125,7 +122,6 @@ public class AAPIEchocreateevent implements AAPIModule, AAPITokenModule, AAPIMai
 	/**A "csrf" token retrieved from <a href="/wiki/Special:ApiHelp/query%2Btokens" title="Special:ApiHelp/query+tokens">action=query&amp;meta=tokens</a>
 	 */
 	public AAPIEchocreateevent token(String token) {
-
 		this.token = token;
 
 		return this;

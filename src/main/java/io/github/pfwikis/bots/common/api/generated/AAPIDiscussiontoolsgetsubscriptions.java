@@ -25,7 +25,7 @@ import io.github.pfwikis.bots.common.api.generated.params.AAPIMainAction.AAPIMai
  */
 public class AAPIDiscussiontoolsgetsubscriptions implements AAPIModule, AAPIMainActionModule {
 
-	public static AAPIDiscussiontoolsgetsubscriptions create(@NonNull String... commentname) {
+	public static AAPIDiscussiontoolsgetsubscriptions create(@NonNull String commentname) {
 
 		AAPIDiscussiontoolsgetsubscriptions v = new AAPIDiscussiontoolsgetsubscriptions();
 
