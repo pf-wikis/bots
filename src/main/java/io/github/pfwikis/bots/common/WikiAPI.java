@@ -155,8 +155,9 @@ public class WikiAPI {
 	}
 
 	public List<PageRef> getCategories(ContainsPageRef page) {
-		return wiki.getPageProperties(page, AAPIQueryCategories.create()).getCategories()
-			.stream().map(Category::getPage).toList();
+		var categories = wiki.getPageProperties(page, AAPIQueryCategories.create()).getCategories();
+		if(categories == null) return Collections.emptyList();
+		return categories.stream().map(Category::getPage).toList();
 	}
 	
 	public List<MWUser> getAdmins() {
@@ -192,11 +193,14 @@ public class WikiAPI {
 				AAPIQueryRecentchangesProp.IDS,
 				AAPIQueryRecentchangesProp.USER,
 				AAPIQueryRecentchangesProp.SIZES
-			)
-			.show(show);
+			);
 		
 		if(namespace != null) {
 			rc.namespace(namespace);
+		}
+		
+		if(show != null) {
+			rc.show(show);
 		}
 		
 		return wiki.run(AAPIQuery.create().list(rc), QueryResponse.class).getRecentchanges();
