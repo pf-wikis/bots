@@ -8,6 +8,7 @@ import java.util.Objects;
 
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.HttpStatus;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
@@ -29,6 +30,7 @@ import io.github.pfwikis.bots.common.api.responses.AAPIWrappedResponse;
 import io.github.pfwikis.bots.common.api.responses.IResponse;
 import io.github.pfwikis.bots.common.api.responses.QueryResponse;
 import io.github.pfwikis.bots.utils.Jackson;
+import io.opentelemetry.api.trace.StatusCode;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -113,7 +115,11 @@ public class AAPI {
 			String json = null;
 			try {
 				json = client.<String>execute(request.build(), resp->{
-					return EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
+					String content = EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
+					if(resp.getCode()<300)
+						return content;
+					else
+						throw new AAPIException("Status "+resp.getCode()+", Content:\n"+content);
 				});
 			} catch(IOException e) {
 				throw new AAPIException("Failed to connect to wiki", e);
