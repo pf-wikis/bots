@@ -3,6 +3,7 @@ package io.github.pfwikis.bots.common.api.model;
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 import io.github.pfwikis.bots.common.WikiAPI;
 import io.github.pfwikis.bots.common.api.generated.params.Interwiki;
@@ -74,6 +75,7 @@ public class PageTitle implements Comparable<PageTitle>, ContainsPageRef {
 		return new PageTitle(null, ns, title.replace('_', ' '), null);
 	}
 
+	@JsonValue
 	public String toFullTitle() {
 		var sb = new StringBuilder();
 		if(interwiki!=null) sb.append(interwiki.getPrefix()).append(":");
