@@ -31,7 +31,7 @@ public enum Interwiki {
 			case "sfw" -> SFW;
 
 			case "pfw" -> PFW;
-
+			case null -> null;
 			default -> null;
 		};
 	}
