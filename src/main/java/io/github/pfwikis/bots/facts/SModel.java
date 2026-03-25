@@ -228,6 +228,9 @@ public class SModel {
 						)
 				)
 				.infoboxProperties(
+					SInfoboxProperty.from(Pubcode)
+						.label("SKU")
+						.build(),
 					SInfoboxProperty.from(Release_date)
 						.label("Date")
 						.build(),

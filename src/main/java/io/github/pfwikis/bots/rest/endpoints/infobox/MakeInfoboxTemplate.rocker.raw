@@ -34,11 +34,6 @@
 				<div class="image">[[File:@page.get(Image).getName()|250px|Cover Image|class=not-lazy]]</div>
 			}}
 		}
-		@if(page.has(Website)) {
-			<div class="website">
-				[@page.get(Website) @page.getOr(Pubcode, "Publisher's product page")]
-			</div>
-		}
 		else {
 			@with?(linkedRelease=page
 				.getSubObjects("Facts/"+concept.getName()+"/Release")
@@ -102,9 +97,15 @@
 					<div class="infobox-book-releases-title">Releases</div>
 					@for(release:releases) {
 						<div class="name">
+							@if(release.has(Website)) {
+								[@release.get(Website) @*<-important space*@
+							}
 							@?release.getOr(Release_type, null)
 							@if(release.has(Release_note)) {
 								&nbsp;(@release.get(Release_note))
+							}
+							@if(release.has(Website)) {
+								]
 							}
 						</div>
 						<div class="table">
