@@ -37,14 +37,19 @@ public class Replacer extends SimpleBot {
 			"Bot Page Syncer",
 			"Bot Paizo Retriever",
 			"Bot Rest Provider",
-			"Bot Template Styles");
+			"Bot Template Styles",
+			"Bot Usage Reporter");
 	
 	@Override
 	public void run(RunContext ctx) throws IOException {
-		for(var r:new PageTitle[] {PageTitle.of(NS.USER, "VirenerusBot")}) {
-			for(var sub:run.getWiki().getSubPages(r)) {
-				if(!sub.getTitle().getName().contains("/Statistics/"))
-					run.getWiki().delete(sub, "No longer used");
+		for(var p:pages) {
+			for(var r:new PageTitle[] {PageTitle.of(NS.USER, p), PageTitle.of(NS.USER_TALK, p)}) {
+				for(var sub:run.getWiki().getSubPages(r)) {
+					run.getWiki().delete(sub, "Bot merged into VirenerusBot");
+				}
+				if(run.getWiki().exists(r)) {
+					run.getWiki().delete(r, "Bot merged into VirenerusBot");
+				}
 			}
 		}
 	}
