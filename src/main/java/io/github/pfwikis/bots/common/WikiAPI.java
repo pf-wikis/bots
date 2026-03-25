@@ -338,8 +338,7 @@ public class WikiAPI {
 		wiki.run(AAPIProtect.create(page, protections)
 				.reason(wiki.getBotname()+": "+reason),
 				QueryResponse.class
-			)
-			.getPages().getFirst();
+			);
 	}
 
 	public List<QRPage> getAllRedirects() {
