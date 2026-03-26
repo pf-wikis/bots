@@ -13,10 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
@@ -29,7 +27,6 @@ import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.bidi.module.Network;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.Augmenter;
@@ -98,9 +95,13 @@ public class PaizoRetriever extends DualBot {
 		else
 			state = new State();
 
+		/* old way to get token via selenium
 		var driver = createDriver();
 		var net = new Network(driver);
+		*/
 		try {
+			
+			/*
 			var authF = new CompletableFuture<String>(); 
 					new AtomicReference<String>();
 			net.onResponseCompleted(resp -> {
@@ -115,13 +116,33 @@ public class PaizoRetriever extends DualBot {
 			var auth = authF.get(30, TimeUnit.SECONDS);
 			net.close();
 			driver.quit();
+			*/
 			
 			try(var client = HttpClients.custom().build()) {
+				//get token
+				var html = client.execute(ClassicRequestBuilder.get()
+						.setUri("https://store.paizo.com")
+						.build(),
+					resp->{
+						String content = EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
+						if(resp.getCode()<300)
+							return content;
+						else
+							throw new IOException("Status "+resp.getCode()+", Content:\n"+content);
+					});
+				var m = Pattern.compile("\"storefront_api\":\\{\"token\":\"([\\w.-]+)\"").matcher(html);
+				if(!m.find()) {
+					throw new IllegalStateException("Can't get graphQL token");
+				}
+				var auth = m.group(1);
+				
+				
+				//make requests to grpahQL
 				var baseRequest = ClassicRequestBuilder.post()
 					.setUri("https://store.paizo.com/graphql")
 					.setCharset(StandardCharsets.UTF_8)
 					.setHeader("Content-Type", "application/json")
-					.setHeader("Authorization", auth)
+					.setHeader("Authorization", "Bearer "+auth)
 					.build();
 				
 				
@@ -145,8 +166,8 @@ public class PaizoRetriever extends DualBot {
 		} catch(Exception e) {
 			log.error("Failed paizo crawling", e);
 		} finally {
-			net.close();
-			driver.quit();
+			//net.close();
+			//driver.quit();
 			save(state);
 		}
 		
