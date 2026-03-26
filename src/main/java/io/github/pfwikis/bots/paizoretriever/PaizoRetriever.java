@@ -245,10 +245,6 @@ public class PaizoRetriever extends DualBot {
 			          name
 			          children {
 			            entityId
-			            name
-			            children {
-				            entityId
-			            }
 			          }
 			        }
 			      }
