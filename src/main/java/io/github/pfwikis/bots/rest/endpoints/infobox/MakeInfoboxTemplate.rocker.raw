@@ -34,17 +34,10 @@
 				<div class="image">[[File:@page.get(Image).getName()|250px|Cover Image|class=not-lazy]]</div>
 			}}
 		}
-		else {
-			@with?(linkedRelease=page
-				.getSubObjects("Facts/"+concept.getName()+"/Release")
-				.stream()
-				.filter(r->r.has(Website))
-				.sorted(Comparator.comparing(r->r.getOr(Pubcode, "9999999999999").length()))
-				.findFirst().orElse(null)) {
-				<div class="website">
-					[@linkedRelease.get(Website) @linkedRelease.getOr(Pubcode, "Publisher's product page")]
-				</div>
-			}
+		@if(page.has(Website)) {
+			<div class="website">
+				[@page.get(Website) @page.getOr(Pubcode, "Publisher's product page")]
+			</div>
 		}
 		<div class="type@if(page.has(Sanctioned)){@*important space*@ sanctioned}">
 			@concept.getName() @*<-important space*@
@@ -97,15 +90,12 @@
 					<div class="infobox-book-releases-title">Releases</div>
 					@for(release:releases) {
 						<div class="name">
-							@if(release.has(Website)) {
-								[@release.get(Website) @*<-important space*@
-							}
 							@?release.getOr(Release_type, null)
 							@if(release.has(Release_note)) {
 								&nbsp;(@release.get(Release_note))
 							}
 							@if(release.has(Website)) {
-								]
+								<span class="link plainlinks">[@release.get(Website) <i class="fa-solid fa-arrow-up-right-from-square"></i>]</span>
 							}
 						</div>
 						<div class="table">
