@@ -11,6 +11,7 @@ import com.beust.jcommander.Parameters;
 
 import io.github.pfwikis.bots.common.api.generated.params.NS;
 import io.github.pfwikis.bots.common.api.model.PageRef;
+import io.github.pfwikis.bots.common.api.model.PageTitle;
 import io.github.pfwikis.bots.common.bots.DualBot;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.RunOnPageBot;
@@ -79,18 +80,18 @@ public class PageSyncer extends DualBot implements RunOnPageBot {
 	private Set<String> sync(List<PageRef> titles) throws IOException {
 		var synced = new HashSet<String>();
         for(var page : titles) {
-            sync(page);
+            sync(page.getTitle());
             synced.add(page.getTitle().toFullTitle());
 
             PageRef doc = PageRef.of(page.getTitle()+"/doc");
             if(run.getPfWiki().exists(doc)) {
-                sync(doc);
+                sync(doc.getTitle());
                 synced.add(doc.getTitle().toFullTitle());
             }
             
             PageRef style = page.withNS(NS.STYLE);
             if(run.getPfWiki().exists(style)) {
-                sync(style);
+                sync(style.getTitle());
                 synced.add(style.getTitle().toFullTitle());
             }
         }
@@ -110,10 +111,10 @@ public class PageSyncer extends DualBot implements RunOnPageBot {
         sync(List.of(page));
 	}
 
-    private void sync(PageRef page) throws IOException {
+    private void sync(PageTitle page) throws IOException {
     	log.info("Syncing {}", page);
         var targetTxt = run.getPfWiki().getWikitext(page);
-        if(!page.getTitle().getNs().equals(NS.STYLE)) {
+        if(!page.getNs().equals(NS.STYLE)) {
             targetTxt = "<noinclude>{{Bot created|VirenerusBot#"+botName+"|"
                 + "This page is automatically synced from [https://pathfinderwiki.com/wiki/{{FULLPAGENAMEE}} this] pathfinderwiki page. "
                 + "Do not edit it here.}}\n\n</noinclude>" //no linebreak after noinclude!!!
@@ -121,7 +122,7 @@ public class PageSyncer extends DualBot implements RunOnPageBot {
         }
         else {
         	targetTxt = "/*This page is automatically synced from https://pathfinderwiki.com/wiki/"
-    			+ page.getTitle()
+    			+ page
     			+ ". Do not edit it here.*/\n"
                 + targetTxt;
         }
