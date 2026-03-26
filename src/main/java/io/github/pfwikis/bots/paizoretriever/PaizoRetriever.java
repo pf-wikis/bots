@@ -28,9 +28,11 @@ import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.module.Network;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import com.beust.jcommander.Parameter;
@@ -367,14 +369,16 @@ public class PaizoRetriever extends DualBot {
 		return Jackson.JSON.readValue(json, type);
 	}
 
-	private RemoteWebDriver createDriver() throws MalformedURLException {
+	private WebDriver createDriver() throws MalformedURLException {
 		if(selenium != null) {
-			return new RemoteWebDriver(
+			WebDriver driver = new RemoteWebDriver(
 					URI.create("http://"+selenium).toURL(),
 					new FirefoxOptions()
 						.addArguments("-headless")
 						.enableBiDi()
 			);
+			driver = new Augmenter().augment(driver);
+			return driver;
 		}
 		return new FirefoxDriver(new FirefoxOptions().enableBiDi());
 	}
