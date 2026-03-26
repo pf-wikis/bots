@@ -191,6 +191,11 @@
 			<artifactId>selenium-java</artifactId>
 			<version>4.41.0</version>
 		</dependency>
+		<dependency>
+	        <groupId>net.creativecouple.validation</groupId>
+	        <artifactId>fast-isbn</artifactId>
+	        <version>1.2.34</version>
+	    </dependency>
 	</dependencies>
 	<build>
 		<plugins>

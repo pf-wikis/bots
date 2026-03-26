@@ -233,7 +233,8 @@ public class SFactsProperties {
 		"Isbn",
 		SFactTypes.ISBN)
 		.setDescription("The ISBN.")
-		.setAllowsPattern("^(?=(?:\\D*\\d){10}(?:(?:\\D*\\d){3})?$)[\\d-]+$");
+		.setAllowsPattern("^(?=(?:\\D*\\d){10}(?:(?:\\D*\\d){3})?$)[\\d-]+$")
+		.setDefaultValue("{{#if:{{{Pubcode|}}}|{{Paizo store|upc|{{{Pubcode}}}}}}}");
 	public static final SProperty<Integer> Level_range_end = new SProperty<>(
 		"Level range end",
 		SFactTypes.INTEGER)
@@ -307,7 +308,7 @@ public class SFactsProperties {
 		.setFormNote("The purchase price of the product in the form of \"$4.99\". Not necessary if there is a Paizo pubcode.")
 		.setDescription("The price of this release.")
 		.setAllowsPattern("^(Free|[$€]\\d+(.\\d+)?)$")
-		.setDefaultValue("{{#coalesce:{{Paizo store|price|{{{Pubcode}}}}}}}");
+		.setDefaultValue("{{#if:{{{Pubcode|}}}|{{Paizo store|price|{{{Pubcode}}}}}}}");
 	public static final SProperty<List<PageTitle>> Primary_author = new SProperty<>(
 		"Primary author",
 		SFactTypes.PAGE_LIST_ORDERED) {
@@ -461,7 +462,7 @@ public class SFactsProperties {
 		.setAutocompleteDisabled(true)
 		.setDescription("An URL that is strongly linked to this entity. E.g. the Paizo page for a book. "
 				+ "Defaults to a Paizo shop URL if the Pubcode matches one in the store.")
-		.setDefaultValue("{{#coalesce:{{Paizo store|URL|{{{Pubcode}}}}}|{{Paizo store|URL|{{{Pubcode}}}E}}}}")
+		.setDefaultValue("{{#if:{{{Pubcode|}}}|{{Paizo store|URL|{{{Pubcode}}}}}}}")
 		;
 	public static final SProperty<String> Website_name = new SProperty<>(
 		"Website name",

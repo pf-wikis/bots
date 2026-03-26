@@ -7,13 +7,11 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.StandardCopyOption;
 import java.time.Duration;
-import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -50,6 +48,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import net.creativecouple.validation.isbn.ISBN;
 import tools.jackson.databind.ObjectWriter;
 
 @Slf4j
@@ -157,14 +156,14 @@ public class PaizoRetriever extends DualBot {
 		new PageDef("URL", p->"https://store.paizo.com"+p.getUrl()),
 		//new PageDef("name", Props::getName),
 		new PageDef("price", Props::getPrice),
-		new PageDef("upc", Props::getUpc)
+		new PageDef("upc", p->checkIsbn(p.getUpc()))
 	);
 	
 	private void createPages(State state) {
 		var pages = state.getValues().values().stream()
 				.map(p->p.getProperties())
 				.filter(p->p.getSku()!=null)
-				.filter(p->p.getSku().startsWith("PZ"))
+				.filter(p->p.getSku().startsWith("PZ") || p.getSku().startsWith("DYN"))
 				.sorted(Comparator.comparing(Props::getSku))
 				.toList();
 		var intro = "<noinclude>{{Bot created|VirenerusBot#Paizo Retriever|This template is automatically created and update from the paizo webstore.}}</noinclude><includeonly>";
@@ -202,6 +201,18 @@ public class PaizoRetriever extends DualBot {
 				createPage(api, pages, def, intro, outro);
 			}
 		});
+	}
+
+	private static String checkIsbn(String upc) {
+		if(upc == null)
+			return upc;
+		upc = upc.trim();
+		try {
+			var isbn = ISBN.valueOf(upc);
+			return isbn.toString();
+		} catch(Exception e) {
+			return upc;
+		}
 	}
 
 	private void createPage(WikiAPI api, List<Props> pages, PageDef def, String intro, String outro) {
