@@ -261,11 +261,6 @@ public class SModel {
 					.name("Accessory")
 					.properties(
 						Accessory_type,
-						Release_date,
-						Website,
-						Pubcode,
-						Isbn,
-						Price,
 						Quantity,
 						Material,
 						Rule_system,
@@ -283,13 +278,8 @@ public class SModel {
 				Author,
 				Artist,
 				Publisher,
-				Price,
-				Release_date,
 				Quantity,
 				Material,
-				SInfoboxProperty.from(Isbn)
-					.label("ISBN")
-					.build(),
 				SInfoboxProperty.from(Rule_system)
 					.label("Rule set")
 					.build(),
@@ -299,6 +289,41 @@ public class SModel {
 				Awards,
 				Errata,
 				Web_enhancement
+			)
+			.subConcepts(
+				SConcept.builder()
+					.name("Release")
+					.pluralName("Releases")
+					.properties(
+						SPropertyGroup.builder()
+							.name("")
+							.properties(
+								Release_type,
+								Release_note,
+								Release_date,
+								Isbn,
+								Rule_system,
+								Pubcode,
+								Price,
+								Website
+							)
+					)
+					.infoboxProperties(
+						SInfoboxProperty.from(Pubcode)
+							.label("SKU")
+							.build(),
+						SInfoboxProperty.from(Release_date)
+							.label("Date")
+							.build(),
+						SInfoboxProperty.from(Isbn)
+							.label("ISBN")
+							.build(),
+						Pages,
+						SInfoboxProperty.from(Rule_system)
+							.label("Rule set")
+							.build(),
+						Price
+					)
 			)
 		.build();
 	public static final SConcept MAP_SF;
