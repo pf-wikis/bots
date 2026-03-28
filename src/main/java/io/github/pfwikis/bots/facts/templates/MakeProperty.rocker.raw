@@ -1,6 +1,5 @@
 @import io.github.pfwikis.bots.facts.model.SProperty
 @import static io.github.pfwikis.bots.facts.model.SFactTypes.*
-@import static io.github.pfwikis.bots.utils.RockerHelper.n
 
 @args(SProperty<?> p)
 {{Bot created|VirenerusBot#Facts Master}}
@@ -10,7 +9,7 @@
 	@descr{{#set:Property description=@descr@@en}}
 }
 
-@n()== Definition ==@n()
+@(\n)== Definition ==@(\n)
 
 <table class="wikitable property">
 	<tr>
@@ -98,6 +97,6 @@
 </table>
 
 
-@n()== Usage ==@n()
+@(\n)== Usage ==@(\n)
 {{User:VirenerusBot/Statistics/@p.getName()}}
 [[Category:Properties]]

@@ -1,6 +1,5 @@
 @import io.github.pfwikis.bots.facts.model.SConcept
 @import io.github.pfwikis.bots.facts.util.ConceptUtil
-@import static io.github.pfwikis.bots.utils.RockerHelper.n
 @import java.util.List
 
 @args(List<SConcept> concepts)
@@ -22,8 +21,8 @@
 
 </includeonly><noinclude>
 {{Bot created|VirenerusBot#Facts Master}}
-This template creates a seriesof butons to start editing a page via a facts form:@n(2)
-{{tl|Facts/Helper/Create page buttons}}@n(2)
+This template creates a seriesof butons to start editing a page via a facts form:@(\n)@(\n)
+{{tl|Facts/Helper/Create page buttons}}@(\n)@(\n)
 will result in
 {{Facts/Helper/Create page buttons}}
 

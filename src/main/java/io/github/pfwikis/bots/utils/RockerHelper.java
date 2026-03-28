@@ -16,15 +16,4 @@ public class RockerHelper {
 		var trimmed = txt.strip();
 		return trimmed;
 	}
-	
-	/**
-	 * @return a rocker linebreak that will not be removed by make
-	 */
-	public static String n() {
-		return n(1);
-	}
-	
-	public static String n(int number) {
-		return "§§§n§§§".repeat(number);
-	}
 }
