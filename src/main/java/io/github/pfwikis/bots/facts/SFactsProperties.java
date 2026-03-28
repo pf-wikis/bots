@@ -557,11 +557,6 @@ public class SFactsProperties {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
-	public static <T> SProperty<T> get(String name) {
-		return (SProperty<T>) ALL_PROPERTIES.get(name);
-	}
-	
 	public static List<SProperty<?>> getAll() {
 		return ALL_PROPERTIES.values()
 			.stream()

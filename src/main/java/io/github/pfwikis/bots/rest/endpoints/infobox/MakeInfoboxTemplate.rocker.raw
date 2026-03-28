@@ -40,10 +40,10 @@
 			</div>
 		}
 		<div class="type@if(page.has(Sanctioned)){@*important space*@ sanctioned}">
-			@concept.getName() @*<-important space*@
-			@with(type = SFactsProperties.get(concept.getName()+" type")) {
-				@if(page.has(type)) {
-					- @((String)page.get(type))
+			@concept.getName()
+			@for(prop:concept.allProperties()) {
+				@if(prop.getName().endsWith(" type") && page.has(prop)) {
+					@*important space->*@ - @((String)page.get(prop))
 				}
 			}
 			@if(page.has(Sanctioned)){
