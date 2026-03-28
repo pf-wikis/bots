@@ -13,11 +13,7 @@ public class RockerHelper {
 	
 	public static String makeWikitext(RockerModel template) {
 		var txt = template.render().toString();
-		var trimmed = txt.strip()
-				.replaceAll("(?m)^\t+", "")
-				.replace("\n", "")
-				.replaceAll("  +", " ")
-				.replace("§§§n§§§", "\n");
+		var trimmed = txt.strip();
 		return trimmed;
 	}
 	

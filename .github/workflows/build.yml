@@ -21,7 +21,11 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-      run: mvn -B package
+      run: |
+        cd rocker-post-processor
+        mvn -B install
+        cd ..
+        mvn -B package
     - name: Update dependency graph
       uses: advanced-security/maven-dependency-submission-action@v3
     - name: Dispatch wiki deployment

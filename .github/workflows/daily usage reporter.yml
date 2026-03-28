@@ -17,6 +17,10 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-      run: mvn -B package
+      run: |
+        cd rocker-post-processor
+        mvn -B install
+        cd ..
+        mvn -B package
     - name: Run bot
       run: java -jar target/bots-0.0.0.jar usage-reporter --password ${{ secrets.ROOT_BOT_PW }} --matomoToken ${{ secrets.MATOMO_TOKEN}} --discordToken ${{ secrets.DISCORD_TOKEN }}

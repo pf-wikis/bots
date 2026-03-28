@@ -214,9 +214,19 @@
 							<outputDirectory>${project.build.directory}/generated-sources/rocker</outputDirectory>
 							<markAsGenerated>true</markAsGenerated>
 							<javaVersion>${maven.compiler.target}</javaVersion>
+							<postProcessing>
+								<param>io.github.pfwikis.bots.utils.RockerPostProcessor</param>
+							</postProcessing>
 						</configuration>
 					</execution>
 				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>io.github.pf-wikis</groupId>
+						<artifactId>rocker-post-processor</artifactId>
+						<version>0.0.0</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
