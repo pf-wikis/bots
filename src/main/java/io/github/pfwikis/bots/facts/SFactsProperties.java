@@ -2,6 +2,7 @@ package io.github.pfwikis.bots.facts;
 
 import java.lang.reflect.Modifier;
 import java.time.temporal.Temporal;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -136,6 +137,8 @@ public class SFactsProperties {
 		"Main book",
 		SFactTypes.PAGE_LIST) {
 			public List<SProperty<?>> generateProperties(SConcept c, SConcept parent) {
+				if(c.containsProperty(Release_date) || c.getSubConcept("Release") != null)
+					return Collections.emptyList();
 				var date = "{{#if:{{{Main book|}}}|{{#ask:{{#arraymap:"
 						+ "{{{Main book|}}}|;|§|[[§]]|\\sOR\\s}}"
 						+ "|?Release date#"
@@ -177,9 +180,9 @@ public class SFactsProperties {
 		SFactTypes.STRING)
 		.setAutocompleteDisabled(true)
 		.setDescription("A link to all the erratas related to this book.");
-	public static final SProperty<PageTitle> Fact_type = new SProperty<>(
+	public static final SProperty<List<PageTitle>> Fact_type = new SProperty<>(
 		"Fact type",
-		SFactTypes.PAGE)
+		SFactTypes.PAGE_LIST)
 		.setGenerateWikitext("unknown")
 		.setRequired(true)
 		.setDescription("The type of fact represented by this entity. This should be a reference to the template that created it.");
@@ -229,6 +232,10 @@ public class SFactsProperties {
 		"Image",
 		SFactTypes.IMAGE)
 		.setDescription("The page of an image representing this entity.");
+	public static final SProperty<PageTitle> Logo = new SProperty<>(
+			"Logo",
+			SFactTypes.IMAGE)
+			.setDescription("The page of an image representing the logo of this entity.");
 	public static final SProperty<String> Isbn = new SProperty<>(
 		"Isbn",
 		SFactTypes.ISBN)

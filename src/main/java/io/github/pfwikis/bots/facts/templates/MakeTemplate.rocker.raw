@@ -32,9 +32,9 @@
 	</div>
 }
 {{Validate parameters}}
-<div class="facts-display concept-@ConceptUtil.cssName(c)">
+<div class="facts-display concept-@ConceptUtil.cssName(c)@for(m:c.getMerges()) { concept-@ConceptUtil.cssName(m)}">
 	@for(g:c.getPropertyGroups()) {
-		<div class="facts-display-group group-@ConceptUtil.cssName(g)">
+		<div class="facts-display-group group-@ConceptUtil.cssName(g)@for(m:c.getMerges()) { group-@ConceptUtil.cssName(m)}">
 			<div class="facts-display-group-label">@g.getName()</div>
 			<div class="facts-display-group-content">
 			@for(prop:g.getProperties()) {
@@ -85,6 +85,9 @@
 
 </div>
 [[Category:Facts about @c.getPluralName()]]
+@for(m:c.getMerges()) {
+	[[Category:Facts about @m.getPluralName()]]
+}
 </includeonly>
 <noinclude>
 	<templatedata>@c.generateTemplateData()</templateData>

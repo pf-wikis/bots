@@ -49,7 +49,7 @@ public class ACContext {
 	}
 	
 	public boolean has(SConcept concept) {
-		return this.concept.equals(concept);
+		return this.concept.equals(concept) || this.concept.getMerges().contains(concept);
 	}
 
 	public boolean has(Wiki wiki) {

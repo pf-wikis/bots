@@ -40,6 +40,7 @@ import static io.github.pfwikis.bots.facts.SFactsProperties.Isbn;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Level_range_end;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Level_range_start;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Location;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Logo;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Main_book;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Map_type;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Material;
@@ -82,6 +83,9 @@ import static io.github.pfwikis.bots.facts.SFactsProperties.Website;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Website_name;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Writer;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.List;
 
@@ -687,7 +691,7 @@ public class SModel {
 		)
 		.build();
 	
-	private static final SConcept WEB_CITATION = SConcept.builder()
+	public static final SConcept WEB_CITATION = SConcept.builder()
 		.name("Web citation")
 		.pluralName("Web citation")
 		.properties(
@@ -708,7 +712,14 @@ public class SModel {
 		.name("Adventure path")
 		.pluralName("Adventure paths")
 		.properties(
-			BASIC_FIELDS,
+			SPropertyGroup.builder()
+				.name("Basic")
+				.properties(
+					Name,
+					Full_title,
+					Represented_by_page,
+					Logo
+				),
 			SPropertyGroup.builder()
 				.name("Adventure Path")
 				.properties(
@@ -735,10 +746,9 @@ public class SModel {
 	private static final EnumMap<Wiki, List<SConcept>> CONCEPTS;
 	static {
 		CONCEPTS = new EnumMap<>(Wiki.class);
-		CONCEPTS.put(Wiki.PF, Lists.newArrayList(
+		var shared = Lists.newArrayList(
 			BOOK,
 			ACCESSORY,
-			MAP_PF,
 			MINIATURES,
 			AUDIO,
 			VIDEO_GAME,
@@ -747,23 +757,47 @@ public class SModel {
 			ADVENTURE_PATH,
 			SERIES,
 			BOARD_GAME
-		));
-		CONCEPTS.put(Wiki.SF, Lists.newArrayList(
-			BOOK,
-			ACCESSORY,
-			MAP_SF,
-			MINIATURES,
-			AUDIO,
-			VIDEO_GAME,
-			DECK,
-			WEB_CITATION,
-			ADVENTURE_PATH,
-			SERIES,
-			BOARD_GAME
-		));
+		);
+		shared.add(SINGLE_BOOK_AP());
+		
+		for(var wiki:Wiki.values()) {
+			var l = Lists.newArrayList(shared);
+			l.add(wiki==Wiki.PF?MAP_PF:MAP_SF);
+			Collections.sort(l, Comparator.comparing(SConcept::getName));
+			CONCEPTS.put(wiki, l);
+		}
 	}
 	
 	public static List<SConcept> getConcepts(Wiki server) {
 		return CONCEPTS.get(server);
+	}
+
+	private static SConcept SINGLE_BOOK_AP() {
+		var props = new ArrayList<>(BOOK.getPropertyGroups());
+		props.set(0, SPropertyGroup.builder()
+			.name("Basic")
+			.properties(
+				Name,
+				Full_title,
+				Represented_by_page,
+				Image,
+				Logo
+			).build());
+		
+		
+		var res = SConcept.builder()
+			.name("Single book adventure path")
+			.pluralName("Single book adventure paths")
+			.merges(List.of(ADVENTURE_PATH, BOOK))
+			.infoboxProperties(BOOK.getInfoboxProperties().toArray())
+			.subConcepts(BOOK.getSubConcepts())
+			.propertyGroups(props)
+			.build();
+		
+		res.getGeneratedProperties().add(
+			Main_book.withGenerateWikitext("{{FULLPAGENAME}}")
+		);
+		
+		return res;
 	}
 }
