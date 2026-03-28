@@ -79,7 +79,7 @@
 	
 			@*releases*@
 			@with?(SConcept releaseConcept = concept.getSubConcept("Release")) {
-			@with(releases = page.getSubObjects("Facts/"+concept.getName()+"/Release")
+			@with(releases = page.getSubObjectsBySuffix("/Release")
 				.stream()
 				.sorted(
 					comparing((SemanticSubject r)->r.getOr(Release_date, LocalDate.MAX), nullsLast(TemporalComparator.INSTANCE))

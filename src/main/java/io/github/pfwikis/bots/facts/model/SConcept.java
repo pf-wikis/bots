@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 
+import io.github.pfwikis.bots.common.api.generated.params.NS;
+import io.github.pfwikis.bots.common.api.model.PageTitle;
 import io.github.pfwikis.bots.facts.SFactsProperties;
 import io.github.pfwikis.bots.facts.model.SPropertyGroup.SPropertyGroupBuilder;
 import io.github.pfwikis.bots.utils.Jackson;
@@ -24,6 +26,7 @@ public class SConcept {
 	
 	String name;
 	String pluralName;
+	PageTitle factType;
 	@With
 	List<SConcept> merges;
 	List<SPropertyGroup> propertyGroups;
@@ -77,6 +80,7 @@ public class SConcept {
 			var c = new SConcept(
 				name,
 				pluralName,
+				PageTitle.of(NS.TEMPLATE, "Facts/"+name),
 				merges,
 				propertyGroups,
 				subConcepts,
@@ -84,8 +88,8 @@ public class SConcept {
 				gens
 			);
 			
-			String factType = "Template:Facts/"+name
-				+ merges.stream().map(m->";Template:Facts/"+m.name).collect(Collectors.joining());
+			String factType = c.getFactType().toString()
+				+ merges.stream().map(m->";"+m.getFactType()).collect(Collectors.joining());
 			gens.add(SFactsProperties.Fact_type.withGenerateWikitext(factType));
 			for(var propG:propertyGroups) {
 				for(var prop:propG.getProperties())

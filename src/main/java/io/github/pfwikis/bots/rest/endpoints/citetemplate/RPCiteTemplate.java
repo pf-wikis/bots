@@ -23,6 +23,7 @@ import com.google.common.cache.CacheBuilder;
 
 import io.github.pfwikis.bots.common.api.model.PageTitle;
 import io.github.pfwikis.bots.common.api.responses.SemanticSubject;
+import io.github.pfwikis.bots.facts.SModel;
 import io.github.pfwikis.bots.rest.RPEndpoint;
 import io.github.pfwikis.bots.rest.RestProviderBot;
 import io.github.pfwikis.bots.rest.SafeException;
@@ -67,9 +68,9 @@ public class RPCiteTemplate extends RPEndpoint<RPCiteParam> {
 			if(!subject.has(Fact_type)) {
 				throw new SafeException(param.getFactsPage(), param.getFactsPage()+" does not have facts");
 			}
-			var type = subject.get(Fact_type);
-			if(!CiteUtil.isCiteable(type)) {
-				throw new SafeException(param.getFactsPage(), param.getFactsPage()+"is of the non-citable type "+type.getName());
+			var types = subject.get(Fact_type);
+			if(!CiteUtil.isCiteable(types)) {
+				throw new SafeException(param.getFactsPage(), param.getFactsPage()+"is of the non-citable type "+types.getFirst().getName());
 			}
 			
 			BookDef bookDef = BookDef.builder()
@@ -80,10 +81,10 @@ public class RPCiteTemplate extends RPEndpoint<RPCiteParam> {
 						?null
 						:Integer.parseInt(subject.get(Release_year))
 				)
-				.webCitation(subject.get(Fact_type).toFullTitle().equals("Template:Facts/Web citation"))
+				.webCitation(subject.get(Fact_type).contains(SModel.WEB_CITATION.getFactType()))
 				.build();
 			
-			var rawSections = subject.getSubObjects("Facts/Book/Section");
+			var rawSections = subject.getSubObjectsBySuffix("/Section");
 			bookDef.getSections().addAll(rawSections.stream()
 				.map(s-> new SectionDef(
 					bookDef,

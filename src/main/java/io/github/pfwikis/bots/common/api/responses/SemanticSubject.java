@@ -1,6 +1,7 @@
 package io.github.pfwikis.bots.common.api.responses;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -32,17 +33,15 @@ public class SemanticSubject extends AnyJson implements SemanticObject, Comparab
 	
 	public boolean hasConcept(SConcept concept) {
 		if(!has(Fact_type)) return false;
-		return ("Facts/"+concept.getName()).equals(get(Fact_type).getName());
+		return get(Fact_type).contains(concept.getFactType());
 	}
 	
-	public List<SemanticSubject> getSubObjects(String factType) {
+	public List<SemanticSubject> getSubObjectsBySuffix(String factTypeSuffix) {
 		var res = subObjects.stream()
-			.filter(e->e.has(Fact_type))
-			.filter(e->
-				e.get(Fact_type).getName()
-					.equals(factType))
-			.sorted()
-			.toList();
+				.filter(e->e.has(Fact_type))
+				.filter(e->e.get(Fact_type).stream().anyMatch(t->t.getName().endsWith(factTypeSuffix)))
+				.sorted()
+				.toList();
 		return res;
 	}
 	
@@ -145,6 +144,4 @@ public class SemanticSubject extends AnyJson implements SemanticObject, Comparab
 	public String internalName() {
 		return subject.toFullTitle();
 	}
-	
-	
 }
