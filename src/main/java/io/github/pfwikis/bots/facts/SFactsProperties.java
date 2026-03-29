@@ -154,7 +154,7 @@ public class SFactsProperties {
 					Release_date.withGenerateWikitext(date),
 					Release_date_sort.withGenerateWikitext(
 						date.replace("?Release date#", "?Release date sort#")
-							.replace("|headers=hide}}|}}", "|headers=hide}}|9999-01-01}}")
+							.replace("|default=|headers=hide}}|}}", "|default=9999-01-01|headers=hide}}|9999-01-01}}")
 					)
 				);
 			}
@@ -365,6 +365,7 @@ public class SFactsProperties {
 		"Release date sort",
 		SFactTypes.DATE)
 		.setGenerateWikitext("{{#coalesce:{{{Release date|}}}|9999-01-01}}")
+		.setDefaultValue("9999-01-01")
 		.setDescription("Automatically generated property that stores the release date or 9999-01-01 if there is none. Used for sorting");
 	public static final SProperty<String> Release_year = new SProperty<>(
 		"Release year",

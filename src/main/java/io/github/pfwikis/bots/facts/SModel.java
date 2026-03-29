@@ -795,7 +795,8 @@ public class SModel {
 			.build();
 		
 		res.getGeneratedProperties().add(
-			Main_book.withGenerateWikitext("{{FULLPAGENAME}}")
+			//{{#titleparts: is needed to resolve HTML encoding
+			Main_book.withGenerateWikitext("{{#titleparts:{{FULLPAGENAME}}}}")
 		);
 		
 		return res;
