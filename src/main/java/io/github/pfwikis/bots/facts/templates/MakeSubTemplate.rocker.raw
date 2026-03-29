@@ -15,6 +15,7 @@
 }}
 [[Category:Facts templates]]
 </noinclude><includeonly>
+<span style="display:none">{{#default_form:@parent.getName()/@c.getName()}}</span>
 
 
 @*Only show the properties on the subpage*@
