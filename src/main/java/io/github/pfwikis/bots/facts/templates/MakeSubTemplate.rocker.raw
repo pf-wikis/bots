@@ -15,11 +15,10 @@
 }}
 [[Category:Facts templates]]
 </noinclude><includeonly>
-<span style="display:none">{{#default_form:@parent.getName()/@c.getName()}}</span>
-
 
 @*Only show the properties on the subpage*@
 {{#ifeq:{{SUBPAGENAME}}|@c.getPluralName()|
+	<span style="display:none">{{#default_form:@parent.getName()/@c.getName()}}</span>
 	{{#ifeq:{{#counter: i}}|1| @*this counter makes sure the header is only rendered once*@
 		<div class="facts-display-header">
 			<div class="facts-display-header-item">
