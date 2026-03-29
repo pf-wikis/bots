@@ -10,6 +10,7 @@
 		@if(!i.first()){|}@prop.getName() (property=@prop.getName())
 	}
 }}
+<span style="display:none">{{#default_form:@c.getName()}}</span>
 [[Category:Facts templates]]
 </noinclude><includeonly><div class="facts">
 @if(CiteUtil.isCiteable(c)) {

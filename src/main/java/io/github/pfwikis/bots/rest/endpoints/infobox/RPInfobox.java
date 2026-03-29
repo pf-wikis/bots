@@ -53,6 +53,7 @@ public class RPInfobox extends RPEndpoint<RPInfoboxParam> {
 		var subject = param.getSemanticSubject().postProcess();
 		var matchingConcepts = Lists.newArrayList(concepts.get(bot.getRun().getServer()));
 		matchingConcepts.removeIf(c->!subject.hasConcept(c));
+		matchingConcepts.removeAll(matchingConcepts.stream().flatMap(c->c.getMerges().stream()).toList());
 		return RockerHelper.makeWikitext(MakeInfoboxTemplate.template(
 				bot.getRun().getServer(),
 				matchingConcepts,
