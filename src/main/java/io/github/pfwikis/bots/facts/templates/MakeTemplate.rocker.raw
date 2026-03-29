@@ -10,9 +10,10 @@
 		@if(!i.first()){|}@prop.getName() (property=@prop.getName())
 	}
 }}
-<span style="display:none">{{#default_form:@c.getName()}}</span>
 [[Category:Facts templates]]
-</noinclude><includeonly><div class="facts">
+</noinclude><includeonly>
+<span style="display:none">{{#default_form:@c.getName()}}</span>
+<div class="facts">
 @if(CiteUtil.isCiteable(c)) {
 	<div class="citethis">
 		You can cite this entity by using {{tl|Ref|{{PAGENAME}}}} or {{tl|Cite|{{PAGENAME}}}}.
