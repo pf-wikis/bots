@@ -94,6 +94,7 @@ public class AAPI {
 			if(log.isDebugEnabled()) {
 				log.debug(action.toString());
 			}
+			log.info("APS is {}", secret);
 			var request = (action.builder().requiresPost()?ClassicRequestBuilder.post():ClassicRequestBuilder.get())
 					.setUri(wiki.getApiURL())
 					.setCharset(StandardCharsets.UTF_8)

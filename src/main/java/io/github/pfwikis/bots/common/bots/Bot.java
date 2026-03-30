@@ -71,7 +71,6 @@ public abstract class Bot<RUN extends Run> {
 			executeBeforeRuns();
 			
 			var runs = createRuns();
-			var beforeRunsError = hadError;
 			
 			for(var currentRun : runs) {
 				this.run = currentRun;
@@ -81,8 +80,6 @@ public abstract class Bot<RUN extends Run> {
 					run(new RunContext());
 				} catch (Exception e) {
 					reportException(e);
-				} finally {
-					hadError = beforeRunsError;
 				}
 			}
 			

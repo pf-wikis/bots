@@ -34,7 +34,6 @@ public class RockerPostProcessor implements TemplateModelPostProcessor {
 			return new PlainText(pt.getSourceRef(), txt);
 		}
 		if(tu instanceof ValueExpression ve) {
-			log.info("VE: {}", ve.getExpression());
 			if(ve.getExpression().equals("\\n") || ve.getExpression().equals("(\\n)")) {
 				return new PlainText(ve.getSourceRef(), "\n");
 			}

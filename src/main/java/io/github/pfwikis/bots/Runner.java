@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
@@ -30,12 +32,16 @@ public class Runner {
 		Locale.setDefault(Locale.ROOT);
 		var commands = JCommander.newBuilder();
 		commands.defaultProvider(new IDefaultProvider() {
+			
+			private Set<String> loggedDefaults = ConcurrentHashMap.newKeySet();
+			
 			@Override
 			public String getDefaultValueFor(String optionName) {
 				var name = StringUtils.removeStart(optionName, "--");
-				name = CaseFormat.LOWER_CAMEL.converterTo(CaseFormat.UPPER_UNDERSCORE).convert(name);
-				var def = System.getenv("BOT_"+name);
-				log.info("Using '{}' from environment: {}", StringUtils.removeStart(optionName, "--"), def);
+				var ucName = CaseFormat.LOWER_CAMEL.converterTo(CaseFormat.UPPER_UNDERSCORE).convert(name);
+				var def = System.getenv("BOT_"+ucName);
+				if(def != null && loggedDefaults.add(name))
+					log.info("Using '{}' from environment: {}", name, def);
 				return def;
 			}
 		});
