@@ -34,7 +34,9 @@ public class Runner {
 			public String getDefaultValueFor(String optionName) {
 				var name = StringUtils.removeStart(optionName, "--");
 				name = CaseFormat.LOWER_CAMEL.converterTo(CaseFormat.UPPER_UNDERSCORE).convert(name);
-				return System.getenv("BOT_"+name);
+				var def = System.getenv("BOT_"+name);
+				log.info("Using '{}' from environment: {}", StringUtils.removeStart(optionName, "--"), def);
+				return def;
 			}
 		});
 		commands.addCommand("scheduler", new Scheduler());

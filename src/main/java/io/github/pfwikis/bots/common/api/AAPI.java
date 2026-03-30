@@ -8,7 +8,6 @@ import java.util.Objects;
 
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
-import org.apache.hc.core5.http.HttpStatus;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
@@ -30,7 +29,6 @@ import io.github.pfwikis.bots.common.api.responses.AAPIWrappedResponse;
 import io.github.pfwikis.bots.common.api.responses.IResponse;
 import io.github.pfwikis.bots.common.api.responses.QueryResponse;
 import io.github.pfwikis.bots.utils.Jackson;
-import io.opentelemetry.api.trace.StatusCode;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
