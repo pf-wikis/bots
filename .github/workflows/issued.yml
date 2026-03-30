@@ -31,6 +31,7 @@ jobs:
         BOT_DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
         BOT_PFKEY: ${{ secrets.PFKEY }}
         BOT_SFKEY: ${{ secrets.SFKEY }}
+        BOT_ANTI_PROTECTION_SECRET: ${{ secrets.ANTI_PROTECTION_SECRET }}
       run: java -jar target/bots-0.0.0.jar assistant --password ${{ secrets.ROOT_BOT_PW }} --discordToken ${{ secrets.DISCORD_TOKEN }}
     - name: Close Issue
       run: gh issue close --comment "Issue Done" "${{ github.event.issue.number }}"
