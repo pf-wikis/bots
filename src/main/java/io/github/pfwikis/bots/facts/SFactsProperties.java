@@ -240,6 +240,7 @@ public class SFactsProperties {
 		"Isbn",
 		SFactTypes.ISBN)
 		.setDescription("The ISBN.")
+		.setFormNote("Not necessary if there is a Paizo store pubcode. You will see an automatic value then.")
 		.setAllowsPattern("^(?=(?:\\D*\\d){10}(?:(?:\\D*\\d){3})?$)[\\d-]+$")
 		.setDefaultValue("{{#if:{{{Pubcode|}}}|{{Paizo store|upc|{{{Pubcode}}}}}}}");
 	public static final SProperty<Integer> Level_range_end = new SProperty<>(
@@ -312,8 +313,8 @@ public class SFactsProperties {
 	public static final SProperty<String> Price = new SProperty<>(
 		"Price",
 		SFactTypes.STRING)
-		.setFormNote("The purchase price of the product in the form of \"$4.99\". Not necessary if there is a Paizo pubcode.")
-		.setDescription("The price of this release.")
+		.setFormNote("Not necessary if there is a Paizo store pubcode. You will see an automatic value then.")
+		.setDescription("The price of this release. Should be in the form \"$4.99\".")
 		.setAllowsPattern("^(Free|[$€]\\d+(.\\d+)?)$")
 		.setDefaultValue("{{#if:{{{Pubcode|}}}|{{Paizo store|price|{{{Pubcode}}}}}}}");
 	public static final SProperty<List<PageTitle>> Primary_author = new SProperty<>(
@@ -340,8 +341,8 @@ public class SFactsProperties {
 		"Pubcode",
 		SFactTypes.STRING)
 		.setAutocompleteDisabled(true)
-		.setFormNote("The publisher's product code for this release (e.g. PZO9500, etc.). Only set this if the releases do not have pubcodes.")
-		.setDescription("Typically a Paizo pubcode.");
+		.setFormNote("e.g. PZO9500-HC")
+		.setDescription("The publisher's product code for this release. Typically a Paizo pubcode.");
 	public static final SProperty<List<PageTitle>> Publisher = new SProperty<>(
 		"Publisher",
 		SFactTypes.PAGE_LIST)
@@ -466,7 +467,7 @@ public class SFactsProperties {
 	public static final SProperty<String> Website = new SProperty<>(
 		"Website",
 		SFactTypes.URL)
-		.setFormNote("The URL of the product's official page on the publisher's website. Not necessary if there is a Paizo pubcode.")
+		.setFormNote("Not necessary if there is a Paizo store pubcode. You will see an automatic value then.")
 		.setAutocompleteDisabled(true)
 		.setDescription("An URL that is strongly linked to this entity. E.g. the Paizo page for a book. "
 				+ "Defaults to a Paizo shop URL if the Pubcode matches one in the store.")
