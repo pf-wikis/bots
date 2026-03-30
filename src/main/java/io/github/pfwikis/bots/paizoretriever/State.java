@@ -3,6 +3,8 @@ package io.github.pfwikis.bots.paizoretriever;
 import java.time.Instant;
 import java.util.TreeMap;
 
+import org.apache.commons.lang3.StringUtils;
+
 import io.github.pfwikis.bots.paizoretriever.GraphQLResponse.Product;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -36,6 +38,7 @@ public class State {
 				if(old.getProperties().equals(n))
 					continue;
 				created = old.created;
+				n.mergeOld(old.properties);
 			}
 			
 			var e = new Entry(lastChanged, created, n);
@@ -58,5 +61,12 @@ public class State {
 		private String price;
 		private String upc;
 		private String url;
+		
+		public void mergeOld(Props old) {
+			if(StringUtils.isAllBlank(name)) name = old.name;
+			if(StringUtils.isAllBlank(price)) price = old.price;
+			if(StringUtils.isAllBlank(upc)) upc = old.upc;
+			if(StringUtils.isAllBlank(url)) url = old.url;
+		}
 	}
 }

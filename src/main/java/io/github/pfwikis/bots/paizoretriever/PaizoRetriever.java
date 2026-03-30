@@ -1,11 +1,7 @@
 package io.github.pfwikis.bots.paizoretriever;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.StandardCopyOption;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Comparator;
@@ -17,7 +13,6 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
@@ -26,18 +21,14 @@ import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.remote.Augmenter;
-import org.openqa.selenium.remote.RemoteWebDriver;
 
-import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 import com.google.common.util.concurrent.Uninterruptibles;
 
 import io.github.pfwikis.bots.common.WikiAPI;
+import io.github.pfwikis.bots.common.api.generated.params.NS;
 import io.github.pfwikis.bots.common.api.model.PageRef;
+import io.github.pfwikis.bots.common.api.model.PageTitle;
 import io.github.pfwikis.bots.common.bots.DualBot;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.paizoretriever.PZCategoryResponse.PZCategory;
@@ -48,18 +39,14 @@ import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.creativecouple.validation.isbn.ISBN;
-import tools.jackson.databind.ObjectWriter;
 
 @Slf4j
 @Getter @Setter
 @Parameters
 public class PaizoRetriever extends DualBot {
 	
-	@Parameter(names = "--selenium")
-	private String selenium; 
-	
 	private static final Duration SLEEP = Duration.ofMillis(100);
-	private static final File STATE_FILE = new File("outputs/crawl/state.yaml");
+	private static final PageTitle STATE_PAGE = PageTitle.of(NS.TEMPLATE, "Paizo store/data");
 	private static final Set<String> WANTED_CATEGORIES = Set.of(
 		"Subscriptions",
 		"Pathfinder",
@@ -76,11 +63,6 @@ public class PaizoRetriever extends DualBot {
 		super("paizo-retriever", "Paizo Retriever");
 	}
 	
-	public PaizoRetriever(String selenium) {
-		this();
-		this.selenium = selenium;
-	}
-	
 	@Override
 	public String getDescription() {
 		return "This bot keeps an up to date list of Paizo SKU->store page.";
@@ -88,35 +70,10 @@ public class PaizoRetriever extends DualBot {
 
 	@Override
 	public void run(RunContext ctx) throws Exception {
-		STATE_FILE.getParentFile().mkdirs();
-		State state;
-		if(STATE_FILE.exists())
-			state = Jackson.YAML.readValue(STATE_FILE, State.class);
-		else
-			state = new State();
+		var originalState = run.getPfWiki().getWikitext(STATE_PAGE).trim();
+		State state = Jackson.JSON.readValue(originalState, State.class);
 
-		/* old way to get token via selenium
-		var driver = createDriver();
-		var net = new Network(driver);
-		*/
 		try {
-			
-			/*
-			var authF = new CompletableFuture<String>(); 
-					new AtomicReference<String>();
-			net.onResponseCompleted(resp -> {
-				if(resp.getRequest().getUrl().contains("graphql")) {
-					resp.getRequest().getHeaders().forEach(h->{
-						if(h.getName().equalsIgnoreCase("Authorization"))
-							authF.complete(h.getValue().getValue());
-					});
-				}
-			});
-			driver.get("https://store.paizo.com");
-			var auth = authF.get(30, TimeUnit.SECONDS);
-			net.close();
-			driver.quit();
-			*/
 			
 			try(var client = HttpClients.custom().build()) {
 				//get token
@@ -162,13 +119,13 @@ public class PaizoRetriever extends DualBot {
 					});
 			}
 		
-			//crawlLoop(driver, state);
 		} catch(Exception e) {
 			log.error("Failed paizo crawling", e);
 		} finally {
-			//net.close();
-			//driver.quit();
-			save(state);
+			var newState = Jackson.JSON.writeValueAsString(state);
+			if(!newState.equals(originalState)) {
+				run.getPfWiki().edit(STATE_PAGE, newState, "Automatic update from paizo store");
+			}
 		}
 		
 		createPages(state);
@@ -210,6 +167,8 @@ public class PaizoRetriever extends DualBot {
 				.append(outro)
 				.append("<noinclude>\n")
 				.append("{{Documentation|content=\n")
+				.append("This template is able to provide data retrieved directly form the paizo store.")
+				.append("It also archives this data by accumulating it over time without removing products no longer in the store")
 				.append("<wikitext doctable>")
 				.append("<wikitext-row>{{ISBN|{{Paizo store|upc|PZO9205}}}}</wikitext-row>")
 				.append("<wikitext-row>{{Paizo store|URL|PZO9205}}</wikitext-row>")
@@ -367,7 +326,6 @@ public class PaizoRetriever extends DualBot {
 			var products = resp.getData().getSite().getCategory().getProducts();
 			
 			products.getEdges().forEach(e->state.addEntries(e.getNode()));
-			save(state);
 			
 			if(products.getPageInfo().isHasNextPage()) {
 				Uninterruptibles.sleepUninterruptibly(SLEEP);
@@ -389,28 +347,4 @@ public class PaizoRetriever extends DualBot {
 		});
 		return Jackson.JSON.readValue(json, type);
 	}
-
-	private WebDriver createDriver() throws MalformedURLException {
-		if(selenium != null) {
-			WebDriver driver = new RemoteWebDriver(
-					URI.create("http://"+selenium).toURL(),
-					new FirefoxOptions()
-						.addArguments("-headless")
-						.enableBiDi()
-			);
-			driver = new Augmenter().augment(driver);
-			return driver;
-		}
-		return new FirefoxDriver(new FirefoxOptions().enableBiDi());
-	}
-
-	private static final ObjectWriter WRITER = Jackson.YAML
-			.writerFor(State.class);
-	private void save(State state) throws IOException {
-		File tmp = File.createTempFile("paizo_", ".yaml");
-		WRITER.writeValue(tmp, state);
-		FileUtils.deleteQuietly(STATE_FILE);
-		FileUtils.moveFile(tmp, STATE_FILE, StandardCopyOption.REPLACE_EXISTING);
-	}
-	
 }

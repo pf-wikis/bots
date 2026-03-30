@@ -62,8 +62,6 @@ public class Scheduler {
 	protected boolean localMode;
 	@Parameter(names = "--restOnly")
 	protected boolean restOnly;
-	@Parameter(names = "--selenium")
-	protected String selenium;
 	
 	private Discord discord;
 	
@@ -83,7 +81,7 @@ public class Scheduler {
 			}
 			
 			schedule(new HealthCheck(discord), Duration.ofHours(24));
-			schedule(scheduleableBot(discord, new PaizoRetriever(selenium), new RunContext()), Duration.ofHours(12), LocalTime.of(14, 00));
+			schedule(scheduleableBot(discord, new PaizoRetriever(), new RunContext()), Duration.ofHours(12), LocalTime.of(14, 00));
 			for(var wiki : Wiki.values()) {
 				scheduleOnce(scheduleableBot(wiki, discord, new Meta()));
 				schedule(scheduleableBot(wiki, discord, new FactsTemplates()), Duration.ofDays(7));
