@@ -88,7 +88,7 @@ public class PropertyStatistics extends SimpleBot implements ScatteredRunnableBo
 					.append("</td></tr>");
 			}
 			sb.append("\n</table>");
-			run.getWiki().editIfChange(PageRef.of("User:Bot Facts Master/Statistics/"+name), sb.toString(), "Update property statistics");
+			run.getWiki().editIfChange(PageRef.of("User:VirenerusBot/Statistics/"+name), sb.toString(), "Update property statistics");
 		}
 	}
 	

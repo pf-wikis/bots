@@ -77,7 +77,7 @@ public class Discord implements Closeable {
 			//append Icon
 			.append(bot.getWiki()==Wiki.PF?"<:pf:1176801824620154951> ":"<:sf:1176801894086221824> ")
 			//append link to bot
-			.append(wikiLink(bot.getWiki(), bot.getBotName(), "/wiki/User:"+bot.getBotName()))
+			.append(wikiLink(bot.getWiki(), bot.getBotName(), "/wiki/User:VirenerusBot#"+bot.getBotName()))
 			.append(": ");
 	}
 	

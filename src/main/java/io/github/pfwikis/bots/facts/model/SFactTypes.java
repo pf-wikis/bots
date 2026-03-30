@@ -31,6 +31,18 @@ public class SFactTypes {
 			return "|input type=combobox";
 		}
 	};
+	public static final SFactType<String> KEYWORD = new SFactType<>(
+			"KEYWORD",
+			SMWPropertyType.KEYWORD,
+			"string",
+			"$v"
+	) {
+
+		@Override
+		protected String configureFormField(SProperty<?> prop) {
+			return STRING.configureFormField(prop);
+		}
+	};
 	public static final SFactType<String> URL = new SFactType<>(
 			"URL",
 			SMWPropertyType.URL,

@@ -30,8 +30,18 @@ public class SUtilProperties {
 			"Tag",
 			SFactTypes.STRING)
 			.setDescription("This is used as a universal marker.");
-	
-	
+	public static final SProperty<String> Has_infobox_type = new SProperty<>(
+			"Has infobox type",
+			SFactTypes.KEYWORD)
+			.setDescription("The infobox type associated with this page.");
+	public static final SProperty<String> Has_location_type = new SProperty<>(
+			"Has location type",
+			SFactTypes.KEYWORD)
+			.setDescription("The type of the location of interest.");
+	public static final SProperty<String> Has_meta_type = new SProperty<>(
+			"Has meta type",
+			SFactTypes.KEYWORD)
+			.setDescription("This property should be used to describe what kind of entity is described by the article.");
 
 	private static final Map<String, SProperty<?>> ALL_PROPERTIES;
 	static {
