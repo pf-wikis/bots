@@ -94,7 +94,6 @@ public class AAPI {
 			if(log.isDebugEnabled()) {
 				log.debug(action.toString());
 			}
-			log.info("APS is {}", secret);
 			var request = (action.builder().requiresPost()?ClassicRequestBuilder.post():ClassicRequestBuilder.get())
 					.setUri(wiki.getApiURL())
 					.setCharset(StandardCharsets.UTF_8)
@@ -110,10 +109,11 @@ public class AAPI {
 				continueMap.forEach(request::addParameter);
 			}
 			
+			var completeRequest = request.build(); 
 			
 			String json = null;
 			try {
-				json = client.<String>execute(request.build(), resp->{
+				json = client.<String>execute(completeRequest, resp->{
 					String content = EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
 					if(resp.getCode()<300)
 						return content;
