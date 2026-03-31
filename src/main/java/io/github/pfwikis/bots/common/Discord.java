@@ -3,19 +3,15 @@ package io.github.pfwikis.bots.common;
 import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Optional;
-import java.util.OptionalInt;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import com.google.common.primitives.Ints;
-import com.google.common.util.concurrent.Uninterruptibles;
 
 import io.github.pfwikis.bots.common.bots.Bot;
 import lombok.RequiredArgsConstructor;
@@ -144,6 +140,7 @@ public class Discord implements Closeable {
 			
 			jda.getTextChannelById(CHANNEL_BOT_ACTIVITY)
 				.sendMessage(msgData.build())
+				.setSuppressEmbeds(true)
 				.queue();
 		} catch(Exception e2) {
 			log.error("Failed to report error to discord", e2);
@@ -162,6 +159,7 @@ public class Discord implements Closeable {
 			init();
 			jda.getTextChannelById(CHANNEL_BOT_ACTIVITY)
 				.sendMessage(messageHeader(bot).append(msg).toString())
+				.setSuppressEmbeds(true)
 				.queue();
 		} catch(Exception e) {
 			reportException(bot, e);

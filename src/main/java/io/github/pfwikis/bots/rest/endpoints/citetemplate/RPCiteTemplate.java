@@ -20,6 +20,7 @@ import java.util.concurrent.ExecutionException;
 import com.beust.jcommander.Parameters;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.primitives.Ints;
 
 import io.github.pfwikis.bots.common.api.model.PageTitle;
 import io.github.pfwikis.bots.common.api.responses.SemanticSubject;
@@ -79,7 +80,7 @@ public class RPCiteTemplate extends RPEndpoint<RPCiteParam> {
 				.authors(sortAuthors(subject))
 				.releaseYear("unknown".equals(subject.get(Release_year))
 						?null
-						:Integer.parseInt(subject.get(Release_year))
+						:Ints.tryParse(subject.get(Release_year))
 				)
 				.webCitation(subject.get(Fact_type).contains(SModel.WEB_CITATION.getFactType()))
 				.build();
