@@ -1,13 +1,15 @@
 package io.github.pfwikis.bots.common.api;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.Callable;
 
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.ClassicHttpRequest;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
@@ -29,6 +31,7 @@ import io.github.pfwikis.bots.common.api.responses.AAPIWrappedResponse;
 import io.github.pfwikis.bots.common.api.responses.IResponse;
 import io.github.pfwikis.bots.common.api.responses.QueryResponse;
 import io.github.pfwikis.bots.utils.Jackson;
+import io.github.pfwikis.bots.utils.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -111,18 +114,7 @@ public class AAPI {
 			
 			var completeRequest = request.build(); 
 			
-			String json = null;
-			try {
-				json = client.<String>execute(completeRequest, resp->{
-					String content = EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
-					if(resp.getCode()<300)
-						return content;
-					else
-						throw new AAPIException("Status "+resp.getCode()+", Content:\n"+content);
-				});
-			} catch(IOException e) {
-				throw new AAPIException("Failed to connect to wiki", e);
-			}
+			String json = requestWithRetry(completeRequest);
 			
 			var wrapper = Jackson.JSON.readValue(json, AAPIWrappedResponse.class);
 			//print warnings
@@ -146,6 +138,28 @@ public class AAPI {
 		}
 	}
 	
+	private static final Duration RETRY_DURATION = Duration.ofSeconds(30);
+	private String requestWithRetry(ClassicHttpRequest request) {
+		Callable<String> act = () -> client.<String>execute(request, resp->{
+			String content = EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
+			if(resp.getCode()<300)
+				return content;
+			else
+				throw new AAPIException("Status "+resp.getCode()+", Content:\n"+content);
+		});
+		try {
+			return act.call();
+		} catch(Exception first) {
+			try {
+				return Retry.forDuration(act, RETRY_DURATION, 5);
+			} catch(Exception e) {
+				var res = new RuntimeException("Failed after retrying", first);
+				res.addSuppressed(e);
+				throw res;
+			}
+		}
+	}
+
 	private static record RawRequestResult(AAPIWrappedResponse response, JsonNode result) {}
 	public static record RequestResult<T>(AAPIWrappedResponse response, T result) {}
 	
