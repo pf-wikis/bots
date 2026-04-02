@@ -13,6 +13,7 @@ import io.github.pfwikis.bots.common.api.model.PageTitle;
 import io.github.pfwikis.bots.facts.SFactsProperties;
 import io.github.pfwikis.bots.facts.model.SPropertyGroup.SPropertyGroupBuilder;
 import io.github.pfwikis.bots.utils.Jackson;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.Value;
 import lombok.With;
@@ -49,8 +50,8 @@ public class SConcept {
 		@Setter
 		private List<SPropertyGroup> propertyGroups = Collections.emptyList();
 		private List<SInfoboxProperty<?>> infoboxProperties = Collections.emptyList();
-		@Setter
-		private List<SConcept> subConcepts = Collections.emptyList();
+		@Setter @Getter
+		private List<SConcept.Builder> subConcepts = Collections.emptyList();
 		
 		public Builder properties(SPropertyGroup.SPropertyGroupBuilder... propertyGroups) {
 			this.propertyGroups=Arrays.stream(propertyGroups).map(SPropertyGroupBuilder::build).toList();
@@ -59,7 +60,7 @@ public class SConcept {
 		
 		@Tolerate
 		public Builder subConcepts(SConcept.Builder... subs) {
-			this.subConcepts=List.of(subs).stream().map(Builder::build).toList();
+			this.subConcepts=List.of(subs);
 			return this;
 		}
 		
@@ -75,15 +76,20 @@ public class SConcept {
 		}
 		
 		public SConcept build() {
+			return this.build(null);
+		}
+		
+		private SConcept build(SConcept parent) {
 			var gens = new ArrayList<SProperty<?>>();
+			var builtSubConcepts = new ArrayList<SConcept>();
 			
 			var c = new SConcept(
 				name,
 				pluralName,
-				PageTitle.of(NS.TEMPLATE, "Facts/"+name),
+				PageTitle.of(NS.TEMPLATE, parent!=null?(parent.getFactType().getName()+"/"+name):("Facts/"+name)),
 				merges,
 				propertyGroups,
-				subConcepts,
+				builtSubConcepts,
 				infoboxProperties,
 				gens
 			);
@@ -93,13 +99,11 @@ public class SConcept {
 			gens.add(SFactsProperties.Fact_type.withGenerateWikitext(factType));
 			for(var propG:propertyGroups) {
 				for(var prop:propG.getProperties())
-					gens.addAll(prop.generateProperties(c, null));
+					gens.addAll(prop.generateProperties(c, parent));
 			}
+			
 			for(var sub:subConcepts) {
-				for(var propG:sub.propertyGroups) {
-					for(var prop:propG.getProperties())
-						sub.getGeneratedProperties().addAll(prop.generateProperties(sub, c));
-				}
+				builtSubConcepts.add(sub.build(c));
 			}
 			
 			return c;

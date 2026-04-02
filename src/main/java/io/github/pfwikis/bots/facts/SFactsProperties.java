@@ -1,6 +1,7 @@
 package io.github.pfwikis.bots.facts;
 
 import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
 import java.time.temporal.Temporal;
 import java.util.Collections;
 import java.util.Comparator;
@@ -339,7 +340,11 @@ public class SFactsProperties {
 		.setDescription("The programmer working on this product.");
 	public static final SProperty<String> Pubcode = new SProperty<>(
 		"Pubcode",
-		SFactTypes.STRING)
+		SFactTypes.STRING) {
+			public List<SProperty<?>> generateProperties(SConcept c, SConcept parent) {
+				return List.of(Ratings);
+			}
+		}
 		.setAutocompleteDisabled(true)
 		.setFormNote("e.g. PZO9500-HC")
 		.setDescription("The publisher's product code for this release. Typically a Paizo pubcode.");
@@ -353,6 +358,11 @@ public class SFactsProperties {
 		"Quantity",
 		SFactTypes.STRING)
 		.setDescription("The number of elements included in the product.");
+	public static final SProperty<BigDecimal> Ratings = new SProperty<>(
+		"Ratings",
+		SFactTypes.DECIMAL)
+		.setDescription("The rating of the product in the paizo store.")
+		.setGenerateWikitext("{{#if:{{{Pubcode|}}}|{{Paizo store|ratings|{{{Pubcode}}}}}}}");
 	public static final SProperty<List<PageTitle>> Region = new SProperty<>(
 		"Region",
 		SFactTypes.PAGE_LIST)

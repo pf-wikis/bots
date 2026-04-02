@@ -3,6 +3,7 @@ package io.github.pfwikis.bots.facts.model;
 import static io.github.pfwikis.bots.facts.SUtilProperties.Order;
 import static io.github.pfwikis.bots.facts.SUtilProperties.Ordered_value;
 
+import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 import java.util.List;
@@ -30,6 +31,26 @@ public class SFactTypes {
 				return "|input type=text";
 			return "|input type=combobox";
 		}
+	};
+	public static final SFactType<BigDecimal> DECIMAL = new SFactType<>(
+			"DECIMAL",
+			SMWPropertyType.NUMBER,
+			"number",
+			"$v"
+	) {
+		@Override
+		protected String configureFormField(SProperty<?> prop) {
+			return "|input type=text";
+		}
+		
+		public BigDecimal convertToJava(List<Object> values) {
+			if(values == null || values.isEmpty())
+				return null;
+			var val = (Number)values.getFirst();
+			if(val instanceof Integer i)
+				return BigDecimal.valueOf(i);
+			return (BigDecimal)val;
+		};
 	};
 	public static final SFactType<String> KEYWORD = new SFactType<>(
 			"KEYWORD",

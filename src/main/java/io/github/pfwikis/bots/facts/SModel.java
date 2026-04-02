@@ -117,7 +117,7 @@ public class SModel {
 				Image
 			);
 
-	public static final SConcept BOOK = SConcept.builder()
+	public static final SConcept.Builder BOOK_BUILDER = SConcept.builder()
 		.name("Book")
 		.pluralName("Books")
 		.properties(
@@ -247,8 +247,9 @@ public class SModel {
 						.build(),
 					Price
 				)
-		)
-		.build();
+		);
+	public static final SConcept BOOK = BOOK_BUILDER.build();
+	
 	public static final SConcept ACCESSORY = SConcept.builder()
 			.name("Accessory")
 			.pluralName("Accessories")
@@ -790,7 +791,7 @@ public class SModel {
 			.pluralName("Single book adventure paths")
 			.merges(List.of(ADVENTURE_PATH, BOOK))
 			.infoboxProperties(BOOK.getInfoboxProperties().toArray())
-			.subConcepts(BOOK.getSubConcepts())
+			.subConcepts(BOOK_BUILDER.subConcepts())
 			.propertyGroups(props)
 			.build();
 		

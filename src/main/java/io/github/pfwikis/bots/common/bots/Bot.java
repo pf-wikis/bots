@@ -92,7 +92,7 @@ public abstract class Bot<RUN extends Run> {
 	private MDCCloseable flavorLog() {
 		if(run instanceof SingleRun sr)
 			return MDC.putCloseable(Runner.MDC_KEY, sr.getServer().getCode());
-		else if (run instanceof DualRun dr)
+		else if (run instanceof DualRun)
 			return MDC.putCloseable(Runner.MDC_KEY, "dual");
 		return MDC.putCloseable(Runner.MDC_KEY, Runner.MDC_VALUE_NONE);
 	}

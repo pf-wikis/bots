@@ -54,6 +54,16 @@
 				</div>
 			</div>
 		}
+		<div class="facts-display-group group-automatic-properties">
+			<div class="facts-display-group-label">Automatic properties</div>
+			<div class="facts-display-group-content">
+			@for(gen:c.getGeneratedProperties()) {
+				@DisplayTemplateField.template(gen) -> {
+					@gen.wikitextToDisplayFact()
+				}
+			}
+			</div>
+		</div>
 	</div>[[Category:Facts about @parent.getName() @c.getPluralName()]]
 }}
 
@@ -66,9 +76,11 @@
 		@prop.wikitextBeforeStoringFact()
 	}
 	{{#subobject:
-		|Fact type=Template:Facts/@parent.getName()/@c.getName()
 		@for(prop:c.allProperties()) {
 			|@prop.getName()=@prop.wikitextToStoreFact()
+		}
+		@for(gen:c.getGeneratedProperties()) {
+			|@gen.getName()=@gen.wikitextToStoreFact()
 		}
 		|@@sortkey={{#counter: @c.getName()-counter | pad length=3 }}
 	}}

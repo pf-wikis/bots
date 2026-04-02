@@ -44,7 +44,7 @@ public class GraphQLResponse {
 	
 	@Data
 	public static class Product {
-		private long entiotyId;
+		private long entityId;
 		private String name;
 		private String sku;
 		private String description;

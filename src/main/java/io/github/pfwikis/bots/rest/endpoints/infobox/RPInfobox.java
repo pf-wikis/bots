@@ -10,7 +10,6 @@ import io.github.pfwikis.bots.facts.SModel;
 import io.github.pfwikis.bots.facts.model.SConcept;
 import io.github.pfwikis.bots.rest.RPEndpoint;
 import io.github.pfwikis.bots.rest.RestProviderBot;
-import io.github.pfwikis.bots.utils.Jackson;
 import io.github.pfwikis.bots.utils.RockerHelper;
 import lombok.Getter;
 

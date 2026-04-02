@@ -1,6 +1,7 @@
 package io.github.pfwikis.bots.paizoretriever;
 
 import java.io.IOException;
+import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Collections;
@@ -9,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -32,6 +34,7 @@ import io.github.pfwikis.bots.common.api.model.PageTitle;
 import io.github.pfwikis.bots.common.bots.DualBot;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.paizoretriever.PZCategoryResponse.PZCategory;
+import io.github.pfwikis.bots.paizoretriever.RatingsModel.Bottomline;
 import io.github.pfwikis.bots.paizoretriever.State.Props;
 import io.github.pfwikis.bots.utils.Jackson;
 import lombok.Getter;
@@ -76,6 +79,10 @@ public class PaizoRetriever extends DualBot {
 		try {
 			
 			try(var client = HttpClients.custom().build()) {
+				//get ratings
+				var ratings = getRatings(client);
+				
+				
 				//get token
 				var html = client.execute(ClassicRequestBuilder.get()
 						.setUri("https://store.paizo.com")
@@ -114,9 +121,10 @@ public class PaizoRetriever extends DualBot {
 						log.info("Collecting products from category '{}'", c.getName());
 						String page = null;
 						do {
-							page = collectResponses(client, baseRequest, state, c, page);
+							page = collectResponses(client, baseRequest, state, ratings, c, page);
 						} while(page != null);
 					});
+				
 			}
 		
 		} catch(Exception e) {
@@ -135,6 +143,11 @@ public class PaizoRetriever extends DualBot {
 	private static final List<PageDef> pageDefs = List.of(
 		new PageDef("URL", p->"https://store.paizo.com"+p.getUrl()),
 		//new PageDef("name", Props::getName),
+		new PageDef("ratings", p->(p.getRatings()==null||p.getRatings().getTotalReviews()<20)?null:(
+			p.getRatings().getAverageScore()
+				.setScale(1, RoundingMode.HALF_UP)
+				.toString()
+		)),
 		new PageDef("price", Props::getPrice),
 		new PageDef("upc", p->checkIsbn(p.getUpc()))
 	);
@@ -276,7 +289,7 @@ public class PaizoRetriever extends DualBot {
 	}
 
 	@SneakyThrows
-	private String collectResponses(CloseableHttpClient client, ClassicHttpRequest baseRequest, State state, PZCategory category, String page) {
+	private String collectResponses(CloseableHttpClient client, ClassicHttpRequest baseRequest, State state, Map<Long, Bottomline> ratings, PZCategory category, String page) {
 		log.info("Querying paizo category '{}' store page '{}'", category.getName(), page);
 		//for the structure see https://developer.bigcommerce.com/graphql-storefront/explorer
 		var query = """
@@ -325,7 +338,7 @@ public class PaizoRetriever extends DualBot {
 			var resp = graphQLRequest(client, baseRequest, query, GraphQLResponse.class);
 			var products = resp.getData().getSite().getCategory().getProducts();
 			
-			products.getEdges().forEach(e->state.addEntries(e.getNode()));
+			products.getEdges().forEach(e->state.addEntries(e.getNode(), ratings.get(e.getNode().getEntityId())));
 			
 			if(products.getPageInfo().isHasNextPage()) {
 				Uninterruptibles.sleepUninterruptibly(SLEEP);
@@ -334,6 +347,29 @@ public class PaizoRetriever extends DualBot {
 			return null;
 	}
 	
+	private Map<Long, Bottomline> getRatings(CloseableHttpClient client) throws IOException {
+		int page = 1;
+		var res = new HashMap<Long, Bottomline>(10000);
+		
+		while(true) {
+			Uninterruptibles.sleepUninterruptibly(20, TimeUnit.MILLISECONDS);
+			var request = ClassicRequestBuilder.get("https://api-cdn.yotpo.com/v3/storefront/stores/ujyp9JyBJ1nHHMH3CsFH0TdTiitkHjL8iyX1Smwj/ratings?perPage=10&page="+page).build();
+			page++;
+			log.info("Getting ratings page {}", page);
+			var json = client.<String>execute(request, resp->{
+				String content = EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
+				if(resp.getCode()<300)
+					return content;
+				else
+					throw new IOException("Status "+resp.getCode()+", Content:\n"+content);
+			});
+			var resp = Jackson.JSON.readValue(json, RatingsModel.class);
+			if(resp.getResponse().getBottomlines().isEmpty()) break;
+			resp.getResponse().getBottomlines().forEach(b->res.put(Long.parseLong(b.getProductId()), b));
+		}
+		return res;
+	}
+
 	private <T> T graphQLRequest(CloseableHttpClient client, ClassicHttpRequest baseRequest, String query, Class<T> type) throws IOException {
 		var request = ClassicRequestBuilder.copy(baseRequest)
 				.setEntity(new StringEntity(Jackson.JSON.writeValueAsString(Map.of("query", query)), ContentType.APPLICATION_JSON))

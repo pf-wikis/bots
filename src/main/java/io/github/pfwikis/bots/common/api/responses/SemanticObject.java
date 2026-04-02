@@ -27,8 +27,9 @@ public interface SemanticObject {
 	String internalName();
 
 	default <T> T getOr(SProperty<T> prop, T defaultValue) {
+		var name = prop.getName().replace(" ", "_");
 		var values = getData().stream()
-				.filter(p->p.getProperty().equals(prop.getName().replace(" ", "_")))
+				.filter(p->p.getProperty().equals(name))
 				.collect(MoreCollectors.toOptional())
 				.map(op->op.getDataitem())
 				.orElse(Collections.emptyList());

@@ -4,7 +4,6 @@ import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 
-import io.github.pfwikis.bots.common.WikiAPI;
 import io.github.pfwikis.bots.utils.Jackson;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

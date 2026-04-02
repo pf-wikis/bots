@@ -4,7 +4,6 @@ import static io.github.pfwikis.bots.facts.SFactsProperties.On_page;
 
 import java.util.List;
 
-import io.github.pfwikis.bots.common.WikiAPI;
 import io.github.pfwikis.bots.common.api.model.PageTitle;
 import io.github.pfwikis.bots.common.api.responses.SemanticSubject;
 import io.github.pfwikis.bots.facts.model.SProperty;

@@ -20,8 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 @Parameters
 public class AssistantTaskGiver extends SimpleBot {
 	
-	private boolean taskDone = false;
-
 	public AssistantTaskGiver() {
 		super("assistant-task-giver", "Assistant");
 	}

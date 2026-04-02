@@ -1,5 +1,6 @@
 package io.github.pfwikis.bots.paizoretriever;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.TreeMap;
 
@@ -15,7 +16,7 @@ import lombok.Setter;
 public class State {
 	private TreeMap<String, Entry> values = new TreeMap<>();
 
-	public void addEntries(Product p) {
+	public void addEntries(Product p, RatingsModel.Bottomline ratings) {
 		
 		for(var variantEdge:p.getVariants().getEdges()) {
 			var v = variantEdge.getNode();
@@ -30,6 +31,12 @@ public class State {
 			n.name = p.getName();
 			n.url = p.getPath();
 			n.upc = v.getUpc()==null?p.getUpc():v.getUpc();
+			if(ratings != null && ratings != null) {
+				n.ratings = new Ratings(
+					ratings.getTotalReviews(),
+					ratings.getAverageScore()
+				);
+			}
 			
 			var old = values.get(n.sku);
 			var lastChanged = Instant.now();
@@ -61,12 +68,21 @@ public class State {
 		private String price;
 		private String upc;
 		private String url;
+		private Ratings ratings;
 		
 		public void mergeOld(Props old) {
 			if(StringUtils.isAllBlank(name)) name = old.name;
 			if(StringUtils.isAllBlank(price)) price = old.price;
 			if(StringUtils.isAllBlank(upc)) upc = old.upc;
 			if(StringUtils.isAllBlank(url)) url = old.url;
+			if(ratings == null) ratings = old.ratings;
 		}
+	}
+	
+	@Data
+	@AllArgsConstructor
+	public static class Ratings {
+		private int totalReviews;
+		private BigDecimal averageScore;
 	}
 }
