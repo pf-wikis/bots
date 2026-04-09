@@ -64,7 +64,12 @@
 			}
 			</div>
 		</div>
-	</div>[[Category:Facts about @parent.getName() @c.getPluralName()]]
+	</div>
+	
+	[[Category:Facts about @parent.getName() @c.getPluralName()]]
+	@for(m:parent.getMerges()) {
+		[[Category:Facts about @m.getName()  @c.getPluralName()]]
+	}
 }}
 
 

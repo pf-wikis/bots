@@ -10,14 +10,14 @@ import io.github.pfwikis.bots.facts.model.SConcept;
 public class CiteUtil {
 
 	private static Set<PageTitle> TYPES_WITH_CITE = Set.of(
-		SModel.ACCESSORY.getFactType(),
-		SModel.BOOK.getFactType(),
+		SModel.ACCESSORY.getPrimaryFactType(),
+		SModel.BOOK.getPrimaryFactType(),
+		SModel.SINGLE_BOOK_AP.getPrimaryFactType(),
 		PageTitle.of("Template:Facts/Map"),
-		SModel.DECK.getFactType(),
-		PageTitle.of("Template:Facts/Single book adventure path"),
-		SModel.VIDEO_GAME.getFactType(),
-		SModel.WEB_CITATION.getFactType(),
-		SModel.MINIATURES.getFactType()
+		SModel.DECK.getPrimaryFactType(),
+		SModel.VIDEO_GAME.getPrimaryFactType(),
+		SModel.WEB_CITATION.getPrimaryFactType(),
+		SModel.MINIATURES.getPrimaryFactType()
 	);
 	
 	public static boolean isCiteable(Collection<PageTitle> types) {
@@ -32,6 +32,6 @@ public class CiteUtil {
 	}
 
 	public static boolean isCiteable(SConcept c) {
-		return TYPES_WITH_CITE.contains(c.getFactType());
+		return TYPES_WITH_CITE.contains(c.getPrimaryFactType());
 	}
 }

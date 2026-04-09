@@ -134,7 +134,7 @@ public class MapSearchPage extends SimpleBot {
 				var height = bottom-top;
 				
 				sb
-					.append("|")
+					.append("\n|")
 					.append(e.key)
 					.append("=")
 					.append(new BigDecimal(width/height).setScale(2,RoundingMode.HALF_UP).toPlainString());
@@ -168,7 +168,7 @@ public class MapSearchPage extends SimpleBot {
 		for(var cat:categories) {
 			for(var e:cat.entries) {
 				sb
-					.append("|")
+					.append("\n|")
 					.append(e.key)
 					.append("=")
 					.append(Arrays.stream(e.bbox)

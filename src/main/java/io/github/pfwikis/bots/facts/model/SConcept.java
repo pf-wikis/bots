@@ -27,8 +27,8 @@ public class SConcept {
 	
 	String name;
 	String pluralName;
-	PageTitle factType;
-	@With
+	PageTitle primaryFactType;
+	List<PageTitle> allFactTypes;
 	List<SConcept> merges;
 	List<SPropertyGroup> propertyGroups;
 	List<SConcept> subConcepts;
@@ -83,10 +83,30 @@ public class SConcept {
 			var gens = new ArrayList<SProperty<?>>();
 			var builtSubConcepts = new ArrayList<SConcept>();
 			
+			PageTitle primFactType = null;
+			List<PageTitle> factTypes = new ArrayList<>();
+			if(parent != null) {
+				primFactType = PageTitle.of(NS.TEMPLATE, parent.getPrimaryFactType().getName()+"/"+name);
+				for(var p:parent.getAllFactTypes()) {
+					factTypes.add(PageTitle.of(NS.TEMPLATE, p.getName()+"/"+name));
+					for(var m:merges) {
+						factTypes.add(PageTitle.of(NS.TEMPLATE, p.getName()+"/"+m.getName()));
+					}
+				}
+			}
+			else {
+				primFactType = PageTitle.of(NS.TEMPLATE, "Facts/"+name);
+				factTypes.add(primFactType);
+				for(var m:merges) {
+					factTypes.add(m.getPrimaryFactType());
+				}
+			}
+			
 			var c = new SConcept(
 				name,
 				pluralName,
-				PageTitle.of(NS.TEMPLATE, parent!=null?(parent.getFactType().getName()+"/"+name):("Facts/"+name)),
+				primFactType,
+				factTypes,
 				merges,
 				propertyGroups,
 				builtSubConcepts,
@@ -94,9 +114,7 @@ public class SConcept {
 				gens
 			);
 			
-			String factType = c.getFactType().toString()
-				+ merges.stream().map(m->";"+m.getFactType()).collect(Collectors.joining());
-			gens.add(SFactsProperties.Fact_type.withGenerateWikitext(factType));
+			gens.add(SFactsProperties.Fact_type.withGenerateWikitext(c.getAllFactTypes().stream().map(PageTitle::toString).collect(Collectors.joining(";"))));
 			for(var propG:propertyGroups) {
 				for(var prop:propG.getProperties())
 					gens.addAll(prop.generateProperties(c, parent));

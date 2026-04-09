@@ -32,7 +32,7 @@ public class SemanticSubject extends AnyJson implements SemanticObject, Comparab
 	
 	public boolean hasConcept(SConcept concept) {
 		if(!has(Fact_type)) return false;
-		return get(Fact_type).contains(concept.getFactType());
+		return get(Fact_type).contains(concept.getPrimaryFactType());
 	}
 	
 	public List<SemanticSubject> getSubObjectsBySuffix(String factTypeSuffix) {

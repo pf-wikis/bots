@@ -82,7 +82,7 @@ public class RPCiteTemplate extends RPEndpoint<RPCiteParam> {
 						?null
 						:Ints.tryParse(subject.get(Release_year))
 				)
-				.webCitation(subject.get(Fact_type).contains(SModel.WEB_CITATION.getFactType()))
+				.webCitation(subject.get(Fact_type).contains(SModel.WEB_CITATION.getPrimaryFactType()))
 				.build();
 			
 			var rawSections = subject.getSubObjectsBySuffix("/Section");

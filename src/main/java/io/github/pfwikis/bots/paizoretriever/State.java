@@ -2,6 +2,7 @@ package io.github.pfwikis.bots.paizoretriever;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Objects;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
@@ -45,7 +46,9 @@ public class State {
 				if(old.getProperties().equals(n))
 					continue;
 				created = old.created;
-				n.mergeOld(old.properties);
+				if(!n.mergeOld(old.properties)) {
+					lastChanged = old.lastChanged;
+				}
 			}
 			
 			var e = new Entry(lastChanged, created, n);
@@ -70,12 +73,18 @@ public class State {
 		private String url;
 		private Ratings ratings;
 		
-		public void mergeOld(Props old) {
+		public boolean mergeOld(Props old) {
 			if(StringUtils.isAllBlank(name)) name = old.name;
 			if(StringUtils.isAllBlank(price)) price = old.price;
 			if(StringUtils.isAllBlank(upc)) upc = old.upc;
 			if(StringUtils.isAllBlank(url)) url = old.url;
 			if(ratings == null) ratings = old.ratings;
+			
+			return !Objects.equals(name, old.name)
+				|| !Objects.equals(price, old.price)
+				|| !Objects.equals(upc, old.upc)
+				|| !Objects.equals(url, old.url)
+				|| !Objects.equals(ratings, old.ratings);
 		}
 	}
 	

@@ -333,6 +333,7 @@ public class SModel {
 		.build();
 	public static final SConcept MAP_SF;
 	public static final SConcept MAP_PF;
+	public static final SConcept SINGLE_BOOK_AP;
 	static {
 		var contributors = SPropertyGroup.builder()
 			.name("Contributors")
@@ -746,6 +747,7 @@ public class SModel {
 	
 	private static final EnumMap<Wiki, List<SConcept>> CONCEPTS;
 	static {
+		SINGLE_BOOK_AP = SINGLE_BOOK_AP();
 		CONCEPTS = new EnumMap<>(Wiki.class);
 		var shared = Lists.newArrayList(
 			BOOK,
@@ -757,9 +759,9 @@ public class SModel {
 			WEB_CITATION,
 			ADVENTURE_PATH,
 			SERIES,
-			BOARD_GAME
+			BOARD_GAME,
+			SINGLE_BOOK_AP
 		);
-		shared.add(SINGLE_BOOK_AP());
 		
 		for(var wiki:Wiki.values()) {
 			var l = Lists.newArrayList(shared);
