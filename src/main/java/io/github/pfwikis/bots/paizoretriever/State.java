@@ -32,7 +32,7 @@ public class State {
 			n.name = p.getName();
 			n.url = p.getPath();
 			n.upc = v.getUpc()==null?p.getUpc():v.getUpc();
-			if(ratings != null && ratings != null) {
+			if(ratings != null && ratings.getTotalReviews() > 0) {
 				n.ratings = new Ratings(
 					ratings.getTotalReviews(),
 					ratings.getAverageScore()
@@ -78,7 +78,7 @@ public class State {
 			if(StringUtils.isAllBlank(price)) price = old.price;
 			if(StringUtils.isAllBlank(upc)) upc = old.upc;
 			if(StringUtils.isAllBlank(url)) url = old.url;
-			if(ratings == null) ratings = old.ratings;
+			if(ratings == null && old.ratings!=null && old.ratings.getTotalReviews() > 0) ratings = old.ratings;
 			
 			return !Objects.equals(name, old.name)
 				|| !Objects.equals(price, old.price)
