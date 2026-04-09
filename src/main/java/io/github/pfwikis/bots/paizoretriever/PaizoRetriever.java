@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -73,8 +74,10 @@ public class PaizoRetriever extends DualBot {
 
 	@Override
 	public void run(RunContext ctx) throws Exception {
-		var originalState = run.getPfWiki().getWikitext(STATE_PAGE).trim();
-		State state = Jackson.JSON.readValue(originalState, State.class);
+		var originalState = run.getPfWiki().getWikitext(STATE_PAGE);
+		var originalJson = Jackson.JSON.readTree(originalState);
+		State state = Jackson.JSON.treeToValue(originalJson, State.class);
+		var now = Instant.now();
 
 		try {
 			
@@ -121,7 +124,7 @@ public class PaizoRetriever extends DualBot {
 						log.info("Collecting products from category '{}'", c.getName());
 						String page = null;
 						do {
-							page = collectResponses(client, baseRequest, state, ratings, c, page);
+							page = collectResponses(client, baseRequest, state, ratings, c, page, now);
 						} while(page != null);
 					});
 				
@@ -130,9 +133,9 @@ public class PaizoRetriever extends DualBot {
 		} catch(Exception e) {
 			log.error("Failed paizo crawling", e);
 		} finally {
-			var newState = Jackson.JSON.writeValueAsString(state);
-			if(!newState.equals(originalState)) {
-				run.getPfWiki().edit(STATE_PAGE, newState, "Automatic update from paizo store");
+			var newState = Jackson.JSON.valueToTree(state);
+			if(!newState.equals(originalJson)) {
+				run.getPfWiki().edit(STATE_PAGE, Jackson.JSON.writeValueAsString(newState), "Automatic update from paizo store");
 			}
 		}
 		
@@ -289,7 +292,7 @@ public class PaizoRetriever extends DualBot {
 	}
 
 	@SneakyThrows
-	private String collectResponses(CloseableHttpClient client, ClassicHttpRequest baseRequest, State state, Map<Long, Bottomline> ratings, PZCategory category, String page) {
+	private String collectResponses(CloseableHttpClient client, ClassicHttpRequest baseRequest, State state, Map<Long, Bottomline> ratings, PZCategory category, String page, Instant now) {
 		log.info("Querying paizo category '{}' store page '{}'", category.getName(), page);
 		//for the structure see https://developer.bigcommerce.com/graphql-storefront/explorer
 		var query = """
@@ -338,7 +341,7 @@ public class PaizoRetriever extends DualBot {
 			var resp = graphQLRequest(client, baseRequest, query, GraphQLResponse.class);
 			var products = resp.getData().getSite().getCategory().getProducts();
 			
-			products.getEdges().forEach(e->state.addEntries(e.getNode(), ratings.get(e.getNode().getEntityId())));
+			products.getEdges().forEach(e->state.addEntries(e.getNode(), ratings.get(e.getNode().getEntityId()), now));
 			
 			if(products.getPageInfo().isHasNextPage()) {
 				Uninterruptibles.sleepUninterruptibly(SLEEP);

@@ -7,17 +7,21 @@ import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.common.math.LongMath;
+
 import io.github.pfwikis.bots.paizoretriever.GraphQLResponse.Product;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Getter @Setter
 public class State {
 	private TreeMap<String, Entry> values = new TreeMap<>();
 
-	public void addEntries(Product p, RatingsModel.Bottomline ratings) {
+	public void addEntries(Product p, RatingsModel.Bottomline ratings, Instant now) {
 		
 		for(var variantEdge:p.getVariants().getEdges()) {
 			var v = variantEdge.getNode();
@@ -40,7 +44,7 @@ public class State {
 			}
 			
 			var old = values.get(n.sku);
-			var lastChanged = Instant.now();
+			var lastChanged = now;
 			var created = lastChanged;
 			if(old != null) {
 				if(old.getProperties().equals(n))
@@ -48,6 +52,9 @@ public class State {
 				created = old.created;
 				if(!n.mergeOld(old.properties)) {
 					lastChanged = old.lastChanged;
+				}
+				else {
+					log.info("{} changed", n.getSku());
 				}
 			}
 			
@@ -93,5 +100,21 @@ public class State {
 	public static class Ratings {
 		private int totalReviews;
 		private BigDecimal averageScore;
+		
+		public boolean equals(Object o) {
+			if(o instanceof Ratings or) {
+				return totalReviews == or.totalReviews
+					&& averageScore.doubleValue() == or.averageScore.doubleValue();
+			}
+			return false;
+		}
+		
+		@Override
+		public int hashCode() {
+			return LongMath.mod(
+				Double.doubleToLongBits(averageScore.doubleValue()*totalReviews),
+				Integer.MAX_VALUE
+			);
+		}
 	}
 }
