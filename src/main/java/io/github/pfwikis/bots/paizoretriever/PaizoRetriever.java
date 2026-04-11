@@ -1,6 +1,7 @@
 package io.github.pfwikis.bots.paizoretriever;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -146,10 +147,13 @@ public class PaizoRetriever extends DualBot {
 	private static final List<PageDef> pageDefs = List.of(
 		new PageDef("URL", p->"https://store.paizo.com"+p.getUrl()),
 		//new PageDef("name", Props::getName),
-		new PageDef("ratings", p->(p.getRatings()==null||p.getRatings().getTotalReviews()<20)?null:(
+		new PageDef("ratings", p->(p.getRatings()==null||p.getRatings().getTotalReviews()<10)?null:(
 			p.getRatings().getAverageScore()
 				.setScale(1, RoundingMode.HALF_UP)
 				.toString()
+		)),
+		new PageDef("number of ratings", p->(p.getRatings()==null||p.getRatings().getTotalReviews()<10)?null:(
+			Integer.toString(p.getRatings().getTotalReviews())
 		)),
 		new PageDef("price", Props::getPrice),
 		new PageDef("upc", p->checkIsbn(p.getUpc()))
