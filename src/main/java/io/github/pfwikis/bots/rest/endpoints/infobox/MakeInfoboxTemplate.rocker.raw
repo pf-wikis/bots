@@ -3,6 +3,7 @@
 @import java.util.Set
 @import java.util.List
 @import java.util.Map
+@import java.math.BigDecimal
 @import java.util.Comparator
 @import io.github.pfwikis.bots.common.api.responses.SemanticSubject
 @import io.github.pfwikis.bots.facts.model.SConcept
@@ -40,11 +41,11 @@
 			</div>
 		}
 		<div class="type@if(page.has(Sanctioned)){@*important space*@ sanctioned}">
-			@concept.getName()
-			@for(prop:concept.allProperties()) {
-				@if(prop.getName().endsWith(" type") && page.has(prop)) {
-					@*important space->*@ - @((String)page.get(prop))
-				}
+			@if(concept.typeProp() != null && page.has(concept.typeProp())) {
+				@page.get(concept.typeProp())
+			}
+			else {
+				@concept.getName()
 			}
 			@if(page.has(Sanctioned)){
 				<div class="
@@ -63,6 +64,15 @@
 						sanctioned for Society play.
 					]]
 				</div>
+			}
+			@if(page.has(Ratings)) {
+				<br><span class="rating" title="@page.get(Ratings)" style="--ratings:@page.get(Ratings).multiply(BigDecimal.valueOf(20)).intValue()%">
+					<i class="fa-solid fa-star"></i>
+					<i class="fa-solid fa-star"></i>
+					<i class="fa-solid fa-star"></i>
+					<i class="fa-solid fa-star"></i>
+					<i class="fa-solid fa-star"></i>
+				</span>
 			}
 		</div>
 		<div class="table">

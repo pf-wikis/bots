@@ -14,6 +14,7 @@ import io.github.pfwikis.bots.facts.SFactsProperties;
 import io.github.pfwikis.bots.facts.model.SPropertyGroup.SPropertyGroupBuilder;
 import io.github.pfwikis.bots.utils.Jackson;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.Value;
 import lombok.With;
@@ -164,5 +165,13 @@ public class SConcept {
 			.set("params", params)
 			.set("paramOrder", Jackson.JSON.valueToTree(paramOrder))
 			.put("format", "block"));
+	}
+
+	public SProperty<String> typeProp() {
+		for(var p:allProperties()) {
+			if(p.getName().endsWith(" type"))
+				return (SProperty<String>) p;
+		}
+		return null;
 	}
 }

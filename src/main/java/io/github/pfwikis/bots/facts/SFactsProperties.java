@@ -342,7 +342,15 @@ public class SFactsProperties {
 		"Pubcode",
 		SFactTypes.STRING) {
 			public List<SProperty<?>> generateProperties(SConcept c, SConcept parent) {
-				return List.of(Ratings);
+				if(parent != null) {
+					parent.getGeneratedProperties().add(Ratings
+						.withGenerateWikitext("{{#ask:[[Fact type::"+c.getPrimaryFactType()+"]]"
+							+"[[-Has subobject::{{FULLPAGENAME}}]][[Pubcode::+]]"
+							+"|?Ratings=|format=plainlist|mainlabel=-|default=|searchlabel="
+							+"|sort=Number of ratings|order=desc|limit=1}}"
+					));
+				}
+				return List.of(Ratings, Number_of_ratings);
 			}
 		}
 		.setAutocompleteDisabled(true)
@@ -363,6 +371,11 @@ public class SFactsProperties {
 		SFactTypes.DECIMAL)
 		.setDescription("The rating of the product in the paizo store.")
 		.setGenerateWikitext("{{#if:{{{Pubcode|}}}|{{Paizo store|ratings|{{{Pubcode}}}}}}}");
+	public static final SProperty<BigDecimal> Number_of_ratings = new SProperty<>(
+		"Number of ratings",
+		SFactTypes.DECIMAL)
+		.setDescription("The number of ratings of the product in the paizo store.")
+		.setGenerateWikitext("{{#if:{{{Pubcode|}}}|{{Paizo store|number of ratings|{{{Pubcode}}}}}}}");
 	public static final SProperty<List<PageTitle>> Region = new SProperty<>(
 		"Region",
 		SFactTypes.PAGE_LIST)
