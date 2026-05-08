@@ -118,18 +118,9 @@ public class APIGenerator {
 	public String getJson(String url) throws IOException {
 		log.info("Downloading metadata from {}", url);
 		try (var httpClient = HttpClients.createDefault()) {
-			//TODO remove this cache
-			var cacheDir = new File("cache");
-			cacheDir.mkdirs();
-			File cache = new File(cacheDir, Math.abs(url.hashCode())+".json");
-			if(cache.exists()) {
-				String json = Files.readString(cache.toPath());
-				return json;
-			}
 			ClassicHttpRequest httpGet = ClassicRequestBuilder.get(url).build();
 			return httpClient.execute(httpGet, resp -> {
 				var json = EntityUtils.toString(resp.getEntity());
-				Files.writeString(cache.toPath(), json);
 				return json;
 			});
 		}

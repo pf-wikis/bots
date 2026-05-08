@@ -31,6 +31,14 @@ public class MapSearchPage extends SimpleBot {
 	public void run(RunContext ctx) throws IOException, InterruptedException {
 		if(run.getServer() == Wiki.SF) return;
 		
+		var categories = loadMapSearchInfo(antiProtectionSecret);
+		
+		createSearch(categories);
+		createSearchAspect(categories);
+		createArea(categories);
+	}
+	
+	public static List<Category> loadMapSearchInfo(String antiProtectionSecret) throws IOException, InterruptedException {
 		HttpClient httpClient = HttpClient.newHttpClient();
     	HttpRequest request = HttpRequest.newBuilder()
     		.header("User-Agent", antiProtectionSecret)
@@ -41,7 +49,7 @@ public class MapSearchPage extends SimpleBot {
 		var labelCounts = HashMultiset.<String>create();
 		categoriesIn.forEach(cat->cat.entries.forEach(e->labelCounts.add(e.label)));
 		
-		var categories = categoriesIn.stream()
+		return categoriesIn.stream()
 				.map(c->new Category(
 						c.category,
 						c.entries.stream()
@@ -55,11 +63,6 @@ public class MapSearchPage extends SimpleBot {
 							.toList()
 				))
 				.toList();
-		
-		
-		createSearch(categories);
-		createSearchAspect(categories);
-		createArea(categories);
 	}
 	
 	private void createArea(List<Category> categories) {
@@ -127,11 +130,11 @@ public class MapSearchPage extends SimpleBot {
 				
 				var left = WebMercator.longitudeToX(e.bbox[0].doubleValue());
 				var right = WebMercator.longitudeToX(e.bbox[2].doubleValue());
-				var top = WebMercator.latitudeToY(e.bbox[1].doubleValue());
-				var bottom = WebMercator.latitudeToY(e.bbox[3].doubleValue());
+				double bottom = WebMercator.latitudeToY(e.bbox[1].doubleValue());
+				double top = WebMercator.latitudeToY(e.bbox[3].doubleValue());
 				
 				var width = right-left;
-				var height = bottom-top;
+				var height = top-bottom;
 				
 				sb
 					.append("\n|")
@@ -183,7 +186,7 @@ public class MapSearchPage extends SimpleBot {
 		run.getWiki().editIfChange(PageRef.of(NS.TEMPLATE, "DisplayMap/Search"), sb.toString(), "Automatic update");
 	}
 
-	private String key(Multiset<String> labelCounts, String label, String category) {
+	private static String key(Multiset<String> labelCounts, String label, String category) {
 		var key = label;
 		if(labelCounts.count(label)>1) {
 			key+=";"+category;

@@ -50,6 +50,7 @@ public class GraphQLResponse {
 		private String description;
 		private String upc;
 		private String path;
+		private Image defaultImage;
 		private Edges<Variant> variants;
 	}
 	
@@ -59,6 +60,12 @@ public class GraphQLResponse {
 		private String sku;
 		private String upc;
 		private Prices prices;
+		private Image defaultImage;
+	}
+	
+	@Data
+	public static class Image {
+		private String urlOriginal;
 	}
 	
 	@Data

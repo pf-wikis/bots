@@ -298,7 +298,7 @@ public class PaizoRetriever extends DualBot {
 	@SneakyThrows
 	private String collectResponses(CloseableHttpClient client, ClassicHttpRequest baseRequest, State state, Map<Long, Bottomline> ratings, PZCategory category, String page, Instant now) {
 		log.info("Querying paizo category '{}' store page '{}'", category.getName(), page);
-		//for the structure see https://developer.bigcommerce.com/graphql-storefront/explorer
+		//for the structure see https://gql-playground.bigcommerce.com/
 		var query = """
 				{
 					site {
@@ -315,11 +315,17 @@ public class PaizoRetriever extends DualBot {
 										sku
 										upc
 										path
+										defaultImage {
+											urlOriginal
+										}
 										variants {
 						                    edges {
 						                    	node {
 						                    		sku
 													upc
+													defaultImage {
+														urlOriginal
+													}
 						                    		prices {
 														price {
 															formattedV2
