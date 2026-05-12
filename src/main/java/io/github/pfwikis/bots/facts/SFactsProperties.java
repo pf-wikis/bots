@@ -194,10 +194,20 @@ public class SFactsProperties {
 		.setDescription("The previous release.");
 	public static final SProperty<String> Full_title = new SProperty<>(
 		"Full title",
-		SFactTypes.STRING)
+		SFactTypes.STRING) {
+			public List<SProperty<?>> generateProperties(SConcept c, SConcept parent) {
+				return List.of(Is_playtest.withGenerateWikitext(
+					"{{#string-contains:{{lc:{{{Full title|{{{Name|}}}}}}}}|playtest|yes|no}}"
+				));
+			}
+		}
 		.setAutocompleteDisabled(true)
 		.setFormNote("Fill this only, if the commonly used title of this product is a shorter form of the full title.")
 		.setDescription("The full book title. This should only be used in addition to name if the book has a long name that is not typically used in its full form.");
+	public static final SProperty<Boolean> Is_playtest = new SProperty<>(
+		"Is playtest",
+		SFactTypes.BOOLEAN)
+		.setDescription("If this product is part of a playtest");
 	public static final SProperty<PageTitle> Gallery_page = new SProperty<>(
 		"Gallery page",
 		SFactTypes.PAGE)
@@ -349,13 +359,27 @@ public class SFactsProperties {
 							+"|?Ratings=|format=plainlist|mainlabel=-|default=|searchlabel="
 							+"|sort=Number of ratings|order=desc|limit=1}}"
 					));
+					
+					parent.getGeneratedProperties().add(Has_pubcode
+						.withGenerateWikitext("{{#if:{{#ask:[[Fact type::"+c.getPrimaryFactType()+"]]"
+								+"[[-Has subobject::{{FULLPAGENAME}}]][[Pubcode::+]]"
+								+"|?Pubcode=|format=plainlist|mainlabel=-|default=|searchlabel="
+								+"|limit=1}}|yes|no}}")
+					);
+				}
+				else {
+					c.getGeneratedProperties().add(Has_pubcode.withGenerateWikitext("{{#if:{{{Pubcode|}}}|yes|no}}"));
 				}
 				return List.of(Ratings, Number_of_ratings);
 			}
 		}
 		.setAutocompleteDisabled(true)
 		.setFormNote("e.g. PZO9500-HC")
-		.setDescription("The publisher's product code for this release. Typically a Paizo pubcode.");
+		.setDescription("The publisher's product code for this release. Tyically a Paizo pubcode.");
+	public static final SProperty<Boolean> Has_pubcode = new SProperty<>(
+			"Has pubcode",
+			SFactTypes.BOOLEAN)
+			.setDescription("If any of the releases of this product have a pubcode");
 	public static final SProperty<List<PageTitle>> Publisher = new SProperty<>(
 		"Publisher",
 		SFactTypes.PAGE_LIST)
