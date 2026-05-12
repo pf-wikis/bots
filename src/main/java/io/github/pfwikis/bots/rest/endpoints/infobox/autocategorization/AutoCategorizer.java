@@ -154,7 +154,7 @@ public enum AutoCategorizer {
 		
 		var comic = g.group(
 				ctx->ctx.getSubject()==null||ctx.getSubject().getOr(Book_type, "").equals("Comic book"),
-				ctx->" and [[Serialized::@@@]] is <code>Comic book</code>"
+				ctx->" and [[Book type::@@@]] is <code>Comic book</code>"
 		);
 		
 		comic.rule(
