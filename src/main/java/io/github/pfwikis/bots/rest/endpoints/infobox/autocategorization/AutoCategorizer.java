@@ -139,22 +139,22 @@ public enum AutoCategorizer {
 		g.ifYearAndMatchRule(Book_type, "Sourcebook", "{} sourcebooks");
 		g.ifMatchRule(Book_type, "Novel", "Novels");
 		g.ifMatchRule(Book_type, "Novel", "Fiction");
-		g.ifYearAndMatchRule(Book_type, List.of("Novel", "Novella", "Periodical", "Comic book", "Short Fiction"), "{} fiction");
+		g.ifYearAndMatchRule(Book_type, List.of("Novel", "Novella", "Periodical", "Comic Book", "Short Fiction"), "{} fiction");
 		g.ifMatchRule(Book_type, "Adventure Path compilation", "Adventure compilations");
 		g.ifMatchRule(Book_type, "Novella", "Novellas");
 		g.ifMatchRule(Book_type, "Novella", "Fiction");
 		g.ifMatchRule(Book_type, "Periodical", "Periodicals");
 		g.ifMatchRule(Book_type, "Periodical", "Fiction");
 		g.ifMatchRule(Book_type, "Short Fiction", "Fiction");
-		g.ifMatchRule(Book_type, "Comic book", "Comics");
-		g.ifMatchRule(Book_type, "Comic book", "Fiction");
+		g.ifMatchRule(Book_type, "Comic Book", "Comics");
+		g.ifMatchRule(Book_type, "Comic Book", "Fiction");
 		
 		g.ifYearAndMatchRule(Book_type, "Periodical", "{} periodicals");
-		g.ifYearAndMatchRule(Book_type, "Comic book", "{} comics");
+		g.ifYearAndMatchRule(Book_type, "Comic Book", "{} comics");
 		
 		var comic = g.group(
-				ctx->ctx.getSubject()==null||ctx.getSubject().getOr(Book_type, "").equals("Comic book"),
-				ctx->" and [[Book type::@@@]] is <code>Comic book</code>"
+				ctx->ctx.getSubject()==null||ctx.getSubject().getOr(Book_type, "").equals("Comic Book"),
+				ctx->" and [[Book type::@@@]] is <code>Comic Book</code>"
 		);
 		
 		comic.rule(
