@@ -201,7 +201,7 @@ public class MapSearchPage extends SimpleBot {
 	private static String key(Multiset<String> labelCounts, String label, String category) {
 		var key = label;
 		if(labelCounts.count(label)>1) {
-			key=StringUtils.removeEnd(category, "s")+":"+key;
+			key=StringUtils.capitalize(StringUtils.removeEnd(category, "s"))+":"+key;
 		}
 		
 		if(key.contains("=") || key.contains("|"))
