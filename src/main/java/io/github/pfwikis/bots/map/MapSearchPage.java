@@ -8,8 +8,12 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
@@ -32,7 +36,6 @@ public class MapSearchPage extends SimpleBot {
 		if(run.getServer() == Wiki.SF) return;
 		
 		var categories = loadMapSearchInfo(antiProtectionSecret);
-		
 		createSearch(categories);
 		createSearchAspect(categories);
 		createArea(categories);
@@ -45,7 +48,7 @@ public class MapSearchPage extends SimpleBot {
     		.uri(URI.create("https://map.pathfinderwiki.com/search.json")).build();
     	var resp = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
         
-		var categoriesIn = Arrays.asList(Jackson.JSON.readValue(resp.body(), CategoryIn[].class));
+		var categoriesIn = List.of(Jackson.JSON.readValue(resp.body(), CategoryIn[].class));
 		var labelCounts = HashMultiset.<String>create();
 		categoriesIn.forEach(cat->cat.entries.forEach(e->labelCounts.add(e.label)));
 		
@@ -57,11 +60,14 @@ public class MapSearchPage extends SimpleBot {
 									key(labelCounts, r.label, c.category),
 									r.label,
 									labelCounts.count(r.label),
-									r.bbox,
-									r.areaM2
+									r.timed.stream()
+										.sorted(Comparator.comparing(tr->tr.timeIndex.timeStart))
+										.toList()
 							))
+							.sorted(Comparator.comparing(e->e.label))
 							.toList()
 				))
+				.sorted(Comparator.comparing(Category::category))
 				.toList();
 	}
 	
@@ -93,26 +99,25 @@ public class MapSearchPage extends SimpleBot {
 			.append("{{#switch:{{{1}}}");
 		for(var cat:categories) {
 			for(var e:cat.entries) {
-				if(e.areaM2 == null) continue;
+				var values = e.assemble(v-> {
+					if(v.areaM2 == null) return null;
+					
+					var area = new BigDecimal(0.000000386102d*v.areaM2);
+					if(area.doubleValue()>100) {
+						area = area.setScale(0,RoundingMode.HALF_UP);
+					}
+					else if(area.doubleValue()>10) {
+						area = area.setScale(1,RoundingMode.HALF_UP);
+					}
+					else {
+						area = area.setScale(2,RoundingMode.HALF_UP);
+					}
+					if(area.compareTo(BigDecimal.ZERO) == 0)
+						return null;
+					return area;
+				});
 				
-				var area = new BigDecimal(0.000000386102d*e.areaM2);
-				if(area.doubleValue()>100) {
-					area = area.setScale(0,RoundingMode.HALF_UP);
-				}
-				else if(area.doubleValue()>10) {
-					area = area.setScale(1,RoundingMode.HALF_UP);
-				}
-				else {
-					area = area.setScale(2,RoundingMode.HALF_UP);
-				}
-				if(area.compareTo(BigDecimal.ZERO) == 0)
-					continue;
-				
-				sb
-					.append("\n|")
-					.append(e.key)
-					.append("=")
-					.append(area.toPlainString());
+				createSwitchEntry(sb, e.key, values, BigDecimal::toPlainString);
 			}
 		}
 		sb.append("\n}}</includeonly>");
@@ -126,21 +131,20 @@ public class MapSearchPage extends SimpleBot {
 				+ "but generetes the aspect ratio instead of a bbox.</noinclude><includeonly>{{#switch:{{{1}}}");
 		for(var cat:categories) {
 			for(var e:cat.entries) {
-				if(e.bbox.length!=4) continue;
+				var values = e.assemble(v-> {
+					if(v.bbox.length!=4) return null;
+					
+					var left = WebMercator.longitudeToX(v.bbox[0].doubleValue());
+					var right = WebMercator.longitudeToX(v.bbox[2].doubleValue());
+					var bottom = WebMercator.latitudeToY(v.bbox[1].doubleValue());
+					var top = WebMercator.latitudeToY(v.bbox[3].doubleValue());
+					
+					var width = right-left;
+					var height = top-bottom;
+					return new BigDecimal(width/height);
+				});
 				
-				var left = WebMercator.longitudeToX(e.bbox[0].doubleValue());
-				var right = WebMercator.longitudeToX(e.bbox[2].doubleValue());
-				double bottom = WebMercator.latitudeToY(e.bbox[1].doubleValue());
-				double top = WebMercator.latitudeToY(e.bbox[3].doubleValue());
-				
-				var width = right-left;
-				var height = top-bottom;
-				
-				sb
-					.append("\n|")
-					.append(e.key)
-					.append("=")
-					.append(new BigDecimal(width/height).setScale(2,RoundingMode.HALF_UP).toPlainString());
+				createSwitchEntry(sb, e.key, values, v->v.setScale(2,RoundingMode.HALF_UP).toPlainString());
 			}
 		}
 		sb.append("|1.62}}</includeonly>");
@@ -160,8 +164,18 @@ public class MapSearchPage extends SimpleBot {
 			sb.append("<li>").append(cat.category).append("</li>\n<ul style=\"column-width: 20rem;\">\n");
 			for(var e:cat.entries) {
 				sb.append("<li>").append(e.label);
-				if(e.labelCount>1) {
-					sb.append(" (via <code>").append(e.key).append("</code>)");
+				if(e.labelCount>1 || e.timedValues.size()>1) {
+					sb.append("<ul>");
+					if(e.labelCount>1) {
+						sb.append("<li>via <code>").append(e.key).append("</code></li>");
+					}
+					if(e.timedValues.size()>1) {
+						sb.append("<li>has different values for: ")
+							.append(e.timedValues.stream().map(t->t.timeYear.toWikitext()).collect(Collectors.joining(", ")))
+							.append("</li>");
+					}
+					sb.append("</ul>");
+					
 				}
 				sb.append("</li>\n");
 			}
@@ -170,14 +184,12 @@ public class MapSearchPage extends SimpleBot {
 		sb.append("</ul></noinclude><includeonly>{{#switch:{{{1}}}");
 		for(var cat:categories) {
 			for(var e:cat.entries) {
-				sb
-					.append("\n|")
-					.append(e.key)
-					.append("=")
-					.append(Arrays.stream(e.bbox)
-						.map(BigDecimal::toPlainString)
-						.collect(Collectors.joining(","))
-					);
+				createSwitchEntry(
+					sb,
+					e.key,
+					e.assemble(v->v.bbox),
+					v->Arrays.stream(v).map(BigDecimal::toPlainString).collect(Collectors.joining(","))
+				);
 			}
 		}
 		sb.append("|}}</includeonly>");
@@ -189,12 +201,41 @@ public class MapSearchPage extends SimpleBot {
 	private static String key(Multiset<String> labelCounts, String label, String category) {
 		var key = label;
 		if(labelCounts.count(label)>1) {
-			key+=";"+category;
+			key=StringUtils.removeEnd(category, "s")+":"+key;
 		}
 		
 		if(key.contains("=") || key.contains("|"))
 			throw new IllegalStateException("Illegal key "+key);
 		return key;
+	}
+	
+	private <T> void createSwitchEntry(StringBuilder sb, String key, List<Assembled<T>> values, Function<T, String> toString) {
+		if(values.isEmpty()) return;
+		sb.append("\n|").append(key).append("=");
+		if(values.size()==1 && values.getFirst().timeYear.timeStart==null && values.getFirst().timeYear.timeEnd==null) {
+			sb.append(toString.apply(values.getFirst().value));
+			return;
+		}
+		var last = values.stream().filter(v->v.timeYear.timeEnd==null).findAny().orElse(null);
+		sb.append("{{#if:{{{year|}}}|");
+		
+		//open many if/else statements
+		for(var v:values) {
+			if(v==last) continue;
+			sb.append("{{#ifexpr:").append(v.timeYear.toExpr()).append("|").append(toString.apply(v.value)).append("|");
+		}
+		if(last != null)
+			sb.append(toString.apply(last.value));
+		//close if/else statements
+		for(var v:values) {
+			if(v==last) continue;
+			sb.append("}}");
+		}
+		
+		sb.append("|");
+		if(last != null)
+			sb.append(toString.apply(last.value));
+		sb.append("}}");
 	}
 	
 
@@ -207,8 +248,47 @@ public class MapSearchPage extends SimpleBot {
 	}
 
 	record CategoryIn(String category, List<ResultIn> entries) {}
-	record ResultIn(String label, BigDecimal[] bbox, Double areaM2) {}
+	record ResultIn(String label, List<TimedResult> timed) {}
+	record TimedResult(TimeRange timeYear, TimeRange timeIndex, BigDecimal[] bbox, Double areaM2) {}
+	record TimeRange(Integer timeStart, Integer timeEnd) {
+		public String toWikitext() {
+			if(timeStart != null) {
+				if(timeEnd != null)
+					return "<code>"+timeStart+"—"+(timeEnd-1)+"</code>";
+				else
+					return "<code>≥"+timeStart+"</code>";
+			}
+			else {
+				if(timeEnd != null)
+					return "<code>≤"+(timeEnd-1)+"</code>";
+				else
+					return "<code>allways</code>";
+			}
+		}
+
+		public String toExpr() {
+			String expr = "";
+			if(timeStart != null) {
+				expr+="{{{year|}}} >= "+timeStart;
+				if(timeEnd != null)
+					expr+=" and ";
+			}
+			if(timeEnd != null)
+				expr+="{{{year|}}} < "+timeEnd;
+			return expr;
+		}
+	}
 	
 	record Category(String category, List<Result> entries) {}
-	record Result(String key, String label, int labelCount, BigDecimal[] bbox, Double areaM2) {}
+	record Result(String key, String label, int labelCount, List<TimedResult> timedValues) {
+
+		public <T> List<Assembled<T>> assemble(Function<TimedResult, T> mapping) {
+			return timedValues.stream()
+				.map(v->new Assembled<>(v.timeYear, mapping.apply(v)))
+				.filter(v->v.value!=null)
+				.toList();
+		}
+	}
+	record Assembled<T>(TimeRange timeYear, T value) {}
+	//record TimedResult(TimeRange timeYear, TimeRange timeIndex, BigDecimal[] bbox, Double areaM2) {}
 }
