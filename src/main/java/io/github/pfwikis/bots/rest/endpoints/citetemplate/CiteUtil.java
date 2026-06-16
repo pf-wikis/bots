@@ -17,7 +17,8 @@ public class CiteUtil {
 		SModel.DECK.getPrimaryFactType(),
 		SModel.VIDEO_GAME.getPrimaryFactType(),
 		SModel.WEB_CITATION.getPrimaryFactType(),
-		SModel.MINIATURES.getPrimaryFactType()
+		SModel.MINIATURES.getPrimaryFactType(),
+		SModel.BOARD_GAME.getPrimaryFactType()
 	);
 	
 	public static boolean isCiteable(Collection<PageTitle> types) {
