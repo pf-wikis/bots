@@ -37,6 +37,7 @@ public class MapSearchPage extends SimpleBot {
 		
 		var categories = loadMapSearchInfo(antiProtectionSecret);
 		createSearch(categories);
+		createSearchLastYear(categories);
 		createSearchAspect(categories);
 		createArea(categories);
 	}
@@ -128,7 +129,7 @@ public class MapSearchPage extends SimpleBot {
 		var sb = new StringBuilder()
 			.append("<noinclude>{{Bot created|VirenerusBot#").append(this.getBotName()).append("}}\n")
 			.append("This page works like {{tl|DisplayMap/Search}}, "
-				+ "but generetes the aspect ratio instead of a bbox.</noinclude><includeonly>{{#switch:{{{1}}}");
+				+ "but generates the aspect ratio instead of a bbox.</noinclude><includeonly>{{#switch:{{{1}}}");
 		for(var cat:categories) {
 			for(var e:cat.entries) {
 				var values = e.assemble(v-> {
@@ -152,6 +153,32 @@ public class MapSearchPage extends SimpleBot {
 		
 		run.getWiki().editIfChange(PageRef.of(NS.TEMPLATE, "DisplayMap/Search aspect"), sb.toString(), "Automatic update");
 	}
+	
+	private void createSearchLastYear(List<Category> categories) {
+		var sb = new StringBuilder()
+			.append("<noinclude>{{Bot created|VirenerusBot#").append(this.getBotName()).append("}}\n")
+			.append("This page works like {{tl|DisplayMap/Search}}, "
+				+ "but returns the last year where the feature exists.</noinclude><includeonly>{{#switch:{{{1}}}");
+		for(var cat:categories) {
+			for(var e:cat.entries) {
+				int max = Integer.MIN_VALUE;
+				boolean current = false;
+				for(var v:e.timedValues) {
+					if(v.timeYear.timeEnd == null)
+						current = true;
+					else
+						max = Math.max(max, v.timeYear.timeEnd);
+				}
+				if(!current && max > Integer.MIN_VALUE) {
+					sb.append("\n|").append(e.key).append("=").append(max-1);
+				}
+			}
+		}
+		sb.append("|}}</includeonly>");
+		
+		
+		run.getWiki().editIfChange(PageRef.of(NS.TEMPLATE, "DisplayMap/Search last year"), sb.toString(), "Automatic update");
+	}
 
 	private void createSearch(List<Category> categories) {
 		var sb = new StringBuilder()
@@ -164,13 +191,18 @@ public class MapSearchPage extends SimpleBot {
 			sb.append("<li>").append(cat.category).append("</li>\n<ul style=\"column-width: 20rem;\">\n");
 			for(var e:cat.entries) {
 				sb.append("<li>").append(e.label);
-				if(e.labelCount>1 || e.timedValues.size()>1) {
+				if(e.labelCount>1 || e.timedValues.size()>1 || !e.timedValues.getFirst().timeYear().isAlways()) {
 					sb.append("<ul>");
 					if(e.labelCount>1) {
 						sb.append("<li>via <code>").append(e.key).append("</code></li>");
 					}
-					if(e.timedValues.size()>1) {
+					if(e.timedValues.size()>1 || !e.timedValues.getFirst().timeYear().isAlways()) {
 						sb.append("<li>has different values for: ")
+							.append(e.timedValues.stream().map(t->t.timeYear.toWikitext()).collect(Collectors.joining(", ")))
+							.append("</li>");
+					}
+					else if(!e.timedValues.getFirst().timeYear().isAlways()) {
+						sb.append("<li>has only values for: ")
 							.append(e.timedValues.stream().map(t->t.timeYear.toWikitext()).collect(Collectors.joining(", ")))
 							.append("</li>");
 					}
@@ -212,7 +244,7 @@ public class MapSearchPage extends SimpleBot {
 	private <T> void createSwitchEntry(StringBuilder sb, String key, List<Assembled<T>> values, Function<T, String> toString) {
 		if(values.isEmpty()) return;
 		sb.append("\n|").append(key).append("=");
-		if(values.size()==1 && values.getFirst().timeYear.timeStart==null && values.getFirst().timeYear.timeEnd==null) {
+		if(values.size()==1 && values.getFirst().timeYear.isAlways()) {
 			sb.append(toString.apply(values.getFirst().value));
 			return;
 		}
@@ -264,6 +296,10 @@ public class MapSearchPage extends SimpleBot {
 				else
 					return "<code>allways</code>";
 			}
+		}
+
+		public boolean isAlways() {
+			return timeStart == null && timeEnd == null;
 		}
 
 		public String toExpr() {

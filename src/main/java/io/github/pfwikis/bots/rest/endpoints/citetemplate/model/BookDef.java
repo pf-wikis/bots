@@ -54,15 +54,15 @@ public class BookDef extends BookPart {
 		
 		var bookValue = makeValue.apply(this);
 		var ranges = TreeRangeMap.<Integer, String>create();
-		makeValue.apply(this).ifPresent(v->ranges.put(Range.<Integer>all(), v));
+		makeValue.apply(this).ifPresent(v->ranges.putCoalescing(Range.<Integer>all(), v));
 		for(var sect:sections) {
 			var sectValue = makeValue.apply(sect);
 			var page = sect.tryParsePage();
 			if(sectValue.isEmpty() || sectValue.equals(bookValue) || page == null) continue;
 			if(sect.getEndPage() != null)
-				ranges.put(Range.closed(page, sect.getEndPage()).canonical(DiscreteDomain.integers()), sectValue.get());
+				ranges.putCoalescing(Range.closed(page, sect.getEndPage()).canonical(DiscreteDomain.integers()), sectValue.get());
 			else
-				ranges.put(Range.atLeast(page).canonical(DiscreteDomain.integers()), sectValue.get());
+				ranges.putCoalescing(Range.atLeast(page).canonical(DiscreteDomain.integers()), sectValue.get());
 		}
 		
 		for(var sect:sections) {
@@ -72,9 +72,9 @@ public class BookDef extends BookPart {
 				var page = subSect.tryParsePage();
 				if(subSectValue.isEmpty() || subSectValue.equals(bookValue) || subSectValue.equals(sectValue) || page == null) continue;
 				if(subSect.getEndPage() != null)
-					ranges.put(Range.closed(page, subSect.getEndPage()).canonical(DiscreteDomain.integers()), subSectValue.get());
+					ranges.putCoalescing(Range.closed(page, subSect.getEndPage()).canonical(DiscreteDomain.integers()), subSectValue.get());
 				else
-					ranges.put(Range.atLeast(page).canonical(DiscreteDomain.integers()), subSectValue.get());
+					ranges.putCoalescing(Range.atLeast(page).canonical(DiscreteDomain.integers()), subSectValue.get());
 			}
 		}
 		

@@ -45,7 +45,9 @@ public class AssistantTaskGiver extends SimpleBot {
 		}
 		
 		var sb = new StringBuilder()
-			.append("I have a new task for you human people. There are a number of pages that need fixing. Please and thank you!\n");
+			.append("I have a new task for you human people. There are ")
+			.append(Discord.wikiLink(run.getServer(), "a number of pages that need fixing", "/wiki/Category:Pages_with_errors"))
+			.append(". Please and thank you!\n");
 		for(var p:res.subList(0, Math.min(res.size(), 10))) {
 			var errors = new HashSet<>(cats);
 			errors.retainAll(p.getPrintouts().getCategories().stream().map(c->c.getPage()).toList());

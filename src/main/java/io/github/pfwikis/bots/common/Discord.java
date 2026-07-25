@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -21,6 +22,7 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.utils.FileUpload;
 import net.dv8tion.jda.api.utils.MarkdownUtil;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
@@ -39,6 +41,7 @@ public class Discord implements Closeable {
 	private JDA jda;
 	private boolean init = false;
 	private final String discordToken;
+	private long selfId;
 	
 
 	public synchronized void init() {
@@ -52,6 +55,7 @@ public class Discord implements Closeable {
 						Permission.MESSAGE_MANAGE
 				));
 				jda.awaitReady();
+				selfId = jda.getSelfUser().getIdLong();
 				jda.getPresence().setStatus(OnlineStatus.ONLINE);
 				init = true;
 			} catch(Exception e) {
@@ -182,7 +186,29 @@ public class Discord implements Closeable {
 		reportTo(wiki==Wiki.PF?CHANNEL_PF:CHANNEL_SF, bot, messageHeader(bot).append(msg).toString(), suppressEmbeds);
 	}
 	
-	private void reportTo(long channel, Bot<?> bot, String msg, boolean suppressEmbeds) {
+	private void reportTo(long channelId, Bot<?> bot, String msg, boolean suppressEmbeds) {
+		init();
+		try {
+			var channel = jda.getTextChannelById(channelId);
+			var history = channel.getHistory()
+				.retrievePast(10)
+				.submit()
+				.join()
+				.stream()
+				.filter(m->m.getAuthor().getIdLong()==selfId)
+				.map(m->m.getContentRaw())
+				.collect(Collectors.joining());
+			if(history.replaceAll("\\s+", "").contains(msg.replaceAll("\\s+", ""))) {
+				log.info("There was already a recent report in discord. Thus I skip:\n{}", msg);
+				return;
+			}
+			doReport(channel, bot, msg, suppressEmbeds);
+		} catch(Exception e) {
+			reportException(bot, e);
+		}
+	}
+	
+	private void doReport(TextChannel channel, Bot<?> bot, String msg, boolean suppressEmbeds) {
 		if(msg.length() > 1500) {
 			var parts = msg.split("\n+");
 			for(int i=0;i<parts.length;i++) {
@@ -191,16 +217,14 @@ public class Discord implements Closeable {
 					i++;
 					p+="\n"+parts[i];
 				}
-				reportTo(channel, bot, p, suppressEmbeds);
+				doReport(channel, bot, p, suppressEmbeds);
 			}
 			return;
 		}
 
 		try {
-			init();
-			jda.getTextChannelById(channel)
-				.sendMessage(new MessageCreateBuilder().setContent(msg).build()
-				)
+			channel
+				.sendMessage(new MessageCreateBuilder().setContent(msg).build())
 				.setSuppressEmbeds(suppressEmbeds)
 				.queue();
 		} catch(Exception e) {
