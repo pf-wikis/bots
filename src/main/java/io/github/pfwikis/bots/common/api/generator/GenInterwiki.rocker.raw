@@ -43,7 +43,7 @@ public enum Interwiki {
 			@for(iw:info.getInterwikis()) {
 				case "@iw.getPrefix()" -> @iw.getJavaName();
 			}
-			default -> null;
+			case null, default -> null;
 		};
 	}
 }

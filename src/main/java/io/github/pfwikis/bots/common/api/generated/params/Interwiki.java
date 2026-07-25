@@ -36,7 +36,7 @@ public enum Interwiki {
 
 			case "wikipedia" -> WIKIPEDIA;
 
-			default -> null;
+			case null, default -> null;
 		};
 	}
 }
