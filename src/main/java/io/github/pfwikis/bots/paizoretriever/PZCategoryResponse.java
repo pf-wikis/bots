@@ -24,7 +24,7 @@ public class PZCategoryResponse {
 	
 	@Data
 	public static class PZCategory {
-		private int entityId;
+		private long entityId;
 		private String name;
 		private List<PZCategory> children;
 		private List<PZCategory> resolvedChildren = new ArrayList<>();

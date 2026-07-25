@@ -78,7 +78,7 @@ public class AAPI {
 			throw new AAPIException("Failed to parse JSON:\n"+res.result, e);
 		}
 	}
-	
+
 	@SneakyThrows
 	public <T> RequestResult<T> complexRun(AAPIMainActionModule action, String mappedField, JavaType model) {
 		

@@ -22,6 +22,7 @@ public class GraphQLResponse {
 	
 	@Data
 	public static class Category {
+		private Long entityId;
 		private Edges<Product> products;
 	}
 	
@@ -52,6 +53,7 @@ public class GraphQLResponse {
 		private String path;
 		private Image defaultImage;
 		private Edges<Variant> variants;
+		private Edges<Category> categories;
 	}
 	
 	@Data

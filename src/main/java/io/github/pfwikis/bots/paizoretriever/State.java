@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -23,11 +25,18 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter @Setter
 public class State {
+	private TreeMap<Long, Category> categories = new TreeMap<>();
 	private TreeMap<String, Entry> values = new TreeMap<>();
 
 	
 	public void addEntries(Product p, RatingsModel.Bottomline ratings, Instant now) {
 		var variants = new ArrayList<Props>();
+		var categories = new TreeSet<>(p.getCategories()
+				.getEdges().stream()
+				.map(c->c.getNode().getEntityId())
+				.collect(Collectors.toList())
+		);
+		
 		for(var variantEdge:p.getVariants().getEdges()) {
 			var v = variantEdge.getNode();
 			variants.add(Props.builder()
@@ -39,6 +48,7 @@ public class State {
 					.map(pr->pr.getFormattedV2())
 					.orElse(null)
 				)
+				.categories(categories)
 				.upc(v.getUpc()==null?p.getUpc():v.getUpc())
 				.storeImage(Optional.ofNullable(v.getDefaultImage()).orElse(p.getDefaultImage()).getUrlOriginal())
 				.build()
@@ -49,6 +59,7 @@ public class State {
 			.name(p.getName())
 			.url(p.getPath())
 			.price(null)
+			.categories(categories)
 			.upc(p.getUpc())
 			.storeImage(p.getDefaultImage().getUrlOriginal())
 			.build());
@@ -62,6 +73,7 @@ public class State {
 		n.url = v.getUrl();
 		n.upc = v.getUpc();
 		n.storeImage = v.getStoreImage();
+		n.categories = v.getCategories().isEmpty()?null:v.getCategories();
 		if(ratings != null && ratings.getTotalReviews() > 0) {
 			n.ratings = new Ratings(
 				ratings.getTotalReviews(),
@@ -90,6 +102,14 @@ public class State {
 	
 	@Data
 	@AllArgsConstructor
+	public static class Category {
+		private long id;
+		private String name;
+		private TreeSet<Long> children;
+	}
+	
+	@Data
+	@AllArgsConstructor
 	public static class Entry {
 		private Instant lastChanged;
 		private Instant created;
@@ -108,6 +128,7 @@ public class State {
 		private String url;
 		private String storeImage;
 		private Ratings ratings;
+		private TreeSet<Long> categories;
 		
 		public boolean mergeOld(Props old) {
 			if(StringUtils.isAllBlank(name)) name = old.name;
@@ -115,13 +136,15 @@ public class State {
 			if(StringUtils.isAllBlank(upc)) upc = old.upc;
 			if(StringUtils.isAllBlank(url)) url = old.url;
 			if(StringUtils.isAllBlank(storeImage)) storeImage = old.storeImage;
+			if(categories == null) categories = old.categories;
 			if(ratings == null && old.ratings!=null && old.ratings.getTotalReviews() > 0) ratings = old.ratings;
 			
 			return !Objects.equals(name, old.name)
 				|| !Objects.equals(price, old.price)
 				|| !Objects.equals(upc, old.upc)
 				|| !Objects.equals(url, old.url)
-				|| !Objects.equals(ratings, old.ratings);
+				|| !Objects.equals(ratings, old.ratings)
+				|| !Objects.equals(categories, old.categories);
 		}
 	}
 	

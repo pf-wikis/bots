@@ -1,7 +1,6 @@
 package io.github.pfwikis.bots.paizoretriever;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -12,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.regex.Pattern;
@@ -114,7 +114,7 @@ public class PaizoRetriever extends DualBot {
 					.build();
 				
 				
-				var categoryRoot = collectCategories(client, baseRequest);
+				var categoryRoot = collectCategories(client, baseRequest, state);
 				categoryRoot.streamResolved()
 					//only the ones we want
 					.filter(c->WANTED_CATEGORIES.contains(c.getName()))
@@ -239,13 +239,21 @@ public class PaizoRetriever extends DualBot {
 		api.editIfChange(PageRef.of("Template:Paizo store/"+def.name), sb.toString(), "Automatic update from store");
 	}
 	
-	private PZCategory collectCategories(CloseableHttpClient client, ClassicHttpRequest baseRequest) throws IOException {
+	private PZCategory collectCategories(CloseableHttpClient client, ClassicHttpRequest baseRequest, State state) throws IOException {
 		var root = new PZCategory();
 		root.setResolvedChildren(collectCategories(client, baseRequest, null, new HashMap<>()));
+		
+		state.getCategories().clear();
+		root.streamResolved()
+			.forEach(c->state.getCategories().put(c.getEntityId(), new State.Category(
+				c.getEntityId(),
+				c.getName(),
+				new TreeSet<>(c.getResolvedChildren().stream().map(PZCategory::getEntityId).toList())
+			)));
 		return root;
 	}
 	
-	private List<PZCategory> collectCategories(CloseableHttpClient client, ClassicHttpRequest baseRequest, String id, Map<Integer, PZCategory> mapping) throws IOException {
+	private List<PZCategory> collectCategories(CloseableHttpClient client, ClassicHttpRequest baseRequest, String id, Map<Long, PZCategory> mapping) throws IOException {
 		log.info("Collecting categories for {}", id);
 		var query = """
 			{
@@ -282,7 +290,7 @@ public class PaizoRetriever extends DualBot {
 					var existing = mapping.get(cc.getEntityId());
 					if(existing == null) {
 						try {
-							collectCategories(client, baseRequest, Integer.toString(cc.getEntityId()), mapping);
+							collectCategories(client, baseRequest, Long.toString(cc.getEntityId()), mapping);
 						} catch (IOException e) {
 							throw new RuntimeException();
 						}
@@ -318,6 +326,13 @@ public class PaizoRetriever extends DualBot {
 										defaultImage {
 											urlOriginal
 										}
+										categories {
+							            	edges {
+							              		node {
+									                entityId
+								              	}
+								            }
+								        }
 										variants {
 						                    edges {
 						                    	node {
@@ -344,7 +359,7 @@ public class PaizoRetriever extends DualBot {
 					}
 				}
 				""".formatted(
-					Integer.toString(category.getEntityId()),
+					Long.toString(category.getEntityId()),
 					page==null?"":(", after:\""+page+"\"")
 				);
 			
