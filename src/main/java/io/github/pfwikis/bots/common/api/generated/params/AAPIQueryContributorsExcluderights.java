@@ -67,6 +67,8 @@ public enum AAPIQueryContributorsExcluderights {
 
 	ECHO_CREATE("echo-create"),
 
+	ECHO_READ_NOTIFICATIONS("echo-read-notifications"),
+
 	EDIT("edit"),
 
 	EDITCONTENTMODEL("editcontentmodel"),
@@ -107,6 +109,8 @@ public enum AAPIQueryContributorsExcluderights {
 
 	EDITWIDGETS("editwidgets"),
 
+	EMBEDVIDEO_REFRESHMETADATA("embedvideo-refreshmetadata"),
+
 	HIDEUSER("hideuser"),
 
 	IMPORT("import"),
@@ -125,8 +129,6 @@ public enum AAPIQueryContributorsExcluderights {
 
 	MARKBOTEDITS("markbotedits"),
 
-	MASSEDITREGEX("masseditregex"),
-
 	MERGEHISTORY("mergehistory"),
 
 	MINOREDIT("minoredit"),
@@ -142,6 +144,20 @@ public enum AAPIQueryContributorsExcluderights {
 	MOVEFILE("movefile"),
 
 	MULTIPAGEEDIT("multipageedit"),
+
+	MWOAUTHMANAGECONSUMER("mwoauthmanageconsumer"),
+
+	MWOAUTHMANAGEMYGRANTS("mwoauthmanagemygrants"),
+
+	MWOAUTHPROPOSECONSUMER("mwoauthproposeconsumer"),
+
+	MWOAUTHSUPPRESS("mwoauthsuppress"),
+
+	MWOAUTHUPDATEOWNCONSUMER("mwoauthupdateownconsumer"),
+
+	MWOAUTHVIEWPRIVATE("mwoauthviewprivate"),
+
+	MWOAUTHVIEWSUPPRESSED("mwoauthviewsuppressed"),
 
 	NOMINORNEWTALK("nominornewtalk"),
 
@@ -372,6 +388,11 @@ public enum AAPIQueryContributorsExcluderights {
 			return this;
 		}
 
+		public Builder ECHO_READ_NOTIFICATIONS() {
+			set.add(ECHO_READ_NOTIFICATIONS);
+			return this;
+		}
+
 		public Builder EDIT() {
 			set.add(EDIT);
 			return this;
@@ -472,6 +493,11 @@ public enum AAPIQueryContributorsExcluderights {
 			return this;
 		}
 
+		public Builder EMBEDVIDEO_REFRESHMETADATA() {
+			set.add(EMBEDVIDEO_REFRESHMETADATA);
+			return this;
+		}
+
 		public Builder HIDEUSER() {
 			set.add(HIDEUSER);
 			return this;
@@ -517,11 +543,6 @@ public enum AAPIQueryContributorsExcluderights {
 			return this;
 		}
 
-		public Builder MASSEDITREGEX() {
-			set.add(MASSEDITREGEX);
-			return this;
-		}
-
 		public Builder MERGEHISTORY() {
 			set.add(MERGEHISTORY);
 			return this;
@@ -559,6 +580,41 @@ public enum AAPIQueryContributorsExcluderights {
 
 		public Builder MULTIPAGEEDIT() {
 			set.add(MULTIPAGEEDIT);
+			return this;
+		}
+
+		public Builder MWOAUTHMANAGECONSUMER() {
+			set.add(MWOAUTHMANAGECONSUMER);
+			return this;
+		}
+
+		public Builder MWOAUTHMANAGEMYGRANTS() {
+			set.add(MWOAUTHMANAGEMYGRANTS);
+			return this;
+		}
+
+		public Builder MWOAUTHPROPOSECONSUMER() {
+			set.add(MWOAUTHPROPOSECONSUMER);
+			return this;
+		}
+
+		public Builder MWOAUTHSUPPRESS() {
+			set.add(MWOAUTHSUPPRESS);
+			return this;
+		}
+
+		public Builder MWOAUTHUPDATEOWNCONSUMER() {
+			set.add(MWOAUTHUPDATEOWNCONSUMER);
+			return this;
+		}
+
+		public Builder MWOAUTHVIEWPRIVATE() {
+			set.add(MWOAUTHVIEWPRIVATE);
+			return this;
+		}
+
+		public Builder MWOAUTHVIEWSUPPRESSED() {
+			set.add(MWOAUTHVIEWSUPPRESSED);
 			return this;
 		}
 

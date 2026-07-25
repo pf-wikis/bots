@@ -18,6 +18,7 @@ public class RockerPostProcessor implements TemplateModelPostProcessor {
 	
 	@Override
 	public TemplateModel process(TemplateModel templateModel, int ppIndex) throws PostProcessorException {
+		if(templateModel.getPackageName().endsWith(".api.generator")) return templateModel;
 		templateModel.getUnits().replaceAll(this::handle);
 		templateModel.getUnits().removeIf(tu -> tu instanceof PlainText pt && pt.getText().isEmpty());
 		new TemplateParser(new RockerConfiguration()).combineAdjacentPlain(templateModel);

@@ -10,9 +10,11 @@ import io.github.pfwikis.bots.common.Wiki;
 @Getter
 @RequiredArgsConstructor
 public enum Interwiki {
+	PFW("pfw", "https://pathfinderwiki.com/wiki/$1", Wiki.PF),
+
 	SFW("sfw", "https://starfinderwiki.com/wiki/$1", Wiki.SF),
 
-	PFW("pfw", "https://pathfinderwiki.com/wiki/$1", Wiki.PF);
+	WIKIPEDIA("wikipedia", "https://en.wikipedia.org/wiki/$1", null);
 
 	@Getter(onMethod_ = @JsonValue)
 	private final String prefix;
@@ -28,10 +30,12 @@ public enum Interwiki {
 
 	public static Interwiki fromPrefixOrNull(String prefix) {
 		return switch (prefix) {
+			case "pfw" -> PFW;
+
 			case "sfw" -> SFW;
 
-			case "pfw" -> PFW;
-			case null -> null;
+			case "wikipedia" -> WIKIPEDIA;
+
 			default -> null;
 		};
 	}

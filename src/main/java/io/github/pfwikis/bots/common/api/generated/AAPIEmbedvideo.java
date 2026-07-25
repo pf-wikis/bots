@@ -54,6 +54,8 @@ public class AAPIEmbedvideo implements AAPIModule, AAPIMainActionModule {
 
 	private String autoresize;
 
+	private String valignment;
+
 	/**Name of the service (youtube, twitch, etc)
 	 */
 	public String getService() {
@@ -150,6 +152,20 @@ public class AAPIEmbedvideo implements AAPIModule, AAPIMainActionModule {
 		return this.autoresize;
 	}
 
+	/**Vertical alignment of video
+	 */
+	public AAPIEmbedvideo valignment(String valignment) {
+		this.valignment = valignment;
+
+		return this;
+	}
+
+	/**Vertical alignment of video
+	 */
+	public String getValignment() {
+		return this.valignment;
+	}
+
 	public String toString() {
 		var sb = new StringBuilder().append("AAPIEmbedvideo(");
 
@@ -209,6 +225,13 @@ public class AAPIEmbedvideo implements AAPIModule, AAPIMainActionModule {
 			sb.append(", ");
 		}
 
+		if (valignment != null) {
+
+			sb.append("valignment").append("=").append(valignment);
+
+			sb.append(", ");
+		}
+
 		return sb.append(")").toString();
 	}
 
@@ -253,6 +276,11 @@ public class AAPIEmbedvideo implements AAPIModule, AAPIMainActionModule {
 		if (autoresize != null) {
 
 			req.addParameter(paramPrefix + "autoresize", autoresize);
+		}
+
+		if (valignment != null) {
+
+			req.addParameter(paramPrefix + "valignment", valignment);
 		}
 	}
 

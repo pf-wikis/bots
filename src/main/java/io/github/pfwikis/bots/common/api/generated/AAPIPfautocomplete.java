@@ -66,6 +66,14 @@ public class AAPIPfautocomplete implements AAPIModule, AAPIMainActionModule {
 
 	private String basevalue;
 
+	private String mappingproperty;
+
+	private String mappingtemplate;
+
+	private String mappingcargotable;
+
+	private String mappingcargofield;
+
 	/**A limit on the number of results returned
 	 */
 	public AAPIPfautocomplete limit(Integer limit) {
@@ -290,6 +298,62 @@ public class AAPIPfautocomplete implements AAPIModule, AAPIMainActionModule {
 		return this.basevalue;
 	}
 
+	/**A Semantic MediaWiki property used to map values to labels
+	 */
+	public AAPIPfautocomplete mappingproperty(String mappingproperty) {
+		this.mappingproperty = mappingproperty;
+
+		return this;
+	}
+
+	/**A Semantic MediaWiki property used to map values to labels
+	 */
+	public String getMappingproperty() {
+		return this.mappingproperty;
+	}
+
+	/**A template used to map values to labels
+	 */
+	public AAPIPfautocomplete mappingtemplate(String mappingtemplate) {
+		this.mappingtemplate = mappingtemplate;
+
+		return this;
+	}
+
+	/**A template used to map values to labels
+	 */
+	public String getMappingtemplate() {
+		return this.mappingtemplate;
+	}
+
+	/**A Cargo table used to map values to labels
+	 */
+	public AAPIPfautocomplete mappingcargotable(String mappingcargotable) {
+		this.mappingcargotable = mappingcargotable;
+
+		return this;
+	}
+
+	/**A Cargo table used to map values to labels
+	 */
+	public String getMappingcargotable() {
+		return this.mappingcargotable;
+	}
+
+	/**A Cargo field used to map values to labels
+	 */
+	public AAPIPfautocomplete mappingcargofield(String mappingcargofield) {
+		this.mappingcargofield = mappingcargofield;
+
+		return this;
+	}
+
+	/**A Cargo field used to map values to labels
+	 */
+	public String getMappingcargofield() {
+		return this.mappingcargofield;
+	}
+
 	public String toString() {
 		var sb = new StringBuilder().append("AAPIPfautocomplete(");
 
@@ -405,6 +469,34 @@ public class AAPIPfautocomplete implements AAPIModule, AAPIMainActionModule {
 			sb.append(", ");
 		}
 
+		if (mappingproperty != null) {
+
+			sb.append("mappingproperty").append("=").append(mappingproperty);
+
+			sb.append(", ");
+		}
+
+		if (mappingtemplate != null) {
+
+			sb.append("mappingtemplate").append("=").append(mappingtemplate);
+
+			sb.append(", ");
+		}
+
+		if (mappingcargotable != null) {
+
+			sb.append("mappingcargotable").append("=").append(mappingcargotable);
+
+			sb.append(", ");
+		}
+
+		if (mappingcargofield != null) {
+
+			sb.append("mappingcargofield").append("=").append(mappingcargofield);
+
+			sb.append(", ");
+		}
+
 		return sb.append(")").toString();
 	}
 
@@ -489,6 +581,26 @@ public class AAPIPfautocomplete implements AAPIModule, AAPIMainActionModule {
 		if (basevalue != null) {
 
 			req.addParameter(paramPrefix + "basevalue", basevalue);
+		}
+
+		if (mappingproperty != null) {
+
+			req.addParameter(paramPrefix + "mappingproperty", mappingproperty);
+		}
+
+		if (mappingtemplate != null) {
+
+			req.addParameter(paramPrefix + "mappingtemplate", mappingtemplate);
+		}
+
+		if (mappingcargotable != null) {
+
+			req.addParameter(paramPrefix + "mappingcargotable", mappingcargotable);
+		}
+
+		if (mappingcargofield != null) {
+
+			req.addParameter(paramPrefix + "mappingcargofield", mappingcargofield);
 		}
 	}
 

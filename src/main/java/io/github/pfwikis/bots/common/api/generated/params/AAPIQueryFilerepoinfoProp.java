@@ -16,14 +16,26 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum AAPIQueryFilerepoinfoProp {
 
+	/**URL to the repository API - helpful for getting image info from the host.*/
+	APIURL("apiurl"),
+
+	/**Repository wiki's <var><a href="/w/index.php?title=Mw:Special:MyLanguage/Manual:$wgArticlePath&amp;action=edit&amp;redlink=1" class="new" title="Mw:Special:MyLanguage/Manual:$wgArticlePath (page does not exist)">$wgArticlePath</a></var> or equivalent.*/
+	ARTICLEPATH("articlepath"),
+
 	/**Whether files can be uploaded to this repository, e.g. via CORS and shared authentication.*/
 	CANUPLOAD("canUpload"),
+
+	/**<span class="apihelp-empty">(no description)</span>*/
+	DESCRIPTIONCACHEEXPIRY("descriptionCacheExpiry"),
 
 	/**The human-readable name of the repository wiki.*/
 	DISPLAYNAME("displayname"),
 
 	/**Repository wiki's favicon URL, from <var><a href="/w/index.php?title=Mw:Special:MyLanguage/Manual:$wgFavicon&amp;action=edit&amp;redlink=1" class="new" title="Mw:Special:MyLanguage/Manual:$wgFavicon (page does not exist)">$wgFavicon</a></var>.*/
 	FAVICON("favicon"),
+
+	/**Whether file description pages are fetched from this repository when viewing local file description pages.*/
+	FETCHDESCRIPTION("fetchDescription"),
 
 	/**Whether file names implicitly start with a capital letter.*/
 	INITIALCAPITAL("initialCapital"),
@@ -39,6 +51,9 @@ public enum AAPIQueryFilerepoinfoProp {
 
 	/**Root URL path for the repository wiki's MediaWiki installation.*/
 	SCRIPTDIRURL("scriptDirUrl"),
+
+	/**Repository wiki's <var><a href="/w/index.php?title=Mw:Special:MyLanguage/Manual:$wgServer&amp;action=edit&amp;redlink=1" class="new" title="Mw:Special:MyLanguage/Manual:$wgServer (page does not exist)">$wgServer</a></var> or equivalent.*/
+	SERVER("server"),
 
 	/**Root URL path for thumbnail paths.*/
 	THUMBURL("thumbUrl"),
@@ -60,9 +75,27 @@ public enum AAPIQueryFilerepoinfoProp {
 			return set.toArray(AAPIQueryFilerepoinfoProp[]::new);
 		}
 
+		/**URL to the repository API - helpful for getting image info from the host.*/
+		public Builder APIURL() {
+			set.add(APIURL);
+			return this;
+		}
+
+		/**Repository wiki's <var><a href="/w/index.php?title=Mw:Special:MyLanguage/Manual:$wgArticlePath&amp;action=edit&amp;redlink=1" class="new" title="Mw:Special:MyLanguage/Manual:$wgArticlePath (page does not exist)">$wgArticlePath</a></var> or equivalent.*/
+		public Builder ARTICLEPATH() {
+			set.add(ARTICLEPATH);
+			return this;
+		}
+
 		/**Whether files can be uploaded to this repository, e.g. via CORS and shared authentication.*/
 		public Builder CANUPLOAD() {
 			set.add(CANUPLOAD);
+			return this;
+		}
+
+		/**<span class="apihelp-empty">(no description)</span>*/
+		public Builder DESCRIPTIONCACHEEXPIRY() {
+			set.add(DESCRIPTIONCACHEEXPIRY);
 			return this;
 		}
 
@@ -75,6 +108,12 @@ public enum AAPIQueryFilerepoinfoProp {
 		/**Repository wiki's favicon URL, from <var><a href="/w/index.php?title=Mw:Special:MyLanguage/Manual:$wgFavicon&amp;action=edit&amp;redlink=1" class="new" title="Mw:Special:MyLanguage/Manual:$wgFavicon (page does not exist)">$wgFavicon</a></var>.*/
 		public Builder FAVICON() {
 			set.add(FAVICON);
+			return this;
+		}
+
+		/**Whether file description pages are fetched from this repository when viewing local file description pages.*/
+		public Builder FETCHDESCRIPTION() {
+			set.add(FETCHDESCRIPTION);
 			return this;
 		}
 
@@ -105,6 +144,12 @@ public enum AAPIQueryFilerepoinfoProp {
 		/**Root URL path for the repository wiki's MediaWiki installation.*/
 		public Builder SCRIPTDIRURL() {
 			set.add(SCRIPTDIRURL);
+			return this;
+		}
+
+		/**Repository wiki's <var><a href="/w/index.php?title=Mw:Special:MyLanguage/Manual:$wgServer&amp;action=edit&amp;redlink=1" class="new" title="Mw:Special:MyLanguage/Manual:$wgServer (page does not exist)">$wgServer</a></var> or equivalent.*/
+		public Builder SERVER() {
+			set.add(SERVER);
 			return this;
 		}
 

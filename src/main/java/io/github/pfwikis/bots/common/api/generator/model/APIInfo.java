@@ -12,6 +12,8 @@ import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.api.generator.api.GenAPIInterwiki;
 import io.github.pfwikis.bots.common.api.generator.api.GenAPINamespace;
 import io.github.pfwikis.bots.common.api.generator.api.GenAPIResult;
+import io.github.pfwikis.bots.common.api.generator.model.APIInfo.APIInterwiki;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
@@ -38,13 +40,16 @@ public class APIInfo {
 		res.interwikis = Arrays.stream(infos)
 			.flatMap(i->i.getQuery().getInterwikimap().stream())
 			.map(APIInterwiki::new)
+			.distinct()
+			.sorted()
 			.toList();
 		
 		return res;
 	}
 	
 	@Getter
-	public static class APIInterwiki {
+	@EqualsAndHashCode
+	public static class APIInterwiki implements Comparable<APIInterwiki> {
 		
 		private String javaName;
 		private String url;
@@ -58,8 +63,13 @@ public class APIInfo {
 			this.wiki = switch(iw.getPrefix()) {
 				case "pfw" -> Wiki.PF;
 				case "sfw" -> Wiki.SF;
-				default -> throw new IllegalStateException();
+				default -> null;
 			};
+		}
+		
+		@Override
+		public int compareTo(APIInterwiki o) {
+			return prefix.compareTo(o.prefix);
 		}
 	}
 	

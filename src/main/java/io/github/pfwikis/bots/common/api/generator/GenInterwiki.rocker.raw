@@ -22,7 +22,7 @@ public enum Interwiki {
 		@iw.getJavaName()(
 			"@iw.getPrefix()",
 			"@iw.getUrl()",
-			Wiki.@iw.getWiki().name()
+			@if(iw.getWiki()!=null){Wiki.@iw.getWiki().name()}else{null}
 		)@if(it.last()){;}else{,}
 	}
 	
