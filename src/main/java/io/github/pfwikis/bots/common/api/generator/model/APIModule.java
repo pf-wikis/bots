@@ -21,12 +21,12 @@ public class APIModule {
 	private APIParam resultLimitParam;
 	private PageSetter pageSetter;
 
-	public static APIModule create(APIGenerator gen, GenAPIModule m) {
+	public static APIModule create(APIGenerator gen, GenAPIModule m, APIInfo global) {
 		var r = new APIModule();
 		r.module = m;
 		
 		for(var param : m.getParameters()) {
-			var p = APIParam.create(gen, r, param);
+			var p = APIParam.create(gen, r, param, global);
 			r.parameters.add(p);
 		}
 		

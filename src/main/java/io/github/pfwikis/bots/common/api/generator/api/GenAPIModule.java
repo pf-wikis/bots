@@ -3,7 +3,6 @@ package io.github.pfwikis.bots.common.api.generator.api;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.google.common.base.CaseFormat;
 
 import io.github.pfwikis.bots.common.api.generator.api.GenAPIParamInfo.GenAPIExample;
 import io.github.pfwikis.bots.common.api.generator.api.GenAPIParamInfo.GenAPITemplateParameter;

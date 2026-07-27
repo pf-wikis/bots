@@ -151,6 +151,8 @@ import io.github.pfwikis.bots.common.api.generated.AAPIUnlinkaccount;
 
 import io.github.pfwikis.bots.common.api.generated.AAPIUpload;
 
+import io.github.pfwikis.bots.common.api.generated.AAPIUserbymail;
+
 import io.github.pfwikis.bots.common.api.generated.AAPIUserrights;
 
 import io.github.pfwikis.bots.common.api.generated.AAPIValidatepassword;
@@ -380,6 +382,9 @@ public enum AAPIMainAction {
 	/**Upload a file, or get the status of pending uploads.*/
 	UPLOAD("upload", AAPIUpload.class),
 
+	/***/
+	USERBYMAIL("userbymail", AAPIUserbymail.class),
+
 	/**Change a user's group membership.*/
 	USERRIGHTS("userrights", AAPIUserrights.class),
 
@@ -549,6 +554,8 @@ public enum AAPIMainAction {
 					case AAPIUnlinkaccount g -> UNLINKACCOUNT;
 
 					case AAPIUpload g -> UPLOAD;
+
+					case AAPIUserbymail g -> USERBYMAIL;
 
 					case AAPIUserrights g -> USERRIGHTS;
 

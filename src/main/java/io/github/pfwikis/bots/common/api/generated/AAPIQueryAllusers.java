@@ -18,12 +18,9 @@ import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
 import io.github.pfwikis.bots.common.api.AAPI;
 import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryTokensType;
 import io.github.pfwikis.bots.common.api.generated.params.NS;
+import io.github.pfwikis.bots.common.api.generated.params.UserGroup;
 
 import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryAllusersDir;
-
-import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryAllusersGroup;
-
-import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryAllusersExcludegroup;
 
 import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryAllusersRights;
 
@@ -50,9 +47,9 @@ public class AAPIQueryAllusers implements AAPIModule, AAPIQueryListModule {
 
 	private AAPIQueryAllusersDir dir;
 
-	private List<AAPIQueryAllusersGroup> group;
+	private List<UserGroup> group;
 
-	private List<AAPIQueryAllusersExcludegroup> excludegroup;
+	private List<UserGroup> excludegroup;
 
 	private List<AAPIQueryAllusersRights> rights;
 
@@ -114,7 +111,7 @@ public class AAPIQueryAllusers implements AAPIModule, AAPIQueryListModule {
 
 	/**Only include users in the given groups. Does not include implicit or auto-promoted groups like *, user, or autoconfirmed.
 	 */
-	public AAPIQueryAllusers group(AAPIQueryAllusersGroup group) {
+	public AAPIQueryAllusers group(UserGroup group) {
 		this.group = List.of(group);
 
 		return this;
@@ -122,20 +119,20 @@ public class AAPIQueryAllusers implements AAPIModule, AAPIQueryListModule {
 
 	/**Only include users in the given groups. Does not include implicit or auto-promoted groups like *, user, or autoconfirmed.
 	 */
-	public AAPIQueryAllusers group(AAPIQueryAllusersGroup... group) {
+	public AAPIQueryAllusers group(UserGroup... group) {
 		this.group = List.of(group);
 		return this;
 	}
 
 	/**Only include users in the given groups. Does not include implicit or auto-promoted groups like *, user, or autoconfirmed.
 	 */
-	public List<AAPIQueryAllusersGroup> getGroup() {
+	public List<UserGroup> getGroup() {
 		return this.group;
 	}
 
 	/**Exclude users in the given groups.
 	 */
-	public AAPIQueryAllusers excludegroup(AAPIQueryAllusersExcludegroup excludegroup) {
+	public AAPIQueryAllusers excludegroup(UserGroup excludegroup) {
 		this.excludegroup = List.of(excludegroup);
 
 		return this;
@@ -143,14 +140,14 @@ public class AAPIQueryAllusers implements AAPIModule, AAPIQueryListModule {
 
 	/**Exclude users in the given groups.
 	 */
-	public AAPIQueryAllusers excludegroup(AAPIQueryAllusersExcludegroup... excludegroup) {
+	public AAPIQueryAllusers excludegroup(UserGroup... excludegroup) {
 		this.excludegroup = List.of(excludegroup);
 		return this;
 	}
 
 	/**Exclude users in the given groups.
 	 */
-	public List<AAPIQueryAllusersExcludegroup> getExcludegroup() {
+	public List<UserGroup> getExcludegroup() {
 		return this.excludegroup;
 	}
 
@@ -314,10 +311,7 @@ public class AAPIQueryAllusers implements AAPIModule, AAPIQueryListModule {
 
 			sb.append("augroup")
 					.append("=")
-					.append(
-							group.stream()
-									.map(v -> v.getJsonValue())
-									.collect(Collectors.joining("|")));
+					.append(group.stream().map(v -> v.getName()).collect(Collectors.joining("|")));
 
 			sb.append(", ");
 		}
@@ -328,7 +322,7 @@ public class AAPIQueryAllusers implements AAPIModule, AAPIQueryListModule {
 					.append("=")
 					.append(
 							excludegroup.stream()
-									.map(v -> v.getJsonValue())
+									.map(v -> v.getName())
 									.collect(Collectors.joining("|")));
 
 			sb.append(", ");
@@ -425,16 +419,14 @@ public class AAPIQueryAllusers implements AAPIModule, AAPIQueryListModule {
 
 			req.addParameter(
 					paramPrefix + "augroup",
-					group.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
+					group.stream().map(v -> v.getName()).collect(Collectors.joining("|")));
 		}
 
 		if (excludegroup != null) {
 
 			req.addParameter(
 					paramPrefix + "auexcludegroup",
-					excludegroup.stream()
-							.map(v -> v.getJsonValue())
-							.collect(Collectors.joining("|")));
+					excludegroup.stream().map(v -> v.getName()).collect(Collectors.joining("|")));
 		}
 
 		if (rights != null) {

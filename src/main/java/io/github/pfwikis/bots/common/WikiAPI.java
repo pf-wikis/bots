@@ -34,8 +34,9 @@ import io.github.pfwikis.bots.common.api.generated.AAPIQueryQuerypage;
 import io.github.pfwikis.bots.common.api.generated.AAPIQueryRecentchanges;
 import io.github.pfwikis.bots.common.api.generated.AAPIQueryTranscludedin;
 import io.github.pfwikis.bots.common.api.generated.AAPIUpload;
+import io.github.pfwikis.bots.common.api.generated.AAPIUserbymail;
+import io.github.pfwikis.bots.common.api.generated.AAPIUserrights;
 import io.github.pfwikis.bots.common.api.generated.params.AAPIAskApi_version;
-import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryAllusersGroup;
 import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryCategorymembersProp;
 import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryInfoProp;
 import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryLogeventsProp;
@@ -45,6 +46,7 @@ import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryRecentchanges
 import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryRecentchangesShow;
 import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryRecentchangesType;
 import io.github.pfwikis.bots.common.api.generated.params.NS;
+import io.github.pfwikis.bots.common.api.generated.params.UserGroup;
 import io.github.pfwikis.bots.common.api.model.AAPIExceptions.AAPIMissingPageException;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
 import io.github.pfwikis.bots.common.api.model.PageRef;
@@ -61,6 +63,8 @@ import io.github.pfwikis.bots.common.api.responses.QueryResponse.ResponsePageRef
 import io.github.pfwikis.bots.common.api.responses.SemanticAsk;
 import io.github.pfwikis.bots.common.api.responses.SemanticAsk.Result;
 import io.github.pfwikis.bots.common.api.responses.UploadResponse;
+import io.github.pfwikis.bots.common.api.responses.UserByMail;
+import io.github.pfwikis.bots.common.api.responses.UserrightsResponse;
 import io.github.pfwikis.bots.common.bots.Bot;
 import io.github.pfwikis.bots.utils.Jackson;
 import io.github.pfwikis.bots.utils.SimpleCache.CacheId;
@@ -162,7 +166,7 @@ public class WikiAPI {
 	public List<MWUser> getAdmins() {
 		return wiki.run(AAPIQuery.create()
 			.list(AAPIQueryAllusers.create()
-					.group(AAPIQueryAllusersGroup.SYSOP)
+					.group(UserGroup.SYSOP)
 			),
 			QueryResponse.class
 		).getAllusers();
@@ -389,6 +393,40 @@ public class WikiAPI {
 			),
 			QueryResponse.class
 		).getAllpages().stream().map(p->p.getPage()).toList();
+	}
+
+	public MWUser getUserByEmail(String email) {
+		var res = wiki.run(AAPIUserbymail.create(email), UserByMail.class);
+		if(res.isFound()) {
+			var u = new MWUser();
+			u.setName(res.getName());
+			u.setUserid(res.getId());
+			return u;
+		}
+		return null;
+	}
+
+	public List<MWUser> getUsersInGroup(UserGroup group) {
+		return wiki.run(AAPIQuery
+			.create()
+			.list(AAPIQueryAllusers.create()
+				.group(group)
+			),
+		QueryResponse.class).getAllusers();
+	}
+
+	public void removeGroupFromUser(MWUser u, UserGroup group) {
+		wiki.run(AAPIUserrights.create()
+			.user(u.getName())
+			.remove(group),
+			UserrightsResponse.class);
+	}
+	
+	public void addGroupToUser(MWUser u, UserGroup group) {
+		wiki.run(AAPIUserrights.create()
+			.user(u.getName())
+			.add(group),
+			UserrightsResponse.class);
 	}
 	
 	

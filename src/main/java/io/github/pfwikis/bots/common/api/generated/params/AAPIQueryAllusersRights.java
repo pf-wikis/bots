@@ -131,6 +131,8 @@ public enum AAPIQueryAllusersRights {
 
 	LOOKUPCREDENTIALS("lookupcredentials"),
 
+	LOOKUPUSERBYEMAIL("lookupuserbyemail"),
+
 	MAILPASSWORD("mailpassword"),
 
 	MANAGE_ALL_PUSH_SUBSCRIPTIONS("manage-all-push-subscriptions"),
@@ -567,6 +569,11 @@ public enum AAPIQueryAllusersRights {
 
 		public Builder LOOKUPCREDENTIALS() {
 			set.add(LOOKUPCREDENTIALS);
+			return this;
+		}
+
+		public Builder LOOKUPUSERBYEMAIL() {
+			set.add(LOOKUPUSERBYEMAIL);
 			return this;
 		}
 

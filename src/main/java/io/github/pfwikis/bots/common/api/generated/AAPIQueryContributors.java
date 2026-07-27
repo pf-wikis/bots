@@ -18,10 +18,7 @@ import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
 import io.github.pfwikis.bots.common.api.AAPI;
 import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryTokensType;
 import io.github.pfwikis.bots.common.api.generated.params.NS;
-
-import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryContributorsGroup;
-
-import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryContributorsExcludegroup;
+import io.github.pfwikis.bots.common.api.generated.params.UserGroup;
 
 import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryContributorsRights;
 
@@ -42,9 +39,9 @@ public class AAPIQueryContributors implements AAPIModule, AAPIQueryPropModule {
 
 	private AAPIQueryContributors() {}
 
-	private List<AAPIQueryContributorsGroup> group;
+	private List<UserGroup> group;
 
-	private List<AAPIQueryContributorsExcludegroup> excludegroup;
+	private List<UserGroup> excludegroup;
 
 	private List<AAPIQueryContributorsRights> rights;
 
@@ -54,7 +51,7 @@ public class AAPIQueryContributors implements AAPIModule, AAPIQueryPropModule {
 
 	/**Only include users in the given groups. Does not include implicit or auto-promoted groups like *, user, or autoconfirmed.
 	 */
-	public AAPIQueryContributors group(AAPIQueryContributorsGroup group) {
+	public AAPIQueryContributors group(UserGroup group) {
 		this.group = List.of(group);
 
 		return this;
@@ -62,20 +59,20 @@ public class AAPIQueryContributors implements AAPIModule, AAPIQueryPropModule {
 
 	/**Only include users in the given groups. Does not include implicit or auto-promoted groups like *, user, or autoconfirmed.
 	 */
-	public AAPIQueryContributors group(AAPIQueryContributorsGroup... group) {
+	public AAPIQueryContributors group(UserGroup... group) {
 		this.group = List.of(group);
 		return this;
 	}
 
 	/**Only include users in the given groups. Does not include implicit or auto-promoted groups like *, user, or autoconfirmed.
 	 */
-	public List<AAPIQueryContributorsGroup> getGroup() {
+	public List<UserGroup> getGroup() {
 		return this.group;
 	}
 
 	/**Exclude users in the given groups. Does not include implicit or auto-promoted groups like *, user, or autoconfirmed.
 	 */
-	public AAPIQueryContributors excludegroup(AAPIQueryContributorsExcludegroup excludegroup) {
+	public AAPIQueryContributors excludegroup(UserGroup excludegroup) {
 		this.excludegroup = List.of(excludegroup);
 
 		return this;
@@ -83,14 +80,14 @@ public class AAPIQueryContributors implements AAPIModule, AAPIQueryPropModule {
 
 	/**Exclude users in the given groups. Does not include implicit or auto-promoted groups like *, user, or autoconfirmed.
 	 */
-	public AAPIQueryContributors excludegroup(AAPIQueryContributorsExcludegroup... excludegroup) {
+	public AAPIQueryContributors excludegroup(UserGroup... excludegroup) {
 		this.excludegroup = List.of(excludegroup);
 		return this;
 	}
 
 	/**Exclude users in the given groups. Does not include implicit or auto-promoted groups like *, user, or autoconfirmed.
 	 */
-	public List<AAPIQueryContributorsExcludegroup> getExcludegroup() {
+	public List<UserGroup> getExcludegroup() {
 		return this.excludegroup;
 	}
 
@@ -158,10 +155,7 @@ public class AAPIQueryContributors implements AAPIModule, AAPIQueryPropModule {
 
 			sb.append("pcgroup")
 					.append("=")
-					.append(
-							group.stream()
-									.map(v -> v.getJsonValue())
-									.collect(Collectors.joining("|")));
+					.append(group.stream().map(v -> v.getName()).collect(Collectors.joining("|")));
 
 			sb.append(", ");
 		}
@@ -172,7 +166,7 @@ public class AAPIQueryContributors implements AAPIModule, AAPIQueryPropModule {
 					.append("=")
 					.append(
 							excludegroup.stream()
-									.map(v -> v.getJsonValue())
+									.map(v -> v.getName())
 									.collect(Collectors.joining("|")));
 
 			sb.append(", ");
@@ -219,16 +213,14 @@ public class AAPIQueryContributors implements AAPIModule, AAPIQueryPropModule {
 
 			req.addParameter(
 					paramPrefix + "pcgroup",
-					group.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
+					group.stream().map(v -> v.getName()).collect(Collectors.joining("|")));
 		}
 
 		if (excludegroup != null) {
 
 			req.addParameter(
 					paramPrefix + "pcexcludegroup",
-					excludegroup.stream()
-							.map(v -> v.getJsonValue())
-							.collect(Collectors.joining("|")));
+					excludegroup.stream().map(v -> v.getName()).collect(Collectors.joining("|")));
 		}
 
 		if (rights != null) {

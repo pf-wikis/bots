@@ -18,10 +18,7 @@ import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
 import io.github.pfwikis.bots.common.api.AAPI;
 import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryTokensType;
 import io.github.pfwikis.bots.common.api.generated.params.NS;
-
-import io.github.pfwikis.bots.common.api.generated.params.AAPIUserrightsAdd;
-
-import io.github.pfwikis.bots.common.api.generated.params.AAPIUserrightsRemove;
+import io.github.pfwikis.bots.common.api.generated.params.UserGroup;
 
 import io.github.pfwikis.bots.common.api.generated.params.AAPIMainAction.AAPIMainActionModule;
 
@@ -40,11 +37,11 @@ public class AAPIUserrights implements AAPIModule, AAPITokenModule, AAPIMainActi
 
 	private String user;
 
-	private List<AAPIUserrightsAdd> add;
+	private List<UserGroup> add;
 
 	private List<String> expiry;
 
-	private List<AAPIUserrightsRemove> remove;
+	private List<UserGroup> remove;
 
 	private String reason;
 
@@ -70,7 +67,7 @@ public class AAPIUserrights implements AAPIModule, AAPITokenModule, AAPIMainActi
 
 	/**Add the user to these groups, or if they are already a member, update the expiry of their membership in that group.
 	 */
-	public AAPIUserrights add(AAPIUserrightsAdd add) {
+	public AAPIUserrights add(UserGroup add) {
 		this.add = List.of(add);
 
 		return this;
@@ -78,14 +75,14 @@ public class AAPIUserrights implements AAPIModule, AAPITokenModule, AAPIMainActi
 
 	/**Add the user to these groups, or if they are already a member, update the expiry of their membership in that group.
 	 */
-	public AAPIUserrights add(AAPIUserrightsAdd... add) {
+	public AAPIUserrights add(UserGroup... add) {
 		this.add = List.of(add);
 		return this;
 	}
 
 	/**Add the user to these groups, or if they are already a member, update the expiry of their membership in that group.
 	 */
-	public List<AAPIUserrightsAdd> getAdd() {
+	public List<UserGroup> getAdd() {
 		return this.add;
 	}
 
@@ -112,7 +109,7 @@ public class AAPIUserrights implements AAPIModule, AAPITokenModule, AAPIMainActi
 
 	/**Remove the user from these groups.
 	 */
-	public AAPIUserrights remove(AAPIUserrightsRemove remove) {
+	public AAPIUserrights remove(UserGroup remove) {
 		this.remove = List.of(remove);
 
 		return this;
@@ -120,14 +117,14 @@ public class AAPIUserrights implements AAPIModule, AAPITokenModule, AAPIMainActi
 
 	/**Remove the user from these groups.
 	 */
-	public AAPIUserrights remove(AAPIUserrightsRemove... remove) {
+	public AAPIUserrights remove(UserGroup... remove) {
 		this.remove = List.of(remove);
 		return this;
 	}
 
 	/**Remove the user from these groups.
 	 */
-	public List<AAPIUserrightsRemove> getRemove() {
+	public List<UserGroup> getRemove() {
 		return this.remove;
 	}
 
@@ -214,10 +211,7 @@ public class AAPIUserrights implements AAPIModule, AAPITokenModule, AAPIMainActi
 
 			sb.append("add")
 					.append("=")
-					.append(
-							add.stream()
-									.map(v -> v.getJsonValue())
-									.collect(Collectors.joining("|")));
+					.append(add.stream().map(v -> v.getName()).collect(Collectors.joining("|")));
 
 			sb.append(", ");
 		}
@@ -235,10 +229,7 @@ public class AAPIUserrights implements AAPIModule, AAPITokenModule, AAPIMainActi
 
 			sb.append("remove")
 					.append("=")
-					.append(
-							remove.stream()
-									.map(v -> v.getJsonValue())
-									.collect(Collectors.joining("|")));
+					.append(remove.stream().map(v -> v.getName()).collect(Collectors.joining("|")));
 
 			sb.append(", ");
 		}
@@ -288,7 +279,7 @@ public class AAPIUserrights implements AAPIModule, AAPITokenModule, AAPIMainActi
 
 			req.addParameter(
 					paramPrefix + "add",
-					add.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
+					add.stream().map(v -> v.getName()).collect(Collectors.joining("|")));
 		}
 
 		if (expiry != null) {
@@ -302,7 +293,7 @@ public class AAPIUserrights implements AAPIModule, AAPITokenModule, AAPIMainActi
 
 			req.addParameter(
 					paramPrefix + "remove",
-					remove.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
+					remove.stream().map(v -> v.getName()).collect(Collectors.joining("|")));
 		}
 
 		if (reason != null) {

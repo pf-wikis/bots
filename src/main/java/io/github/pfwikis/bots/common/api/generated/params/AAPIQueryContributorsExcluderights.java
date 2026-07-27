@@ -123,6 +123,8 @@ public enum AAPIQueryContributorsExcluderights {
 
 	LOOKUPCREDENTIALS("lookupcredentials"),
 
+	LOOKUPUSERBYEMAIL("lookupuserbyemail"),
+
 	MANAGE_ALL_PUSH_SUBSCRIPTIONS("manage-all-push-subscriptions"),
 
 	MANAGECHANGETAGS("managechangetags"),
@@ -525,6 +527,11 @@ public enum AAPIQueryContributorsExcluderights {
 
 		public Builder LOOKUPCREDENTIALS() {
 			set.add(LOOKUPCREDENTIALS);
+			return this;
+		}
+
+		public Builder LOOKUPUSERBYEMAIL() {
+			set.add(LOOKUPUSERBYEMAIL);
 			return this;
 		}
 

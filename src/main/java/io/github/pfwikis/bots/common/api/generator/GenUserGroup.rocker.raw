@@ -1,0 +1,29 @@
+@import io.github.pfwikis.bots.common.api.generator.api.GenAPIParameter
+@import io.github.pfwikis.bots.common.api.generator.APIGenerator
+@import io.github.pfwikis.bots.common.api.generator.model.APIInfo
+@import com.google.common.base.CaseFormat
+@import java.util.List
+
+@args(APIInfo info)
+
+package io.github.pfwikis.bots.common.api.generated.params;
+
+//import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
+import lombok.RequiredArgsConstructor;
+import lombok.Getter;
+import io.github.pfwikis.bots.common.Wiki;
+
+@@Getter
+@@RequiredArgsConstructor
+public enum UserGroup {
+	@for((it,iw):info.getUsergroups()) {
+		@iw.getJavaName()(
+			"@iw.getWikiName()"
+		)@if(it.last()){;}else{,}
+	}
+	
+	@@Getter(onMethod_=@@JsonValue)
+	private final String name;
+}

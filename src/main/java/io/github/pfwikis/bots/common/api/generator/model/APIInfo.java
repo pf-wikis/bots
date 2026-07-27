@@ -11,6 +11,7 @@ import com.fizzed.rocker.RockerContent;
 import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.api.generator.api.GenAPIInterwiki;
 import io.github.pfwikis.bots.common.api.generator.api.GenAPINamespace;
+import io.github.pfwikis.bots.common.api.generator.api.GenAPIQuery;
 import io.github.pfwikis.bots.common.api.generator.api.GenAPIResult;
 import io.github.pfwikis.bots.common.api.generator.model.APIInfo.APIInterwiki;
 import lombok.EqualsAndHashCode;
@@ -21,6 +22,7 @@ public class APIInfo {
 	
 	private List<APINamespace> namespaces;
 	private List<APIInterwiki> interwikis;
+	private List<APIUserGroup> usergroups;
 
 	public static APIInfo create(GenAPIResult... infos) {
 		var res = new APIInfo();
@@ -40,6 +42,13 @@ public class APIInfo {
 		res.interwikis = Arrays.stream(infos)
 			.flatMap(i->i.getQuery().getInterwikimap().stream())
 			.map(APIInterwiki::new)
+			.distinct()
+			.sorted()
+			.toList();
+		
+		res.usergroups = Arrays.stream(infos)
+			.flatMap(i->i.getQuery().getUsergroups().stream())
+			.map(APIUserGroup::new)
 			.distinct()
 			.sorted()
 			.toList();
@@ -70,6 +79,26 @@ public class APIInfo {
 		@Override
 		public int compareTo(APIInterwiki o) {
 			return prefix.compareTo(o.prefix);
+		}
+	}
+	
+	@Getter
+	@EqualsAndHashCode
+	public static class APIUserGroup implements Comparable<APIUserGroup> {
+		
+		private String javaName;
+		private String wikiName;
+		
+		public APIUserGroup(GenAPIQuery.UserGroup iw) {
+			javaName = iw.getName().toUpperCase();
+			if("*".equals(javaName))
+				javaName = "STAR";
+			wikiName = iw.getName();
+		}
+		
+		@Override
+		public int compareTo(APIUserGroup o) {
+			return wikiName.compareTo(o.wikiName);
 		}
 	}
 	

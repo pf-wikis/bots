@@ -32,6 +32,7 @@ import io.github.pfwikis.bots.common.api.responses.AAPIWrappedResponse;
 import io.github.pfwikis.bots.utils.Jackson;
 import lombok.extern.slf4j.Slf4j;
 import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.StringNode;
 
 @Slf4j
 public class APIGenerator {
@@ -47,7 +48,8 @@ public class APIGenerator {
 		RockerRuntime.getInstance().setReloading(true);
 		//FileUtils.deleteQuietly(root);
 		
-		getInfo(null, "main");
+		var global = generateGlobalEnums();
+		getInfo(null, "main", global);
 		for(var m:modules.values()) {
 			render(GenModule.template(m), new File(root, m.getJavaName()+".java"));
 			for(var p:m.getParameters()) {
@@ -56,18 +58,20 @@ public class APIGenerator {
 				}
 			}
 		}
-		generateNamespaceEnum();
+		
 	}
 
-	private void generateNamespaceEnum() throws IOException {
-		var res1 = parseJson("https://pathfinderwiki.com/w/api.php?format=json&action=query&meta=siteinfo&siprop=namespaces%7Cinterwikimap&utf8=1&formatversion=2", GenAPIResult.class);
-		var res2 = parseJson("https://starfinderwiki.com/w/api.php?format=json&action=query&meta=siteinfo&siprop=namespaces%7Cinterwikimap&utf8=1&formatversion=2", GenAPIResult.class);
+	private APIInfo generateGlobalEnums() throws IOException {
+		var res1 = parseJson("https://pathfinderwiki.com/w/api.php?format=json&action=query&meta=siteinfo&siprop=namespaces%7Cinterwikimap%7Cusergroups&utf8=1&formatversion=2", GenAPIResult.class);
+		var res2 = parseJson("https://starfinderwiki.com/w/api.php?format=json&action=query&meta=siteinfo&siprop=namespaces%7Cinterwikimap%7Cusergroups&utf8=1&formatversion=2", GenAPIResult.class);
 		var info = APIInfo.create(res1, res2);
 		render(GenNS.template(info), new File(root, "params/NS.java"));
 		render(GenInterwiki.template(info), new File(root, "params/Interwiki.java"));
+		render(GenUserGroup.template(info), new File(root, "params/UserGroup.java"));
+		return info;
 	}
 
-	public APIModule getInfo(GenAPIModule parent, String path) {
+	public APIModule getInfo(GenAPIModule parent, String path, APIInfo global) {
 		log.info(path);
 		if(!workList.add(path)) {
 			return Objects.requireNonNull(modules.get(path));
@@ -87,9 +91,18 @@ public class APIGenerator {
 		}
 		var mod = info.getModules().getFirst();
 		
-		//handle special cases
+		handleSpecialCases(path, mod, global);
+		
+		
+		var res = APIModule.create(this, mod, global);
+		modules.put(path, res);
+		return res;
+	}
+
+	private void handleSpecialCases(String path, GenAPIModule mod, APIInfo global) {
+		//replace pageprops with an enum
 		if("query+pageprops".equals(path)) {
-			url = "https://pathfinderwiki.com/w/api.php?action=query&list=pagepropnames&ppnlimit=max&format=json&utf8=1&formatversion=2";
+			var url = "https://pathfinderwiki.com/w/api.php?action=query&list=pagepropnames&ppnlimit=max&format=json&utf8=1&formatversion=2";
 			var props = parseJson(url, AAPIWrappedResponse.class).getOtherFields().get("query").get("pagepropnames").asArray();
 			var arr = new ArrayNode(Jackson.JSON.getNodeFactory());
 			props.valueStream()
@@ -102,9 +115,15 @@ public class APIGenerator {
 			});
 		}
 		
-		var res = APIModule.create(this, mod);
-		modules.put(path, res);
-		return res;
+		//replace groups with the same enum
+		for(var m:mod.getParameters()) {
+			if(m.getEnumValues() != null
+					&& m.getEnumValues().size()>0
+					&& m.getEnumValues().stream().allMatch(v->global.getUsergroups().stream().anyMatch(g->g.getWikiName().equals(v)))) {
+				m.setType(new StringNode("user-group"));
+				m.setEnumValues(null);
+			}
+		}
 	}
 
 	public <T> T parseJson(String url, Class<T> type) {

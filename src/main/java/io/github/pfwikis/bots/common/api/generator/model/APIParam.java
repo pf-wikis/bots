@@ -6,7 +6,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.fizzed.rocker.RockerContent;
 import com.google.common.base.CaseFormat;
 
 import io.github.pfwikis.bots.common.api.generator.APIGenerator;
@@ -26,7 +25,7 @@ public class APIParam {
 	private String javaValueType;
 	private String javaParamValueType;
 
-	public static APIParam create(APIGenerator gen, APIModule m, GenAPIParameter param) {
+	public static APIParam create(APIGenerator gen, APIModule m, GenAPIParameter param, APIInfo global) {
 		var r = new APIParam();
 		r.module = m;
 		r.parameter = param;
@@ -101,7 +100,7 @@ public class APIParam {
 		if(param.getSubmodules() != null) {
 			for(var subE : param.getSubmodules().entrySet()) {
 				var v = r.enumValues.stream().filter(ev->ev.getValue().equals(subE.getKey())).findAny().get();
-				v.setReferencedModule(gen.getInfo(m.getModule(), subE.getValue()));
+				v.setReferencedModule(gen.getInfo(m.getModule(), subE.getValue(), global));
 				if(v.getReferencedModule() != null) {
 					v.getReferencedModule().getReferencedBy().add(r);
 				}

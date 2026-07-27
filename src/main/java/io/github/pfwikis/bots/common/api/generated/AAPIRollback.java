@@ -18,6 +18,7 @@ import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
 import io.github.pfwikis.bots.common.api.AAPI;
 import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryTokensType;
 import io.github.pfwikis.bots.common.api.generated.params.NS;
+import io.github.pfwikis.bots.common.api.generated.params.UserGroup;
 
 import io.github.pfwikis.bots.common.api.generated.params.AAPIRollbackWatchlist;
 

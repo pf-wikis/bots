@@ -119,7 +119,13 @@ public class GenAPIParameter {
 				return name+".toString()";
 			}
 		},
-		RAW("raw", "String");
+		RAW("raw", "String"),
+		GROUP("user-group", "UserGroup") {
+			@Override
+			public String codeToGetJsonValue(String name) {
+				return name+".getName()";
+			}
+		};
 		
 		@Getter(onMethod_=@JsonValue)
 		private final String jsonValue;
