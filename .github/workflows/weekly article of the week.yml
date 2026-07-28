@@ -17,15 +17,11 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-      run: |
-        cd rocker-post-processor
-        mvn -B install
-        cd ..
-        mvn -B package
+      run: mvn -B package
     - name: Run bot
       env:
         BOT_DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
         BOT_PFKEY: ${{ secrets.PFKEY }}
         BOT_SFKEY: ${{ secrets.SFKEY }}
         BOT_ANTI_PROTECTION_SECRET: ${{ secrets.ANTI_PROTECTION_SECRET }}
-      run: java -jar target/bots-0.0.0.jar article-of-the-week
+      run: java -jar bots/target/bots-0.0.0.jar article-of-the-week

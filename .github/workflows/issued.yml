@@ -20,11 +20,7 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-      run: |
-        cd rocker-post-processor
-        mvn -B install
-        cd ..
-        mvn -B package
+      run: mvn -B package
     - name: Run assistant
       env:
         ISSUE_TEMPLATE: ${{ steps.issue-parser.outputs.jsonString }}
@@ -32,7 +28,7 @@ jobs:
         BOT_PFKEY: ${{ secrets.PFKEY }}
         BOT_SFKEY: ${{ secrets.SFKEY }}
         BOT_ANTI_PROTECTION_SECRET: ${{ secrets.ANTI_PROTECTION_SECRET }}
-      run: java -jar target/bots-0.0.0.jar assistant
+      run: java -jar bots/target/bots-0.0.0.jar assistant
     - name: Close Issue
       run: gh issue close --comment "Issue Done" "${{ github.event.issue.number }}"
       env:
