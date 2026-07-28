@@ -24,4 +24,4 @@ jobs:
         BOT_PFKEY: ${{ secrets.PFKEY }}
         BOT_SFKEY: ${{ secrets.SFKEY }}
         BOT_ANTI_PROTECTION_SECRET: ${{ secrets.ANTI_PROTECTION_SECRET }}
-      run: java -jar bots/target/bots-0.0.0.jar article-of-the-week
+      run: java -jar bots/target/bots-0.0.0-jar-with-dependencies.jar article-of-the-week
