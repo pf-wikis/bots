@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -208,45 +209,45 @@ public class AAPIMergehistory implements AAPIModule, AAPITokenModule, AAPIMainAc
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (from != null) {
 
-			req.addParameter(paramPrefix + "from", from);
+			ctx.addParameter("from", from);
 		}
 
 		if (fromid != null) {
 
-			req.addParameter(paramPrefix + "fromid", fromid.toString());
+			ctx.addParameter("fromid", fromid.toString());
 		}
 
 		if (to != null) {
 
-			req.addParameter(paramPrefix + "to", to);
+			ctx.addParameter("to", to);
 		}
 
 		if (toid != null) {
 
-			req.addParameter(paramPrefix + "toid", toid.toString());
+			ctx.addParameter("toid", toid.toString());
 		}
 
 		if (timestamp != null) {
 
-			req.addParameter(
-					paramPrefix + "timestamp",
+			ctx.addParameter(
+					"timestamp",
 					timestamp.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
 		}
 
 		if (reason != null) {
 
-			req.addParameter(paramPrefix + "reason", reason);
+			ctx.addParameter("reason", reason);
 		}
 
-		token = api.requestToken(AAPIQueryTokensType.CSRF);
+		token = ctx.requestToken(AAPIQueryTokensType.CSRF);
 
 		if (token != null) {
 
-			req.addParameter(paramPrefix + "token", token);
+			ctx.addParameter("token", token);
 		}
 	}
 

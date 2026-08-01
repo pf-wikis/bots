@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -379,83 +380,80 @@ public class AAPIQueryImageinfo implements AAPIModule, AAPIQueryPropModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "iiprop",
+			ctx.addParameter(
+					"iiprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "iilimit", limit.toString());
+			ctx.addParameter("iilimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "iilimit", "5000");
+			ctx.addParameter("iilimit", "5000");
 		}
 
 		if (start != null) {
 
-			req.addParameter(
-					paramPrefix + "iistart",
-					start.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
+			ctx.addParameter(
+					"iistart", start.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
 		}
 
 		if (end != null) {
 
-			req.addParameter(
-					paramPrefix + "iiend",
-					end.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
+			ctx.addParameter(
+					"iiend", end.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
 		}
 
 		if (urlwidth != null) {
 
-			req.addParameter(paramPrefix + "iiurlwidth", urlwidth.toString());
+			ctx.addParameter("iiurlwidth", urlwidth.toString());
 		}
 
 		if (urlheight != null) {
 
-			req.addParameter(paramPrefix + "iiurlheight", urlheight.toString());
+			ctx.addParameter("iiurlheight", urlheight.toString());
 		}
 
 		if (metadataversion != null) {
 
-			req.addParameter(paramPrefix + "iimetadataversion", metadataversion);
+			ctx.addParameter("iimetadataversion", metadataversion);
 		}
 
 		if (extmetadatalanguage != null) {
 
-			req.addParameter(paramPrefix + "iiextmetadatalanguage", extmetadatalanguage);
+			ctx.addParameter("iiextmetadatalanguage", extmetadatalanguage);
 		}
 
 		if (extmetadatamultilang != null) {
 
-			req.addParameter(
-					paramPrefix + "iiextmetadatamultilang", extmetadatamultilang.toString());
+			ctx.addParameter("iiextmetadatamultilang", extmetadatamultilang.toString());
 		}
 
 		if (extmetadatafilter != null) {
 
-			req.addParameter(
-					paramPrefix + "iiextmetadatafilter",
+			ctx.addParameter(
+					"iiextmetadatafilter",
 					extmetadatafilter.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
 		if (urlparam != null) {
 
-			req.addParameter(paramPrefix + "iiurlparam", urlparam);
+			ctx.addParameter("iiurlparam", urlparam);
 		}
 
 		if (badfilecontexttitle != null) {
 
-			req.addParameter(paramPrefix + "iibadfilecontexttitle", badfilecontexttitle);
+			ctx.addParameter("iibadfilecontexttitle", badfilecontexttitle);
 		}
 
 		if (localonly != null) {
 
-			req.addParameter(paramPrefix + "iilocalonly", localonly.toString());
+			ctx.addParameter("iilocalonly", localonly.toString());
 		}
 	}
 

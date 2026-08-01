@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -197,38 +198,38 @@ public class AAPIExpandtemplates implements AAPIModule, AAPIMainActionModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (title != null) {
 
-			req.addParameter(paramPrefix + "title", title);
+			ctx.addParameter("title", title);
 		}
 
 		if (text != null) {
 
-			req.addParameter(paramPrefix + "text", text);
+			ctx.addParameter("text", text);
 		}
 
 		if (revid != null) {
 
-			req.addParameter(paramPrefix + "revid", revid.toString());
+			ctx.addParameter("revid", revid.toString());
 		}
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "prop",
+			ctx.addParameter(
+					"prop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (includecomments != null) {
 
-			req.addParameter(paramPrefix + "includecomments", includecomments.toString());
+			ctx.addParameter("includecomments", includecomments.toString());
 		}
 
 		if (showstrategykeys != null) {
 
-			req.addParameter(paramPrefix + "showstrategykeys", showstrategykeys.toString());
+			ctx.addParameter("showstrategykeys", showstrategykeys.toString());
 		}
 	}
 

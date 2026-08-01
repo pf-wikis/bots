@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -239,17 +240,17 @@ public class AAPIOptions implements AAPIModule, AAPITokenModule, AAPIMainActionM
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (reset != null) {
 
-			req.addParameter(paramPrefix + "reset", reset.toString());
+			ctx.addParameter("reset", reset.toString());
 		}
 
 		if (resetkinds != null) {
 
-			req.addParameter(
-					paramPrefix + "resetkinds",
+			ctx.addParameter(
+					"resetkinds",
 					resetkinds.stream()
 							.map(v -> v.getJsonValue())
 							.collect(Collectors.joining("|")));
@@ -257,31 +258,30 @@ public class AAPIOptions implements AAPIModule, AAPITokenModule, AAPIMainActionM
 
 		if (change != null) {
 
-			req.addParameter(
-					paramPrefix + "change",
-					change.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter(
+					"change", change.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
 		if (optionname != null) {
 
-			req.addParameter(paramPrefix + "optionname", optionname);
+			ctx.addParameter("optionname", optionname);
 		}
 
 		if (optionvalue != null) {
 
-			req.addParameter(paramPrefix + "optionvalue", optionvalue);
+			ctx.addParameter("optionvalue", optionvalue);
 		}
 
 		if (global != null) {
 
-			req.addParameter(paramPrefix + "global", global.getJsonValue());
+			ctx.addParameter("global", global.getJsonValue());
 		}
 
-		token = api.requestToken(AAPIQueryTokensType.CSRF);
+		token = ctx.requestToken(AAPIQueryTokensType.CSRF);
 
 		if (token != null) {
 
-			req.addParameter(paramPrefix + "token", token);
+			ctx.addParameter("token", token);
 		}
 	}
 

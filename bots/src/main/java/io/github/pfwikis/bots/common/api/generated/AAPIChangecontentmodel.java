@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -208,45 +209,43 @@ public class AAPIChangecontentmodel implements AAPIModule, AAPITokenModule, AAPI
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (title != null) {
 
-			req.addParameter(paramPrefix + "title", title);
+			ctx.addParameter("title", title);
 		}
 
 		if (pageid != null) {
 
-			req.addParameter(paramPrefix + "pageid", pageid.toString());
+			ctx.addParameter("pageid", pageid.toString());
 		}
 
 		if (summary != null) {
 
-			req.addParameter(paramPrefix + "summary", summary);
+			ctx.addParameter("summary", summary);
 		}
 
 		if (tags != null) {
 
-			req.addParameter(
-					paramPrefix + "tags",
-					tags.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter("tags", tags.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
 		if (model != null) {
 
-			req.addParameter(paramPrefix + "model", model.getJsonValue());
+			ctx.addParameter("model", model.getJsonValue());
 		}
 
 		if (bot != null) {
 
-			req.addParameter(paramPrefix + "bot", bot.toString());
+			ctx.addParameter("bot", bot.toString());
 		}
 
-		token = api.requestToken(AAPIQueryTokensType.CSRF);
+		token = ctx.requestToken(AAPIQueryTokensType.CSRF);
 
 		if (token != null) {
 
-			req.addParameter(paramPrefix + "token", token);
+			ctx.addParameter("token", token);
 		}
 	}
 

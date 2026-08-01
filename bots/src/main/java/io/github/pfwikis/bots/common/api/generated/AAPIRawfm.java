@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -65,11 +66,11 @@ public class AAPIRawfm implements AAPIModule, AAPIMainFormatModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (wrappedhtml != null) {
 
-			req.addParameter(paramPrefix + "wrappedhtml", wrappedhtml.toString());
+			ctx.addParameter("wrappedhtml", wrappedhtml.toString());
 		}
 	}
 

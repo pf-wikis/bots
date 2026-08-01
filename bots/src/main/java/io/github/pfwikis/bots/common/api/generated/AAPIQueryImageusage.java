@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -205,22 +206,21 @@ public class AAPIQueryImageusage
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (title != null) {
 
 			if (title.toPageRef().hasId()) {
-				req.addParameter(
-						paramPrefix + "iupageid", Integer.toString(title.toPageRef().getId()));
+				ctx.addParameter("iupageid", title.toPageRef().getId());
 			} else {
-				req.addParameter(paramPrefix + "iutitle", title.toPageTitle().toFullTitle());
+				ctx.addParameter("iutitle", title.toPageTitle().toFullTitle());
 			}
 		}
 
 		if (namespace != null) {
 
-			req.addParameter(
-					paramPrefix + "iunamespace",
+			ctx.addParameter(
+					"iunamespace",
 					namespace.stream()
 							.map(v -> Integer.toString(v.getId()))
 							.collect(Collectors.joining("|")));
@@ -228,25 +228,25 @@ public class AAPIQueryImageusage
 
 		if (dir != null) {
 
-			req.addParameter(paramPrefix + "iudir", dir.getJsonValue());
+			ctx.addParameter("iudir", dir.getJsonValue());
 		}
 
 		if (filterredir != null) {
 
-			req.addParameter(paramPrefix + "iufilterredir", filterredir.getJsonValue());
+			ctx.addParameter("iufilterredir", filterredir.getJsonValue());
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "iulimit", limit.toString());
+			ctx.addParameter("iulimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "iulimit", "5000");
+			ctx.addParameter("iulimit", "5000");
 		}
 
 		if (redirect != null) {
 
-			req.addParameter(paramPrefix + "iuredirect", redirect.toString());
+			ctx.addParameter("iuredirect", redirect.toString());
 		}
 	}
 

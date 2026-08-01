@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -342,17 +343,17 @@ public class AAPIQuerySearch
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (search != null) {
 
-			req.addParameter(paramPrefix + "srsearch", search);
+			ctx.addParameter("srsearch", search);
 		}
 
 		if (namespace != null) {
 
-			req.addParameter(
-					paramPrefix + "srnamespace",
+			ctx.addParameter(
+					"srnamespace",
 					namespace.stream()
 							.map(v -> Integer.toString(v.getId()))
 							.collect(Collectors.joining("|")));
@@ -360,49 +361,49 @@ public class AAPIQuerySearch
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "srlimit", limit.toString());
+			ctx.addParameter("srlimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "srlimit", "5000");
+			ctx.addParameter("srlimit", "5000");
 		}
 
 		if (qiprofile != null) {
 
-			req.addParameter(paramPrefix + "srqiprofile", qiprofile.getJsonValue());
+			ctx.addParameter("srqiprofile", qiprofile.getJsonValue());
 		}
 
 		if (what != null) {
 
-			req.addParameter(paramPrefix + "srwhat", what.getJsonValue());
+			ctx.addParameter("srwhat", what.getJsonValue());
 		}
 
 		if (info != null) {
 
-			req.addParameter(
-					paramPrefix + "srinfo",
+			ctx.addParameter(
+					"srinfo",
 					info.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "srprop",
+			ctx.addParameter(
+					"srprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (interwiki != null) {
 
-			req.addParameter(paramPrefix + "srinterwiki", interwiki.toString());
+			ctx.addParameter("srinterwiki", interwiki.toString());
 		}
 
 		if (enablerewrites != null) {
 
-			req.addParameter(paramPrefix + "srenablerewrites", enablerewrites.toString());
+			ctx.addParameter("srenablerewrites", enablerewrites.toString());
 		}
 
 		if (sort != null) {
 
-			req.addParameter(paramPrefix + "srsort", sort.getJsonValue());
+			ctx.addParameter("srsort", sort.getJsonValue());
 		}
 	}
 

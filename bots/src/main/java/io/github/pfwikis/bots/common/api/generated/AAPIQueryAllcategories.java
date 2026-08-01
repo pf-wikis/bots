@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -268,50 +269,50 @@ public class AAPIQueryAllcategories
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (from != null) {
 
-			req.addParameter(paramPrefix + "acfrom", from);
+			ctx.addParameter("acfrom", from);
 		}
 
 		if (to != null) {
 
-			req.addParameter(paramPrefix + "acto", to);
+			ctx.addParameter("acto", to);
 		}
 
 		if (prefix != null) {
 
-			req.addParameter(paramPrefix + "acprefix", prefix);
+			ctx.addParameter("acprefix", prefix);
 		}
 
 		if (dir != null) {
 
-			req.addParameter(paramPrefix + "acdir", dir.getJsonValue());
+			ctx.addParameter("acdir", dir.getJsonValue());
 		}
 
 		if (min != null) {
 
-			req.addParameter(paramPrefix + "acmin", min.toString());
+			ctx.addParameter("acmin", min.toString());
 		}
 
 		if (max != null) {
 
-			req.addParameter(paramPrefix + "acmax", max.toString());
+			ctx.addParameter("acmax", max.toString());
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "aclimit", limit.toString());
+			ctx.addParameter("aclimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "aclimit", "5000");
+			ctx.addParameter("aclimit", "5000");
 		}
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "acprop",
+			ctx.addParameter(
+					"acprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 	}

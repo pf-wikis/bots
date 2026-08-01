@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -206,19 +207,19 @@ public class AAPIQueryTranscludedin
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "tiprop",
+			ctx.addParameter(
+					"tiprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (namespace != null) {
 
-			req.addParameter(
-					paramPrefix + "tinamespace",
+			ctx.addParameter(
+					"tinamespace",
 					namespace.stream()
 							.map(v -> Integer.toString(v.getId()))
 							.collect(Collectors.joining("|")));
@@ -226,17 +227,17 @@ public class AAPIQueryTranscludedin
 
 		if (show != null) {
 
-			req.addParameter(
-					paramPrefix + "tishow",
+			ctx.addParameter(
+					"tishow",
 					show.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "tilimit", limit.toString());
+			ctx.addParameter("tilimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "tilimit", "5000");
+			ctx.addParameter("tilimit", "5000");
 		}
 	}
 

@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -248,51 +249,51 @@ public class AAPIQueryFilearchive implements AAPIModule, AAPIQueryListModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (from != null) {
 
-			req.addParameter(paramPrefix + "fafrom", from);
+			ctx.addParameter("fafrom", from);
 		}
 
 		if (to != null) {
 
-			req.addParameter(paramPrefix + "fato", to);
+			ctx.addParameter("fato", to);
 		}
 
 		if (prefix != null) {
 
-			req.addParameter(paramPrefix + "faprefix", prefix);
+			ctx.addParameter("faprefix", prefix);
 		}
 
 		if (dir != null) {
 
-			req.addParameter(paramPrefix + "fadir", dir.getJsonValue());
+			ctx.addParameter("fadir", dir.getJsonValue());
 		}
 
 		if (sha1 != null) {
 
-			req.addParameter(paramPrefix + "fasha1", sha1);
+			ctx.addParameter("fasha1", sha1);
 		}
 
 		if (sha1base36 != null) {
 
-			req.addParameter(paramPrefix + "fasha1base36", sha1base36);
+			ctx.addParameter("fasha1base36", sha1base36);
 		}
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "faprop",
+			ctx.addParameter(
+					"faprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "falimit", limit.toString());
+			ctx.addParameter("falimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "falimit", "5000");
+			ctx.addParameter("falimit", "5000");
 		}
 	}
 

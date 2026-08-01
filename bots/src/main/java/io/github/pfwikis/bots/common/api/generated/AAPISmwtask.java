@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -107,23 +108,23 @@ public class AAPISmwtask implements AAPIModule, AAPITokenModule, AAPIMainActionM
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (task != null) {
 
-			req.addParameter(paramPrefix + "task", task.getJsonValue());
+			ctx.addParameter("task", task.getJsonValue());
 		}
 
 		if (params != null) {
 
-			req.addParameter(paramPrefix + "params", params);
+			ctx.addParameter("params", params);
 		}
 
-		token = api.requestToken(AAPIQueryTokensType.CSRF);
+		token = ctx.requestToken(AAPIQueryTokensType.CSRF);
 
 		if (token != null) {
 
-			req.addParameter(paramPrefix + "token", token);
+			ctx.addParameter("token", token);
 		}
 	}
 

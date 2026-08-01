@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -479,31 +480,29 @@ public class AAPIQueryRecentchanges
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (start != null) {
 
-			req.addParameter(
-					paramPrefix + "rcstart",
-					start.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
+			ctx.addParameter(
+					"rcstart", start.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
 		}
 
 		if (end != null) {
 
-			req.addParameter(
-					paramPrefix + "rcend",
-					end.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
+			ctx.addParameter(
+					"rcend", end.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
 		}
 
 		if (dir != null) {
 
-			req.addParameter(paramPrefix + "rcdir", dir.getJsonValue());
+			ctx.addParameter("rcdir", dir.getJsonValue());
 		}
 
 		if (namespace != null) {
 
-			req.addParameter(
-					paramPrefix + "rcnamespace",
+			ctx.addParameter(
+					"rcnamespace",
 					namespace.stream()
 							.map(v -> Integer.toString(v.getId()))
 							.collect(Collectors.joining("|")));
@@ -511,66 +510,66 @@ public class AAPIQueryRecentchanges
 
 		if (user != null) {
 
-			req.addParameter(paramPrefix + "rcuser", user);
+			ctx.addParameter("rcuser", user);
 		}
 
 		if (excludeuser != null) {
 
-			req.addParameter(paramPrefix + "rcexcludeuser", excludeuser);
+			ctx.addParameter("rcexcludeuser", excludeuser);
 		}
 
 		if (tag != null) {
 
-			req.addParameter(paramPrefix + "rctag", tag);
+			ctx.addParameter("rctag", tag);
 		}
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "rcprop",
+			ctx.addParameter(
+					"rcprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (show != null) {
 
-			req.addParameter(
-					paramPrefix + "rcshow",
+			ctx.addParameter(
+					"rcshow",
 					show.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "rclimit", limit.toString());
+			ctx.addParameter("rclimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "rclimit", "5000");
+			ctx.addParameter("rclimit", "5000");
 		}
 
 		if (type != null) {
 
-			req.addParameter(
-					paramPrefix + "rctype",
+			ctx.addParameter(
+					"rctype",
 					type.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (toponly != null) {
 
-			req.addParameter(paramPrefix + "rctoponly", toponly.toString());
+			ctx.addParameter("rctoponly", toponly.toString());
 		}
 
 		if (title != null) {
 
-			req.addParameter(paramPrefix + "rctitle", title);
+			ctx.addParameter("rctitle", title);
 		}
 
 		if (generaterevisions != null) {
 
-			req.addParameter(paramPrefix + "rcgeneraterevisions", generaterevisions.toString());
+			ctx.addParameter("rcgeneraterevisions", generaterevisions.toString());
 		}
 
 		if (slot != null) {
 
-			req.addParameter(paramPrefix + "rcslot", slot.getJsonValue());
+			ctx.addParameter("rcslot", slot.getJsonValue());
 		}
 	}
 

@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -654,140 +655,137 @@ public class AAPIParse implements AAPIModule, AAPIMainActionModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (page != null) {
 
 			if (page.toPageRef().hasId()) {
-				req.addParameter(
-						paramPrefix + "pageid", Integer.toString(page.toPageRef().getId()));
+				ctx.addParameter("pageid", page.toPageRef().getId());
 			} else {
-				req.addParameter(paramPrefix + "page", page.toPageTitle().toFullTitle());
+				ctx.addParameter("page", page.toPageTitle().toFullTitle());
 			}
 		}
 
 		if (title != null) {
 
-			req.addParameter(paramPrefix + "title", title);
+			ctx.addParameter("title", title);
 		}
 
 		if (text != null) {
 
-			req.addParameter(paramPrefix + "text", text);
+			ctx.addParameter("text", text);
 		}
 
 		if (revid != null) {
 
-			req.addParameter(paramPrefix + "revid", revid.toString());
+			ctx.addParameter("revid", revid.toString());
 		}
 
 		if (summary != null) {
 
-			req.addParameter(paramPrefix + "summary", summary);
+			ctx.addParameter("summary", summary);
 		}
 
 		if (redirects != null) {
 
-			req.addParameter(paramPrefix + "redirects", redirects.toString());
+			ctx.addParameter("redirects", redirects.toString());
 		}
 
 		if (oldid != null) {
 
-			req.addParameter(paramPrefix + "oldid", oldid.toString());
+			ctx.addParameter("oldid", oldid.toString());
 		}
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "prop",
+			ctx.addParameter(
+					"prop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (wrapoutputclass != null) {
 
-			req.addParameter(paramPrefix + "wrapoutputclass", wrapoutputclass);
+			ctx.addParameter("wrapoutputclass", wrapoutputclass);
 		}
 
 		if (usearticle != null) {
 
-			req.addParameter(paramPrefix + "usearticle", usearticle.toString());
+			ctx.addParameter("usearticle", usearticle.toString());
 		}
 
 		if (parsoid != null) {
 
-			req.addParameter(paramPrefix + "parsoid", parsoid.toString());
+			ctx.addParameter("parsoid", parsoid.toString());
 		}
 
 		if (pst != null) {
 
-			req.addParameter(paramPrefix + "pst", pst.toString());
+			ctx.addParameter("pst", pst.toString());
 		}
 
 		if (onlypst != null) {
 
-			req.addParameter(paramPrefix + "onlypst", onlypst.toString());
+			ctx.addParameter("onlypst", onlypst.toString());
 		}
 
 		if (section != null) {
 
-			req.addParameter(paramPrefix + "section", section);
+			ctx.addParameter("section", section);
 		}
 
 		if (sectiontitle != null) {
 
-			req.addParameter(paramPrefix + "sectiontitle", sectiontitle);
+			ctx.addParameter("sectiontitle", sectiontitle);
 		}
 
 		if (disablelimitreport != null) {
 
-			req.addParameter(paramPrefix + "disablelimitreport", disablelimitreport.toString());
+			ctx.addParameter("disablelimitreport", disablelimitreport.toString());
 		}
 
 		if (disableeditsection != null) {
 
-			req.addParameter(paramPrefix + "disableeditsection", disableeditsection.toString());
+			ctx.addParameter("disableeditsection", disableeditsection.toString());
 		}
 
 		if (disablestylededuplication != null) {
 
-			req.addParameter(
-					paramPrefix + "disablestylededuplication",
-					disablestylededuplication.toString());
+			ctx.addParameter("disablestylededuplication", disablestylededuplication.toString());
 		}
 
 		if (showstrategykeys != null) {
 
-			req.addParameter(paramPrefix + "showstrategykeys", showstrategykeys.toString());
+			ctx.addParameter("showstrategykeys", showstrategykeys.toString());
 		}
 
 		if (preview != null) {
 
-			req.addParameter(paramPrefix + "preview", preview.toString());
+			ctx.addParameter("preview", preview.toString());
 		}
 
 		if (sectionpreview != null) {
 
-			req.addParameter(paramPrefix + "sectionpreview", sectionpreview.toString());
+			ctx.addParameter("sectionpreview", sectionpreview.toString());
 		}
 
 		if (disabletoc != null) {
 
-			req.addParameter(paramPrefix + "disabletoc", disabletoc.toString());
+			ctx.addParameter("disabletoc", disabletoc.toString());
 		}
 
 		if (useskin != null) {
 
-			req.addParameter(paramPrefix + "useskin", useskin.getJsonValue());
+			ctx.addParameter("useskin", useskin.getJsonValue());
 		}
 
 		if (contentformat != null) {
 
-			req.addParameter(paramPrefix + "contentformat", contentformat.getJsonValue());
+			ctx.addParameter("contentformat", contentformat.getJsonValue());
 		}
 
 		if (contentmodel != null) {
 
-			req.addParameter(paramPrefix + "contentmodel", contentmodel.getJsonValue());
+			ctx.addParameter("contentmodel", contentmodel.getJsonValue());
 		}
 	}
 

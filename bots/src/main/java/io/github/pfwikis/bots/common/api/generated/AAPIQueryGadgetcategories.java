@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -117,20 +118,19 @@ public class AAPIQueryGadgetcategories implements AAPIModule, AAPIQueryListModul
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "gcprop",
+			ctx.addParameter(
+					"gcprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (names != null) {
 
-			req.addParameter(
-					paramPrefix + "gcnames",
-					names.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter(
+					"gcnames", names.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 	}
 

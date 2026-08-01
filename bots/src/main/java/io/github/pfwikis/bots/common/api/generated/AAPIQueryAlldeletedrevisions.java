@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -463,44 +464,44 @@ public class AAPIQueryAlldeletedrevisions
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "adrprop",
+			ctx.addParameter(
+					"adrprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (slots != null) {
 
-			req.addParameter(
-					paramPrefix + "adrslots",
+			ctx.addParameter(
+					"adrslots",
 					slots.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "adrlimit", limit.toString());
+			ctx.addParameter("adrlimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "adrlimit", "5000");
+			ctx.addParameter("adrlimit", "5000");
 		}
 
 		if (section != null) {
 
-			req.addParameter(paramPrefix + "adrsection", section);
+			ctx.addParameter("adrsection", section);
 		}
 
 		if (user != null) {
 
-			req.addParameter(paramPrefix + "adruser", user);
+			ctx.addParameter("adruser", user);
 		}
 
 		if (namespace != null) {
 
-			req.addParameter(
-					paramPrefix + "adrnamespace",
+			ctx.addParameter(
+					"adrnamespace",
 					namespace.stream()
 							.map(v -> Integer.toString(v.getId()))
 							.collect(Collectors.joining("|")));
@@ -508,51 +509,50 @@ public class AAPIQueryAlldeletedrevisions
 
 		if (start != null) {
 
-			req.addParameter(
-					paramPrefix + "adrstart",
+			ctx.addParameter(
+					"adrstart",
 					start.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
 		}
 
 		if (end != null) {
 
-			req.addParameter(
-					paramPrefix + "adrend",
-					end.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
+			ctx.addParameter(
+					"adrend", end.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
 		}
 
 		if (dir != null) {
 
-			req.addParameter(paramPrefix + "adrdir", dir.getJsonValue());
+			ctx.addParameter("adrdir", dir.getJsonValue());
 		}
 
 		if (from != null) {
 
-			req.addParameter(paramPrefix + "adrfrom", from);
+			ctx.addParameter("adrfrom", from);
 		}
 
 		if (to != null) {
 
-			req.addParameter(paramPrefix + "adrto", to);
+			ctx.addParameter("adrto", to);
 		}
 
 		if (prefix != null) {
 
-			req.addParameter(paramPrefix + "adrprefix", prefix);
+			ctx.addParameter("adrprefix", prefix);
 		}
 
 		if (excludeuser != null) {
 
-			req.addParameter(paramPrefix + "adrexcludeuser", excludeuser);
+			ctx.addParameter("adrexcludeuser", excludeuser);
 		}
 
 		if (tag != null) {
 
-			req.addParameter(paramPrefix + "adrtag", tag);
+			ctx.addParameter("adrtag", tag);
 		}
 
 		if (generatetitles != null) {
 
-			req.addParameter(paramPrefix + "adrgeneratetitles", generatetitles.toString());
+			ctx.addParameter("adrgeneratetitles", generatetitles.toString());
 		}
 	}
 

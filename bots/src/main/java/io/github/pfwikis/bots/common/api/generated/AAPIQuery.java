@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -455,7 +456,7 @@ public class AAPIQuery implements AAPIModule, AAPIMainActionModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (titles != null) {
 
@@ -464,101 +465,101 @@ public class AAPIQuery implements AAPIModule, AAPIMainActionModule {
 						titles.stream()
 								.map(p -> Integer.toString(p.toPageRef().getId()))
 								.collect(Collectors.joining("|"));
-				req.addParameter(paramPrefix + "pageids", val);
+				ctx.addParameter("pageids", val);
 			} else {
 				String val =
 						titles.stream()
 								.map(p -> p.toPageTitle().toFullTitle())
 								.collect(Collectors.joining("|"));
-				req.addParameter(paramPrefix + "titles", val);
+				ctx.addParameter("titles", val);
 			}
 		}
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "prop",
+			ctx.addParameter(
+					"prop",
 					prop.stream()
 							.map(v -> v.getKey().getJsonValue())
 							.collect(Collectors.joining("|")));
 
-			prop.forEach(v -> v.getValue().buildRequest(api, req, paramPrefix));
+			prop.forEach(v -> v.getValue().buildRequest(ctx));
 		}
 
 		if (list != null) {
 
-			req.addParameter(
-					paramPrefix + "list",
+			ctx.addParameter(
+					"list",
 					list.stream()
 							.map(v -> v.getKey().getJsonValue())
 							.collect(Collectors.joining("|")));
 
-			list.forEach(v -> v.getValue().buildRequest(api, req, paramPrefix));
+			list.forEach(v -> v.getValue().buildRequest(ctx));
 		}
 
 		if (meta != null) {
 
-			req.addParameter(
-					paramPrefix + "meta",
+			ctx.addParameter(
+					"meta",
 					meta.stream()
 							.map(v -> v.getKey().getJsonValue())
 							.collect(Collectors.joining("|")));
 
-			meta.forEach(v -> v.getValue().buildRequest(api, req, paramPrefix));
+			meta.forEach(v -> v.getValue().buildRequest(ctx));
 		}
 
 		if (indexpageids != null) {
 
-			req.addParameter(paramPrefix + "indexpageids", indexpageids.toString());
+			ctx.addParameter("indexpageids", indexpageids.toString());
 		}
 
 		if (export != null) {
 
-			req.addParameter(paramPrefix + "export", export.toString());
+			ctx.addParameter("export", export.toString());
 		}
 
 		if (exportnowrap != null) {
 
-			req.addParameter(paramPrefix + "exportnowrap", exportnowrap.toString());
+			ctx.addParameter("exportnowrap", exportnowrap.toString());
 		}
 
 		if (exportschema != null) {
 
-			req.addParameter(paramPrefix + "exportschema", exportschema.getJsonValue());
+			ctx.addParameter("exportschema", exportschema.getJsonValue());
 		}
 
 		if (iwurl != null) {
 
-			req.addParameter(paramPrefix + "iwurl", iwurl.toString());
+			ctx.addParameter("iwurl", iwurl.toString());
 		}
 
 		if (rawcontinue != null) {
 
-			req.addParameter(paramPrefix + "rawcontinue", rawcontinue.toString());
+			ctx.addParameter("rawcontinue", rawcontinue.toString());
 		}
 
 		if (revids != null) {
 
-			req.addParameter(
-					paramPrefix + "revids",
+			ctx.addParameter(
+					"revids",
 					revids.stream().map(v -> v.toString()).collect(Collectors.joining("|")));
 		}
 
 		if (generator != null) {
 
-			req.addParameter(paramPrefix + "generator", generator.getKey().getJsonValue());
+			ctx.addParameter("generator", generator.getKey().getJsonValue());
 
-			generator.getValue().buildRequest(api, req, paramPrefix + "g");
+			generator.getValue().buildRequest(ctx.appendParamPrefix("g"));
 		}
 
 		if (redirects != null) {
 
-			req.addParameter(paramPrefix + "redirects", redirects.toString());
+			ctx.addParameter("redirects", redirects.toString());
 		}
 
 		if (converttitles != null) {
 
-			req.addParameter(paramPrefix + "converttitles", converttitles.toString());
+			ctx.addParameter("converttitles", converttitles.toString());
 		}
 	}
 

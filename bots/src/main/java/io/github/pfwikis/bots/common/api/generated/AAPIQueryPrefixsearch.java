@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -140,17 +141,17 @@ public class AAPIQueryPrefixsearch
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (search != null) {
 
-			req.addParameter(paramPrefix + "pssearch", search);
+			ctx.addParameter("pssearch", search);
 		}
 
 		if (namespace != null) {
 
-			req.addParameter(
-					paramPrefix + "psnamespace",
+			ctx.addParameter(
+					"psnamespace",
 					namespace.stream()
 							.map(v -> Integer.toString(v.getId()))
 							.collect(Collectors.joining("|")));
@@ -158,10 +159,10 @@ public class AAPIQueryPrefixsearch
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "pslimit", limit.toString());
+			ctx.addParameter("pslimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "pslimit", "5000");
+			ctx.addParameter("pslimit", "5000");
 		}
 	}
 

@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -305,63 +306,63 @@ public class AAPIFeedcontributions implements AAPIModule, AAPIMainActionModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (feedformat != null) {
 
-			req.addParameter(paramPrefix + "feedformat", feedformat.getJsonValue());
+			ctx.addParameter("feedformat", feedformat.getJsonValue());
 		}
 
 		if (user != null) {
 
-			req.addParameter(paramPrefix + "user", user);
+			ctx.addParameter("user", user);
 		}
 
 		if (namespace != null) {
 
-			req.addParameter(paramPrefix + "namespace", Integer.toString(namespace.getId()));
+			ctx.addParameter("namespace", Integer.toString(namespace.getId()));
 		}
 
 		if (year != null) {
 
-			req.addParameter(paramPrefix + "year", year.toString());
+			ctx.addParameter("year", year.toString());
 		}
 
 		if (month != null) {
 
-			req.addParameter(paramPrefix + "month", month.toString());
+			ctx.addParameter("month", month.toString());
 		}
 
 		if (tagfilter != null) {
 
-			req.addParameter(
-					paramPrefix + "tagfilter",
+			ctx.addParameter(
+					"tagfilter",
 					tagfilter.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (deletedonly != null) {
 
-			req.addParameter(paramPrefix + "deletedonly", deletedonly.toString());
+			ctx.addParameter("deletedonly", deletedonly.toString());
 		}
 
 		if (toponly != null) {
 
-			req.addParameter(paramPrefix + "toponly", toponly.toString());
+			ctx.addParameter("toponly", toponly.toString());
 		}
 
 		if (newonly != null) {
 
-			req.addParameter(paramPrefix + "newonly", newonly.toString());
+			ctx.addParameter("newonly", newonly.toString());
 		}
 
 		if (hideminor != null) {
 
-			req.addParameter(paramPrefix + "hideminor", hideminor.toString());
+			ctx.addParameter("hideminor", hideminor.toString());
 		}
 
 		if (showsizediff != null) {
 
-			req.addParameter(paramPrefix + "showsizediff", showsizediff.toString());
+			ctx.addParameter("showsizediff", showsizediff.toString());
 		}
 	}
 

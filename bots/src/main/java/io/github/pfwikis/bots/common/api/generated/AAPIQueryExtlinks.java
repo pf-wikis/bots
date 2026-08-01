@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -113,24 +114,24 @@ public class AAPIQueryExtlinks implements AAPIModule, AAPIQueryPropModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "ellimit", limit.toString());
+			ctx.addParameter("ellimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "ellimit", "5000");
+			ctx.addParameter("ellimit", "5000");
 		}
 
 		if (protocol != null) {
 
-			req.addParameter(paramPrefix + "elprotocol", protocol.getJsonValue());
+			ctx.addParameter("elprotocol", protocol.getJsonValue());
 		}
 
 		if (query != null) {
 
-			req.addParameter(paramPrefix + "elquery", query);
+			ctx.addParameter("elquery", query);
 		}
 	}
 

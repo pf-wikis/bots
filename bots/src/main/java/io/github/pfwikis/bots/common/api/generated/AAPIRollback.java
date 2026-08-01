@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -240,50 +241,48 @@ public class AAPIRollback implements AAPIModule, AAPITokenModule, AAPIMainAction
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (title != null) {
 
-			req.addParameter(paramPrefix + "title", title);
+			ctx.addParameter("title", title);
 		}
 
 		if (pageid != null) {
 
-			req.addParameter(paramPrefix + "pageid", pageid.toString());
+			ctx.addParameter("pageid", pageid.toString());
 		}
 
 		if (tags != null) {
 
-			req.addParameter(
-					paramPrefix + "tags",
-					tags.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter("tags", tags.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
 		if (user != null) {
 
-			req.addParameter(paramPrefix + "user", user);
+			ctx.addParameter("user", user);
 		}
 
 		if (summary != null) {
 
-			req.addParameter(paramPrefix + "summary", summary);
+			ctx.addParameter("summary", summary);
 		}
 
 		if (markbot != null) {
 
-			req.addParameter(paramPrefix + "markbot", markbot.toString());
+			ctx.addParameter("markbot", markbot.toString());
 		}
 
 		if (watchlist != null) {
 
-			req.addParameter(paramPrefix + "watchlist", watchlist.getJsonValue());
+			ctx.addParameter("watchlist", watchlist.getJsonValue());
 		}
 
-		token = api.requestToken(AAPIQueryTokensType.ROLLBACK);
+		token = ctx.requestToken(AAPIQueryTokensType.ROLLBACK);
 
 		if (token != null) {
 
-			req.addParameter(paramPrefix + "token", token);
+			ctx.addParameter("token", token);
 		}
 	}
 

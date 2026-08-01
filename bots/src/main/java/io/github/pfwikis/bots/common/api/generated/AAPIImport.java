@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -330,70 +331,68 @@ public class AAPIImport implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (summary != null) {
 
-			req.addParameter(paramPrefix + "summary", summary);
+			ctx.addParameter("summary", summary);
 		}
 
 		if (xml != null) {
 
-			req.addParameter(paramPrefix + "xml", xml.toString());
+			ctx.addParameter("xml", xml.toString());
 		}
 
 		if (interwikiprefix != null) {
 
-			req.addParameter(paramPrefix + "interwikiprefix", interwikiprefix);
+			ctx.addParameter("interwikiprefix", interwikiprefix);
 		}
 
 		if (interwikisource != null) {
 
-			req.addParameter(paramPrefix + "interwikisource", interwikisource);
+			ctx.addParameter("interwikisource", interwikisource);
 		}
 
 		if (interwikipage != null) {
 
-			req.addParameter(paramPrefix + "interwikipage", interwikipage);
+			ctx.addParameter("interwikipage", interwikipage);
 		}
 
 		if (fullhistory != null) {
 
-			req.addParameter(paramPrefix + "fullhistory", fullhistory.toString());
+			ctx.addParameter("fullhistory", fullhistory.toString());
 		}
 
 		if (templates != null) {
 
-			req.addParameter(paramPrefix + "templates", templates.toString());
+			ctx.addParameter("templates", templates.toString());
 		}
 
 		if (namespace != null) {
 
-			req.addParameter(paramPrefix + "namespace", Integer.toString(namespace.getId()));
+			ctx.addParameter("namespace", Integer.toString(namespace.getId()));
 		}
 
 		if (assignknownusers != null) {
 
-			req.addParameter(paramPrefix + "assignknownusers", assignknownusers.toString());
+			ctx.addParameter("assignknownusers", assignknownusers.toString());
 		}
 
 		if (rootpage != null) {
 
-			req.addParameter(paramPrefix + "rootpage", rootpage);
+			ctx.addParameter("rootpage", rootpage);
 		}
 
 		if (tags != null) {
 
-			req.addParameter(
-					paramPrefix + "tags",
-					tags.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter("tags", tags.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
-		token = api.requestToken(AAPIQueryTokensType.CSRF);
+		token = ctx.requestToken(AAPIQueryTokensType.CSRF);
 
 		if (token != null) {
 
-			req.addParameter(paramPrefix + "token", token);
+			ctx.addParameter("token", token);
 		}
 	}
 

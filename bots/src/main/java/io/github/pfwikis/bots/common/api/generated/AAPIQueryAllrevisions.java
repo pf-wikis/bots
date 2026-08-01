@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -371,44 +372,44 @@ public class AAPIQueryAllrevisions
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "arvprop",
+			ctx.addParameter(
+					"arvprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (slots != null) {
 
-			req.addParameter(
-					paramPrefix + "arvslots",
+			ctx.addParameter(
+					"arvslots",
 					slots.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "arvlimit", limit.toString());
+			ctx.addParameter("arvlimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "arvlimit", "5000");
+			ctx.addParameter("arvlimit", "5000");
 		}
 
 		if (section != null) {
 
-			req.addParameter(paramPrefix + "arvsection", section);
+			ctx.addParameter("arvsection", section);
 		}
 
 		if (user != null) {
 
-			req.addParameter(paramPrefix + "arvuser", user);
+			ctx.addParameter("arvuser", user);
 		}
 
 		if (namespace != null) {
 
-			req.addParameter(
-					paramPrefix + "arvnamespace",
+			ctx.addParameter(
+					"arvnamespace",
 					namespace.stream()
 							.map(v -> Integer.toString(v.getId()))
 							.collect(Collectors.joining("|")));
@@ -416,31 +417,30 @@ public class AAPIQueryAllrevisions
 
 		if (start != null) {
 
-			req.addParameter(
-					paramPrefix + "arvstart",
+			ctx.addParameter(
+					"arvstart",
 					start.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
 		}
 
 		if (end != null) {
 
-			req.addParameter(
-					paramPrefix + "arvend",
-					end.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
+			ctx.addParameter(
+					"arvend", end.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
 		}
 
 		if (dir != null) {
 
-			req.addParameter(paramPrefix + "arvdir", dir.getJsonValue());
+			ctx.addParameter("arvdir", dir.getJsonValue());
 		}
 
 		if (excludeuser != null) {
 
-			req.addParameter(paramPrefix + "arvexcludeuser", excludeuser);
+			ctx.addParameter("arvexcludeuser", excludeuser);
 		}
 
 		if (generatetitles != null) {
 
-			req.addParameter(paramPrefix + "arvgeneratetitles", generatetitles.toString());
+			ctx.addParameter("arvgeneratetitles", generatetitles.toString());
 		}
 	}
 

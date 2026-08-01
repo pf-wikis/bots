@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -440,96 +441,94 @@ public class AAPIBlock implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (user != null) {
 
-			req.addParameter(paramPrefix + "user", user);
+			ctx.addParameter("user", user);
 		}
 
 		if (expiry != null) {
 
-			req.addParameter(paramPrefix + "expiry", expiry);
+			ctx.addParameter("expiry", expiry);
 		}
 
 		if (reason != null) {
 
-			req.addParameter(paramPrefix + "reason", reason);
+			ctx.addParameter("reason", reason);
 		}
 
 		if (anononly != null) {
 
-			req.addParameter(paramPrefix + "anononly", anononly.toString());
+			ctx.addParameter("anononly", anononly.toString());
 		}
 
 		if (nocreate != null) {
 
-			req.addParameter(paramPrefix + "nocreate", nocreate.toString());
+			ctx.addParameter("nocreate", nocreate.toString());
 		}
 
 		if (autoblock != null) {
 
-			req.addParameter(paramPrefix + "autoblock", autoblock.toString());
+			ctx.addParameter("autoblock", autoblock.toString());
 		}
 
 		if (noemail != null) {
 
-			req.addParameter(paramPrefix + "noemail", noemail.toString());
+			ctx.addParameter("noemail", noemail.toString());
 		}
 
 		if (hidename != null) {
 
-			req.addParameter(paramPrefix + "hidename", hidename.toString());
+			ctx.addParameter("hidename", hidename.toString());
 		}
 
 		if (allowusertalk != null) {
 
-			req.addParameter(paramPrefix + "allowusertalk", allowusertalk.toString());
+			ctx.addParameter("allowusertalk", allowusertalk.toString());
 		}
 
 		if (reblock != null) {
 
-			req.addParameter(paramPrefix + "reblock", reblock.toString());
+			ctx.addParameter("reblock", reblock.toString());
 		}
 
 		if (watchuser != null) {
 
-			req.addParameter(paramPrefix + "watchuser", watchuser.toString());
+			ctx.addParameter("watchuser", watchuser.toString());
 		}
 
 		if (tags != null) {
 
-			req.addParameter(
-					paramPrefix + "tags",
-					tags.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter("tags", tags.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
 		if (partial != null) {
 
-			req.addParameter(paramPrefix + "partial", partial.toString());
+			ctx.addParameter("partial", partial.toString());
 		}
 
 		if (pagerestrictions != null) {
 
-			req.addParameter(
-					paramPrefix + "pagerestrictions",
+			ctx.addParameter(
+					"pagerestrictions",
 					pagerestrictions.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
 		if (namespacerestrictions != null) {
 
-			req.addParameter(
-					paramPrefix + "namespacerestrictions",
+			ctx.addParameter(
+					"namespacerestrictions",
 					namespacerestrictions.stream()
 							.map(v -> Integer.toString(v.getId()))
 							.collect(Collectors.joining("|")));
 		}
 
-		token = api.requestToken(AAPIQueryTokensType.CSRF);
+		token = ctx.requestToken(AAPIQueryTokensType.CSRF);
 
 		if (token != null) {
 
-			req.addParameter(paramPrefix + "token", token);
+			ctx.addParameter("token", token);
 		}
 	}
 

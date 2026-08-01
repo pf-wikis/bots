@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -131,26 +132,26 @@ public class AAPIValidatepassword implements AAPIModule, AAPIMainActionModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (password != null) {
 
-			req.addParameter(paramPrefix + "password", password);
+			ctx.addParameter("password", password);
 		}
 
 		if (user != null) {
 
-			req.addParameter(paramPrefix + "user", user);
+			ctx.addParameter("user", user);
 		}
 
 		if (email != null) {
 
-			req.addParameter(paramPrefix + "email", email);
+			ctx.addParameter("email", email);
 		}
 
 		if (realname != null) {
 
-			req.addParameter(paramPrefix + "realname", realname);
+			ctx.addParameter("realname", realname);
 		}
 	}
 

@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -206,19 +207,19 @@ public class AAPIQueryLinkshere
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "lhprop",
+			ctx.addParameter(
+					"lhprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (namespace != null) {
 
-			req.addParameter(
-					paramPrefix + "lhnamespace",
+			ctx.addParameter(
+					"lhnamespace",
 					namespace.stream()
 							.map(v -> Integer.toString(v.getId()))
 							.collect(Collectors.joining("|")));
@@ -226,17 +227,17 @@ public class AAPIQueryLinkshere
 
 		if (show != null) {
 
-			req.addParameter(
-					paramPrefix + "lhshow",
+			ctx.addParameter(
+					"lhshow",
 					show.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "lhlimit", limit.toString());
+			ctx.addParameter("lhlimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "lhlimit", "5000");
+			ctx.addParameter("lhlimit", "5000");
 		}
 	}
 

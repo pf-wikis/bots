@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -279,12 +280,12 @@ public class AAPIQueryProtectedtitles
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (namespace != null) {
 
-			req.addParameter(
-					paramPrefix + "ptnamespace",
+			ctx.addParameter(
+					"ptnamespace",
 					namespace.stream()
 							.map(v -> Integer.toString(v.getId()))
 							.collect(Collectors.joining("|")));
@@ -292,42 +293,40 @@ public class AAPIQueryProtectedtitles
 
 		if (level != null) {
 
-			req.addParameter(
-					paramPrefix + "ptlevel",
+			ctx.addParameter(
+					"ptlevel",
 					level.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "ptlimit", limit.toString());
+			ctx.addParameter("ptlimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "ptlimit", "5000");
+			ctx.addParameter("ptlimit", "5000");
 		}
 
 		if (dir != null) {
 
-			req.addParameter(paramPrefix + "ptdir", dir.getJsonValue());
+			ctx.addParameter("ptdir", dir.getJsonValue());
 		}
 
 		if (start != null) {
 
-			req.addParameter(
-					paramPrefix + "ptstart",
-					start.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
+			ctx.addParameter(
+					"ptstart", start.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
 		}
 
 		if (end != null) {
 
-			req.addParameter(
-					paramPrefix + "ptend",
-					end.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
+			ctx.addParameter(
+					"ptend", end.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
 		}
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "ptprop",
+			ctx.addParameter(
+					"ptprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 	}

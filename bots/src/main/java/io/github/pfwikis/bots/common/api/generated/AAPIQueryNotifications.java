@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -436,68 +437,67 @@ public class AAPIQueryNotifications implements AAPIModule, AAPIQueryMetaModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (filter != null) {
 
-			req.addParameter(
-					paramPrefix + "notfilter",
+			ctx.addParameter(
+					"notfilter",
 					filter.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "notprop",
+			ctx.addParameter(
+					"notprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (sections != null) {
 
-			req.addParameter(
-					paramPrefix + "notsections",
+			ctx.addParameter(
+					"notsections",
 					sections.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (groupbysection != null) {
 
-			req.addParameter(paramPrefix + "notgroupbysection", groupbysection.toString());
+			ctx.addParameter("notgroupbysection", groupbysection.toString());
 		}
 
 		if (format != null) {
 
-			req.addParameter(paramPrefix + "notformat", format.getJsonValue());
+			ctx.addParameter("notformat", format.getJsonValue());
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "notlimit", limit.toString());
+			ctx.addParameter("notlimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "notlimit", "500");
+			ctx.addParameter("notlimit", "500");
 		}
 
 		if (unreadfirst != null) {
 
-			req.addParameter(paramPrefix + "notunreadfirst", unreadfirst.toString());
+			ctx.addParameter("notunreadfirst", unreadfirst.toString());
 		}
 
 		if (titles != null) {
 
-			req.addParameter(
-					paramPrefix + "nottitles",
-					titles.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter(
+					"nottitles", titles.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
 		if (bundle != null) {
 
-			req.addParameter(paramPrefix + "notbundle", bundle.toString());
+			ctx.addParameter("notbundle", bundle.toString());
 		}
 
 		if (notifiertypes != null) {
 
-			req.addParameter(
-					paramPrefix + "notnotifiertypes",
+			ctx.addParameter(
+					"notnotifiertypes",
 					notifiertypes.stream()
 							.map(v -> v.getJsonValue())
 							.collect(Collectors.joining("|")));
@@ -505,22 +505,22 @@ public class AAPIQueryNotifications implements AAPIModule, AAPIQueryMetaModule {
 
 		if (alertcontinue != null) {
 
-			req.addParameter(paramPrefix + "notalertcontinue", alertcontinue);
+			ctx.addParameter("notalertcontinue", alertcontinue);
 		}
 
 		if (alertunreadfirst != null) {
 
-			req.addParameter(paramPrefix + "notalertunreadfirst", alertunreadfirst.toString());
+			ctx.addParameter("notalertunreadfirst", alertunreadfirst.toString());
 		}
 
 		if (messagecontinue != null) {
 
-			req.addParameter(paramPrefix + "notmessagecontinue", messagecontinue);
+			ctx.addParameter("notmessagecontinue", messagecontinue);
 		}
 
 		if (messageunreadfirst != null) {
 
-			req.addParameter(paramPrefix + "notmessageunreadfirst", messageunreadfirst.toString());
+			ctx.addParameter("notmessageunreadfirst", messageunreadfirst.toString());
 		}
 	}
 

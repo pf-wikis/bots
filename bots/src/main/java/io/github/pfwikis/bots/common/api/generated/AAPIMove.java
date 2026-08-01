@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -300,65 +301,63 @@ public class AAPIMove implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (from != null) {
 
-			req.addParameter(paramPrefix + "from", from);
+			ctx.addParameter("from", from);
 		}
 
 		if (fromid != null) {
 
-			req.addParameter(paramPrefix + "fromid", fromid.toString());
+			ctx.addParameter("fromid", fromid.toString());
 		}
 
 		if (to != null) {
 
-			req.addParameter(paramPrefix + "to", to);
+			ctx.addParameter("to", to);
 		}
 
 		if (reason != null) {
 
-			req.addParameter(paramPrefix + "reason", reason);
+			ctx.addParameter("reason", reason);
 		}
 
 		if (movetalk != null) {
 
-			req.addParameter(paramPrefix + "movetalk", movetalk.toString());
+			ctx.addParameter("movetalk", movetalk.toString());
 		}
 
 		if (movesubpages != null) {
 
-			req.addParameter(paramPrefix + "movesubpages", movesubpages.toString());
+			ctx.addParameter("movesubpages", movesubpages.toString());
 		}
 
 		if (noredirect != null) {
 
-			req.addParameter(paramPrefix + "noredirect", noredirect.toString());
+			ctx.addParameter("noredirect", noredirect.toString());
 		}
 
 		if (watchlist != null) {
 
-			req.addParameter(paramPrefix + "watchlist", watchlist.getJsonValue());
+			ctx.addParameter("watchlist", watchlist.getJsonValue());
 		}
 
 		if (ignorewarnings != null) {
 
-			req.addParameter(paramPrefix + "ignorewarnings", ignorewarnings.toString());
+			ctx.addParameter("ignorewarnings", ignorewarnings.toString());
 		}
 
 		if (tags != null) {
 
-			req.addParameter(
-					paramPrefix + "tags",
-					tags.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter("tags", tags.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
-		token = api.requestToken(AAPIQueryTokensType.CSRF);
+		token = ctx.requestToken(AAPIQueryTokensType.CSRF);
 
 		if (token != null) {
 
-			req.addParameter(paramPrefix + "token", token);
+			ctx.addParameter("token", token);
 		}
 	}
 

@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -270,51 +271,51 @@ public class AAPIQueryAllredirects
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (from != null) {
 
-			req.addParameter(paramPrefix + "arfrom", from);
+			ctx.addParameter("arfrom", from);
 		}
 
 		if (to != null) {
 
-			req.addParameter(paramPrefix + "arto", to);
+			ctx.addParameter("arto", to);
 		}
 
 		if (prefix != null) {
 
-			req.addParameter(paramPrefix + "arprefix", prefix);
+			ctx.addParameter("arprefix", prefix);
 		}
 
 		if (unique != null) {
 
-			req.addParameter(paramPrefix + "arunique", unique.toString());
+			ctx.addParameter("arunique", unique.toString());
 		}
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "arprop",
+			ctx.addParameter(
+					"arprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (namespace != null) {
 
-			req.addParameter(paramPrefix + "arnamespace", Integer.toString(namespace.getId()));
+			ctx.addParameter("arnamespace", Integer.toString(namespace.getId()));
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "arlimit", limit.toString());
+			ctx.addParameter("arlimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "arlimit", "5000");
+			ctx.addParameter("arlimit", "5000");
 		}
 
 		if (dir != null) {
 
-			req.addParameter(paramPrefix + "ardir", dir.getJsonValue());
+			ctx.addParameter("ardir", dir.getJsonValue());
 		}
 	}
 

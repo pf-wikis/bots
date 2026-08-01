@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -233,59 +234,55 @@ public class AAPIProtect implements AAPIModule, AAPITokenModule, AAPIMainActionM
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (title != null) {
 
 			if (title.toPageRef().hasId()) {
-				req.addParameter(
-						paramPrefix + "pageid", Integer.toString(title.toPageRef().getId()));
+				ctx.addParameter("pageid", title.toPageRef().getId());
 			} else {
-				req.addParameter(paramPrefix + "title", title.toPageTitle().toFullTitle());
+				ctx.addParameter("title", title.toPageTitle().toFullTitle());
 			}
 		}
 
 		if (protections != null) {
 
-			req.addParameter(
-					paramPrefix + "protections",
+			ctx.addParameter(
+					"protections",
 					protections.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
 		if (expiry != null) {
 
-			req.addParameter(
-					paramPrefix + "expiry",
-					expiry.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter(
+					"expiry", expiry.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
 		if (reason != null) {
 
-			req.addParameter(paramPrefix + "reason", reason);
+			ctx.addParameter("reason", reason);
 		}
 
 		if (tags != null) {
 
-			req.addParameter(
-					paramPrefix + "tags",
-					tags.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter("tags", tags.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
 		if (cascade != null) {
 
-			req.addParameter(paramPrefix + "cascade", cascade.toString());
+			ctx.addParameter("cascade", cascade.toString());
 		}
 
 		if (watchlist != null) {
 
-			req.addParameter(paramPrefix + "watchlist", watchlist.getJsonValue());
+			ctx.addParameter("watchlist", watchlist.getJsonValue());
 		}
 
-		token = api.requestToken(AAPIQueryTokensType.CSRF);
+		token = ctx.requestToken(AAPIQueryTokensType.CSRF);
 
 		if (token != null) {
 
-			req.addParameter(paramPrefix + "token", token);
+			ctx.addParameter("token", token);
 		}
 	}
 

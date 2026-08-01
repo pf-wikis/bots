@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -401,63 +402,59 @@ public class AAPIQueryUsercontribs implements AAPIModule, AAPIQueryListModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "uclimit", limit.toString());
+			ctx.addParameter("uclimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "uclimit", "5000");
+			ctx.addParameter("uclimit", "5000");
 		}
 
 		if (start != null) {
 
-			req.addParameter(
-					paramPrefix + "ucstart",
-					start.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
+			ctx.addParameter(
+					"ucstart", start.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
 		}
 
 		if (end != null) {
 
-			req.addParameter(
-					paramPrefix + "ucend",
-					end.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
+			ctx.addParameter(
+					"ucend", end.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
 		}
 
 		if (user != null) {
 
-			req.addParameter(
-					paramPrefix + "ucuser",
-					user.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter("ucuser", user.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
 		if (userids != null) {
 
-			req.addParameter(
-					paramPrefix + "ucuserids",
+			ctx.addParameter(
+					"ucuserids",
 					userids.stream().map(v -> v.toString()).collect(Collectors.joining("|")));
 		}
 
 		if (userprefix != null) {
 
-			req.addParameter(paramPrefix + "ucuserprefix", userprefix);
+			ctx.addParameter("ucuserprefix", userprefix);
 		}
 
 		if (iprange != null) {
 
-			req.addParameter(paramPrefix + "uciprange", iprange);
+			ctx.addParameter("uciprange", iprange);
 		}
 
 		if (dir != null) {
 
-			req.addParameter(paramPrefix + "ucdir", dir.getJsonValue());
+			ctx.addParameter("ucdir", dir.getJsonValue());
 		}
 
 		if (namespace != null) {
 
-			req.addParameter(
-					paramPrefix + "ucnamespace",
+			ctx.addParameter(
+					"ucnamespace",
 					namespace.stream()
 							.map(v -> Integer.toString(v.getId()))
 							.collect(Collectors.joining("|")));
@@ -465,21 +462,21 @@ public class AAPIQueryUsercontribs implements AAPIModule, AAPIQueryListModule {
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "ucprop",
+			ctx.addParameter(
+					"ucprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (show != null) {
 
-			req.addParameter(
-					paramPrefix + "ucshow",
+			ctx.addParameter(
+					"ucshow",
 					show.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (tag != null) {
 
-			req.addParameter(paramPrefix + "uctag", tag);
+			ctx.addParameter("uctag", tag);
 		}
 	}
 

@@ -1,18 +1,17 @@
 package io.github.pfwikis.bots.common.api;
 
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
-import org.apache.hc.core5.http.ClassicHttpRequest;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
-
 
 import io.github.pfwikis.bots.common.Wiki;
 import io.github.pfwikis.bots.common.api.generated.AAPIJson;
@@ -27,6 +26,7 @@ import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryTokensType;
 import io.github.pfwikis.bots.common.api.model.AAPIExceptions;
 import io.github.pfwikis.bots.common.api.model.AAPIExceptions.AAPIException;
 import io.github.pfwikis.bots.common.api.model.AAPIExceptions.AAPIRuntimeException;
+import io.github.pfwikis.bots.common.api.model.AAPIModule;
 import io.github.pfwikis.bots.common.api.responses.AAPIWrappedResponse;
 import io.github.pfwikis.bots.common.api.responses.IResponse;
 import io.github.pfwikis.bots.common.api.responses.QueryResponse;
@@ -47,7 +47,11 @@ public class AAPI {
 	private final String password;
 	private final String secret;
 	
-	private final static CloseableHttpClient client = HttpClients.custom().build();
+	private final static CloseableHttpClient client = HttpClients.custom()
+			.setConnectionManager(PoolingHttpClientConnectionManagerBuilder.create()
+				.setMaxConnTotal(20)
+				.build())
+			.build();
 	private final EnumMap<AAPIQueryTokensType, String> tokens = new EnumMap<>(AAPIQueryTokensType.class);
 	
 
@@ -93,10 +97,12 @@ public class AAPI {
 	
 	@SneakyThrows
 	private RawRequestResult jsonRequest(AAPIMainActionModule action, String mappedField, Map<String, String> continueMap) {
-		synchronized(client) {
-			if(log.isDebugEnabled()) {
-				log.debug(action.toString());
-			}
+		if(log.isDebugEnabled()) {
+			log.debug(action.toString());
+		}
+		
+		AtomicBoolean forceNewToken = new AtomicBoolean(false);
+		Callable<RawRequestResult> act = () -> {
 			var request = (action.builder().requiresPost()?ClassicRequestBuilder.post():ClassicRequestBuilder.get())
 					.setUri(wiki.getApiURL())
 					.setCharset(StandardCharsets.UTF_8)
@@ -106,83 +112,81 @@ public class AAPI {
 				.format(FORMAT)
 				.errorformat(AAPIMainErrorformat.PLAINTEXT);
 			
-			main.buildRequest(this, request, "");
+			main.buildRequest(new AAPIModule.RequestContext(this, request, "", forceNewToken.get()));
+			forceNewToken.set(false);
 			
 			if(continueMap != null) {
 				continueMap.forEach(request::addParameter);
 			}
-			
 			var completeRequest = request.build(); 
 			
-			String json = requestWithRetry(completeRequest);
-			
-			var wrapper = Jackson.JSON.readValue(json, AAPIWrappedResponse.class);
-			//print warnings
-			if(wrapper.getWarnings() != null) {
-				for(var w:wrapper.getWarnings()) {
-					log.warn(w.getCode()+": "+w.getText());
+			return client.execute(completeRequest, resp->{
+				
+				
+				String content = EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
+				if(resp.getCode()>=300)
+					throw new AAPIException("Status "+resp.getCode()+", Content:\n"+content);
+				
+				var wrapper = Jackson.JSON.readValue(content, AAPIWrappedResponse.class);
+				
+				//print warnings
+				if(wrapper.getWarnings() != null) {
+					for(var w:wrapper.getWarnings()) {
+						log.warn(w.getCode()+": "+w.getText());
+					}
 				}
+				//if there are errors we fail
+				if(wrapper.getErrors() != null && !wrapper.getErrors().isEmpty()) {
+					if(wrapper.getErrors().size() == 1) {
+						var err = wrapper.getErrors().getFirst();
+						throw AAPIExceptions.from(err);
+					}
+					else {
+						throw new AAPIExceptions.AAPIMultipleExceptions(wrapper.getErrors().stream().map(AAPIExceptions::from).toList());
+					}
+				}
+				var result = wrapper.getOtherFields().get(mappedField==null?main.getAction().getKey().getJsonValue():mappedField);
+				return new RawRequestResult(wrapper, result);
+			});
+		};
+		
+		return Retry.times(act, 10, 30, (ex) -> {
+			if(ex instanceof AAPIException aex && "badtoken".equals(aex.getAapiError().getCode())) {
+				forceNewToken.set(true);
+				return false;
 			}
-			//if there are errors we fail
-			if(wrapper.getErrors() != null && !wrapper.getErrors().isEmpty()) {
-				if(wrapper.getErrors().size() == 1) {
-					throw AAPIExceptions.from(wrapper.getErrors().getFirst());
-				}
-				else {
-					throw new AAPIExceptions.AAPIMultipleExceptions(wrapper.getErrors().stream().map(AAPIExceptions::from).toList());
-				}
-			}
-			var result = wrapper.getOtherFields().get(mappedField==null?main.getAction().getKey().getJsonValue():mappedField);
-			
-			return new RawRequestResult(wrapper, result);
-		}
+			return true;
+		});
 	}
 	
-	private static final Duration RETRY_DURATION = Duration.ofSeconds(30);
-	private String requestWithRetry(ClassicHttpRequest request) {
-		Callable<String> act = () -> client.<String>execute(request, resp->{
-			String content = EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
-			if(resp.getCode()<300)
-				return content;
-			else
-				throw new AAPIException("Status "+resp.getCode()+", Content:\n"+content);
-		});
-		try {
-			return act.call();
-		} catch(Exception first) {
-			try {
-				return Retry.forDuration(act, RETRY_DURATION, 5);
-			} catch(Exception e) {
-				var res = new RuntimeException("Failed after retrying", first);
-				res.addSuppressed(e);
-				throw res;
-			}
-		}
-	}
-
 	private static record RawRequestResult(AAPIWrappedResponse response, JsonNode result) {}
 	public static record RequestResult<T>(AAPIWrappedResponse response, T result) {}
 	
-	public String requestToken(AAPIQueryTokensType token) {
-		synchronized(client) {
-			return tokens.computeIfAbsent(token, t -> {
-				try {
-					var resp = jsonRequest(
-							AAPIQuery.create()
-								.meta(AAPIQueryTokens.create()
-										.type(token)
-								),
-							null,
-							null
-						);
-					
-					return Objects.requireNonNull(Jackson.JSON.treeToValue(resp.result, QueryResponse.class)
-							.getTokens()
-							.get(token.getJsonValue()+"token"));
-				} catch(Exception e) {
-					throw new AAPIRuntimeException(e);
-				}
-			});
+	public String requestToken(AAPIQueryTokensType token, boolean forceNewToken) {
+		synchronized(tokens) {
+			if(forceNewToken)
+				return tokens.compute(token, (a,b)->internalRequestToken(token));
+			else 
+				return tokens.computeIfAbsent(token, a->internalRequestToken(token));
 		}
+	}
+	
+	private String internalRequestToken(AAPIQueryTokensType token) {
+			try {
+				var resp = jsonRequest(
+						AAPIQuery.create()
+							.meta(AAPIQueryTokens.create()
+									.type(token)
+							),
+						null,
+						null
+					);
+				
+				return Objects.requireNonNull(Jackson.JSON.treeToValue(resp.result, QueryResponse.class)
+						.getTokens()
+						.get(token.getJsonValue()+"token"));
+			} catch(Exception e) {
+				throw new AAPIRuntimeException(e);
+			}
 	}
 }

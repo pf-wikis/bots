@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -268,56 +269,52 @@ public class AAPIUserrights implements AAPIModule, AAPITokenModule, AAPIMainActi
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (user != null) {
 
-			req.addParameter(paramPrefix + "user", user);
+			ctx.addParameter("user", user);
 		}
 
 		if (add != null) {
 
-			req.addParameter(
-					paramPrefix + "add",
-					add.stream().map(v -> v.getName()).collect(Collectors.joining("|")));
+			ctx.addParameter(
+					"add", add.stream().map(v -> v.getName()).collect(Collectors.joining("|")));
 		}
 
 		if (expiry != null) {
 
-			req.addParameter(
-					paramPrefix + "expiry",
-					expiry.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter(
+					"expiry", expiry.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
 		if (remove != null) {
 
-			req.addParameter(
-					paramPrefix + "remove",
+			ctx.addParameter(
+					"remove",
 					remove.stream().map(v -> v.getName()).collect(Collectors.joining("|")));
 		}
 
 		if (reason != null) {
 
-			req.addParameter(paramPrefix + "reason", reason);
+			ctx.addParameter("reason", reason);
 		}
 
-		token = api.requestToken(AAPIQueryTokensType.USERRIGHTS);
+		token = ctx.requestToken(AAPIQueryTokensType.USERRIGHTS);
 
 		if (token != null) {
 
-			req.addParameter(paramPrefix + "token", token);
+			ctx.addParameter("token", token);
 		}
 
 		if (tags != null) {
 
-			req.addParameter(
-					paramPrefix + "tags",
-					tags.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter("tags", tags.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
 		if (watchuser != null) {
 
-			req.addParameter(paramPrefix + "watchuser", watchuser.toString());
+			ctx.addParameter("watchuser", watchuser.toString());
 		}
 	}
 

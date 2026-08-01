@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -79,16 +80,16 @@ public class AAPISmwbrowse implements AAPIModule, AAPIMainActionModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (browse != null) {
 
-			req.addParameter(paramPrefix + "browse", browse.getJsonValue());
+			ctx.addParameter("browse", browse.getJsonValue());
 		}
 
 		if (params != null) {
 
-			req.addParameter(paramPrefix + "params", params);
+			ctx.addParameter("params", params);
 		}
 	}
 

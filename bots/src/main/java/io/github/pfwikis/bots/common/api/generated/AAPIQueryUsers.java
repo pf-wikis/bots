@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -175,31 +176,30 @@ public class AAPIQueryUsers implements AAPIModule, AAPIQueryListModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "usprop",
+			ctx.addParameter(
+					"usprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (attachedwiki != null) {
 
-			req.addParameter(paramPrefix + "usattachedwiki", attachedwiki);
+			ctx.addParameter("usattachedwiki", attachedwiki);
 		}
 
 		if (users != null) {
 
-			req.addParameter(
-					paramPrefix + "ususers",
-					users.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter(
+					"ususers", users.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
 		if (userids != null) {
 
-			req.addParameter(
-					paramPrefix + "ususerids",
+			ctx.addParameter(
+					"ususerids",
 					userids.stream().map(v -> v.toString()).collect(Collectors.joining("|")));
 		}
 	}

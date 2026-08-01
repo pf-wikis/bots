@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -195,12 +196,12 @@ public class AAPIQueryLinterrors implements AAPIModule, AAPIQueryListModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (categories != null) {
 
-			req.addParameter(
-					paramPrefix + "lntcategories",
+			ctx.addParameter(
+					"lntcategories",
 					categories.stream()
 							.map(v -> v.getJsonValue())
 							.collect(Collectors.joining("|")));
@@ -208,16 +209,16 @@ public class AAPIQueryLinterrors implements AAPIModule, AAPIQueryListModule {
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "lntlimit", limit.toString());
+			ctx.addParameter("lntlimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "lntlimit", "5000");
+			ctx.addParameter("lntlimit", "5000");
 		}
 
 		if (namespace != null) {
 
-			req.addParameter(
-					paramPrefix + "lntnamespace",
+			ctx.addParameter(
+					"lntnamespace",
 					namespace.stream()
 							.map(v -> Integer.toString(v.getId()))
 							.collect(Collectors.joining("|")));
@@ -225,14 +226,14 @@ public class AAPIQueryLinterrors implements AAPIModule, AAPIQueryListModule {
 
 		if (pageid != null) {
 
-			req.addParameter(
-					paramPrefix + "lntpageid",
+			ctx.addParameter(
+					"lntpageid",
 					pageid.stream().map(v -> v.toString()).collect(Collectors.joining("|")));
 		}
 
 		if (title != null) {
 
-			req.addParameter(paramPrefix + "lnttitle", title);
+			ctx.addParameter("lnttitle", title);
 		}
 	}
 

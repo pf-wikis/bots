@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -183,36 +184,36 @@ public class AAPIQueryPageimages implements AAPIModule, AAPIQueryPropModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "piprop",
+			ctx.addParameter(
+					"piprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (thumbsize != null) {
 
-			req.addParameter(paramPrefix + "pithumbsize", thumbsize.toString());
+			ctx.addParameter("pithumbsize", thumbsize.toString());
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "pilimit", limit.toString());
+			ctx.addParameter("pilimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "pilimit", "100");
+			ctx.addParameter("pilimit", "100");
 		}
 
 		if (license != null) {
 
-			req.addParameter(paramPrefix + "pilicense", license.getJsonValue());
+			ctx.addParameter("pilicense", license.getJsonValue());
 		}
 
 		if (langcode != null) {
 
-			req.addParameter(paramPrefix + "pilangcode", langcode);
+			ctx.addParameter("pilangcode", langcode);
 		}
 	}
 

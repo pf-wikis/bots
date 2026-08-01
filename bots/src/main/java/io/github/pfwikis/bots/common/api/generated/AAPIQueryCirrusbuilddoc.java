@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -102,18 +103,18 @@ public class AAPIQueryCirrusbuilddoc implements AAPIModule, AAPIQueryPropModule 
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (builders != null) {
 
-			req.addParameter(
-					paramPrefix + "cbbuilders",
+			ctx.addParameter(
+					"cbbuilders",
 					builders.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (limiterprofile != null) {
 
-			req.addParameter(paramPrefix + "cblimiterprofile", limiterprofile);
+			ctx.addParameter("cblimiterprofile", limiterprofile);
 		}
 	}
 

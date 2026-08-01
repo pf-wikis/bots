@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -270,56 +271,55 @@ public class AAPIWatch implements AAPIModule, AAPITokenModule, AAPIMainActionMod
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (unwatch != null) {
 
-			req.addParameter(paramPrefix + "unwatch", unwatch.toString());
+			ctx.addParameter("unwatch", unwatch.toString());
 		}
 
 		if (titles != null) {
 
-			req.addParameter(
-					paramPrefix + "titles",
-					titles.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter(
+					"titles", titles.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
 		if (pageids != null) {
 
-			req.addParameter(
-					paramPrefix + "pageids",
+			ctx.addParameter(
+					"pageids",
 					pageids.stream().map(v -> v.toString()).collect(Collectors.joining("|")));
 		}
 
 		if (revids != null) {
 
-			req.addParameter(
-					paramPrefix + "revids",
+			ctx.addParameter(
+					"revids",
 					revids.stream().map(v -> v.toString()).collect(Collectors.joining("|")));
 		}
 
 		if (generator != null) {
 
-			req.addParameter(paramPrefix + "generator", generator.getKey().getJsonValue());
+			ctx.addParameter("generator", generator.getKey().getJsonValue());
 
-			generator.getValue().buildRequest(api, req, paramPrefix + "g");
+			generator.getValue().buildRequest(ctx.appendParamPrefix("g"));
 		}
 
 		if (redirects != null) {
 
-			req.addParameter(paramPrefix + "redirects", redirects.toString());
+			ctx.addParameter("redirects", redirects.toString());
 		}
 
 		if (converttitles != null) {
 
-			req.addParameter(paramPrefix + "converttitles", converttitles.toString());
+			ctx.addParameter("converttitles", converttitles.toString());
 		}
 
-		token = api.requestToken(AAPIQueryTokensType.WATCH);
+		token = ctx.requestToken(AAPIQueryTokensType.WATCH);
 
 		if (token != null) {
 
-			req.addParameter(paramPrefix + "token", token);
+			ctx.addParameter("token", token);
 		}
 	}
 

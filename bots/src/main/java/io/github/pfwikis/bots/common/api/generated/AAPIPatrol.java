@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -143,30 +144,28 @@ public class AAPIPatrol implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (rcid != null) {
 
-			req.addParameter(paramPrefix + "rcid", rcid.toString());
+			ctx.addParameter("rcid", rcid.toString());
 		}
 
 		if (revid != null) {
 
-			req.addParameter(paramPrefix + "revid", revid.toString());
+			ctx.addParameter("revid", revid.toString());
 		}
 
 		if (tags != null) {
 
-			req.addParameter(
-					paramPrefix + "tags",
-					tags.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter("tags", tags.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
-		token = api.requestToken(AAPIQueryTokensType.PATROL);
+		token = ctx.requestToken(AAPIQueryTokensType.PATROL);
 
 		if (token != null) {
 
-			req.addParameter(paramPrefix + "token", token);
+			ctx.addParameter("token", token);
 		}
 	}
 

@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -133,24 +134,24 @@ public class AAPIQueryDuplicatefiles
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "dflimit", limit.toString());
+			ctx.addParameter("dflimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "dflimit", "5000");
+			ctx.addParameter("dflimit", "5000");
 		}
 
 		if (dir != null) {
 
-			req.addParameter(paramPrefix + "dfdir", dir.getJsonValue());
+			ctx.addParameter("dfdir", dir.getJsonValue());
 		}
 
 		if (localonly != null) {
 
-			req.addParameter(paramPrefix + "dflocalonly", localonly.toString());
+			ctx.addParameter("dflocalonly", localonly.toString());
 		}
 	}
 

@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -88,16 +89,16 @@ public class AAPIQueryUnreadnotificationpages implements AAPIModule, AAPIQueryMe
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (grouppages != null) {
 
-			req.addParameter(paramPrefix + "unpgrouppages", grouppages.toString());
+			ctx.addParameter("unpgrouppages", grouppages.toString());
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "unplimit", limit.toString());
+			ctx.addParameter("unplimit", limit.toString());
 		}
 	}
 

@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -377,77 +378,74 @@ public class AAPIQueryAllmessages implements AAPIModule, AAPIQueryMetaModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (messages != null) {
 
-			req.addParameter(
-					paramPrefix + "ammessages",
-					messages.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter(
+					"ammessages", messages.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "amprop",
+			ctx.addParameter(
+					"amprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (enableparser != null) {
 
-			req.addParameter(paramPrefix + "amenableparser", enableparser.toString());
+			ctx.addParameter("amenableparser", enableparser.toString());
 		}
 
 		if (nocontent != null) {
 
-			req.addParameter(paramPrefix + "amnocontent", nocontent.toString());
+			ctx.addParameter("amnocontent", nocontent.toString());
 		}
 
 		if (includelocal != null) {
 
-			req.addParameter(paramPrefix + "amincludelocal", includelocal.toString());
+			ctx.addParameter("amincludelocal", includelocal.toString());
 		}
 
 		if (args != null) {
 
-			req.addParameter(
-					paramPrefix + "amargs",
-					args.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter("amargs", args.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
 		if (filter != null) {
 
-			req.addParameter(paramPrefix + "amfilter", filter);
+			ctx.addParameter("amfilter", filter);
 		}
 
 		if (customised != null) {
 
-			req.addParameter(paramPrefix + "amcustomised", customised.getJsonValue());
+			ctx.addParameter("amcustomised", customised.getJsonValue());
 		}
 
 		if (lang != null) {
 
-			req.addParameter(paramPrefix + "amlang", lang);
+			ctx.addParameter("amlang", lang);
 		}
 
 		if (from != null) {
 
-			req.addParameter(paramPrefix + "amfrom", from);
+			ctx.addParameter("amfrom", from);
 		}
 
 		if (to != null) {
 
-			req.addParameter(paramPrefix + "amto", to);
+			ctx.addParameter("amto", to);
 		}
 
 		if (title != null) {
 
-			req.addParameter(paramPrefix + "amtitle", title);
+			ctx.addParameter("amtitle", title);
 		}
 
 		if (prefix != null) {
 
-			req.addParameter(paramPrefix + "amprefix", prefix);
+			ctx.addParameter("amprefix", prefix);
 		}
 	}
 

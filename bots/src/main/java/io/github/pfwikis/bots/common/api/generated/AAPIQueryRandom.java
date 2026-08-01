@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -148,12 +149,12 @@ public class AAPIQueryRandom
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (namespace != null) {
 
-			req.addParameter(
-					paramPrefix + "rnnamespace",
+			ctx.addParameter(
+					"rnnamespace",
 					namespace.stream()
 							.map(v -> Integer.toString(v.getId()))
 							.collect(Collectors.joining("|")));
@@ -161,15 +162,15 @@ public class AAPIQueryRandom
 
 		if (filterredir != null) {
 
-			req.addParameter(paramPrefix + "rnfilterredir", filterredir.getJsonValue());
+			ctx.addParameter("rnfilterredir", filterredir.getJsonValue());
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "rnlimit", limit.toString());
+			ctx.addParameter("rnlimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "rnlimit", "5000");
+			ctx.addParameter("rnlimit", "5000");
 		}
 	}
 

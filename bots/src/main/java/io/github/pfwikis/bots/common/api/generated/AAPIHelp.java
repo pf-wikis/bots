@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -166,33 +167,32 @@ public class AAPIHelp implements AAPIModule, AAPIMainActionModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (modules != null) {
 
-			req.addParameter(
-					paramPrefix + "modules",
-					modules.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter(
+					"modules", modules.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
 		if (submodules != null) {
 
-			req.addParameter(paramPrefix + "submodules", submodules.toString());
+			ctx.addParameter("submodules", submodules.toString());
 		}
 
 		if (recursivesubmodules != null) {
 
-			req.addParameter(paramPrefix + "recursivesubmodules", recursivesubmodules.toString());
+			ctx.addParameter("recursivesubmodules", recursivesubmodules.toString());
 		}
 
 		if (wrap != null) {
 
-			req.addParameter(paramPrefix + "wrap", wrap.toString());
+			ctx.addParameter("wrap", wrap.toString());
 		}
 
 		if (toc != null) {
 
-			req.addParameter(paramPrefix + "toc", toc.toString());
+			ctx.addParameter("toc", toc.toString());
 		}
 	}
 

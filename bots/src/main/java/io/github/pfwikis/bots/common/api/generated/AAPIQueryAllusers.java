@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -398,82 +399,82 @@ public class AAPIQueryAllusers implements AAPIModule, AAPIQueryListModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (to != null) {
 
-			req.addParameter(paramPrefix + "auto", to);
+			ctx.addParameter("auto", to);
 		}
 
 		if (prefix != null) {
 
-			req.addParameter(paramPrefix + "auprefix", prefix);
+			ctx.addParameter("auprefix", prefix);
 		}
 
 		if (dir != null) {
 
-			req.addParameter(paramPrefix + "audir", dir.getJsonValue());
+			ctx.addParameter("audir", dir.getJsonValue());
 		}
 
 		if (group != null) {
 
-			req.addParameter(
-					paramPrefix + "augroup",
+			ctx.addParameter(
+					"augroup",
 					group.stream().map(v -> v.getName()).collect(Collectors.joining("|")));
 		}
 
 		if (excludegroup != null) {
 
-			req.addParameter(
-					paramPrefix + "auexcludegroup",
+			ctx.addParameter(
+					"auexcludegroup",
 					excludegroup.stream().map(v -> v.getName()).collect(Collectors.joining("|")));
 		}
 
 		if (rights != null) {
 
-			req.addParameter(
-					paramPrefix + "aurights",
+			ctx.addParameter(
+					"aurights",
 					rights.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "auprop",
+			ctx.addParameter(
+					"auprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "aulimit", limit.toString());
+			ctx.addParameter("aulimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "aulimit", "5000");
+			ctx.addParameter("aulimit", "5000");
 		}
 
 		if (witheditsonly != null) {
 
-			req.addParameter(paramPrefix + "auwitheditsonly", witheditsonly.toString());
+			ctx.addParameter("auwitheditsonly", witheditsonly.toString());
 		}
 
 		if (activeusers != null) {
 
-			req.addParameter(paramPrefix + "auactiveusers", activeusers.toString());
+			ctx.addParameter("auactiveusers", activeusers.toString());
 		}
 
 		if (attachedwiki != null) {
 
-			req.addParameter(paramPrefix + "auattachedwiki", attachedwiki);
+			ctx.addParameter("auattachedwiki", attachedwiki);
 		}
 
 		if (excludenamed != null) {
 
-			req.addParameter(paramPrefix + "auexcludenamed", excludenamed.toString());
+			ctx.addParameter("auexcludenamed", excludenamed.toString());
 		}
 
 		if (excludetemp != null) {
 
-			req.addParameter(paramPrefix + "auexcludetemp", excludetemp.toString());
+			ctx.addParameter("auexcludetemp", excludetemp.toString());
 		}
 	}
 

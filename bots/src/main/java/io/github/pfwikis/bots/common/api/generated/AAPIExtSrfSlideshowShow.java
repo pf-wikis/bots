@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -100,21 +101,21 @@ public class AAPIExtSrfSlideshowShow implements AAPIModule, AAPIMainActionModule
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (pageid != null) {
 
-			req.addParameter(paramPrefix + "pageid", pageid.toString());
+			ctx.addParameter("pageid", pageid.toString());
 		}
 
 		if (template != null) {
 
-			req.addParameter(paramPrefix + "template", template);
+			ctx.addParameter("template", template);
 		}
 
 		if (printouts != null) {
 
-			req.addParameter(paramPrefix + "printouts", printouts);
+			ctx.addParameter("printouts", printouts);
 		}
 	}
 

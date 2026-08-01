@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -213,41 +214,40 @@ public class AAPICreateaccount implements AAPIModule, AAPITokenModule, AAPIMainA
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (requests != null) {
 
-			req.addParameter(
-					paramPrefix + "createrequests",
+			ctx.addParameter(
+					"createrequests",
 					requests.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
 		if (messageformat != null) {
 
-			req.addParameter(paramPrefix + "createmessageformat", messageformat.getJsonValue());
+			ctx.addParameter("createmessageformat", messageformat.getJsonValue());
 		}
 
 		if (mergerequestfields != null) {
 
-			req.addParameter(
-					paramPrefix + "createmergerequestfields", mergerequestfields.toString());
+			ctx.addParameter("createmergerequestfields", mergerequestfields.toString());
 		}
 
 		if (preservestate != null) {
 
-			req.addParameter(paramPrefix + "createpreservestate", preservestate.toString());
+			ctx.addParameter("createpreservestate", preservestate.toString());
 		}
 
 		if (returnurl != null) {
 
-			req.addParameter(paramPrefix + "createreturnurl", returnurl);
+			ctx.addParameter("createreturnurl", returnurl);
 		}
 
-		token = api.requestToken(AAPIQueryTokensType.CREATEACCOUNT);
+		token = ctx.requestToken(AAPIQueryTokensType.CREATEACCOUNT);
 
 		if (token != null) {
 
-			req.addParameter(paramPrefix + "createtoken", token);
+			ctx.addParameter("createtoken", token);
 		}
 	}
 

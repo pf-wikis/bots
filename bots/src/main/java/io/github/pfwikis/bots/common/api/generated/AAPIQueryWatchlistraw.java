@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -317,12 +318,12 @@ public class AAPIQueryWatchlistraw
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (namespace != null) {
 
-			req.addParameter(
-					paramPrefix + "wrnamespace",
+			ctx.addParameter(
+					"wrnamespace",
 					namespace.stream()
 							.map(v -> Integer.toString(v.getId()))
 							.collect(Collectors.joining("|")));
@@ -330,49 +331,49 @@ public class AAPIQueryWatchlistraw
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "wrlimit", limit.toString());
+			ctx.addParameter("wrlimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "wrlimit", "5000");
+			ctx.addParameter("wrlimit", "5000");
 		}
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "wrprop",
+			ctx.addParameter(
+					"wrprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (show != null) {
 
-			req.addParameter(
-					paramPrefix + "wrshow",
+			ctx.addParameter(
+					"wrshow",
 					show.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (owner != null) {
 
-			req.addParameter(paramPrefix + "wrowner", owner);
+			ctx.addParameter("wrowner", owner);
 		}
 
 		if (token != null) {
 
-			req.addParameter(paramPrefix + "wrtoken", token);
+			ctx.addParameter("wrtoken", token);
 		}
 
 		if (dir != null) {
 
-			req.addParameter(paramPrefix + "wrdir", dir.getJsonValue());
+			ctx.addParameter("wrdir", dir.getJsonValue());
 		}
 
 		if (fromtitle != null) {
 
-			req.addParameter(paramPrefix + "wrfromtitle", fromtitle);
+			ctx.addParameter("wrfromtitle", fromtitle);
 		}
 
 		if (totitle != null) {
 
-			req.addParameter(paramPrefix + "wrtotitle", totitle);
+			ctx.addParameter("wrtotitle", totitle);
 		}
 	}
 

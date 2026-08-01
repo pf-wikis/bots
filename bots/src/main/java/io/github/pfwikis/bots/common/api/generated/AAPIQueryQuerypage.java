@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -104,19 +105,19 @@ public class AAPIQueryQuerypage
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (page != null) {
 
-			req.addParameter(paramPrefix + "qppage", page.getJsonValue());
+			ctx.addParameter("qppage", page.getJsonValue());
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "qplimit", limit.toString());
+			ctx.addParameter("qplimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "qplimit", "5000");
+			ctx.addParameter("qplimit", "5000");
 		}
 	}
 

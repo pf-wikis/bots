@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -216,22 +217,22 @@ public class AAPIQueryEmbeddedin
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (title != null) {
 
-			req.addParameter(paramPrefix + "eititle", title);
+			ctx.addParameter("eititle", title);
 		}
 
 		if (pageid != null) {
 
-			req.addParameter(paramPrefix + "eipageid", pageid.toString());
+			ctx.addParameter("eipageid", pageid.toString());
 		}
 
 		if (namespace != null) {
 
-			req.addParameter(
-					paramPrefix + "einamespace",
+			ctx.addParameter(
+					"einamespace",
 					namespace.stream()
 							.map(v -> Integer.toString(v.getId()))
 							.collect(Collectors.joining("|")));
@@ -239,20 +240,20 @@ public class AAPIQueryEmbeddedin
 
 		if (dir != null) {
 
-			req.addParameter(paramPrefix + "eidir", dir.getJsonValue());
+			ctx.addParameter("eidir", dir.getJsonValue());
 		}
 
 		if (filterredir != null) {
 
-			req.addParameter(paramPrefix + "eifilterredir", filterredir.getJsonValue());
+			ctx.addParameter("eifilterredir", filterredir.getJsonValue());
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "eilimit", limit.toString());
+			ctx.addParameter("eilimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "eilimit", "5000");
+			ctx.addParameter("eilimit", "5000");
 		}
 	}
 

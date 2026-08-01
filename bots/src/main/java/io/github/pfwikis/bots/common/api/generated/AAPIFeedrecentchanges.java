@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -435,91 +436,91 @@ public class AAPIFeedrecentchanges implements AAPIModule, AAPIMainActionModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (feedformat != null) {
 
-			req.addParameter(paramPrefix + "feedformat", feedformat.getJsonValue());
+			ctx.addParameter("feedformat", feedformat.getJsonValue());
 		}
 
 		if (namespace != null) {
 
-			req.addParameter(paramPrefix + "namespace", Integer.toString(namespace.getId()));
+			ctx.addParameter("namespace", Integer.toString(namespace.getId()));
 		}
 
 		if (invert != null) {
 
-			req.addParameter(paramPrefix + "invert", invert.toString());
+			ctx.addParameter("invert", invert.toString());
 		}
 
 		if (associated != null) {
 
-			req.addParameter(paramPrefix + "associated", associated.toString());
+			ctx.addParameter("associated", associated.toString());
 		}
 
 		if (days != null) {
 
-			req.addParameter(paramPrefix + "days", days.toString());
+			ctx.addParameter("days", days.toString());
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "limit", limit.toString());
+			ctx.addParameter("limit", limit.toString());
 		}
 
 		if (hideminor != null) {
 
-			req.addParameter(paramPrefix + "hideminor", hideminor.toString());
+			ctx.addParameter("hideminor", hideminor.toString());
 		}
 
 		if (hidebots != null) {
 
-			req.addParameter(paramPrefix + "hidebots", hidebots.toString());
+			ctx.addParameter("hidebots", hidebots.toString());
 		}
 
 		if (hideanons != null) {
 
-			req.addParameter(paramPrefix + "hideanons", hideanons.toString());
+			ctx.addParameter("hideanons", hideanons.toString());
 		}
 
 		if (hideliu != null) {
 
-			req.addParameter(paramPrefix + "hideliu", hideliu.toString());
+			ctx.addParameter("hideliu", hideliu.toString());
 		}
 
 		if (hidepatrolled != null) {
 
-			req.addParameter(paramPrefix + "hidepatrolled", hidepatrolled.toString());
+			ctx.addParameter("hidepatrolled", hidepatrolled.toString());
 		}
 
 		if (hidemyself != null) {
 
-			req.addParameter(paramPrefix + "hidemyself", hidemyself.toString());
+			ctx.addParameter("hidemyself", hidemyself.toString());
 		}
 
 		if (hidecategorization != null) {
 
-			req.addParameter(paramPrefix + "hidecategorization", hidecategorization.toString());
+			ctx.addParameter("hidecategorization", hidecategorization.toString());
 		}
 
 		if (tagfilter != null) {
 
-			req.addParameter(paramPrefix + "tagfilter", tagfilter);
+			ctx.addParameter("tagfilter", tagfilter);
 		}
 
 		if (inverttags != null) {
 
-			req.addParameter(paramPrefix + "inverttags", inverttags.toString());
+			ctx.addParameter("inverttags", inverttags.toString());
 		}
 
 		if (target != null) {
 
-			req.addParameter(paramPrefix + "target", target);
+			ctx.addParameter("target", target);
 		}
 
 		if (showlinkedto != null) {
 
-			req.addParameter(paramPrefix + "showlinkedto", showlinkedto.toString());
+			ctx.addParameter("showlinkedto", showlinkedto.toString());
 		}
 	}
 

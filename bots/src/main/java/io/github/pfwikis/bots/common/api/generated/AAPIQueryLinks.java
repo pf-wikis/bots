@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -177,12 +178,12 @@ public class AAPIQueryLinks
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (namespace != null) {
 
-			req.addParameter(
-					paramPrefix + "plnamespace",
+			ctx.addParameter(
+					"plnamespace",
 					namespace.stream()
 							.map(v -> Integer.toString(v.getId()))
 							.collect(Collectors.joining("|")));
@@ -190,22 +191,21 @@ public class AAPIQueryLinks
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "pllimit", limit.toString());
+			ctx.addParameter("pllimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "pllimit", "5000");
+			ctx.addParameter("pllimit", "5000");
 		}
 
 		if (titles != null) {
 
-			req.addParameter(
-					paramPrefix + "pltitles",
-					titles.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter(
+					"pltitles", titles.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
 		if (dir != null) {
 
-			req.addParameter(paramPrefix + "pldir", dir.getJsonValue());
+			ctx.addParameter("pldir", dir.getJsonValue());
 		}
 	}
 

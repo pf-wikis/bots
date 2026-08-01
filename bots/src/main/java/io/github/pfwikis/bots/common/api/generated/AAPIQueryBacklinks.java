@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -239,22 +240,22 @@ public class AAPIQueryBacklinks
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (title != null) {
 
-			req.addParameter(paramPrefix + "bltitle", title);
+			ctx.addParameter("bltitle", title);
 		}
 
 		if (pageid != null) {
 
-			req.addParameter(paramPrefix + "blpageid", pageid.toString());
+			ctx.addParameter("blpageid", pageid.toString());
 		}
 
 		if (namespace != null) {
 
-			req.addParameter(
-					paramPrefix + "blnamespace",
+			ctx.addParameter(
+					"blnamespace",
 					namespace.stream()
 							.map(v -> Integer.toString(v.getId()))
 							.collect(Collectors.joining("|")));
@@ -262,25 +263,25 @@ public class AAPIQueryBacklinks
 
 		if (dir != null) {
 
-			req.addParameter(paramPrefix + "bldir", dir.getJsonValue());
+			ctx.addParameter("bldir", dir.getJsonValue());
 		}
 
 		if (filterredir != null) {
 
-			req.addParameter(paramPrefix + "blfilterredir", filterredir.getJsonValue());
+			ctx.addParameter("blfilterredir", filterredir.getJsonValue());
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "bllimit", limit.toString());
+			ctx.addParameter("bllimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "bllimit", "5000");
+			ctx.addParameter("bllimit", "5000");
 		}
 
 		if (redirect != null) {
 
-			req.addParameter(paramPrefix + "blredirect", redirect.toString());
+			ctx.addParameter("blredirect", redirect.toString());
 		}
 	}
 

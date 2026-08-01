@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -502,106 +503,106 @@ public class AAPIPfautocomplete implements AAPIModule, AAPIMainActionModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "limit", limit.toString());
+			ctx.addParameter("limit", limit.toString());
 		}
 
 		if (substr != null) {
 
-			req.addParameter(paramPrefix + "substr", substr);
+			ctx.addParameter("substr", substr);
 		}
 
 		if (property != null) {
 
-			req.addParameter(paramPrefix + "property", property);
+			ctx.addParameter("property", property);
 		}
 
 		if (category != null) {
 
-			req.addParameter(paramPrefix + "category", category);
+			ctx.addParameter("category", category);
 		}
 
 		if (concept != null) {
 
-			req.addParameter(paramPrefix + "concept", concept);
+			ctx.addParameter("concept", concept);
 		}
 
 		if (wikidata != null) {
 
-			req.addParameter(paramPrefix + "wikidata", wikidata);
+			ctx.addParameter("wikidata", wikidata);
 		}
 
 		if (semantic_query != null) {
 
-			req.addParameter(paramPrefix + "semantic_query", semantic_query);
+			ctx.addParameter("semantic_query", semantic_query);
 		}
 
 		if (cargo_table != null) {
 
-			req.addParameter(paramPrefix + "cargo_table", cargo_table);
+			ctx.addParameter("cargo_table", cargo_table);
 		}
 
 		if (cargo_field != null) {
 
-			req.addParameter(paramPrefix + "cargo_field", cargo_field);
+			ctx.addParameter("cargo_field", cargo_field);
 		}
 
 		if (cargo_where != null) {
 
-			req.addParameter(paramPrefix + "cargo_where", cargo_where);
+			ctx.addParameter("cargo_where", cargo_where);
 		}
 
 		if (namespace != null) {
 
-			req.addParameter(paramPrefix + "namespace", namespace);
+			ctx.addParameter("namespace", namespace);
 		}
 
 		if (external_url != null) {
 
-			req.addParameter(paramPrefix + "external_url", external_url);
+			ctx.addParameter("external_url", external_url);
 		}
 
 		if (baseprop != null) {
 
-			req.addParameter(paramPrefix + "baseprop", baseprop);
+			ctx.addParameter("baseprop", baseprop);
 		}
 
 		if (base_cargo_table != null) {
 
-			req.addParameter(paramPrefix + "base_cargo_table", base_cargo_table);
+			ctx.addParameter("base_cargo_table", base_cargo_table);
 		}
 
 		if (base_cargo_field != null) {
 
-			req.addParameter(paramPrefix + "base_cargo_field", base_cargo_field);
+			ctx.addParameter("base_cargo_field", base_cargo_field);
 		}
 
 		if (basevalue != null) {
 
-			req.addParameter(paramPrefix + "basevalue", basevalue);
+			ctx.addParameter("basevalue", basevalue);
 		}
 
 		if (mappingproperty != null) {
 
-			req.addParameter(paramPrefix + "mappingproperty", mappingproperty);
+			ctx.addParameter("mappingproperty", mappingproperty);
 		}
 
 		if (mappingtemplate != null) {
 
-			req.addParameter(paramPrefix + "mappingtemplate", mappingtemplate);
+			ctx.addParameter("mappingtemplate", mappingtemplate);
 		}
 
 		if (mappingcargotable != null) {
 
-			req.addParameter(paramPrefix + "mappingcargotable", mappingcargotable);
+			ctx.addParameter("mappingcargotable", mappingcargotable);
 		}
 
 		if (mappingcargofield != null) {
 
-			req.addParameter(paramPrefix + "mappingcargofield", mappingcargofield);
+			ctx.addParameter("mappingcargofield", mappingcargofield);
 		}
 	}
 

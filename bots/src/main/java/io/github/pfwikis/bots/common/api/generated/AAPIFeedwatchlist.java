@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -285,55 +286,55 @@ public class AAPIFeedwatchlist implements AAPIModule, AAPIMainActionModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (feedformat != null) {
 
-			req.addParameter(paramPrefix + "feedformat", feedformat.getJsonValue());
+			ctx.addParameter("feedformat", feedformat.getJsonValue());
 		}
 
 		if (hours != null) {
 
-			req.addParameter(paramPrefix + "hours", hours.toString());
+			ctx.addParameter("hours", hours.toString());
 		}
 
 		if (linktosections != null) {
 
-			req.addParameter(paramPrefix + "linktosections", linktosections.toString());
+			ctx.addParameter("linktosections", linktosections.toString());
 		}
 
 		if (allrev != null) {
 
-			req.addParameter(paramPrefix + "allrev", allrev.toString());
+			ctx.addParameter("allrev", allrev.toString());
 		}
 
 		if (wlowner != null) {
 
-			req.addParameter(paramPrefix + "wlowner", wlowner);
+			ctx.addParameter("wlowner", wlowner);
 		}
 
 		if (wltoken != null) {
 
-			req.addParameter(paramPrefix + "wltoken", wltoken);
+			ctx.addParameter("wltoken", wltoken);
 		}
 
 		if (wlshow != null) {
 
-			req.addParameter(
-					paramPrefix + "wlshow",
+			ctx.addParameter(
+					"wlshow",
 					wlshow.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (wltype != null) {
 
-			req.addParameter(
-					paramPrefix + "wltype",
+			ctx.addParameter(
+					"wltype",
 					wltype.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (wlexcludeuser != null) {
 
-			req.addParameter(paramPrefix + "wlexcludeuser", wlexcludeuser);
+			ctx.addParameter("wlexcludeuser", wlexcludeuser);
 		}
 	}
 

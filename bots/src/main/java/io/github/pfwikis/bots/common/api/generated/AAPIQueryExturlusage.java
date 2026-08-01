@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -211,29 +212,29 @@ public class AAPIQueryExturlusage
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "euprop",
+			ctx.addParameter(
+					"euprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (protocol != null) {
 
-			req.addParameter(paramPrefix + "euprotocol", protocol.getJsonValue());
+			ctx.addParameter("euprotocol", protocol.getJsonValue());
 		}
 
 		if (query != null) {
 
-			req.addParameter(paramPrefix + "euquery", query);
+			ctx.addParameter("euquery", query);
 		}
 
 		if (namespace != null) {
 
-			req.addParameter(
-					paramPrefix + "eunamespace",
+			ctx.addParameter(
+					"eunamespace",
 					namespace.stream()
 							.map(v -> Integer.toString(v.getId()))
 							.collect(Collectors.joining("|")));
@@ -241,10 +242,10 @@ public class AAPIQueryExturlusage
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "eulimit", limit.toString());
+			ctx.addParameter("eulimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "eulimit", "5000");
+			ctx.addParameter("eulimit", "5000");
 		}
 	}
 

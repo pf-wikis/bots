@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -532,115 +533,113 @@ public class AAPIDiscussiontoolsedit implements AAPIModule, AAPITokenModule, AAP
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (paction != null) {
 
-			req.addParameter(paramPrefix + "paction", paction.getJsonValue());
+			ctx.addParameter("paction", paction.getJsonValue());
 		}
 
 		if (autosubscribe != null) {
 
-			req.addParameter(paramPrefix + "autosubscribe", autosubscribe.getJsonValue());
+			ctx.addParameter("autosubscribe", autosubscribe.getJsonValue());
 		}
 
 		if (page != null) {
 
-			req.addParameter(paramPrefix + "page", page);
+			ctx.addParameter("page", page);
 		}
 
-		token = api.requestToken(AAPIQueryTokensType.CSRF);
+		token = ctx.requestToken(AAPIQueryTokensType.CSRF);
 
 		if (token != null) {
 
-			req.addParameter(paramPrefix + "token", token);
+			ctx.addParameter("token", token);
 		}
 
 		if (formtoken != null) {
 
-			req.addParameter(paramPrefix + "formtoken", formtoken);
+			ctx.addParameter("formtoken", formtoken);
 		}
 
 		if (commentname != null) {
 
-			req.addParameter(paramPrefix + "commentname", commentname);
+			ctx.addParameter("commentname", commentname);
 		}
 
 		if (commentid != null) {
 
-			req.addParameter(paramPrefix + "commentid", commentid);
+			ctx.addParameter("commentid", commentid);
 		}
 
 		if (wikitext != null) {
 
-			req.addParameter(paramPrefix + "wikitext", wikitext);
+			ctx.addParameter("wikitext", wikitext);
 		}
 
 		if (html != null) {
 
-			req.addParameter(paramPrefix + "html", html);
+			ctx.addParameter("html", html);
 		}
 
 		if (summary != null) {
 
-			req.addParameter(paramPrefix + "summary", summary);
+			ctx.addParameter("summary", summary);
 		}
 
 		if (sectiontitle != null) {
 
-			req.addParameter(paramPrefix + "sectiontitle", sectiontitle);
+			ctx.addParameter("sectiontitle", sectiontitle);
 		}
 
 		if (allownosectiontitle != null) {
 
-			req.addParameter(paramPrefix + "allownosectiontitle", allownosectiontitle.toString());
+			ctx.addParameter("allownosectiontitle", allownosectiontitle.toString());
 		}
 
 		if (useskin != null) {
 
-			req.addParameter(paramPrefix + "useskin", useskin.getJsonValue());
+			ctx.addParameter("useskin", useskin.getJsonValue());
 		}
 
 		if (watchlist != null) {
 
-			req.addParameter(paramPrefix + "watchlist", watchlist);
+			ctx.addParameter("watchlist", watchlist);
 		}
 
 		if (captchaid != null) {
 
-			req.addParameter(paramPrefix + "captchaid", captchaid);
+			ctx.addParameter("captchaid", captchaid);
 		}
 
 		if (captchaword != null) {
 
-			req.addParameter(paramPrefix + "captchaword", captchaword);
+			ctx.addParameter("captchaword", captchaword);
 		}
 
 		if (nocontent != null) {
 
-			req.addParameter(paramPrefix + "nocontent", nocontent);
+			ctx.addParameter("nocontent", nocontent);
 		}
 
 		if (tags != null) {
 
-			req.addParameter(
-					paramPrefix + "tags",
-					tags.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter("tags", tags.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
 		if (returnto != null) {
 
-			req.addParameter(paramPrefix + "returnto", returnto);
+			ctx.addParameter("returnto", returnto);
 		}
 
 		if (returntoquery != null) {
 
-			req.addParameter(paramPrefix + "returntoquery", returntoquery);
+			ctx.addParameter("returntoquery", returntoquery);
 		}
 
 		if (returntoanchor != null) {
 
-			req.addParameter(paramPrefix + "returntoanchor", returntoanchor);
+			ctx.addParameter("returntoanchor", returntoanchor);
 		}
 	}
 

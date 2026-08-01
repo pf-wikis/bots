@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -716,159 +717,156 @@ public class AAPIEdit implements AAPIModule, AAPITokenModule, AAPIMainActionModu
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (title != null) {
 
 			if (title.toPageRef().hasId()) {
-				req.addParameter(
-						paramPrefix + "pageid", Integer.toString(title.toPageRef().getId()));
+				ctx.addParameter("pageid", title.toPageRef().getId());
 			} else {
-				req.addParameter(paramPrefix + "title", title.toPageTitle().toFullTitle());
+				ctx.addParameter("title", title.toPageTitle().toFullTitle());
 			}
 		}
 
 		if (section != null) {
 
-			req.addParameter(paramPrefix + "section", section);
+			ctx.addParameter("section", section);
 		}
 
 		if (sectiontitle != null) {
 
-			req.addParameter(paramPrefix + "sectiontitle", sectiontitle);
+			ctx.addParameter("sectiontitle", sectiontitle);
 		}
 
 		if (text != null) {
 
-			req.addParameter(paramPrefix + "text", text);
+			ctx.addParameter("text", text);
 		}
 
 		if (summary != null) {
 
-			req.addParameter(paramPrefix + "summary", summary);
+			ctx.addParameter("summary", summary);
 		}
 
 		if (tags != null) {
 
-			req.addParameter(
-					paramPrefix + "tags",
-					tags.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter("tags", tags.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
 		if (minor != null) {
 
-			req.addParameter(paramPrefix + "minor", minor.toString());
+			ctx.addParameter("minor", minor.toString());
 		}
 
 		if (notminor != null) {
 
-			req.addParameter(paramPrefix + "notminor", notminor.toString());
+			ctx.addParameter("notminor", notminor.toString());
 		}
 
 		if (bot != null) {
 
-			req.addParameter(paramPrefix + "bot", bot.toString());
+			ctx.addParameter("bot", bot.toString());
 		}
 
 		if (baserevid != null) {
 
-			req.addParameter(paramPrefix + "baserevid", baserevid.toString());
+			ctx.addParameter("baserevid", baserevid.toString());
 		}
 
 		if (basetimestamp != null) {
 
-			req.addParameter(
-					paramPrefix + "basetimestamp",
+			ctx.addParameter(
+					"basetimestamp",
 					basetimestamp.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
 		}
 
 		if (starttimestamp != null) {
 
-			req.addParameter(
-					paramPrefix + "starttimestamp",
+			ctx.addParameter(
+					"starttimestamp",
 					starttimestamp.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
 		}
 
 		if (recreate != null) {
 
-			req.addParameter(paramPrefix + "recreate", recreate.toString());
+			ctx.addParameter("recreate", recreate.toString());
 		}
 
 		if (createonly != null) {
 
-			req.addParameter(paramPrefix + "createonly", createonly.toString());
+			ctx.addParameter("createonly", createonly.toString());
 		}
 
 		if (nocreate != null) {
 
-			req.addParameter(paramPrefix + "nocreate", nocreate.toString());
+			ctx.addParameter("nocreate", nocreate.toString());
 		}
 
 		if (watchlist != null) {
 
-			req.addParameter(paramPrefix + "watchlist", watchlist.getJsonValue());
+			ctx.addParameter("watchlist", watchlist.getJsonValue());
 		}
 
 		if (md5 != null) {
 
-			req.addParameter(paramPrefix + "md5", md5);
+			ctx.addParameter("md5", md5);
 		}
 
 		if (prependtext != null) {
 
-			req.addParameter(paramPrefix + "prependtext", prependtext);
+			ctx.addParameter("prependtext", prependtext);
 		}
 
 		if (appendtext != null) {
 
-			req.addParameter(paramPrefix + "appendtext", appendtext);
+			ctx.addParameter("appendtext", appendtext);
 		}
 
 		if (undo != null) {
 
-			req.addParameter(paramPrefix + "undo", undo.toString());
+			ctx.addParameter("undo", undo.toString());
 		}
 
 		if (undoafter != null) {
 
-			req.addParameter(paramPrefix + "undoafter", undoafter.toString());
+			ctx.addParameter("undoafter", undoafter.toString());
 		}
 
 		if (redirect != null) {
 
-			req.addParameter(paramPrefix + "redirect", redirect.toString());
+			ctx.addParameter("redirect", redirect.toString());
 		}
 
 		if (contentformat != null) {
 
-			req.addParameter(paramPrefix + "contentformat", contentformat.getJsonValue());
+			ctx.addParameter("contentformat", contentformat.getJsonValue());
 		}
 
 		if (contentmodel != null) {
 
-			req.addParameter(paramPrefix + "contentmodel", contentmodel.getJsonValue());
+			ctx.addParameter("contentmodel", contentmodel.getJsonValue());
 		}
 
-		token = api.requestToken(AAPIQueryTokensType.CSRF);
+		token = ctx.requestToken(AAPIQueryTokensType.CSRF);
 
 		if (token != null) {
 
-			req.addParameter(paramPrefix + "token", token);
+			ctx.addParameter("token", token);
 		}
 
 		if (returnto != null) {
 
-			req.addParameter(paramPrefix + "returnto", returnto);
+			ctx.addParameter("returnto", returnto);
 		}
 
 		if (returntoquery != null) {
 
-			req.addParameter(paramPrefix + "returntoquery", returntoquery);
+			ctx.addParameter("returntoquery", returntoquery);
 		}
 
 		if (returntoanchor != null) {
 
-			req.addParameter(paramPrefix + "returntoanchor", returntoanchor);
+			ctx.addParameter("returntoanchor", returntoanchor);
 		}
 	}
 

@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -207,33 +208,33 @@ public class AAPIQueryContributors implements AAPIModule, AAPIQueryPropModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (group != null) {
 
-			req.addParameter(
-					paramPrefix + "pcgroup",
+			ctx.addParameter(
+					"pcgroup",
 					group.stream().map(v -> v.getName()).collect(Collectors.joining("|")));
 		}
 
 		if (excludegroup != null) {
 
-			req.addParameter(
-					paramPrefix + "pcexcludegroup",
+			ctx.addParameter(
+					"pcexcludegroup",
 					excludegroup.stream().map(v -> v.getName()).collect(Collectors.joining("|")));
 		}
 
 		if (rights != null) {
 
-			req.addParameter(
-					paramPrefix + "pcrights",
+			ctx.addParameter(
+					"pcrights",
 					rights.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (excluderights != null) {
 
-			req.addParameter(
-					paramPrefix + "pcexcluderights",
+			ctx.addParameter(
+					"pcexcluderights",
 					excluderights.stream()
 							.map(v -> v.getJsonValue())
 							.collect(Collectors.joining("|")));
@@ -241,10 +242,10 @@ public class AAPIQueryContributors implements AAPIModule, AAPIQueryPropModule {
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "pclimit", limit.toString());
+			ctx.addParameter("pclimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "pclimit", "5000");
+			ctx.addParameter("pclimit", "5000");
 		}
 	}
 

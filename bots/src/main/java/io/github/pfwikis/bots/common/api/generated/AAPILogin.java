@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -137,26 +138,26 @@ public class AAPILogin implements AAPIModule, AAPIMainActionModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (name != null) {
 
-			req.addParameter(paramPrefix + "lgname", name);
+			ctx.addParameter("lgname", name);
 		}
 
 		if (password != null) {
 
-			req.addParameter(paramPrefix + "lgpassword", password);
+			ctx.addParameter("lgpassword", password);
 		}
 
 		if (domain != null) {
 
-			req.addParameter(paramPrefix + "lgdomain", domain);
+			ctx.addParameter("lgdomain", domain);
 		}
 
 		if (token != null) {
 
-			req.addParameter(paramPrefix + "lgtoken", token);
+			ctx.addParameter("lgtoken", token);
 		}
 	}
 

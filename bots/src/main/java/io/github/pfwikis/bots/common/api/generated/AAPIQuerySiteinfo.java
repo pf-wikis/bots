@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -179,33 +180,33 @@ public class AAPIQuerySiteinfo implements AAPIModule, AAPIQueryMetaModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "siprop",
+			ctx.addParameter(
+					"siprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (filteriw != null) {
 
-			req.addParameter(paramPrefix + "sifilteriw", filteriw.getJsonValue());
+			ctx.addParameter("sifilteriw", filteriw.getJsonValue());
 		}
 
 		if (showalldb != null) {
 
-			req.addParameter(paramPrefix + "sishowalldb", showalldb.toString());
+			ctx.addParameter("sishowalldb", showalldb.toString());
 		}
 
 		if (numberingroup != null) {
 
-			req.addParameter(paramPrefix + "sinumberingroup", numberingroup.toString());
+			ctx.addParameter("sinumberingroup", numberingroup.toString());
 		}
 
 		if (inlanguagecode != null) {
 
-			req.addParameter(paramPrefix + "siinlanguagecode", inlanguagecode);
+			ctx.addParameter("siinlanguagecode", inlanguagecode);
 		}
 	}
 

@@ -17,6 +17,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -185,26 +186,25 @@ public class @m.getJavaName() implements AAPIModule
 	@}
 	
 	@@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) @{
-	
+	public void buildRequest(RequestContext ctx) @{
 		@with?(set=m.getPageSetter()) {
 			if(@set.pageField()!=null) @{
 				@if(set.multi()) {
 					if(@(set.pageField()).stream().allMatch(cpr->cpr.toPageRef().hasId())) @{
 						String val = @(set.pageField()).stream().map(p->Integer.toString(p.toPageRef().getId())).collect(Collectors.joining("|"));
-						req.addParameter(paramPrefix+"@m.getModule().getPrefix()@set.idField()", val);
+						ctx.addParameter("@m.getModule().getPrefix()@set.idField()", val);
 					@}
 					else @{
 						String val = @(set.pageField()).stream().map(p->p.toPageTitle().toFullTitle()).collect(Collectors.joining("|"));
-						req.addParameter(paramPrefix+"@m.getModule().getPrefix()@set.pageField()", val);
+						ctx.addParameter("@m.getModule().getPrefix()@set.pageField()", val);
 					@}
 				}
 				else {
 					if(@(set.pageField()).toPageRef().hasId()) @{
-						req.addParameter(paramPrefix+"@m.getModule().getPrefix()@set.idField()", Integer.toString(@(set.pageField()).toPageRef().getId()));
+						ctx.addParameter("@m.getModule().getPrefix()@set.idField()", @(set.pageField()).toPageRef().getId());
 					@}
 					else @{
-						req.addParameter(paramPrefix+"@m.getModule().getPrefix()@set.pageField()", @(set.pageField()).toPageTitle().toFullTitle());
+						ctx.addParameter("@m.getModule().getPrefix()@set.pageField()", @(set.pageField()).toPageTitle().toFullTitle());
 					@}
 				}
 			@}
@@ -212,26 +212,26 @@ public class @m.getJavaName() implements AAPIModule
 	
 		@for(param:m.getParameters()) {
 			@if(param.isToken()) {
-				@param.getSafeName() = api.requestToken(AAPIQueryTokensType.@param.getTokenType().name());
+				@param.getSafeName() = ctx.requestToken(AAPIQueryTokensType.@param.getTokenType().name());
 			}
 		
 			if(@param.getSafeName() != null) @{
 				@if(param.isSubmodule()) {
-					req.addParameter(paramPrefix+"@param.getPrefixedRawName()", @param.getJsonValue(param.getSafeName()));
+					ctx.addParameter("@param.getPrefixedRawName()", @param.getJsonValue(param.getSafeName()));
 					@if(param.isMulti()) {
-						@(param.getSafeName()).forEach(v->v.getValue().buildRequest(api, req, paramPrefix@if(param.getSubmoduleParamPrefix()!=null){+"@param.getSubmoduleParamPrefix()"}));
+						@(param.getSafeName()).forEach(v->v.getValue().buildRequest(ctx@if(param.getSubmoduleParamPrefix()!=null){.appendParamPrefix("@param.getSubmoduleParamPrefix()")}));
 					}
 					else {
-						@(param.getSafeName()).getValue().buildRequest(api, req, paramPrefix@if(param.getSubmoduleParamPrefix()!=null){+"@param.getSubmoduleParamPrefix()"});
+						@(param.getSafeName()).getValue().buildRequest(ctx@if(param.getSubmoduleParamPrefix()!=null){.appendParamPrefix("@param.getSubmoduleParamPrefix()")});
 					}
 				}
 				else {
-					req.addParameter(paramPrefix+"@param.getPrefixedRawName()", @param.getJsonValue(param.getSafeName()));
+					ctx.addParameter("@param.getPrefixedRawName()", @param.getJsonValue(param.getSafeName()));
 				}
 			@}
 			@if(param.equals(m.getResultLimitParam()) && param.getMaxValue() != null) {
 				else @{
-					req.addParameter(paramPrefix+"@param.getPrefixedRawName()", "@param.getMaxValue()");
+					ctx.addParameter("@param.getPrefixedRawName()", "@param.getMaxValue()");
 				@}
 			}
 		}

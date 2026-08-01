@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -437,31 +438,29 @@ public class AAPIQueryWatchlist
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (allrev != null) {
 
-			req.addParameter(paramPrefix + "wlallrev", allrev.toString());
+			ctx.addParameter("wlallrev", allrev.toString());
 		}
 
 		if (start != null) {
 
-			req.addParameter(
-					paramPrefix + "wlstart",
-					start.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
+			ctx.addParameter(
+					"wlstart", start.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
 		}
 
 		if (end != null) {
 
-			req.addParameter(
-					paramPrefix + "wlend",
-					end.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
+			ctx.addParameter(
+					"wlend", end.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
 		}
 
 		if (namespace != null) {
 
-			req.addParameter(
-					paramPrefix + "wlnamespace",
+			ctx.addParameter(
+					"wlnamespace",
 					namespace.stream()
 							.map(v -> Integer.toString(v.getId()))
 							.collect(Collectors.joining("|")));
@@ -469,56 +468,56 @@ public class AAPIQueryWatchlist
 
 		if (user != null) {
 
-			req.addParameter(paramPrefix + "wluser", user);
+			ctx.addParameter("wluser", user);
 		}
 
 		if (excludeuser != null) {
 
-			req.addParameter(paramPrefix + "wlexcludeuser", excludeuser);
+			ctx.addParameter("wlexcludeuser", excludeuser);
 		}
 
 		if (dir != null) {
 
-			req.addParameter(paramPrefix + "wldir", dir.getJsonValue());
+			ctx.addParameter("wldir", dir.getJsonValue());
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "wllimit", limit.toString());
+			ctx.addParameter("wllimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "wllimit", "5000");
+			ctx.addParameter("wllimit", "5000");
 		}
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "wlprop",
+			ctx.addParameter(
+					"wlprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (show != null) {
 
-			req.addParameter(
-					paramPrefix + "wlshow",
+			ctx.addParameter(
+					"wlshow",
 					show.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (type != null) {
 
-			req.addParameter(
-					paramPrefix + "wltype",
+			ctx.addParameter(
+					"wltype",
 					type.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (owner != null) {
 
-			req.addParameter(paramPrefix + "wlowner", owner);
+			ctx.addParameter("wlowner", owner);
 		}
 
 		if (token != null) {
 
-			req.addParameter(paramPrefix + "wltoken", token);
+			ctx.addParameter("wltoken", token);
 		}
 	}
 

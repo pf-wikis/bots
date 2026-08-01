@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -352,75 +353,73 @@ public class AAPIQueryLogevents implements AAPIModule, AAPIQueryListModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "leprop",
+			ctx.addParameter(
+					"leprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (type != null) {
 
-			req.addParameter(paramPrefix + "letype", type.getJsonValue());
+			ctx.addParameter("letype", type.getJsonValue());
 		}
 
 		if (action != null) {
 
-			req.addParameter(paramPrefix + "leaction", action.getJsonValue());
+			ctx.addParameter("leaction", action.getJsonValue());
 		}
 
 		if (start != null) {
 
-			req.addParameter(
-					paramPrefix + "lestart",
-					start.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
+			ctx.addParameter(
+					"lestart", start.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
 		}
 
 		if (end != null) {
 
-			req.addParameter(
-					paramPrefix + "leend",
-					end.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
+			ctx.addParameter(
+					"leend", end.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
 		}
 
 		if (dir != null) {
 
-			req.addParameter(paramPrefix + "ledir", dir.getJsonValue());
+			ctx.addParameter("ledir", dir.getJsonValue());
 		}
 
 		if (user != null) {
 
-			req.addParameter(paramPrefix + "leuser", user);
+			ctx.addParameter("leuser", user);
 		}
 
 		if (title != null) {
 
-			req.addParameter(paramPrefix + "letitle", title);
+			ctx.addParameter("letitle", title);
 		}
 
 		if (namespace != null) {
 
-			req.addParameter(paramPrefix + "lenamespace", Integer.toString(namespace.getId()));
+			ctx.addParameter("lenamespace", Integer.toString(namespace.getId()));
 		}
 
 		if (prefix != null) {
 
-			req.addParameter(paramPrefix + "leprefix", prefix);
+			ctx.addParameter("leprefix", prefix);
 		}
 
 		if (tag != null) {
 
-			req.addParameter(paramPrefix + "letag", tag);
+			ctx.addParameter("letag", tag);
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "lelimit", limit.toString());
+			ctx.addParameter("lelimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "lelimit", "5000");
+			ctx.addParameter("lelimit", "5000");
 		}
 	}
 

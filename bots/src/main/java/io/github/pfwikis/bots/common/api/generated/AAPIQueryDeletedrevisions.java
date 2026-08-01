@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -341,67 +342,66 @@ public class AAPIQueryDeletedrevisions
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "drvprop",
+			ctx.addParameter(
+					"drvprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (slots != null) {
 
-			req.addParameter(
-					paramPrefix + "drvslots",
+			ctx.addParameter(
+					"drvslots",
 					slots.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "drvlimit", limit.toString());
+			ctx.addParameter("drvlimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "drvlimit", "5000");
+			ctx.addParameter("drvlimit", "5000");
 		}
 
 		if (section != null) {
 
-			req.addParameter(paramPrefix + "drvsection", section);
+			ctx.addParameter("drvsection", section);
 		}
 
 		if (start != null) {
 
-			req.addParameter(
-					paramPrefix + "drvstart",
+			ctx.addParameter(
+					"drvstart",
 					start.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
 		}
 
 		if (end != null) {
 
-			req.addParameter(
-					paramPrefix + "drvend",
-					end.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
+			ctx.addParameter(
+					"drvend", end.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
 		}
 
 		if (dir != null) {
 
-			req.addParameter(paramPrefix + "drvdir", dir.getJsonValue());
+			ctx.addParameter("drvdir", dir.getJsonValue());
 		}
 
 		if (tag != null) {
 
-			req.addParameter(paramPrefix + "drvtag", tag);
+			ctx.addParameter("drvtag", tag);
 		}
 
 		if (user != null) {
 
-			req.addParameter(paramPrefix + "drvuser", user);
+			ctx.addParameter("drvuser", user);
 		}
 
 		if (excludeuser != null) {
 
-			req.addParameter(paramPrefix + "drvexcludeuser", excludeuser);
+			ctx.addParameter("drvexcludeuser", excludeuser);
 		}
 	}
 

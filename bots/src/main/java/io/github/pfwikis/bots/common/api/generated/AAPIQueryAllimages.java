@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -469,97 +470,93 @@ public class AAPIQueryAllimages
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (sort != null) {
 
-			req.addParameter(paramPrefix + "aisort", sort.getJsonValue());
+			ctx.addParameter("aisort", sort.getJsonValue());
 		}
 
 		if (dir != null) {
 
-			req.addParameter(paramPrefix + "aidir", dir.getJsonValue());
+			ctx.addParameter("aidir", dir.getJsonValue());
 		}
 
 		if (from != null) {
 
-			req.addParameter(paramPrefix + "aifrom", from);
+			ctx.addParameter("aifrom", from);
 		}
 
 		if (to != null) {
 
-			req.addParameter(paramPrefix + "aito", to);
+			ctx.addParameter("aito", to);
 		}
 
 		if (start != null) {
 
-			req.addParameter(
-					paramPrefix + "aistart",
-					start.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
+			ctx.addParameter(
+					"aistart", start.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
 		}
 
 		if (end != null) {
 
-			req.addParameter(
-					paramPrefix + "aiend",
-					end.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
+			ctx.addParameter(
+					"aiend", end.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
 		}
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "aiprop",
+			ctx.addParameter(
+					"aiprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (prefix != null) {
 
-			req.addParameter(paramPrefix + "aiprefix", prefix);
+			ctx.addParameter("aiprefix", prefix);
 		}
 
 		if (minsize != null) {
 
-			req.addParameter(paramPrefix + "aiminsize", minsize.toString());
+			ctx.addParameter("aiminsize", minsize.toString());
 		}
 
 		if (maxsize != null) {
 
-			req.addParameter(paramPrefix + "aimaxsize", maxsize.toString());
+			ctx.addParameter("aimaxsize", maxsize.toString());
 		}
 
 		if (sha1 != null) {
 
-			req.addParameter(paramPrefix + "aisha1", sha1);
+			ctx.addParameter("aisha1", sha1);
 		}
 
 		if (sha1base36 != null) {
 
-			req.addParameter(paramPrefix + "aisha1base36", sha1base36);
+			ctx.addParameter("aisha1base36", sha1base36);
 		}
 
 		if (user != null) {
 
-			req.addParameter(paramPrefix + "aiuser", user);
+			ctx.addParameter("aiuser", user);
 		}
 
 		if (filterbots != null) {
 
-			req.addParameter(paramPrefix + "aifilterbots", filterbots.getJsonValue());
+			ctx.addParameter("aifilterbots", filterbots.getJsonValue());
 		}
 
 		if (mime != null) {
 
-			req.addParameter(
-					paramPrefix + "aimime",
-					mime.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter("aimime", mime.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "ailimit", limit.toString());
+			ctx.addParameter("ailimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "ailimit", "5000");
+			ctx.addParameter("ailimit", "5000");
 		}
 	}
 

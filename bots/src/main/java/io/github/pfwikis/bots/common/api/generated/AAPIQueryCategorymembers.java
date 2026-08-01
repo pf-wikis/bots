@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -404,29 +405,28 @@ public class AAPIQueryCategorymembers
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (title != null) {
 
 			if (title.toPageRef().hasId()) {
-				req.addParameter(
-						paramPrefix + "cmpageid", Integer.toString(title.toPageRef().getId()));
+				ctx.addParameter("cmpageid", title.toPageRef().getId());
 			} else {
-				req.addParameter(paramPrefix + "cmtitle", title.toPageTitle().toFullTitle());
+				ctx.addParameter("cmtitle", title.toPageTitle().toFullTitle());
 			}
 		}
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "cmprop",
+			ctx.addParameter(
+					"cmprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (namespace != null) {
 
-			req.addParameter(
-					paramPrefix + "cmnamespace",
+			ctx.addParameter(
+					"cmnamespace",
 					namespace.stream()
 							.map(v -> Integer.toString(v.getId()))
 							.collect(Collectors.joining("|")));
@@ -434,61 +434,59 @@ public class AAPIQueryCategorymembers
 
 		if (type != null) {
 
-			req.addParameter(
-					paramPrefix + "cmtype",
+			ctx.addParameter(
+					"cmtype",
 					type.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "cmlimit", limit.toString());
+			ctx.addParameter("cmlimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "cmlimit", "5000");
+			ctx.addParameter("cmlimit", "5000");
 		}
 
 		if (sort != null) {
 
-			req.addParameter(paramPrefix + "cmsort", sort.getJsonValue());
+			ctx.addParameter("cmsort", sort.getJsonValue());
 		}
 
 		if (dir != null) {
 
-			req.addParameter(paramPrefix + "cmdir", dir.getJsonValue());
+			ctx.addParameter("cmdir", dir.getJsonValue());
 		}
 
 		if (start != null) {
 
-			req.addParameter(
-					paramPrefix + "cmstart",
-					start.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
+			ctx.addParameter(
+					"cmstart", start.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
 		}
 
 		if (end != null) {
 
-			req.addParameter(
-					paramPrefix + "cmend",
-					end.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
+			ctx.addParameter(
+					"cmend", end.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
 		}
 
 		if (starthexsortkey != null) {
 
-			req.addParameter(paramPrefix + "cmstarthexsortkey", starthexsortkey);
+			ctx.addParameter("cmstarthexsortkey", starthexsortkey);
 		}
 
 		if (endhexsortkey != null) {
 
-			req.addParameter(paramPrefix + "cmendhexsortkey", endhexsortkey);
+			ctx.addParameter("cmendhexsortkey", endhexsortkey);
 		}
 
 		if (startsortkeyprefix != null) {
 
-			req.addParameter(paramPrefix + "cmstartsortkeyprefix", startsortkeyprefix);
+			ctx.addParameter("cmstartsortkeyprefix", startsortkeyprefix);
 		}
 
 		if (endsortkeyprefix != null) {
 
-			req.addParameter(paramPrefix + "cmendsortkeyprefix", endsortkeyprefix);
+			ctx.addParameter("cmendsortkeyprefix", endsortkeyprefix);
 		}
 	}
 

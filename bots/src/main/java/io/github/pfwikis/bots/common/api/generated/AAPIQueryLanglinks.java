@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -202,41 +203,41 @@ public class AAPIQueryLanglinks implements AAPIModule, AAPIQueryPropModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "llprop",
+			ctx.addParameter(
+					"llprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (lang != null) {
 
-			req.addParameter(paramPrefix + "lllang", lang);
+			ctx.addParameter("lllang", lang);
 		}
 
 		if (title != null) {
 
-			req.addParameter(paramPrefix + "lltitle", title);
+			ctx.addParameter("lltitle", title);
 		}
 
 		if (dir != null) {
 
-			req.addParameter(paramPrefix + "lldir", dir.getJsonValue());
+			ctx.addParameter("lldir", dir.getJsonValue());
 		}
 
 		if (inlanguagecode != null) {
 
-			req.addParameter(paramPrefix + "llinlanguagecode", inlanguagecode);
+			ctx.addParameter("llinlanguagecode", inlanguagecode);
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "lllimit", limit.toString());
+			ctx.addParameter("lllimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "lllimit", "5000");
+			ctx.addParameter("lllimit", "5000");
 		}
 	}
 

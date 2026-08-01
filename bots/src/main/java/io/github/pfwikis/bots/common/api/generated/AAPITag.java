@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -280,59 +281,54 @@ public class AAPITag implements AAPIModule, AAPITokenModule, AAPIMainActionModul
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (rcid != null) {
 
-			req.addParameter(
-					paramPrefix + "rcid",
-					rcid.stream().map(v -> v.toString()).collect(Collectors.joining("|")));
+			ctx.addParameter(
+					"rcid", rcid.stream().map(v -> v.toString()).collect(Collectors.joining("|")));
 		}
 
 		if (revid != null) {
 
-			req.addParameter(
-					paramPrefix + "revid",
+			ctx.addParameter(
+					"revid",
 					revid.stream().map(v -> v.toString()).collect(Collectors.joining("|")));
 		}
 
 		if (logid != null) {
 
-			req.addParameter(
-					paramPrefix + "logid",
+			ctx.addParameter(
+					"logid",
 					logid.stream().map(v -> v.toString()).collect(Collectors.joining("|")));
 		}
 
 		if (add != null) {
 
-			req.addParameter(
-					paramPrefix + "add", add.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter("add", add.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
 		if (remove != null) {
 
-			req.addParameter(
-					paramPrefix + "remove",
-					remove.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter(
+					"remove", remove.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
 		if (reason != null) {
 
-			req.addParameter(paramPrefix + "reason", reason);
+			ctx.addParameter("reason", reason);
 		}
 
 		if (tags != null) {
 
-			req.addParameter(
-					paramPrefix + "tags",
-					tags.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter("tags", tags.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
-		token = api.requestToken(AAPIQueryTokensType.CSRF);
+		token = ctx.requestToken(AAPIQueryTokensType.CSRF);
 
 		if (token != null) {
 
-			req.addParameter(paramPrefix + "token", token);
+			ctx.addParameter("token", token);
 		}
 	}
 

@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -189,39 +190,36 @@ public class AAPIEchomarkread implements AAPIModule, AAPITokenModule, AAPIMainAc
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (list != null) {
 
-			req.addParameter(
-					paramPrefix + "list",
-					list.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter("list", list.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
 		if (unreadlist != null) {
 
-			req.addParameter(
-					paramPrefix + "unreadlist",
-					unreadlist.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter(
+					"unreadlist", unreadlist.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
 		if (all != null) {
 
-			req.addParameter(paramPrefix + "all", all.toString());
+			ctx.addParameter("all", all.toString());
 		}
 
 		if (sections != null) {
 
-			req.addParameter(
-					paramPrefix + "sections",
+			ctx.addParameter(
+					"sections",
 					sections.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
-		token = api.requestToken(AAPIQueryTokensType.CSRF);
+		token = ctx.requestToken(AAPIQueryTokensType.CSRF);
 
 		if (token != null) {
 
-			req.addParameter(paramPrefix + "token", token);
+			ctx.addParameter("token", token);
 		}
 	}
 

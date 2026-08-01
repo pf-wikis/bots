@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -146,31 +147,31 @@ public class AAPIVeforallParsoidUtils implements AAPIModule, AAPIMainActionModul
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (from != null) {
 
-			req.addParameter(paramPrefix + "from", from.getJsonValue());
+			ctx.addParameter("from", from.getJsonValue());
 		}
 
 		if (to != null) {
 
-			req.addParameter(paramPrefix + "to", to.getJsonValue());
+			ctx.addParameter("to", to.getJsonValue());
 		}
 
 		if (content != null) {
 
-			req.addParameter(paramPrefix + "content", content);
+			ctx.addParameter("content", content);
 		}
 
 		if (title != null) {
 
-			req.addParameter(paramPrefix + "title", title);
+			ctx.addParameter("title", title);
 		}
 
 		if (pageid != null) {
 
-			req.addParameter(paramPrefix + "pageid", pageid.toString());
+			ctx.addParameter("pageid", pageid.toString());
 		}
 	}
 

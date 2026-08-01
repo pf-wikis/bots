@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -186,36 +187,36 @@ public class AAPIQueryExtracts implements AAPIModule, AAPIQueryPropModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (chars != null) {
 
-			req.addParameter(paramPrefix + "exchars", chars.toString());
+			ctx.addParameter("exchars", chars.toString());
 		}
 
 		if (sentences != null) {
 
-			req.addParameter(paramPrefix + "exsentences", sentences.toString());
+			ctx.addParameter("exsentences", sentences.toString());
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "exlimit", limit.toString());
+			ctx.addParameter("exlimit", limit.toString());
 		}
 
 		if (intro != null) {
 
-			req.addParameter(paramPrefix + "exintro", intro.toString());
+			ctx.addParameter("exintro", intro.toString());
 		}
 
 		if (plaintext != null) {
 
-			req.addParameter(paramPrefix + "explaintext", plaintext.toString());
+			ctx.addParameter("explaintext", plaintext.toString());
 		}
 
 		if (sectionformat != null) {
 
-			req.addParameter(paramPrefix + "exsectionformat", sectionformat.getJsonValue());
+			ctx.addParameter("exsectionformat", sectionformat.getJsonValue());
 		}
 	}
 

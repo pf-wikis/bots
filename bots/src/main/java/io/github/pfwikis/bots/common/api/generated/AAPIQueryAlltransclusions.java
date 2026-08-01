@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -270,51 +271,51 @@ public class AAPIQueryAlltransclusions
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (from != null) {
 
-			req.addParameter(paramPrefix + "atfrom", from);
+			ctx.addParameter("atfrom", from);
 		}
 
 		if (to != null) {
 
-			req.addParameter(paramPrefix + "atto", to);
+			ctx.addParameter("atto", to);
 		}
 
 		if (prefix != null) {
 
-			req.addParameter(paramPrefix + "atprefix", prefix);
+			ctx.addParameter("atprefix", prefix);
 		}
 
 		if (unique != null) {
 
-			req.addParameter(paramPrefix + "atunique", unique.toString());
+			ctx.addParameter("atunique", unique.toString());
 		}
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "atprop",
+			ctx.addParameter(
+					"atprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (namespace != null) {
 
-			req.addParameter(paramPrefix + "atnamespace", Integer.toString(namespace.getId()));
+			ctx.addParameter("atnamespace", Integer.toString(namespace.getId()));
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "atlimit", limit.toString());
+			ctx.addParameter("atlimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "atlimit", "5000");
+			ctx.addParameter("atlimit", "5000");
 		}
 
 		if (dir != null) {
 
-			req.addParameter(paramPrefix + "atdir", dir.getJsonValue());
+			ctx.addParameter("atdir", dir.getJsonValue());
 		}
 	}
 

@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -237,51 +238,51 @@ public class AAPIEmbedvideo implements AAPIModule, AAPIMainActionModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (service != null) {
 
-			req.addParameter(paramPrefix + "service", service);
+			ctx.addParameter("service", service);
 		}
 
 		if (id != null) {
 
-			req.addParameter(paramPrefix + "id", id);
+			ctx.addParameter("id", id);
 		}
 
 		if (dimensions != null) {
 
-			req.addParameter(paramPrefix + "dimensions", dimensions);
+			ctx.addParameter("dimensions", dimensions);
 		}
 
 		if (alignment != null) {
 
-			req.addParameter(paramPrefix + "alignment", alignment);
+			ctx.addParameter("alignment", alignment);
 		}
 
 		if (description != null) {
 
-			req.addParameter(paramPrefix + "description", description);
+			ctx.addParameter("description", description);
 		}
 
 		if (container != null) {
 
-			req.addParameter(paramPrefix + "container", container);
+			ctx.addParameter("container", container);
 		}
 
 		if (urlargs != null) {
 
-			req.addParameter(paramPrefix + "urlargs", urlargs);
+			ctx.addParameter("urlargs", urlargs);
 		}
 
 		if (autoresize != null) {
 
-			req.addParameter(paramPrefix + "autoresize", autoresize);
+			ctx.addParameter("autoresize", autoresize);
 		}
 
 		if (valignment != null) {
 
-			req.addParameter(paramPrefix + "valignment", valignment);
+			ctx.addParameter("valignment", valignment);
 		}
 	}
 

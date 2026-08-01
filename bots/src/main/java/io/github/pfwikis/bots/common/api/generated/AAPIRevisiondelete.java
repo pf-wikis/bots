@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -281,60 +282,57 @@ public class AAPIRevisiondelete implements AAPIModule, AAPITokenModule, AAPIMain
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (type != null) {
 
-			req.addParameter(paramPrefix + "type", type.getJsonValue());
+			ctx.addParameter("type", type.getJsonValue());
 		}
 
 		if (target != null) {
 
-			req.addParameter(paramPrefix + "target", target);
+			ctx.addParameter("target", target);
 		}
 
 		if (ids != null) {
 
-			req.addParameter(
-					paramPrefix + "ids", ids.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter("ids", ids.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
 		if (hide != null) {
 
-			req.addParameter(
-					paramPrefix + "hide",
+			ctx.addParameter(
+					"hide",
 					hide.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (show != null) {
 
-			req.addParameter(
-					paramPrefix + "show",
+			ctx.addParameter(
+					"show",
 					show.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (suppress != null) {
 
-			req.addParameter(paramPrefix + "suppress", suppress.getJsonValue());
+			ctx.addParameter("suppress", suppress.getJsonValue());
 		}
 
 		if (reason != null) {
 
-			req.addParameter(paramPrefix + "reason", reason);
+			ctx.addParameter("reason", reason);
 		}
 
 		if (tags != null) {
 
-			req.addParameter(
-					paramPrefix + "tags",
-					tags.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter("tags", tags.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
-		token = api.requestToken(AAPIQueryTokensType.CSRF);
+		token = ctx.requestToken(AAPIQueryTokensType.CSRF);
 
 		if (token != null) {
 
-			req.addParameter(paramPrefix + "token", token);
+			ctx.addParameter("token", token);
 		}
 	}
 

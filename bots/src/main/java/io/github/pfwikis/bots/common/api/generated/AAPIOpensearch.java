@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -198,17 +199,17 @@ public class AAPIOpensearch implements AAPIModule, AAPIMainActionModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (search != null) {
 
-			req.addParameter(paramPrefix + "search", search);
+			ctx.addParameter("search", search);
 		}
 
 		if (namespace != null) {
 
-			req.addParameter(
-					paramPrefix + "namespace",
+			ctx.addParameter(
+					"namespace",
 					namespace.stream()
 							.map(v -> Integer.toString(v.getId()))
 							.collect(Collectors.joining("|")));
@@ -216,22 +217,22 @@ public class AAPIOpensearch implements AAPIModule, AAPIMainActionModule {
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "limit", limit.toString());
+			ctx.addParameter("limit", limit.toString());
 		}
 
 		if (redirects != null) {
 
-			req.addParameter(paramPrefix + "redirects", redirects.getJsonValue());
+			ctx.addParameter("redirects", redirects.getJsonValue());
 		}
 
 		if (format != null) {
 
-			req.addParameter(paramPrefix + "format", format.getJsonValue());
+			ctx.addParameter("format", format.getJsonValue());
 		}
 
 		if (warningsaserror != null) {
 
-			req.addParameter(paramPrefix + "warningsaserror", warningsaserror.toString());
+			ctx.addParameter("warningsaserror", warningsaserror.toString());
 		}
 	}
 

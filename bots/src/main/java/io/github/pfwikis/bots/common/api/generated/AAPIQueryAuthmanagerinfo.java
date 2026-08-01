@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -141,27 +142,26 @@ public class AAPIQueryAuthmanagerinfo implements AAPIModule, AAPIQueryMetaModule
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (securitysensitiveoperation != null) {
 
-			req.addParameter(
-					paramPrefix + "amisecuritysensitiveoperation", securitysensitiveoperation);
+			ctx.addParameter("amisecuritysensitiveoperation", securitysensitiveoperation);
 		}
 
 		if (requestsfor != null) {
 
-			req.addParameter(paramPrefix + "amirequestsfor", requestsfor.getJsonValue());
+			ctx.addParameter("amirequestsfor", requestsfor.getJsonValue());
 		}
 
 		if (mergerequestfields != null) {
 
-			req.addParameter(paramPrefix + "amimergerequestfields", mergerequestfields.toString());
+			ctx.addParameter("amimergerequestfields", mergerequestfields.toString());
 		}
 
 		if (messageformat != null) {
 
-			req.addParameter(paramPrefix + "amimessageformat", messageformat.getJsonValue());
+			ctx.addParameter("amimessageformat", messageformat.getJsonValue());
 		}
 	}
 

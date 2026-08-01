@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -445,84 +446,84 @@ public class AAPICompare implements AAPIModule, AAPIMainActionModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (fromtitle != null) {
 
-			req.addParameter(paramPrefix + "fromtitle", fromtitle);
+			ctx.addParameter("fromtitle", fromtitle);
 		}
 
 		if (fromid != null) {
 
-			req.addParameter(paramPrefix + "fromid", fromid.toString());
+			ctx.addParameter("fromid", fromid.toString());
 		}
 
 		if (fromrev != null) {
 
-			req.addParameter(paramPrefix + "fromrev", fromrev.toString());
+			ctx.addParameter("fromrev", fromrev.toString());
 		}
 
 		if (fromslots != null) {
 
-			req.addParameter(
-					paramPrefix + "fromslots",
+			ctx.addParameter(
+					"fromslots",
 					fromslots.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (frompst != null) {
 
-			req.addParameter(paramPrefix + "frompst", frompst.toString());
+			ctx.addParameter("frompst", frompst.toString());
 		}
 
 		if (totitle != null) {
 
-			req.addParameter(paramPrefix + "totitle", totitle);
+			ctx.addParameter("totitle", totitle);
 		}
 
 		if (toid != null) {
 
-			req.addParameter(paramPrefix + "toid", toid.toString());
+			ctx.addParameter("toid", toid.toString());
 		}
 
 		if (torev != null) {
 
-			req.addParameter(paramPrefix + "torev", torev.toString());
+			ctx.addParameter("torev", torev.toString());
 		}
 
 		if (torelative != null) {
 
-			req.addParameter(paramPrefix + "torelative", torelative.getJsonValue());
+			ctx.addParameter("torelative", torelative.getJsonValue());
 		}
 
 		if (toslots != null) {
 
-			req.addParameter(
-					paramPrefix + "toslots",
+			ctx.addParameter(
+					"toslots",
 					toslots.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (topst != null) {
 
-			req.addParameter(paramPrefix + "topst", topst.toString());
+			ctx.addParameter("topst", topst.toString());
 		}
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "prop",
+			ctx.addParameter(
+					"prop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (slots != null) {
 
-			req.addParameter(
-					paramPrefix + "slots",
+			ctx.addParameter(
+					"slots",
 					slots.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (difftype != null) {
 
-			req.addParameter(paramPrefix + "difftype", difftype.getJsonValue());
+			ctx.addParameter("difftype", difftype.getJsonValue());
 		}
 	}
 

@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -475,95 +476,95 @@ public class AAPIMain implements AAPIModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (action != null) {
 
-			req.addParameter(paramPrefix + "action", action.getKey().getJsonValue());
+			ctx.addParameter("action", action.getKey().getJsonValue());
 
-			action.getValue().buildRequest(api, req, paramPrefix);
+			action.getValue().buildRequest(ctx);
 		}
 
 		if (format != null) {
 
-			req.addParameter(paramPrefix + "format", format.getKey().getJsonValue());
+			ctx.addParameter("format", format.getKey().getJsonValue());
 
-			format.getValue().buildRequest(api, req, paramPrefix);
+			format.getValue().buildRequest(ctx);
 		}
 
 		if (maxlag != null) {
 
-			req.addParameter(paramPrefix + "maxlag", maxlag.toString());
+			ctx.addParameter("maxlag", maxlag.toString());
 		}
 
 		if (smaxage != null) {
 
-			req.addParameter(paramPrefix + "smaxage", smaxage.toString());
+			ctx.addParameter("smaxage", smaxage.toString());
 		}
 
 		if (maxage != null) {
 
-			req.addParameter(paramPrefix + "maxage", maxage.toString());
+			ctx.addParameter("maxage", maxage.toString());
 		}
 
 		if (_assert != null) {
 
-			req.addParameter(paramPrefix + "assert", _assert.getJsonValue());
+			ctx.addParameter("assert", _assert.getJsonValue());
 		}
 
 		if (assertuser != null) {
 
-			req.addParameter(paramPrefix + "assertuser", assertuser);
+			ctx.addParameter("assertuser", assertuser);
 		}
 
 		if (requestid != null) {
 
-			req.addParameter(paramPrefix + "requestid", requestid);
+			ctx.addParameter("requestid", requestid);
 		}
 
 		if (servedby != null) {
 
-			req.addParameter(paramPrefix + "servedby", servedby.toString());
+			ctx.addParameter("servedby", servedby.toString());
 		}
 
 		if (curtimestamp != null) {
 
-			req.addParameter(paramPrefix + "curtimestamp", curtimestamp.toString());
+			ctx.addParameter("curtimestamp", curtimestamp.toString());
 		}
 
 		if (responselanginfo != null) {
 
-			req.addParameter(paramPrefix + "responselanginfo", responselanginfo.toString());
+			ctx.addParameter("responselanginfo", responselanginfo.toString());
 		}
 
 		if (origin != null) {
 
-			req.addParameter(paramPrefix + "origin", origin);
+			ctx.addParameter("origin", origin);
 		}
 
 		if (uselang != null) {
 
-			req.addParameter(paramPrefix + "uselang", uselang);
+			ctx.addParameter("uselang", uselang);
 		}
 
 		if (variant != null) {
 
-			req.addParameter(paramPrefix + "variant", variant);
+			ctx.addParameter("variant", variant);
 		}
 
 		if (errorformat != null) {
 
-			req.addParameter(paramPrefix + "errorformat", errorformat.getJsonValue());
+			ctx.addParameter("errorformat", errorformat.getJsonValue());
 		}
 
 		if (errorlang != null) {
 
-			req.addParameter(paramPrefix + "errorlang", errorlang);
+			ctx.addParameter("errorlang", errorlang);
 		}
 
 		if (errorsuselocal != null) {
 
-			req.addParameter(paramPrefix + "errorsuselocal", errorsuselocal.toString());
+			ctx.addParameter("errorsuselocal", errorsuselocal.toString());
 		}
 	}
 

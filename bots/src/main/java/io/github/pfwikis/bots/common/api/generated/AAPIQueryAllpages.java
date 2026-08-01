@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -426,83 +427,83 @@ public class AAPIQueryAllpages
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (from != null) {
 
-			req.addParameter(paramPrefix + "apfrom", from);
+			ctx.addParameter("apfrom", from);
 		}
 
 		if (to != null) {
 
-			req.addParameter(paramPrefix + "apto", to);
+			ctx.addParameter("apto", to);
 		}
 
 		if (prefix != null) {
 
-			req.addParameter(paramPrefix + "apprefix", prefix);
+			ctx.addParameter("apprefix", prefix);
 		}
 
 		if (namespace != null) {
 
-			req.addParameter(paramPrefix + "apnamespace", Integer.toString(namespace.getId()));
+			ctx.addParameter("apnamespace", Integer.toString(namespace.getId()));
 		}
 
 		if (filterredir != null) {
 
-			req.addParameter(paramPrefix + "apfilterredir", filterredir.getJsonValue());
+			ctx.addParameter("apfilterredir", filterredir.getJsonValue());
 		}
 
 		if (filterlanglinks != null) {
 
-			req.addParameter(paramPrefix + "apfilterlanglinks", filterlanglinks.getJsonValue());
+			ctx.addParameter("apfilterlanglinks", filterlanglinks.getJsonValue());
 		}
 
 		if (minsize != null) {
 
-			req.addParameter(paramPrefix + "apminsize", minsize.toString());
+			ctx.addParameter("apminsize", minsize.toString());
 		}
 
 		if (maxsize != null) {
 
-			req.addParameter(paramPrefix + "apmaxsize", maxsize.toString());
+			ctx.addParameter("apmaxsize", maxsize.toString());
 		}
 
 		if (prtype != null) {
 
-			req.addParameter(
-					paramPrefix + "apprtype",
+			ctx.addParameter(
+					"apprtype",
 					prtype.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (prlevel != null) {
 
-			req.addParameter(
-					paramPrefix + "apprlevel",
+			ctx.addParameter(
+					"apprlevel",
 					prlevel.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (prfiltercascade != null) {
 
-			req.addParameter(paramPrefix + "apprfiltercascade", prfiltercascade.getJsonValue());
+			ctx.addParameter("apprfiltercascade", prfiltercascade.getJsonValue());
 		}
 
 		if (prexpiry != null) {
 
-			req.addParameter(paramPrefix + "apprexpiry", prexpiry.getJsonValue());
+			ctx.addParameter("apprexpiry", prexpiry.getJsonValue());
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "aplimit", limit.toString());
+			ctx.addParameter("aplimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "aplimit", "5000");
+			ctx.addParameter("aplimit", "5000");
 		}
 
 		if (dir != null) {
 
-			req.addParameter(paramPrefix + "apdir", dir.getJsonValue());
+			ctx.addParameter("apdir", dir.getJsonValue());
 		}
 	}
 

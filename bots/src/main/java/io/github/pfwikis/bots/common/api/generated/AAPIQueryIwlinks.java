@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -179,36 +180,36 @@ public class AAPIQueryIwlinks implements AAPIModule, AAPIQueryPropModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "iwprop",
+			ctx.addParameter(
+					"iwprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (prefix != null) {
 
-			req.addParameter(paramPrefix + "iwprefix", prefix);
+			ctx.addParameter("iwprefix", prefix);
 		}
 
 		if (title != null) {
 
-			req.addParameter(paramPrefix + "iwtitle", title);
+			ctx.addParameter("iwtitle", title);
 		}
 
 		if (dir != null) {
 
-			req.addParameter(paramPrefix + "iwdir", dir.getJsonValue());
+			ctx.addParameter("iwdir", dir.getJsonValue());
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "iwlimit", limit.toString());
+			ctx.addParameter("iwlimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "iwlimit", "5000");
+			ctx.addParameter("iwlimit", "5000");
 		}
 	}
 

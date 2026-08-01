@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -188,35 +189,34 @@ public class AAPIQueryStashimageinfo implements AAPIModule, AAPIQueryPropModule 
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (filekey != null) {
 
-			req.addParameter(
-					paramPrefix + "siifilekey",
-					filekey.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter(
+					"siifilekey", filekey.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "siiprop",
+			ctx.addParameter(
+					"siiprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (urlwidth != null) {
 
-			req.addParameter(paramPrefix + "siiurlwidth", urlwidth.toString());
+			ctx.addParameter("siiurlwidth", urlwidth.toString());
 		}
 
 		if (urlheight != null) {
 
-			req.addParameter(paramPrefix + "siiurlheight", urlheight.toString());
+			ctx.addParameter("siiurlheight", urlheight.toString());
 		}
 
 		if (urlparam != null) {
 
-			req.addParameter(paramPrefix + "siiurlparam", urlparam);
+			ctx.addParameter("siiurlparam", urlparam);
 		}
 	}
 

@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -263,29 +264,27 @@ public class AAPIUndelete implements AAPIModule, AAPITokenModule, AAPIMainAction
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (title != null) {
 
-			req.addParameter(paramPrefix + "title", title);
+			ctx.addParameter("title", title);
 		}
 
 		if (reason != null) {
 
-			req.addParameter(paramPrefix + "reason", reason);
+			ctx.addParameter("reason", reason);
 		}
 
 		if (tags != null) {
 
-			req.addParameter(
-					paramPrefix + "tags",
-					tags.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter("tags", tags.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
 		if (timestamps != null) {
 
-			req.addParameter(
-					paramPrefix + "timestamps",
+			ctx.addParameter(
+					"timestamps",
 					timestamps.stream()
 							.map(
 									v ->
@@ -296,26 +295,26 @@ public class AAPIUndelete implements AAPIModule, AAPITokenModule, AAPIMainAction
 
 		if (fileids != null) {
 
-			req.addParameter(
-					paramPrefix + "fileids",
+			ctx.addParameter(
+					"fileids",
 					fileids.stream().map(v -> v.toString()).collect(Collectors.joining("|")));
 		}
 
 		if (undeletetalk != null) {
 
-			req.addParameter(paramPrefix + "undeletetalk", undeletetalk.toString());
+			ctx.addParameter("undeletetalk", undeletetalk.toString());
 		}
 
 		if (watchlist != null) {
 
-			req.addParameter(paramPrefix + "watchlist", watchlist.getJsonValue());
+			ctx.addParameter("watchlist", watchlist.getJsonValue());
 		}
 
-		token = api.requestToken(AAPIQueryTokensType.CSRF);
+		token = ctx.requestToken(AAPIQueryTokensType.CSRF);
 
 		if (token != null) {
 
-			req.addParameter(paramPrefix + "token", token);
+			ctx.addParameter("token", token);
 		}
 	}
 

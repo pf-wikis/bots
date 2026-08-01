@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -207,41 +208,40 @@ public class AAPIClientlogin implements AAPIModule, AAPITokenModule, AAPIMainAct
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (requests != null) {
 
-			req.addParameter(
-					paramPrefix + "loginrequests",
+			ctx.addParameter(
+					"loginrequests",
 					requests.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
 		if (messageformat != null) {
 
-			req.addParameter(paramPrefix + "loginmessageformat", messageformat.getJsonValue());
+			ctx.addParameter("loginmessageformat", messageformat.getJsonValue());
 		}
 
 		if (mergerequestfields != null) {
 
-			req.addParameter(
-					paramPrefix + "loginmergerequestfields", mergerequestfields.toString());
+			ctx.addParameter("loginmergerequestfields", mergerequestfields.toString());
 		}
 
 		if (preservestate != null) {
 
-			req.addParameter(paramPrefix + "loginpreservestate", preservestate.toString());
+			ctx.addParameter("loginpreservestate", preservestate.toString());
 		}
 
 		if (returnurl != null) {
 
-			req.addParameter(paramPrefix + "loginreturnurl", returnurl);
+			ctx.addParameter("loginreturnurl", returnurl);
 		}
 
-		token = api.requestToken(AAPIQueryTokensType.LOGIN);
+		token = ctx.requestToken(AAPIQueryTokensType.LOGIN);
 
 		if (token != null) {
 
-			req.addParameter(paramPrefix + "logintoken", token);
+			ctx.addParameter("logintoken", token);
 		}
 	}
 

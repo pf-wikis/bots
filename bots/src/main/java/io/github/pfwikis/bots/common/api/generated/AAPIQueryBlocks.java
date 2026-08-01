@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -316,65 +317,61 @@ public class AAPIQueryBlocks implements AAPIModule, AAPIQueryListModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (start != null) {
 
-			req.addParameter(
-					paramPrefix + "bkstart",
-					start.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
+			ctx.addParameter(
+					"bkstart", start.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
 		}
 
 		if (end != null) {
 
-			req.addParameter(
-					paramPrefix + "bkend",
-					end.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
+			ctx.addParameter(
+					"bkend", end.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
 		}
 
 		if (dir != null) {
 
-			req.addParameter(paramPrefix + "bkdir", dir.getJsonValue());
+			ctx.addParameter("bkdir", dir.getJsonValue());
 		}
 
 		if (ids != null) {
 
-			req.addParameter(
-					paramPrefix + "bkids",
-					ids.stream().map(v -> v.toString()).collect(Collectors.joining("|")));
+			ctx.addParameter(
+					"bkids", ids.stream().map(v -> v.toString()).collect(Collectors.joining("|")));
 		}
 
 		if (users != null) {
 
-			req.addParameter(
-					paramPrefix + "bkusers",
-					users.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter(
+					"bkusers", users.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
 		if (ip != null) {
 
-			req.addParameter(paramPrefix + "bkip", ip);
+			ctx.addParameter("bkip", ip);
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "bklimit", limit.toString());
+			ctx.addParameter("bklimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "bklimit", "5000");
+			ctx.addParameter("bklimit", "5000");
 		}
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "bkprop",
+			ctx.addParameter(
+					"bkprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (show != null) {
 
-			req.addParameter(
-					paramPrefix + "bkshow",
+			ctx.addParameter(
+					"bkshow",
 					show.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 	}

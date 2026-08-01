@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -430,90 +431,88 @@ public class AAPIUpload implements AAPIModule, AAPITokenModule, AAPIMainActionMo
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (filename != null) {
 
-			req.addParameter(paramPrefix + "filename", filename);
+			ctx.addParameter("filename", filename);
 		}
 
 		if (comment != null) {
 
-			req.addParameter(paramPrefix + "comment", comment);
+			ctx.addParameter("comment", comment);
 		}
 
 		if (tags != null) {
 
-			req.addParameter(
-					paramPrefix + "tags",
-					tags.stream().map(v -> v).collect(Collectors.joining("|")));
+			ctx.addParameter("tags", tags.stream().map(v -> v).collect(Collectors.joining("|")));
 		}
 
 		if (text != null) {
 
-			req.addParameter(paramPrefix + "text", text);
+			ctx.addParameter("text", text);
 		}
 
 		if (watchlist != null) {
 
-			req.addParameter(paramPrefix + "watchlist", watchlist.getJsonValue());
+			ctx.addParameter("watchlist", watchlist.getJsonValue());
 		}
 
 		if (ignorewarnings != null) {
 
-			req.addParameter(paramPrefix + "ignorewarnings", ignorewarnings.toString());
+			ctx.addParameter("ignorewarnings", ignorewarnings.toString());
 		}
 
 		if (file != null) {
 
-			req.addParameter(paramPrefix + "file", file.toString());
+			ctx.addParameter("file", file.toString());
 		}
 
 		if (url != null) {
 
-			req.addParameter(paramPrefix + "url", url);
+			ctx.addParameter("url", url);
 		}
 
 		if (filekey != null) {
 
-			req.addParameter(paramPrefix + "filekey", filekey);
+			ctx.addParameter("filekey", filekey);
 		}
 
 		if (stash != null) {
 
-			req.addParameter(paramPrefix + "stash", stash.toString());
+			ctx.addParameter("stash", stash.toString());
 		}
 
 		if (filesize != null) {
 
-			req.addParameter(paramPrefix + "filesize", filesize.toString());
+			ctx.addParameter("filesize", filesize.toString());
 		}
 
 		if (offset != null) {
 
-			req.addParameter(paramPrefix + "offset", offset.toString());
+			ctx.addParameter("offset", offset.toString());
 		}
 
 		if (chunk != null) {
 
-			req.addParameter(paramPrefix + "chunk", chunk.toString());
+			ctx.addParameter("chunk", chunk.toString());
 		}
 
 		if (async != null) {
 
-			req.addParameter(paramPrefix + "async", async.toString());
+			ctx.addParameter("async", async.toString());
 		}
 
 		if (checkstatus != null) {
 
-			req.addParameter(paramPrefix + "checkstatus", checkstatus.toString());
+			ctx.addParameter("checkstatus", checkstatus.toString());
 		}
 
-		token = api.requestToken(AAPIQueryTokensType.CSRF);
+		token = ctx.requestToken(AAPIQueryTokensType.CSRF);
 
 		if (token != null) {
 
-			req.addParameter(paramPrefix + "token", token);
+			ctx.addParameter("token", token);
 		}
 	}
 

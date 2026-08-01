@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -140,26 +141,26 @@ public class AAPIJson implements AAPIModule, AAPIMainFormatModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (callback != null) {
 
-			req.addParameter(paramPrefix + "callback", callback);
+			ctx.addParameter("callback", callback);
 		}
 
 		if (utf8 != null) {
 
-			req.addParameter(paramPrefix + "utf8", utf8.toString());
+			ctx.addParameter("utf8", utf8.toString());
 		}
 
 		if (ascii != null) {
 
-			req.addParameter(paramPrefix + "ascii", ascii.toString());
+			ctx.addParameter("ascii", ascii.toString());
 		}
 
 		if (formatversion != null) {
 
-			req.addParameter(paramPrefix + "formatversion", formatversion.getJsonValue());
+			ctx.addParameter("formatversion", formatversion.getJsonValue());
 		}
 	}
 

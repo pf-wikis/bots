@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -203,36 +204,36 @@ public class AAPIQueryLangbacklinks
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (lang != null) {
 
-			req.addParameter(paramPrefix + "lbllang", lang);
+			ctx.addParameter("lbllang", lang);
 		}
 
 		if (title != null) {
 
-			req.addParameter(paramPrefix + "lbltitle", title);
+			ctx.addParameter("lbltitle", title);
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "lbllimit", limit.toString());
+			ctx.addParameter("lbllimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "lbllimit", "5000");
+			ctx.addParameter("lbllimit", "5000");
 		}
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "lblprop",
+			ctx.addParameter(
+					"lblprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (dir != null) {
 
-			req.addParameter(paramPrefix + "lbldir", dir.getJsonValue());
+			ctx.addParameter("lbldir", dir.getJsonValue());
 		}
 	}
 

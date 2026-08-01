@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -94,16 +95,16 @@ public class AAPIAsk implements AAPIModule, AAPIMainActionModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (query != null) {
 
-			req.addParameter(paramPrefix + "query", query);
+			ctx.addParameter("query", query);
 		}
 
 		if (api_version != null) {
 
-			req.addParameter(paramPrefix + "api_version", api_version.getJsonValue());
+			ctx.addParameter("api_version", api_version.getJsonValue());
 		}
 	}
 

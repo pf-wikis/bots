@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -190,43 +191,43 @@ public class AAPIEchocreateevent implements AAPIModule, AAPITokenModule, AAPIMai
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (user != null) {
 
-			req.addParameter(paramPrefix + "user", user);
+			ctx.addParameter("user", user);
 		}
 
 		if (header != null) {
 
-			req.addParameter(paramPrefix + "header", header);
+			ctx.addParameter("header", header);
 		}
 
 		if (content != null) {
 
-			req.addParameter(paramPrefix + "content", content);
+			ctx.addParameter("content", content);
 		}
 
 		if (page != null) {
 
-			req.addParameter(paramPrefix + "page", page);
+			ctx.addParameter("page", page);
 		}
 
 		if (section != null) {
 
-			req.addParameter(paramPrefix + "section", section.getJsonValue());
+			ctx.addParameter("section", section.getJsonValue());
 		}
 
 		if (email != null) {
 
-			req.addParameter(paramPrefix + "email", email.toString());
+			ctx.addParameter("email", email.toString());
 		}
 
-		token = api.requestToken(AAPIQueryTokensType.CSRF);
+		token = ctx.requestToken(AAPIQueryTokensType.CSRF);
 
 		if (token != null) {
 
-			req.addParameter(paramPrefix + "token", token);
+			ctx.addParameter("token", token);
 		}
 	}
 

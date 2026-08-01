@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -101,21 +102,21 @@ public class AAPIChecktoken implements AAPIModule, AAPIMainActionModule {
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (type != null) {
 
-			req.addParameter(paramPrefix + "type", type.getJsonValue());
+			ctx.addParameter("type", type.getJsonValue());
 		}
 
 		if (token != null) {
 
-			req.addParameter(paramPrefix + "token", token);
+			ctx.addParameter("token", token);
 		}
 
 		if (maxtokenage != null) {
 
-			req.addParameter(paramPrefix + "maxtokenage", maxtokenage.toString());
+			ctx.addParameter("maxtokenage", maxtokenage.toString());
 		}
 	}
 

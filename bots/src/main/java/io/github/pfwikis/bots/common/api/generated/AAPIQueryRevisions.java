@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -388,77 +389,75 @@ public class AAPIQueryRevisions
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "rvprop",
+			ctx.addParameter(
+					"rvprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (slots != null) {
 
-			req.addParameter(
-					paramPrefix + "rvslots",
+			ctx.addParameter(
+					"rvslots",
 					slots.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "rvlimit", limit.toString());
+			ctx.addParameter("rvlimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "rvlimit", "5000");
+			ctx.addParameter("rvlimit", "5000");
 		}
 
 		if (section != null) {
 
-			req.addParameter(paramPrefix + "rvsection", section);
+			ctx.addParameter("rvsection", section);
 		}
 
 		if (startid != null) {
 
-			req.addParameter(paramPrefix + "rvstartid", startid.toString());
+			ctx.addParameter("rvstartid", startid.toString());
 		}
 
 		if (endid != null) {
 
-			req.addParameter(paramPrefix + "rvendid", endid.toString());
+			ctx.addParameter("rvendid", endid.toString());
 		}
 
 		if (start != null) {
 
-			req.addParameter(
-					paramPrefix + "rvstart",
-					start.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
+			ctx.addParameter(
+					"rvstart", start.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
 		}
 
 		if (end != null) {
 
-			req.addParameter(
-					paramPrefix + "rvend",
-					end.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
+			ctx.addParameter(
+					"rvend", end.truncatedTo(java.time.temporal.ChronoUnit.SECONDS).toString());
 		}
 
 		if (dir != null) {
 
-			req.addParameter(paramPrefix + "rvdir", dir.getJsonValue());
+			ctx.addParameter("rvdir", dir.getJsonValue());
 		}
 
 		if (user != null) {
 
-			req.addParameter(paramPrefix + "rvuser", user);
+			ctx.addParameter("rvuser", user);
 		}
 
 		if (excludeuser != null) {
 
-			req.addParameter(paramPrefix + "rvexcludeuser", excludeuser);
+			ctx.addParameter("rvexcludeuser", excludeuser);
 		}
 
 		if (tag != null) {
 
-			req.addParameter(paramPrefix + "rvtag", tag);
+			ctx.addParameter("rvtag", tag);
 		}
 	}
 

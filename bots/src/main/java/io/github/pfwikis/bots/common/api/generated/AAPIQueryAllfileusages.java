@@ -12,6 +12,7 @@ import lombok.NonNull;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
+import io.github.pfwikis.bots.common.api.model.AAPIModule.RequestContext;
 import io.github.pfwikis.bots.common.api.model.AAPISubmodule;
 import io.github.pfwikis.bots.common.api.model.AAPITokenModule;
 import io.github.pfwikis.bots.common.api.model.ContainsPageRef;
@@ -247,46 +248,46 @@ public class AAPIQueryAllfileusages
 	}
 
 	@Override
-	public void buildRequest(AAPI api, ClassicRequestBuilder req, String paramPrefix) {
+	public void buildRequest(RequestContext ctx) {
 
 		if (from != null) {
 
-			req.addParameter(paramPrefix + "affrom", from);
+			ctx.addParameter("affrom", from);
 		}
 
 		if (to != null) {
 
-			req.addParameter(paramPrefix + "afto", to);
+			ctx.addParameter("afto", to);
 		}
 
 		if (prefix != null) {
 
-			req.addParameter(paramPrefix + "afprefix", prefix);
+			ctx.addParameter("afprefix", prefix);
 		}
 
 		if (unique != null) {
 
-			req.addParameter(paramPrefix + "afunique", unique.toString());
+			ctx.addParameter("afunique", unique.toString());
 		}
 
 		if (prop != null) {
 
-			req.addParameter(
-					paramPrefix + "afprop",
+			ctx.addParameter(
+					"afprop",
 					prop.stream().map(v -> v.getJsonValue()).collect(Collectors.joining("|")));
 		}
 
 		if (limit != null) {
 
-			req.addParameter(paramPrefix + "aflimit", limit.toString());
+			ctx.addParameter("aflimit", limit.toString());
 
 		} else {
-			req.addParameter(paramPrefix + "aflimit", "5000");
+			ctx.addParameter("aflimit", "5000");
 		}
 
 		if (dir != null) {
 
-			req.addParameter(paramPrefix + "afdir", dir.getJsonValue());
+			ctx.addParameter("afdir", dir.getJsonValue());
 		}
 	}
 
