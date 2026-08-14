@@ -63,6 +63,9 @@ public class Scheduler {
 	protected boolean localMode;
 	@Parameter(names = "--restOnly")
 	protected boolean restOnly;
+	@Parameter(names = "--zeffyToken")
+	protected String zeffyToken;
+	
 	
 	private Discord discord;
 	
@@ -190,6 +193,7 @@ public class Scheduler {
 		bot.setLocalMode(localMode);
 		bot.setRun(sr);
 		bot.setAntiProtectionSecret(antiProtectionSecret);
+		bot.setZeffyToken(zeffyToken);
 	}
 	
 	private void initBot(Discord discord, DualBot bot) {

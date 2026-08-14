@@ -35,6 +35,8 @@ public abstract class Bot<RUN extends Run> {
 	protected String discordToken;
 	@Parameter(names = "--localMode")
 	protected boolean localMode;
+	@Parameter(names = "--zeffyToken")
+	protected String zeffyToken;
 	public static boolean globalLocalMode;
 
 	protected RUN run;
