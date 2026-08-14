@@ -9,6 +9,9 @@ import java.util.function.Function;
 
 import com.google.common.util.concurrent.Uninterruptibles;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.experimental.StandardException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -31,35 +34,46 @@ public class Retry {
 		}
 	}
 	
-	public static <T> T times(Callable<T> function, int n, int delaySeconds, Function<Exception, Boolean> onFailure) {
+	public static <T> T times(Callable<T> function, int n, int delaySeconds, Consumer<RetryContext> onFailure) {
 		int run = 0;
-		RuntimeException exception = null;
+		RetryException exception = null;
 		while(true) {
 			try {
 				return function.call();
 			} catch(Exception e) {
 				run++;
 				if(exception == null) {
-					exception = new RuntimeException("Failed after "+n+" retries", e);
+					exception = new RetryException("Failed after (at most) "+n+" retries", e);
 				}
 				else {
 					exception.addSuppressed(e);
 				}
 				
-				boolean wait = true;
+				var ctx = new RetryContext(true, e, true);
 				try {
-					wait = Boolean.TRUE.equals(onFailure.apply(e));
+					onFailure.accept(ctx);
 				} catch (Exception e1) {
 					exception.addSuppressed(e1);
 				}
-				if(run >= n) {
+				if(run >= n || !ctx.isRetry()) {
 					throw exception;
 				}
 				
 				log.info("Failed {} times, will retry in {}s", run, delaySeconds, e);
-				if(delaySeconds > 0 && wait)
+				if(delaySeconds > 0 && ctx.isDoWait())
 					Uninterruptibles.sleepUninterruptibly(delaySeconds, TimeUnit.SECONDS);
 			}
 		}
+	}
+	
+	@StandardException
+	public static class RetryException extends RuntimeException {}
+	
+	@Data
+	@AllArgsConstructor
+	public static class RetryContext {
+		private boolean doWait;
+		private Exception exception;
+		private boolean retry;
 	}
 }

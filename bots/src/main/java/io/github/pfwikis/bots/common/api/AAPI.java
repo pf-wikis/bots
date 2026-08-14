@@ -25,6 +25,7 @@ import io.github.pfwikis.bots.common.api.generated.params.AAPIMainFormat.AAPIMai
 import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryTokensType;
 import io.github.pfwikis.bots.common.api.model.AAPIExceptions;
 import io.github.pfwikis.bots.common.api.model.AAPIExceptions.AAPIException;
+import io.github.pfwikis.bots.common.api.model.AAPIExceptions.AAPIMissingPageException;
 import io.github.pfwikis.bots.common.api.model.AAPIExceptions.AAPIRuntimeException;
 import io.github.pfwikis.bots.common.api.model.AAPIModule;
 import io.github.pfwikis.bots.common.api.responses.AAPIWrappedResponse;
@@ -32,6 +33,7 @@ import io.github.pfwikis.bots.common.api.responses.IResponse;
 import io.github.pfwikis.bots.common.api.responses.QueryResponse;
 import io.github.pfwikis.bots.utils.Jackson;
 import io.github.pfwikis.bots.utils.Retry;
+import io.github.pfwikis.bots.utils.Retry.RetryException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -150,13 +152,21 @@ public class AAPI {
 			});
 		};
 		
-		return Retry.times(act, 10, 30, (ex) -> {
-			if(ex instanceof AAPIException aex && "badtoken".equals(aex.getAapiError().getCode())) {
-				forceNewToken.set(true);
-				return false;
-			}
-			return true;
-		});
+		try {
+			return Retry.times(act, 10, 30, ctx -> {
+				if(ctx.getException() instanceof AAPIException aex && "badtoken".equals(aex.getAapiError().getCode())) {
+					forceNewToken.set(true);
+					ctx.setDoWait(false);
+				}
+				if(ctx.getException() instanceof AAPIMissingPageException) {
+					ctx.setRetry(false);
+				}
+			});
+		} catch(RetryException e) {
+			if(!(e.getCause() instanceof AAPIMissingPageException))
+				log.error("Failed AAPI request with retry", e);
+			throw e.getCause();
+		}
 	}
 	
 	private static record RawRequestResult(AAPIWrappedResponse response, JsonNode result) {}

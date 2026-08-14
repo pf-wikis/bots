@@ -37,6 +37,7 @@ import io.github.pfwikis.bots.map.MapCheckLinksWithoutArticles;
 import io.github.pfwikis.bots.map.MapSearchPage;
 import io.github.pfwikis.bots.meta.Meta;
 import io.github.pfwikis.bots.newsfeedreader.NewsFeedReader;
+import io.github.pfwikis.bots.orga.FundingStatus;
 import io.github.pfwikis.bots.orga.UserPromoter;
 import io.github.pfwikis.bots.paizoretriever.PaizoRetriever;
 import io.github.pfwikis.bots.rest.RestServer;
@@ -105,6 +106,7 @@ public class Scheduler {
 				scheduleOnce(scheduleableBot(wiki, discord, new TemplateStyles()));
 			}
 			schedule(scheduleableBot(Wiki.PF, discord, new MapCheckLinksWithoutArticles()), Duration.ofDays(1), LocalTime.of(16, 00));
+			schedule(scheduleableBot(Wiki.PF, discord, new FundingStatus()), Duration.ofDays(1), LocalTime.of(18, 00));
 			//print queue from time to time
 			schedule(new Schedulable("print queue") {
 				@Override

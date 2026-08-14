@@ -7,3 +7,4 @@ files/*
 outputs
 /debug
 /cache
+/bots/debug
