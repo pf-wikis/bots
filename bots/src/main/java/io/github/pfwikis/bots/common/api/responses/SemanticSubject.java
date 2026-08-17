@@ -81,6 +81,7 @@ public class SemanticSubject extends AnyJson implements SemanticObject, Comparab
 				
 				if(p.property.equals("_SOBJ")) {
 					s.subObjects = p.dataitem.stream()
+						.filter(SemanticSubject.class::isInstance) //here could be PageTitle instances
 						.map(SemanticSubject.class::cast)
 						.toList();
 					it.remove();
