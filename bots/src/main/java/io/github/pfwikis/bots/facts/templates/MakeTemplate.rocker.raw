@@ -36,7 +36,10 @@
 }
 
 {{OOUIMessageWidget|
-{{#ask: [[-Processing error::{{FULLPAGENAME}}]]
+{{#ask:
+[[-Processing error::{{FULLPAGENAME}}]]
+ OR [[-Processing error.-Has subobject::{{FULLPAGENAME}}]]
+ OR [[-Processing error.-Has query::{{FULLPAGENAME}}]]
  |?Has improper value for
  |?Processing error message
  |format=broadtable
