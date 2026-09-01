@@ -69,7 +69,7 @@ public class FundingStatus extends SimpleBot {
 				}}
 			</noinclude><includeonly><div class="funding-status">
 				<div class="pfw-funding-header">
-					<div class="pfw-funding-title">[[Tabletop RPG Historical Society|Historical Society]] Funding</div>
+					<div class="pfw-funding-title">[[Tabletop RPG Historical Society|Historical Society]] Annual Funding</div>
 					<div class="pfw-funding-amount">
 						<strong>$%1$,d</strong>
 						of $960
