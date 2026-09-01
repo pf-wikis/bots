@@ -9,7 +9,7 @@
 }
 
 
-<div class="facts-display-key prop-@ConceptUtil.cssName(prop)">[[@prop.getName()::@@@@@@]]</div>
+<div class="facts-display-key prop-@ConceptUtil.cssName(prop)">{{#property_link:@prop.getName()}}</div>
 <div class="facts-display-value  prop-@ConceptUtil.cssName(prop)">@(\n)
 	@if(prop.isRequired() && prop.isGenerateWikitextDynamic()) {
 		{{#if:@prop.wikitextToTestIfValue(true)

@@ -174,4 +174,8 @@ public class SConcept {
 		}
 		return null;
 	}
+	
+	public boolean hasInfoboxProperties() {
+		return infoboxProperties!=null && !infoboxProperties.isEmpty();
+	}
 }

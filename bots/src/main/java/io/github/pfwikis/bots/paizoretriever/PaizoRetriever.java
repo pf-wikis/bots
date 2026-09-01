@@ -83,8 +83,7 @@ public class PaizoRetriever extends DualBot {
 		try {
 			
 			try(var client = HttpClients.custom().build()) {
-				//get ratings
-				var ratings = getRatings(client);
+				
 				
 				
 				//get token
@@ -104,7 +103,6 @@ public class PaizoRetriever extends DualBot {
 				}
 				var auth = m.group(1);
 				
-				
 				//make requests to grpahQL
 				var baseRequest = ClassicRequestBuilder.post()
 					.setUri("https://store.paizo.com/graphql")
@@ -113,8 +111,9 @@ public class PaizoRetriever extends DualBot {
 					.setHeader("Authorization", "Bearer "+auth)
 					.build();
 				
-				
 				var categoryRoot = collectCategories(client, baseRequest, state);
+				//get ratings
+				var ratings = getRatings(client);
 				categoryRoot.streamResolved()
 					//only the ones we want
 					.filter(c->WANTED_CATEGORIES.contains(c.getName()))
@@ -156,7 +155,7 @@ public class PaizoRetriever extends DualBot {
 			Integer.toString(p.getRatings().getTotalReviews())
 		)),
 		new PageDef("price", Props::getPrice),
-		new PageDef("upc", p->checkIsbn(p.getUpc()))
+		new PageDef("isbn", p->checkIsbn(p.getUpc()))
 	);
 	
 	private void createPages(State state) {
@@ -207,13 +206,18 @@ public class PaizoRetriever extends DualBot {
 
 	private static String checkIsbn(String upc) {
 		if(upc == null)
-			return upc;
+			return null;
 		upc = upc.trim();
+		
+		//UPC is sometimes made up from ISBN-13 and EAN-5 pricing extension
+		if(upc.length()==18)
+			upc = upc.substring(0,13);
+		
 		try {
 			var isbn = ISBN.valueOf(upc);
 			return isbn.toString();
 		} catch(Exception e) {
-			return upc;
+			return null;
 		}
 	}
 

@@ -14,17 +14,6 @@
 </noinclude><includeonly>
 <span style="display:none">{{#default_form:@c.getName()}}</span>
 <div class="facts">
-@if(CiteUtil.isCiteable(c)) {
-	<div class="citethis">
-		You can cite this entity by using {{tl|Ref|{{PAGENAME}}}} or {{tl|Cite|{{PAGENAME}}}}.
-	</div>
-}
-@if(c.getInfoboxProperties()!=null && !c.getInfoboxProperties().isEmpty()) {
-	<div class="citethis">
-		The infobox for this entity can be used via {{tl|Infobox|{{PAGENAME}}}} or just {{tl|Infobox}} on the page <code>{{PAGENAME}}</code>.
-	</div>
-}
-
 @if(!c.getSubConcepts().isEmpty()) {
 	<div class="facts-display-header">
 		<div class="facts-display-header-item">General @c.getName() Facts</div>
@@ -33,6 +22,34 @@
 		}
 	</div>
 }
+
+@if(CiteUtil.isCiteable(c) || c.hasInfoboxProperties()) {
+	{{OOUIMessageWidget|
+		@if(CiteUtil.isCiteable(c)) {
+			You can cite this entity by using {{tl|Ref|{{PAGENAME}}}} or {{tl|Cite|{{PAGENAME}}}}.
+		}
+		@if(c.hasInfoboxProperties()) {
+			@if(CiteUtil.isCiteable(c)) {@(\n)@(\n)}
+			The infobox for this entity can be used via {{tl|Infobox|{{PAGENAME}}}} or just {{tl|Infobox}} on the page <code>{{PAGENAME}}</code>.
+		}
+	@(\n)@*important so mediawiki makes a paragraph*@|type=notice}}
+}
+
+{{OOUIMessageWidget|
+{{#ask: [[-Processing error::{{FULLPAGENAME}}]]
+ |?Has improper value for
+ |?Processing error message
+ |format=broadtable
+ |limit=10
+ |mainlabel=-
+ |intro=<h3>Validation errors</h3>
+ |outro=[[Category:Pages with facts errors]]
+ |searchlabel=... further results
+ |default= 
+ |class=sortable wikitable smwtable
+}}
+|type=error}}
+
 {{Validate parameters}}
 <div class="facts-display concept-@ConceptUtil.cssName(c)@for(m:c.getMerges()) { concept-@ConceptUtil.cssName(m)}">
 	@for(g:c.getPropertyGroups()) {

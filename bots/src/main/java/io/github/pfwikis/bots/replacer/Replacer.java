@@ -24,32 +24,19 @@ public class Replacer extends SimpleBot {
 	public String getDescription() {
 		return "This bot is only started by hand for manual bulk changes to the wiki.";
 	}
-	
-	private List<String> pages = List.of("Bot Activity Checker",
-			"Bot Article of the Week",
-			"Bot Assistant",
-			"Bot Blog Facts",
-			"Bot Facts Master",
-			"Bot Maintenance",
-			"Bot Manual Bulk Operations",
-			"Bot Map Search Page",
-			"Bot News Feed Reader",
-			"Bot Page Syncer",
-			"Bot Paizo Retriever",
-			"Bot Rest Provider",
-			"Bot Template Styles",
-			"Bot Usage Reporter");
-	
+
 	@Override
 	public void run(RunContext ctx) throws IOException {
+		var pages = run.getWiki().getPagesInNamespace(NS.FACTS);
 		for(var p:pages) {
-			for(var r:new PageTitle[] {PageTitle.of(NS.USER, p), PageTitle.of(NS.USER_TALK, p)}) {
-				for(var sub:run.getWiki().getSubPages(r)) {
-					run.getWiki().delete(sub, "Bot merged into VirenerusBot");
-				}
-				if(run.getWiki().exists(r)) {
-					run.getWiki().delete(r, "Bot merged into VirenerusBot");
-				}
+			log.info("{}", p.getTitle());
+			var otxt = run.getWiki().getWikitext(p);
+			var txt = otxt.replaceAll(
+				"(\\| *)Quantity( *=)",
+				"$1Item quantity$2"
+			);
+			if(!txt.equals(otxt)) {
+				run.getWiki().edit(p, txt, "Renamed Quantity to Item quantity");
 			}
 		}
 	}

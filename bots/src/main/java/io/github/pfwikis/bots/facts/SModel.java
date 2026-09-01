@@ -63,7 +63,7 @@ import static io.github.pfwikis.bots.facts.SFactsProperties.Producer;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Programmer;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Pubcode;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Publisher;
-import static io.github.pfwikis.bots.facts.SFactsProperties.Quantity;
+import static io.github.pfwikis.bots.facts.SFactsProperties.Item_quantity;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Region;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Release_date;
 import static io.github.pfwikis.bots.facts.SFactsProperties.Release_note;
@@ -266,7 +266,7 @@ public class SModel {
 					.name("Accessory")
 					.properties(
 						Accessory_type,
-						Quantity,
+						Item_quantity,
 						Material,
 						Rule_system,
 						Series,
@@ -283,7 +283,9 @@ public class SModel {
 				Author,
 				Artist,
 				Publisher,
-				Quantity,
+				SInfoboxProperty.from(Item_quantity)
+					.label("Quantity")
+					.build(),
 				Material,
 				SInfoboxProperty.from(Rule_system)
 					.label("Rule set")
@@ -358,7 +360,7 @@ public class SModel {
 						Release_date,
 						Region,
 						Dimensions,
-						Quantity,
+						Item_quantity,
 						Isbn,
 						Pages,
 						Rule_system,
@@ -376,7 +378,9 @@ public class SModel {
 				Release_date,
 				Region,
 				Dimensions,
-				Quantity,
+				SInfoboxProperty.from(Item_quantity)
+					.label("Quantity")
+					.build(),
 				SInfoboxProperty.from(Isbn)
 					.label("ISBN")
 					.build(),
@@ -405,7 +409,7 @@ public class SModel {
 						Region,
 						Dimensions,
 						Grid,
-						Quantity,
+						Item_quantity,
 						Isbn,
 						Pages,
 						Rule_system,
@@ -424,7 +428,9 @@ public class SModel {
 				Region,
 				Dimensions,
 				Grid,
-				Quantity,
+				SInfoboxProperty.from(Item_quantity)
+					.label("Quantity")
+					.build(),
 				SInfoboxProperty.from(Isbn)
 					.label("ISBN")
 					.build(),
@@ -461,7 +467,7 @@ public class SModel {
 						Price,
 						Release_date,
 						Isbn,
-						Quantity,
+						Item_quantity,
 						Series,
 						Follows,
 						Precedes,
@@ -477,7 +483,9 @@ public class SModel {
 				SInfoboxProperty.from(Isbn)
 					.label("ISBN")
 					.build(),
-				Quantity,
+				SInfoboxProperty.from(Item_quantity)
+					.label("Quantity")
+					.build(),
 				Series,
 				Follows,
 				Precedes,

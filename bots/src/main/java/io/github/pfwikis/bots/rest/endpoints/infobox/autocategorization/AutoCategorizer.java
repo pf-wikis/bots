@@ -92,8 +92,8 @@ public enum AutoCategorizer {
 			wg.ifMatchRule(Book_type, wiki.getName()+" Society (2E) scenario", wiki.getName()+" Society (2E) scenarios");
 			wg.rule(
 					ctx-> "[[:Category:Retired "+wiki.getName()+" Society scenarios]]",
-					ctx-> "if [[Sanctioned::@@@]] is <code>no</code> and "
-							+ "[[Book type::@@@]] is <code>"+wiki.getName()+" Society scenario</code> "
+					ctx-> "if {{#property_link:Sanctioned}} is <code>no</code> and "
+							+ "{{#property_link:Book type}} is <code>"+wiki.getName()+" Society scenario</code> "
 									+ "or <code>"+wiki.getName()+" Society (2E) scenario</code>",
 					ctx-> {
 						if(Set.of(wiki.getName()+" Society scenario", wiki.getName()+" Society (2E) scenario").contains(ctx.getSubject().getOr(Book_type, ""))
@@ -104,12 +104,12 @@ public enum AutoCategorizer {
 
 			var adventureGroup = wg.group(
 					ctx->ctx.getSubject()==null || sAdventureTypes.contains(ctx.getSubject().getOr(Book_type, "")),
-					ctx->" and [[Book type::@@@]] is one of "
+					ctx->" and {{#property_link:Book type}} is one of "
 							+ sAdventureTypes.stream().map(v->"<code>"+v+"</code>").collect(Collectors.joining(", "))
 			);
 			var notAdventureGroup = wg.group(
 					ctx->ctx.getSubject()==null || !sAdventureTypes.contains(ctx.getSubject().getOr(Book_type, "")),
-					ctx->" and [[Book type::@@@]] is '''not''' one of "
+					ctx->" and {{#property_link:Book type}} is '''not''' one of "
 							+ sAdventureTypes.stream().map(v->"<code>"+v+"</code>").collect(Collectors.joining(", "))
 			);
 			
@@ -154,12 +154,12 @@ public enum AutoCategorizer {
 		
 		var comic = g.group(
 				ctx->ctx.getSubject()==null||ctx.getSubject().getOr(Book_type, "").equals("Comic Book"),
-				ctx->" and [[Book type::@@@]] is <code>Comic Book</code>"
+				ctx->" and {{#property_link:Book type}} is <code>Comic Book</code>"
 		);
 		
 		comic.rule(
 				ctx-> "Category:SERIES comics",
-				ctx-> "for each [[Series::@@@]]",
+				ctx-> "for each {{#property_link:Series}}",
 				ctx-> {
 					for(var e:ctx.getSubject().get(Series)) {
 						ctx.addCategory(e.getName()+" comics");
@@ -168,7 +168,7 @@ public enum AutoCategorizer {
 			).onlyIf(ctx->ctx.has(Series));
 		comic.rule(
 				ctx-> "Category:Comics by AUTHOR",
-				ctx-> "for each [[Author all::@@@]]",
+				ctx-> "for each {{#property_link:Author all}}",
 				ctx-> {
 					for(var e:ctx.getSubject().get(Author_all)) {
 						ctx.addCategory("Comics by "+e.toDisplayTitleWikitext());
@@ -176,7 +176,7 @@ public enum AutoCategorizer {
 				}
 			).onlyIf(ctx->ctx.has(Series));
 
-		g.group(ctx->ctx.has(Serialized), ctx->" and [[Serialized::@@@]] is set")
+		g.group(ctx->ctx.has(Serialized), ctx->" and {{#property_link:Serialized}} is set")
 			.ifMatchRule(Book_type, List.of("Novel", "Short Fiction", "Novella"), "Serial fiction");
 	}
 
@@ -233,7 +233,7 @@ public enum AutoCategorizer {
 		
 		g.rule(
 				ctx-> "Category:Images of REGION",
-				ctx-> "for each [[Region::@@@]]",
+				ctx-> "for each {{#property_link:Region}}",
 				ctx-> ctx.getSubject()
 					.getOr(Region, Collections.emptyList())
 					.forEach(r->ctx.addCategory("Images of "+r.toDisplayTitleWikitext()))
@@ -262,7 +262,7 @@ public enum AutoCategorizer {
 		g.ifYearRule("{} board games");
 		g.rule(
 				ctx-> "[[:Category:Licensed board games]]",
-				ctx-> "if [[Publisher::@@@]] does not contain [[Paizo Inc.]]",
+				ctx-> "if {{#property_link:Publisher}} does not contain [[Paizo Inc.]]",
 				ctx-> {
 					if(ctx.getSubject().getOr(Publisher, Collections.emptyList()).stream().noneMatch(p->p.getName().equals("Paizo Inc."))) {
 						ctx.addCategory("Licensed board games");
@@ -274,19 +274,19 @@ public enum AutoCategorizer {
 	private void addGenericRules() {
 		rules.rule(
 				ctx-> "[[:Category:Products with errata]]",
-				ctx-> "if [[Errata::@@@]] is set",
+				ctx-> "if {{#property_link:Errata}} is set",
 				ctx-> ctx.addCategory("Products with errata")
 			).onlyIf(ctx->ctx.has(Errata));
 		
 		rules.rule(
 				ctx-> "[[:Category:Products with web enhancements]]",
-				ctx-> "if [[Web enhancement::@@@]] is set",
+				ctx-> "if {{#property_link:Web enhancement}} is set",
 				ctx-> ctx.addCategory("Products with web enhancements")
 			).onlyIf(ctx->ctx.has(Web_enhancement));
 		
 		rules.rule(
 				ctx-> "Category:Works by AUTHOR",
-				ctx-> "for each [[Author_all::@@@]]",
+				ctx-> "for each {{#property_link:Author_all}}",
 				ctx-> {
 					for(var e:ctx.getSubject().get(Author_all))
 						ctx.addCategory("Works by "+e.toDisplayTitleWikitext());
@@ -295,7 +295,7 @@ public enum AutoCategorizer {
 		
 		rules.rule(
 				ctx-> "Category:Works by AUTHOR",
-				ctx-> "for each [[Author::@@@]]",
+				ctx-> "for each {{#property_link:Author}}",
 				ctx-> {
 					for(var e:ctx.getSubject().get(Author))
 						ctx.addCategory("Works by "+e.toDisplayTitleWikitext());
@@ -304,7 +304,7 @@ public enum AutoCategorizer {
 		
 		rules.rule(
 				ctx-> "Category:Artwork by ARTIST",
-				ctx-> "for each [[Artist::@@@]]",
+				ctx-> "for each {{#property_link:Artist}}",
 				ctx-> {
 					for(var e:ctx.getSubject().get(Artist))
 						ctx.addCategory("Artwork by "+e.toDisplayTitleWikitext());
@@ -313,7 +313,7 @@ public enum AutoCategorizer {
 		
 		rules.rule(
 				ctx-> "Category:Works by DIRECTOR",
-				ctx-> "for each [[Director::@@@]]",
+				ctx-> "for each {{#property_link:Director}}",
 				ctx-> {
 					for(var e:ctx.getSubject().get(Director))
 						ctx.addCategory("Works by "+e.toDisplayTitleWikitext());
@@ -322,7 +322,7 @@ public enum AutoCategorizer {
 		
 		rules.rule(
 				ctx-> "Category:Works starring PERFORMER",
-				ctx-> "for each [[Performer::@@@]]",
+				ctx-> "for each {{#property_link:Performer}}",
 				ctx-> {
 					for(var e:ctx.getSubject().get(Performer))
 						ctx.addCategory("Works starring "+e.toDisplayTitleWikitext());
@@ -331,7 +331,7 @@ public enum AutoCategorizer {
 		
 		rules.rule(
 				ctx-> "Category:Works starring NARRATOR",
-				ctx-> "for each [[Narrator::@@@]]",
+				ctx-> "for each {{#property_link:Narrator}}",
 				ctx-> {
 					for(var e:ctx.getSubject().get(Narrator))
 						ctx.addCategory("Works starring "+e.toDisplayTitleWikitext());
@@ -339,7 +339,7 @@ public enum AutoCategorizer {
 			).onlyIf(ctx->ctx.has(Narrator));
 		
 		rules.rule(
-				ctx-> "the category for each [[Series::@@@]]",
+				ctx-> "the category for each {{#property_link:Series}}",
 				ctx-> "as set on the Series Facts page; see [[#Details|Details]]",
 				ctx-> {
 					for(var e:ctx.getSubject().get(Series)) {

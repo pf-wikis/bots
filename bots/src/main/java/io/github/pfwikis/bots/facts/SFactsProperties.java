@@ -253,7 +253,7 @@ public class SFactsProperties {
 		.setDescription("The ISBN.")
 		.setFormNote("Not necessary if there is a Paizo store pubcode. You will see an automatic value then.")
 		.setAllowsPattern("^(?=(?:\\D*\\d){10}(?:(?:\\D*\\d){3})?$)[\\d-]+$")
-		.setDefaultValue("{{#if:{{{Pubcode|}}}|{{Paizo store|upc|{{{Pubcode}}}}}}}");
+		.setDefaultValue("{{#if:{{{Pubcode|}}}|{{Paizo store|isbn|{{{Pubcode}}}}}}}");
 	public static final SProperty<Integer> Level_range_end = new SProperty<>(
 		"Level range end",
 		SFactTypes.INTEGER)
@@ -326,7 +326,7 @@ public class SFactsProperties {
 		SFactTypes.STRING)
 		.setFormNote("Not necessary if there is a Paizo store pubcode. You will see an automatic value then.")
 		.setDescription("The price of this release. Should be in the form \"$4.99\".")
-		.setAllowsPattern("^(Free|[$€]\\d+(.\\d+)?)$")
+		//.setAllowsPattern("^(Free|[$€]\\d+(.\\d+)?)$")
 		.setDefaultValue("{{#if:{{{Pubcode|}}}|{{Paizo store|price|{{{Pubcode}}}}}}}");
 	public static final SProperty<List<PageTitle>> Primary_author = new SProperty<>(
 		"Primary author",
@@ -386,8 +386,8 @@ public class SFactsProperties {
 		.setFormNote("Typically Paizo Inc.")
 		.setSuggestValuesFrom("Category:Publishers")
 		.setDescription("The publisher of this book or product.");
-	public static final SProperty<String> Quantity = new SProperty<>(
-		"Quantity",
+	public static final SProperty<String> Item_quantity = new SProperty<>(
+		"Item quantity",
 		SFactTypes.STRING)
 		.setDescription("The number of elements included in the product.");
 	public static final SProperty<BigDecimal> Ratings = new SProperty<>(

@@ -67,7 +67,7 @@ public class ACGroup implements ACNode {
 	public ACRule ifYearRule(String category) {
 		return rule(
 				ctx-> "Category:"+category.replace("{}", "YEAR"),
-				ctx-> "if [[Release year::@@@]] is set and not <code>unknown</code>",
+				ctx-> "if {{#property_link:Release year}} is set and not <code>unknown</code>",
 				ctx-> {
 					if(!"unknown".equals(ctx.getSubject().get(Release_year))) {
 						ctx.addCategory(category.replace("{}", ctx.getSubject().get(Release_year).toString()));
@@ -84,7 +84,7 @@ public class ACGroup implements ACNode {
 		var valueSet = sortedSet(values);
 		return rule(
 				ctx-> "Category:"+category.replace("{}", "YEAR"),
-				ctx-> "if [[Release year::@@@]] is set and not <code>unknown</code> and [["+prop.getName()+"::@@@]] is "+(valueSet.size()==1?"":"one of ")
+				ctx-> "if {{#property_link:Release year}} is set and not <code>unknown</code> and {{#property_link:"+prop.getName()+"}} is "+(valueSet.size()==1?"":"one of ")
 					+ valueSet.stream().map(v->"<code>"+v+"</code>").collect(Collectors.joining(", ")),
 				ctx-> {
 					if(!"unknown".equals(ctx.getSubject().get(Release_year)) && valueSet.contains(ctx.getSubject().getOr(prop, "")))
@@ -109,7 +109,7 @@ public class ACGroup implements ACNode {
 		var valueSet = sortedSet(values);
 		return rule(
 			ctx-> "[[:Category:"+categoryName.apply(ctx)+"]]",
-			ctx-> "if [["+prop.getName()+"::@@@]] is "+(valueSet.size()==1?"":"one of ")
+			ctx-> "if {{#property_link:"+prop.getName()+"}} is "+(valueSet.size()==1?"":"one of ")
 				+ valueSet.stream().map(v->"<code>"+v+"</code>").collect(Collectors.joining(", ")),
 			ctx-> {
 				if(valueSet.contains(ctx.getSubject().getOr(prop, "")))
@@ -122,7 +122,7 @@ public class ACGroup implements ACNode {
 		var valueSet = sortedSet(values);
 		return rule(
 			ctx-> "[[:Category:"+categoryName.apply(ctx)+"]]",
-			ctx -> "if [["+prop.getName()+"::@@@]] is '''not''' "+(valueSet.size()==1?"":"one of ")
+			ctx -> "if {{#property_link:"+prop.getName()+"}} is '''not''' "+(valueSet.size()==1?"":"one of ")
 				+ valueSet.stream().map(v->"<code>"+v+"</code>").collect(Collectors.joining(", ")),
 			ctx-> {
 				if(!valueSet.contains(ctx.getSubject().getOr(prop, "")))
