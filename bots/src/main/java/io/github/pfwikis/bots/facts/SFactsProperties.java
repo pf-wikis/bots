@@ -19,6 +19,11 @@ public class SFactsProperties {
 		"Accessory type",
 		SFactTypes.STRING)
 		.setDescription("The type of accessory.");
+	public static final SProperty<String> Affiliate_link = new SProperty<>(
+		"Affiliate link",
+		SFactTypes.URL)
+		.setDescription("An affiliate link that supports the historical society.")
+		.setGenerateWikitext("{{#if:{{{Pubcode|}}}|{{Drivethru store|URL|{{#regex-replace:{{uc:{{{Pubcode}}}}}|/[^A-Z0-9]/|}}}}}}");
 	public static final SProperty<List<PageTitle>> Artist = new SProperty<>(
 		"Artist",
 		SFactTypes.PAGE_LIST)
@@ -249,7 +254,11 @@ public class SFactsProperties {
 			.setDescription("The page of an image representing the logo of this entity.");
 	public static final SProperty<String> Isbn = new SProperty<>(
 		"Isbn",
-		SFactTypes.ISBN)
+		SFactTypes.ISBN) {
+			public List<SProperty<?>> generateProperties(SConcept c, SConcept parent) {
+				return List.of(Affiliate_link);
+			}
+		}
 		.setDescription("The ISBN.")
 		.setFormNote("Not necessary if there is a Paizo store pubcode. You will see an automatic value then.")
 		.setAllowsPattern("^(?=(?:\\D*\\d){10}(?:(?:\\D*\\d){3})?$)[\\d-]+$")

@@ -39,6 +39,7 @@ import io.github.pfwikis.bots.meta.Meta;
 import io.github.pfwikis.bots.newsfeedreader.NewsFeedReader;
 import io.github.pfwikis.bots.orga.FundingStatus;
 import io.github.pfwikis.bots.orga.UserPromoter;
+import io.github.pfwikis.bots.paizoretriever.DriveThru;
 import io.github.pfwikis.bots.paizoretriever.PaizoRetriever;
 import io.github.pfwikis.bots.rest.RestServer;
 import io.github.pfwikis.bots.scheduler.Schedulable.SchedulableBot;
@@ -87,6 +88,7 @@ public class Scheduler {
 			
 			schedule(new HealthCheck(discord), Duration.ofHours(24));
 			schedule(scheduleableBot(discord, new PaizoRetriever(), new RunContext()), Duration.ofHours(12), LocalTime.of(14, 00));
+			schedule(scheduleableBot(discord, new DriveThru(), new RunContext()), Duration.ofHours(12), LocalTime.of(17, 00));
 			for(var wiki : Wiki.values()) {
 				scheduleOnce(scheduleableBot(wiki, discord, new Meta()));
 				schedule(scheduleableBot(wiki, discord, new FactsTemplates()), Duration.ofDays(7));
