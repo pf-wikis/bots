@@ -104,8 +104,15 @@
 							@if(release.has(Release_note)) {
 								&nbsp;(@release.get(Release_note))
 							}
-							@if(release.has(Website)) {
-								<span class="link plainlinks">[@release.get(Website) <i class="fa-solid fa-arrow-up-right-from-square"></i>]</span>
+							@if(release.has(Website) || release.has(Affiliate_link)) {
+								<span class="link">
+									@if(release.has(Website)) {
+										[[File:Mini logo paizo.svg|x22px|link=@release.get(Website)]]
+									}
+									@if(release.has(Affiliate_link)) {
+										[[File:Mini logo drivethru.svg|x22px|link=@release.get(Affiliate_link)]]
+									}
+								</span>
 							}
 						</div>
 						<div class="table">
