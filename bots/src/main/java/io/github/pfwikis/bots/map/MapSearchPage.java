@@ -46,7 +46,7 @@ public class MapSearchPage extends SimpleBot {
 		HttpClient httpClient = HttpClient.newHttpClient();
     	HttpRequest request = HttpRequest.newBuilder()
     		.header("User-Agent", antiProtectionSecret)
-    		.uri(URI.create("https://map.pathfinderwiki.com/search.json")).build();
+    		.uri(URI.create("https://map.pathfinderwiki.com/latest/search.json")).build();
     	var resp = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
         
 		var categoriesIn = List.of(Jackson.JSON.readValue(resp.body(), CategoryIn[].class));
