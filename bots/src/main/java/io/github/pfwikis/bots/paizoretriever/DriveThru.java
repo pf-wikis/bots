@@ -95,7 +95,7 @@ public class DriveThru extends DualBot {
 			.collect(Collectors.groupingBy(Pair::getValue, Collectors.toList()))
 			.entrySet()
 			.stream()
-			.sorted(Comparator.comparing(Entry::getKey))
+			.sorted(Comparator.comparing(e->e.getValue().getFirst()))
 			.map(p->
 				"\n|"
 				+p.getValue().stream().map(Pair::getKey).collect(Collectors.joining("|"))
