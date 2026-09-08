@@ -5,20 +5,17 @@ import org.snakeyaml.engine.v2.api.LoadSettings;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import tools.jackson.core.JsonParser;
+
 import tools.jackson.core.StreamReadFeature;
-import tools.jackson.core.json.JsonReadFeature;
-import tools.jackson.core.util.DefaultIndenter;
-import tools.jackson.core.util.DefaultPrettyPrinter;
 import tools.jackson.databind.DeserializationFeature;
-import tools.jackson.databind.MapperFeature;
+import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.SerializationFeature;
 import tools.jackson.databind.cfg.CoercionAction;
 import tools.jackson.databind.cfg.CoercionInputShape;
 import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.JsonNodeFactory;
 import tools.jackson.dataformat.yaml.YAMLFactory;
-import tools.jackson.dataformat.yaml.YAMLGenerator;
 import tools.jackson.dataformat.yaml.YAMLMapper;
 import tools.jackson.dataformat.yaml.YAMLWriteFeature;
 import tools.jackson.datatype.guava.GuavaModule;
@@ -28,6 +25,7 @@ public class Jackson {
 	public static final ObjectMapper JSON;
 	public static final ObjectMapper JSON_LENIENT;
 	public static final ObjectMapper YAML;
+	public static final JsonNodeFactory NODES;
 	static {
 		var dumper = DumpSettings.builder()
 			.setIndicatorIndent(2)
@@ -57,10 +55,16 @@ public class Jackson {
 			.enable(StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION)
 			.findAndAddModules()
 			.build();
+		NODES = JSON.getNodeFactory();
 		
 		JSON_LENIENT = JSON.rebuild()
 			.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 			.withCoercionConfig(Enum.class, cfg->cfg.setCoercion(CoercionInputShape.EmptyString, CoercionAction.AsNull))
 			.build();
+	}
+	public static JsonNode stringNodeOrNull(String stringOrNull) {
+		if(stringOrNull == null)
+			return null;
+		return NODES.stringNode(stringOrNull);
 	}
 }
