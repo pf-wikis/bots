@@ -1,9 +1,6 @@
 package io.github.pfwikis.bots.common;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -65,11 +62,11 @@ import io.github.pfwikis.bots.common.api.responses.SemanticAsk.Result;
 import io.github.pfwikis.bots.common.api.responses.UploadResponse;
 import io.github.pfwikis.bots.common.api.responses.UserByMail;
 import io.github.pfwikis.bots.common.api.responses.UserrightsResponse;
-import io.github.pfwikis.bots.common.bots.Bot;
 import io.github.pfwikis.bots.utils.Jackson;
 import io.github.pfwikis.bots.utils.SimpleCache.CacheId;
 import lombok.extern.slf4j.Slf4j;
 import tools.jackson.databind.JavaType;
+import tools.jackson.databind.JsonNode;
 
 @Slf4j
 public class WikiAPI {
@@ -96,21 +93,26 @@ public class WikiAPI {
 			oldText = "";
 		}
 
-		if(!content.equals(oldText)) {
-			if(Bot.globalLocalMode) {
-				try {
-					new File("debug").mkdir();
-					var diffOld = oldText.replaceAll("((?=\\[\\[)|<div|\\{\\{#if)", "\n$1");
-					Files.writeString(Path.of("debug/old.html"), diffOld);
-					Files.writeString(Path.of("debug/newForTesting.html"), content);
-					var diffNew = content.replaceAll("((?=\\[\\[)|<div|\\{\\{#if)", "\n$1");
-					Files.writeString(Path.of("debug/new.html"), diffNew);
-				} catch(Exception e) {
-					e.printStackTrace();
-				}
-			}
-			
+		if(!content.equals(oldText)) {			
 			wiki.edit(page, content, reason);
+			server.storeInCache(CacheId.PAGE_EXISTS, page.toPageRef(), true);
+			return true;
+		}
+		server.storeInCache(CacheId.PAGE_EXISTS, page.toPageRef(), true);
+		return false;
+	}
+	
+	public boolean editJsonIfChange(ContainsPageRef page, JsonNode content, String reason) {
+		String old = null;
+		try {
+			var oldRaw = wiki.getWikitext(page);
+			//double conversion done to normalize
+			if(oldRaw != null) old = Jackson.JSON.writeValueAsString(Jackson.JSON.readTree(oldRaw));
+		} catch(AAPIMissingPageException e) {}
+		var contentStr = Jackson.JSON.writeValueAsString(content);
+		
+		if(!contentStr.equals(old)) {
+			wiki.edit(page, contentStr, reason);
 			server.storeInCache(CacheId.PAGE_EXISTS, page.toPageRef(), true);
 			return true;
 		}

@@ -6,9 +6,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -27,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DriveThru extends DualBot {
 	
-	private static final int PAGE_SIZE = 50;
 	
 	public DriveThru() {
 		super("drivethru-retriever", "Drivethru Retriever");
@@ -85,31 +81,22 @@ public class DriveThru extends DualBot {
 			}
 		}
 		
-		var list = products.stream()
+		var res = Jackson.JSON.createObjectNode();
+		products.stream()
 			.flatMap(p->Arrays.asList(p.isbn, p.sku)
 				.stream()
 				.filter(Objects::nonNull)
 				.map(v->v.toUpperCase().replaceAll("[^A-Z0-9]+", ""))
 				.map(r->Pair.of(r, p.productId))
 			)
-			.collect(Collectors.groupingBy(Pair::getValue, Collectors.toList()))
-			.entrySet()
-			.stream()
-			.sorted(Comparator.comparing(e->e.getValue().getFirst()))
-			.map(p->
-				"\n|"
-				+p.getValue().stream().map(Pair::getKey).collect(Collectors.joining("|"))
-				+"="
-				+"https://drivethrurpg.com/en/product/"+p.getKey()+"?affiliate_id=5252886"
-			).collect(Collectors.joining());
+			.sorted(Comparator.comparing(Pair::getKey))
+			.forEach(p->res.put(p.getKey(), p.getValue()));
 		
 		run.withOwnUser(w-> {
-			w.editIfChange(
+	
+			w.editJsonIfChange(
 				PageRef.of(NS.TEMPLATE, "Drivethru store/URL"),
-				"<noinclude>{{Bot created|VirenerusBot#Drivethru Retriever}}</noinclude>"
-				+"{{#switch:{{{1|}}}"
-				+list
-				+"\n|}}",
+				res,
 				"Automatic update from store"
 			);
 		});	
