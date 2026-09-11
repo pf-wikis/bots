@@ -25,4 +25,32 @@ public class WikitextHelper {
 		}
 		return sb.append("}}").toString();
 	}
+
+	public static String ifElse(String cond, String ifTrue, String prefix, String suffix, String ifFalse) {
+		cond = Objects.requireNonNull(StringUtils.trimToNull(cond));
+		ifTrue = Objects.requireNonNull(StringUtils.trimToNull(ifTrue));
+		ifFalse = StringUtils.trimToNull(ifFalse);
+		prefix = StringUtils.trimToNull(prefix);
+		suffix = StringUtils.trimToNull(suffix);
+		
+		boolean s = cond.equals(ifTrue);
+		
+		if(s) {
+			return "{{#ifContent:%s|%s|%s|%s}}".formatted(
+		        ifTrue,
+		        Objects.requireNonNullElse(prefix, ""),
+		        Objects.requireNonNullElse(suffix, ""),
+		        Objects.requireNonNullElse(ifFalse, "")
+		    ).replaceAll("\\|+\\}\\}$", "}}");
+		}
+		else {
+			return "{{#if:%s|%s%s%s|%s}}".formatted(
+		        cond,
+		        Objects.requireNonNullElse(prefix, ""),
+		        ifTrue,
+		        Objects.requireNonNullElse(suffix, ""),
+		        Objects.requireNonNullElse(ifFalse, "")
+		    ).replaceAll("\\|+\\}\\}$", "}}");
+		}
+	}
 }
