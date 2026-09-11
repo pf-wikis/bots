@@ -66,6 +66,8 @@ public class AAPI {
 		var res = jsonRequest(action, null, null);
 		try {	
 			var result = Jackson.JSON.treeToValue(res.result, model);
+			if(result == null)
+				return null;
 			result.validate();
 			
 			if(action.builder().requiresPagination()) {

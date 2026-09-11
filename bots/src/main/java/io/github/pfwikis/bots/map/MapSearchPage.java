@@ -77,7 +77,12 @@ public class MapSearchPage extends SimpleBot {
 			.append("<noinclude>{{Bot created|VirenerusBot#").append(this.getBotName()).append("}}\n")
 			.append("""
 				{{Documentation|content=
-				<wikitext doc>{{Area|Ustalav}}</wikitext>
+				<wikitext doctable>
+					<wikitext-row>{{Area|Ustalav}}</wikitext-row>
+					<wikitext-row>{{Area|Kelesh}}</wikitext-row>
+					<wikitext-row>{{Area|Kelesh|year=4610}}</wikitext-row>
+					<wikitext-row>{{Area|Kelesh|year=4608}}</wikitext-row>
+				</wikitext>
 				<templatedata>
 				{
 					"params": {
@@ -86,13 +91,17 @@ public class MapSearchPage extends SimpleBot {
 							"description": "Nation or geographical feature",
 							"type": "string",
 							"required": true
+						},
+						"year": {
+							"description": "to retrieve the size in a specific year AR",
+							"type": "number"
 						}
 					},
 					"format": "inline"
 				}
 				</templatedata>
 				}}[[Category:Templates]]
-				</noinclude><includeonly>{{#if:{{Area/Helper|{{{1}}}}}|{{formatnum:{{Area/Helper|{{{1}}}}}}} mi²}}{{Validate parameters}}</includeonly>
+				</noinclude><includeonly>{{#ifContent:{{formatnum:{{Area/Helper|{{{1}}}|year={{{year|}}}}}}}||&nbsp;mi²}}{{Validate parameters}}</includeonly>
 				""");
 		run.getWiki().editIfChange(PageRef.of(NS.TEMPLATE, "Area"), sb.toString(), "Automatic update");
 		sb = new StringBuilder()
@@ -243,6 +252,7 @@ public class MapSearchPage extends SimpleBot {
 	
 	private <T> void createSwitchEntry(StringBuilder sb, String key, List<Assembled<T>> values, Function<T, String> toString) {
 		if(values.isEmpty()) return;
+		
 		sb.append("\n|").append(key).append("=");
 		if(values.size()==1 && values.getFirst().timeYear.isAlways()) {
 			sb.append(toString.apply(values.getFirst().value));
@@ -253,14 +263,10 @@ public class MapSearchPage extends SimpleBot {
 		
 		//open many if/else statements
 		for(var v:values) {
-			if(v==last) continue;
 			sb.append("{{#ifexpr:").append(v.timeYear.toExpr()).append("|").append(toString.apply(v.value)).append("|");
 		}
-		if(last != null)
-			sb.append(toString.apply(last.value));
 		//close if/else statements
 		for(var v:values) {
-			if(v==last) continue;
 			sb.append("}}");
 		}
 		
@@ -305,12 +311,12 @@ public class MapSearchPage extends SimpleBot {
 		public String toExpr() {
 			String expr = "";
 			if(timeStart != null) {
-				expr+="{{{year|}}} >= "+timeStart;
+				expr+="{{{year}}} >= "+timeStart;
 				if(timeEnd != null)
 					expr+=" and ";
 			}
 			if(timeEnd != null)
-				expr+="{{{year|}}} < "+timeEnd;
+				expr+="{{{year}}} < "+timeEnd;
 			return expr;
 		}
 	}

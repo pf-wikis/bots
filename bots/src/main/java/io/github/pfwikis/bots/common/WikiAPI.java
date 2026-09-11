@@ -133,12 +133,17 @@ public class WikiAPI {
 	}
 	
 	public List<PageRef> getPagesInCategory(ContainsPageRef category) {
-		return Lists.transform(wiki.run(AAPIQuery
+		var resp = wiki.run(AAPIQuery
 				.create()
 				.generator(AAPIQueryCategorymembers.create(category)
 						.prop(AAPIQueryCategorymembersProp.IDS)),
 				QueryResponse.class
-		).getPages(), QRPage::getPage);
+		);
+		if(resp == null) {
+			return Collections.emptyList();
+		}
+		
+		return Lists.transform(resp.getPages(), QRPage::getPage);
 	}
 	
 	public List<QRPage> getPagesInCategory(ContainsPageRef category, NS[] namespaces) {
