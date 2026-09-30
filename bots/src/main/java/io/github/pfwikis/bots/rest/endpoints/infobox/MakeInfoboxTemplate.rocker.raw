@@ -107,10 +107,10 @@
 							@if(release.has(Website) || release.has(Affiliate_link)) {
 								<span class="link">
 									@if(release.has(Website)) {
-										[[File:Mini logo paizo.svg|x22px|link=@release.get(Website)]]
+										[[File:Mini logo paizo.svg|x22px|link=@release.get(Website)|Paizo affiliate link]]
 									}
 									@if(release.has(Affiliate_link)) {
-										[[File:Mini logo drivethru.svg|x22px|link=@release.get(Affiliate_link)]]
+										[[File:Mini logo drivethru.svg|x22px|link=@release.get(Affiliate_link)|Drivethru affiliate link]]
 									}
 								</span>
 							}
