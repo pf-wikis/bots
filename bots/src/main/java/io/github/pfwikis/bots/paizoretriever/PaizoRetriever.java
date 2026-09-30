@@ -5,7 +5,6 @@ import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +14,6 @@ import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
@@ -29,7 +27,6 @@ import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 import com.beust.jcommander.Parameters;
 import com.google.common.util.concurrent.Uninterruptibles;
 
-import io.github.pfwikis.bots.common.WikiAPI;
 import io.github.pfwikis.bots.common.api.generated.params.NS;
 import io.github.pfwikis.bots.common.api.model.PageRef;
 import io.github.pfwikis.bots.common.api.model.PageTitle;
@@ -44,6 +41,7 @@ import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.creativecouple.validation.isbn.ISBN;
+import tools.jackson.databind.JsonNode;
 
 @Slf4j
 @Getter @Setter
@@ -142,20 +140,19 @@ public class PaizoRetriever extends DualBot {
 		createPages(state);
 	}
 	
-	private static record PageDef(String name, Function<Props, String> getter) {}
+	private static record PageDef(String name, Function<Props, JsonNode> getter) {}
 	private static final List<PageDef> pageDefs = List.of(
-		new PageDef("URL", p->"https://store.paizo.com"+p.getUrl()),
+		new PageDef("URL", p->Jackson.NODES.stringNode("https://store.paizo.com"+p.getUrl())),
 		//new PageDef("name", Props::getName),
 		new PageDef("ratings", p->(p.getRatings()==null||p.getRatings().getTotalReviews()<10)?null:(
-			p.getRatings().getAverageScore()
-				.setScale(1, RoundingMode.HALF_UP)
-				.toString()
+			Jackson.NODES.numberNode(p.getRatings().getAverageScore()
+				.setScale(1, RoundingMode.HALF_UP))
 		)),
 		new PageDef("number of ratings", p->(p.getRatings()==null||p.getRatings().getTotalReviews()<10)?null:(
-			Integer.toString(p.getRatings().getTotalReviews())
+			Jackson.NODES.numberNode(p.getRatings().getTotalReviews())
 		)),
-		new PageDef("price", Props::getPrice),
-		new PageDef("isbn", p->checkIsbn(p.getUpc()))
+		new PageDef("price", p->Jackson.stringNodeOrNull(StringUtils.trimToNull(p.getPrice()))),
+		new PageDef("isbn", p->Jackson.stringNodeOrNull(checkIsbn(p.getUpc())))
 	);
 	
 	private void createPages(State state) {
@@ -177,19 +174,19 @@ public class PaizoRetriever extends DualBot {
 				sb
 					.append("|")
 					.append(def.name)
-					.append("={{Paizo store/")
+					.append("={{#json-get:Template:Paizo store/Simple data|{{{2}}}|")
 					.append(def.name)
-					.append("|{{{2}}}}}");
+					.append("}}");
 			}
 			sb
-				.append("}}")
+				.append("|{{Error|Unknown property {{{1}}}}}}}")
 				.append(outro)
 				.append("<noinclude>\n")
 				.append("{{Documentation|content=\n")
 				.append("This template is able to provide data retrieved directly form the paizo store.")
 				.append("It also archives this data by accumulating it over time without removing products no longer in the store")
 				.append("<wikitext doctable>")
-				.append("<wikitext-row>{{ISBN|{{Paizo store|upc|PZO9205}}}}</wikitext-row>")
+				.append("<wikitext-row>{{ISBN|{{Paizo store|isbn|PZO9205}}}}</wikitext-row>")
 				.append("<wikitext-row>{{Paizo store|URL|PZO9205}}</wikitext-row>")
 				.append("<wikitext-row>{{Paizo store|price|PZO9205}}</wikitext-row>")
 				.append("<wikitext-row>{{Paizo store|URL|not existing}}</wikitext-row>")
@@ -198,9 +195,24 @@ public class PaizoRetriever extends DualBot {
 				.append("}}</noinclude>");
 			api.editIfChange(PageRef.of("Template:Paizo store"), sb.toString(), "Automatic update from store");
 		
-			for(var def:pageDefs) {
-				createPage(api, pages, def, intro, outro);
-			}
+			
+			var all = Jackson.JSON.createObjectNode();
+			pages.stream()
+				.sorted(Comparator.comparing(p->p.getSku()))
+				.forEach(p->{
+					var r = Jackson.JSON.createObjectNode();
+					boolean anyVal = false;
+					for(var def : pageDefs) {
+						var val = def.getter.apply(p);
+						if(val != null) {
+							anyVal = true;
+							r.set(def.name, val);
+						}
+					}
+					if(anyVal)
+						all.set(p.getSku(), r);
+				});
+			api.editJsonIfChange(PageRef.of("Template:Paizo store/Simple data"), all, "Automatic update from store");
 		});
 	}
 
@@ -219,28 +231,6 @@ public class PaizoRetriever extends DualBot {
 		} catch(Exception e) {
 			return null;
 		}
-	}
-
-	private void createPage(WikiAPI api, List<Props> pages, PageDef def, String intro, String outro) {
-		var sb = new StringBuilder().append(intro).append("{{#switch:{{{1}}}");
-		pages.stream()
-			.filter(p->StringUtils.isNotBlank(def.getter.apply(p)))
-			.collect(Collectors.groupingBy(p->def.getter.apply(p).trim()))
-			.entrySet()
-			.stream()
-			.peek(e->Collections.sort(e.getValue(), Comparator.comparing(v->v.getSku())))
-			.sorted(Comparator.comparing(e->e.getValue().getFirst().getSku()))
-			.forEach(e->sb
-					.append("\n|")
-					.append(e.getValue().stream()
-						.map(Props::getSku)
-						.collect(Collectors.joining("|"))
-						)
-					.append("=")
-					.append(e.getKey()));
-		sb.append("}}").append(outro);
-		
-		api.editIfChange(PageRef.of("Template:Paizo store/"+def.name), sb.toString(), "Automatic update from store");
 	}
 	
 	private PZCategory collectCategories(CloseableHttpClient client, ClassicHttpRequest baseRequest, State state) throws IOException {

@@ -45,22 +45,18 @@
 		@for(g:c.getPropertyGroups()) {
 			<div class="facts-display-group group-@ConceptUtil.cssName(g)">
 				<div class="facts-display-group-label">@g.getName()</div>
-				<div class="facts-display-group-content">
+				<div class="facts-display-group-content">@(\n)
 				@for(prop:g.getProperties()) {
-					@DisplayTemplateField.template(prop) -> {
-						@prop.wikitextToDisplayFact()
-					}
+					@DisplayTemplateField.render(prop, false)@(\n)
 				}
 				</div>
 			</div>
 		}
 		<div class="facts-display-group group-automatic-properties">
 			<div class="facts-display-group-label">Automatic properties</div>
-			<div class="facts-display-group-content">
+			<div class="facts-display-group-content">@(\n)
 			@for(gen:c.getGeneratedProperties()) {
-				@DisplayTemplateField.template(gen) -> {
-					@gen.wikitextToDisplayFact()
-				}
+				@DisplayTemplateField.render(gen, false)@(\n)
 			}
 			</div>
 		</div>

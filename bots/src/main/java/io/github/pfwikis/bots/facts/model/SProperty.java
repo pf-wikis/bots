@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import io.github.pfwikis.bots.facts.SFactsProperties;
 import io.github.pfwikis.bots.facts.SUtilProperties;
+import io.github.pfwikis.bots.utils.WikitextHelper;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -53,11 +54,12 @@ public class SProperty<JType> {
 		if(defaultValue == null ) {
 			return res;
 		}
-		return 
-			"{{#if:"+wikitextToTestIfValue(false)
-			+ "|" + res
-			+ "|''automatic value:'' " + factType.wikitextToDisplayFact(this, defaultValue)
-			+ "}}";
+		
+		return WikitextHelper.ifElse(
+			wikitextToTestIfValue(false),
+			res,
+			"''automatic value:'' " + factType.wikitextToDisplayFact(this, defaultValue)
+		);
 	}
 
 	public String wikitextToStoreFact() {
@@ -65,7 +67,14 @@ public class SProperty<JType> {
 		if(defaultValue == null)
 			return factType.wikitextToStoreFact(this, v);
 		
-		return factType.wikitextToDisplayFact(this, "{{#if:"+wikitextToTestIfValue(false)+"|"+v+"|"+defaultValue+"}}");
+		var fact = WikitextHelper.ifElse(
+				 wikitextToTestIfValue(false),
+				 v,
+				 defaultValue
+		);
+			
+		
+		return factType.wikitextToDisplayFact(this, fact);
 	}
 
 	public List<SProperty<?>> generateProperties(SConcept c, SConcept parent) {
@@ -80,7 +89,7 @@ public class SProperty<JType> {
 		String v = generateWikitext!=null?generateWikitext:("{{{"+name+"|}}}");
 		var res = factType.wikitextToTestIfValue(this, v);
 		if(includeDefault && this.getDefaultValue() != null)
-			res = "{{#if:"+res+"|1|"+factType.wikitextToTestIfValue(this, defaultValue)+"}}";
+			res = "{{#coalesce:"+res+"|"+factType.wikitextToTestIfValue(this, defaultValue)+"}}";
 		return res;
 	}
 
