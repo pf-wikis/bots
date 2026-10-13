@@ -172,14 +172,14 @@ public class PaizoRetriever extends DualBot {
 				.append("{{#switch:{{{1}}}");
 			for(var def:pageDefs) {
 				sb
-					.append("|")
+					.append("\n|")
 					.append(def.name)
-					.append("={{#json-get:Template:Paizo store/Simple data|{{{2}}}|")
+					.append("={{#show:Template:Paizo store/Simple data#{{{2}}}|?")
 					.append(def.name)
-					.append("}}");
+					.append("|link=none}}");
 			}
 			sb
-				.append("|{{Error|Unknown property {{{1}}}}}}}")
+				.append("\b|{{Error|Unknown property {{{1}}}}}}}")
 				.append(outro)
 				.append("<noinclude>\n")
 				.append("{{Documentation|content=\n")
