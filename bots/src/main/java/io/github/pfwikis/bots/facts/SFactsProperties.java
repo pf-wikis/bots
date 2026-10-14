@@ -33,6 +33,10 @@ public class SFactsProperties {
 		SFactTypes.PAGE_LIST)
 		.setSuggestValuesFrom("Category:Artists")
 		.setDescription("An artist that worked on this book or product.");
+	public static final SProperty<BigDecimal> Aspect_ratio = new SProperty<>(
+		"Aspect ratio",
+		SFactTypes.DECIMAL)
+		.setDescription("An aspect ratio in width/height.");
 	public static final SProperty<List<PageTitle>> Editor = new SProperty<>(
 		"Editor",
 		SFactTypes.PAGE_LIST)
@@ -57,6 +61,10 @@ public class SFactsProperties {
 		SFactTypes.STRING)
 		.setAutocompleteDisabled(true)
 		.setDescription("Any awards this product has won.");
+	public static final SProperty<String> Bbox = new SProperty<>(
+		"Bbox",
+		SFactTypes.STRING)
+		.setDescription("A bounding box rectangle in geo coordinates.");
 	public static final SProperty<String> Blurb_heading = new SProperty<>(
 		"Blurb heading",
 		SFactTypes.STRING)

@@ -67,10 +67,6 @@ import io.github.pfwikis.bots.common.api.generated.AAPIEmbedvideo;
 
 import io.github.pfwikis.bots.common.api.generated.AAPIExpandtemplates;
 
-import io.github.pfwikis.bots.common.api.generated.AAPIExtSrfDatatablesApi;
-
-import io.github.pfwikis.bots.common.api.generated.AAPIExtSrfSlideshowShow;
-
 import io.github.pfwikis.bots.common.api.generated.AAPIFeedcontributions;
 
 import io.github.pfwikis.bots.common.api.generated.AAPIFeedrecentchanges;
@@ -255,12 +251,6 @@ public enum AAPIMainAction {
 
 	/**Expands all templates within wikitext.*/
 	EXPANDTEMPLATES("expandtemplates", AAPIExpandtemplates.class),
-
-	/***/
-	EXT_SRF_DATATABLES_API("ext.srf.datatables.api", AAPIExtSrfDatatablesApi.class),
-
-	/***/
-	EXT_SRF_SLIDESHOW_SHOW("ext.srf.slideshow.show", AAPIExtSrfSlideshowShow.class),
 
 	/**Returns a user's contributions feed.*/
 	FEEDCONTRIBUTIONS("feedcontributions", AAPIFeedcontributions.class),
@@ -470,10 +460,6 @@ public enum AAPIMainAction {
 					case AAPIEmbedvideo g -> EMBEDVIDEO;
 
 					case AAPIExpandtemplates g -> EXPANDTEMPLATES;
-
-					case AAPIExtSrfDatatablesApi g -> EXT_SRF_DATATABLES_API;
-
-					case AAPIExtSrfSlideshowShow g -> EXT_SRF_SLIDESHOW_SHOW;
 
 					case AAPIFeedcontributions g -> FEEDCONTRIBUTIONS;
 

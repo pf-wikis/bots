@@ -9,7 +9,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-/**<span class="apihelp-empty">(no description)</span>*/
+/**Specifies the type of browse activity*/
 @Getter
 @RequiredArgsConstructor
 public enum AAPISmwbrowseBrowse {

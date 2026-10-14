@@ -40,7 +40,7 @@ public class AAPISmwinfo implements AAPIModule, AAPIMainActionModule {
 
 	private List<AAPISmwinfoInfo> info;
 
-	/**<span class="apihelp-empty">(no description)</span>
+	/**The info to provide.
 	 */
 	public AAPISmwinfo info(AAPISmwinfoInfo info) {
 		this.info = List.of(info);
@@ -48,14 +48,14 @@ public class AAPISmwinfo implements AAPIModule, AAPIMainActionModule {
 		return this;
 	}
 
-	/**<span class="apihelp-empty">(no description)</span>
+	/**The info to provide.
 	 */
 	public AAPISmwinfo info(AAPISmwinfoInfo... info) {
 		this.info = List.of(info);
 		return this;
 	}
 
-	/**<span class="apihelp-empty">(no description)</span>
+	/**The info to provide.
 	 */
 	public List<AAPISmwinfoInfo> getInfo() {
 		return this.info;

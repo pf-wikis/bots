@@ -25,6 +25,8 @@ public enum AAPIEditContentmodel {
 
 	JSON("json"),
 
+	JSONDATA("jsondata"),
+
 	SMW_SCHEMA("smw/schema"),
 
 	TEXT("text"),

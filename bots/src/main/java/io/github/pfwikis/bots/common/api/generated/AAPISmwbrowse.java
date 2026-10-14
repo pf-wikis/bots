@@ -47,13 +47,13 @@ public class AAPISmwbrowse implements AAPIModule, AAPIMainActionModule {
 
 	private String params;
 
-	/**<span class="apihelp-empty">(no description)</span>
+	/**Specifies the type of browse activity
 	 */
 	public AAPISmwbrowseBrowse getBrowse() {
 		return this.browse;
 	}
 
-	/**<span class="apihelp-empty">(no description)</span>
+	/**JSON encoded parameters containing required and optional fields and depend on the selected browse type
 	 */
 	public String getParams() {
 		return this.params;

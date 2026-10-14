@@ -44,7 +44,7 @@ public class AAPIAsk implements AAPIModule, AAPIMainActionModule {
 
 	private AAPIAskApi_version api_version;
 
-	/**<span class="apihelp-empty">(no description)</span>
+	/**The query string in ask-language
 	 */
 	public String getQuery() {
 		return this.query;

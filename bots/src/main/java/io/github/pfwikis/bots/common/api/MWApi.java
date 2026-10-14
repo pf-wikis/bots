@@ -5,6 +5,7 @@ import io.github.pfwikis.bots.common.api.AAPI.RequestResult;
 import io.github.pfwikis.bots.common.api.generated.AAPIEdit;
 import io.github.pfwikis.bots.common.api.generated.AAPIParse;
 import io.github.pfwikis.bots.common.api.generated.AAPIQuery;
+import io.github.pfwikis.bots.common.api.generated.params.AAPIEditContentmodel;
 import io.github.pfwikis.bots.common.api.generated.params.AAPIMainAction.AAPIMainActionModule;
 import io.github.pfwikis.bots.common.api.generated.params.AAPIParseProp;
 import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryProp.AAPIQueryPropModule;
@@ -60,10 +61,15 @@ public class MWApi {
 	}
 
 	public EditResponse edit(ContainsPageRef page, String content, String reason) {
+		return edit(page, content, reason, null);
+	}
+	
+	public EditResponse edit(ContainsPageRef page, String content, String reason, AAPIEditContentmodel contentModel) {
 		log.info("Editing {}", page);
 		var q = AAPIEdit.create(page)
 				.text(content)
 				.bot(true)
+				.contentmodel(contentModel)
 				.summary(botname+": "+reason);
 		return api.run(q, EditResponse.class);
 	}

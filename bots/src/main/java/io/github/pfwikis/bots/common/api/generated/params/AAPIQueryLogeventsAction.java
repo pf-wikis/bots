@@ -87,6 +87,8 @@ public enum AAPIQueryLogeventsAction {
 
 	RIGHTS_RIGHTS("rights/rights"),
 
+	SMW_MAINTENANCE("smw/maintenance"),
+
 	SUPPRESS_BLOCK("suppress/block"),
 
 	SUPPRESS_DELETE("suppress/delete"),

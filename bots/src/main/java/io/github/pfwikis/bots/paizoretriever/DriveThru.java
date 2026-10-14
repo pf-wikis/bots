@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -13,10 +14,12 @@ import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 
+import io.github.pfwikis.bots.common.api.generated.params.AAPIEditContentmodel;
 import io.github.pfwikis.bots.common.api.generated.params.NS;
 import io.github.pfwikis.bots.common.api.model.PageRef;
 import io.github.pfwikis.bots.common.bots.DualBot;
 import io.github.pfwikis.bots.common.bots.RunContext;
+import io.github.pfwikis.bots.utils.Hash32;
 import io.github.pfwikis.bots.utils.Jackson;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -81,27 +84,35 @@ public class DriveThru extends DualBot {
 			}
 		}
 		
-		var res = Jackson.JSON.createObjectNode();
-		products.stream()
+		
+		var perHash=products.stream()
 			.flatMap(p->Arrays.asList(p.isbn, p.sku)
 				.stream()
 				.filter(Objects::nonNull)
 				.map(v->v.toUpperCase().replaceAll("[^A-Z0-9]+", ""))
 				.map(r->Pair.of(r, p.productId))
 			)
-			.sorted(Comparator.comparing(Pair::getKey))
-			.forEach(p->res.putObject(p.getKey())
-					.put("URL", p.getValue())
-			);
+			.collect(Collectors.groupingBy(e->Hash32.hash32(e.getKey(), 1)));
 		
+		for(var e:perHash.entrySet()) {
+			var res = Jackson.JSON.createObjectNode();
+			e.getValue().stream()
+				.sorted(Comparator.comparing(Pair::getKey))
+				.forEach(p->res.putObject(p.getKey())
+					.put("URL", p.getValue())
+				);
+			var page = PageRef.of(NS.FACTS, "Drivethru store/"+e.getKey());
+			run.withOwnUser(w-> {
+				w.editJsonIfChange(page, res, "Automatic Update from store", AAPIEditContentmodel.JSONDATA);
+			});
+		}
 		run.withOwnUser(w-> {
-	
-			w.editJsonIfChange(
-				PageRef.of(NS.TEMPLATE, "Drivethru store/data"),
-				res,
-				"Automatic update from store"
+			w.editIfChange(
+				PageRef.of(NS.FACTS, "Drivethru store"),
+				"{{Bot created|VirenerusBot#Drivethru Retriever}}[[Category:Facts owned by bots]]",
+				"Automatic Update from store"
 			);
-		});	
+		});
 	}
 	
 	@Data

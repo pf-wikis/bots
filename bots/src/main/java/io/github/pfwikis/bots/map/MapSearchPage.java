@@ -7,32 +7,51 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
+import com.google.common.primitives.Chars;
 
 import io.github.pfwikis.bots.common.Wiki;
+import io.github.pfwikis.bots.common.api.generated.params.AAPIEditContentmodel;
 import io.github.pfwikis.bots.common.api.generated.params.NS;
 import io.github.pfwikis.bots.common.api.model.PageRef;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
+import io.github.pfwikis.bots.utils.Hash32;
 import io.github.pfwikis.bots.utils.Jackson;
 import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.node.ObjectNode;
 
 public class MapSearchPage extends SimpleBot {
 
 	public MapSearchPage() {
 		super("map-search-page", "Map Search Page");
+	}
+	
+	private static record WikiJson(
+			String name,
+			@JsonProperty("year start")Integer yearStart,
+			@JsonProperty("year end")Integer yearEnd,
+			BigDecimal area,
+			@JsonProperty("aspect ratio")BigDecimal aspectRatio,
+			String bbox
+			) implements Comparable<WikiJson> {
+		
+		@Override
+		public int compareTo(WikiJson o) {
+			return Comparator.comparing(WikiJson::name)
+					.thenComparing(WikiJson::yearStart)
+					.compare(this, o);
+		}
 	}
 
 	@Override
@@ -40,12 +59,69 @@ public class MapSearchPage extends SimpleBot {
 		if(run.getServer() == Wiki.SF) return;
 		
 		var categories = loadMapSearchInfo(antiProtectionSecret);
-		createSearch(categories);
-		createSearchLastYear(categories);
-		createSearchAspect(categories);
-		createArea(categories);
+		createSearchDocs(categories);
+		var result = new ArrayList<WikiJson>();
+		
+		for(var cat:categories) {
+			for(var e:cat.entries) {
+				for(var t:e.timedValues) {
+					var r = new WikiJson(
+							e.key,
+							Optional.ofNullable(t.timeYear.timeStart).orElse(-9999),
+							Optional.ofNullable(t.timeYear.timeEnd).orElse(9999),
+							getArea(t),
+							getAspect(t),
+							Arrays.stream(t.bbox).map(BigDecimal::toPlainString).collect(Collectors.joining(","))
+					);
+					result.add(r);
+				}
+			}
+		}
+		
+		var perHash=result.stream()
+			.collect(Collectors.groupingBy(e->Hash32.hash32(e.name, 1)));
+		for(var e:perHash.entrySet()) {
+			var arr = Jackson.JSON.createArrayNode();
+			e.getValue().stream()
+				.sorted()
+				.<JsonNode>map(Jackson.JSON::valueToTree)
+				.forEach(arr::add);
+			var page = PageRef.of(NS.FACTS, "Map/"+e.getKey());
+			run.getWiki().editJsonIfChange(page, arr, "Automatic Update", AAPIEditContentmodel.JSONDATA);
+		}
 	}
 	
+	private BigDecimal getArea(TimedResult t) {
+		if(t.areaM2 == null) return null;
+		
+		var area = new BigDecimal(0.000000386102d*t.areaM2);
+		if(area.doubleValue()>100) {
+			area = area.setScale(0,RoundingMode.HALF_UP);
+		}
+		else if(area.doubleValue()>10) {
+			area = area.setScale(1,RoundingMode.HALF_UP);
+		}
+		else {
+			area = area.setScale(2,RoundingMode.HALF_UP);
+		}
+		if(area.compareTo(BigDecimal.ZERO) == 0)
+			return null;
+		return area;
+	}
+	
+	private BigDecimal getAspect(TimedResult t) {
+		if(t.bbox.length!=4) return null;
+		
+		var left = WebMercator.longitudeToX(t.bbox[0].doubleValue());
+		var right = WebMercator.longitudeToX(t.bbox[2].doubleValue());
+		var bottom = WebMercator.latitudeToY(t.bbox[1].doubleValue());
+		var top = WebMercator.latitudeToY(t.bbox[3].doubleValue());
+		
+		var width = right-left;
+		var height = top-bottom;
+		return new BigDecimal(width/height).setScale(2,RoundingMode.HALF_UP);
+	}
+
 	public static List<Category> loadMapSearchInfo(String antiProtectionSecret) throws IOException, InterruptedException {
 		HttpClient httpClient = HttpClient.newHttpClient();
     	HttpRequest request = HttpRequest.newBuilder()
@@ -75,128 +151,16 @@ public class MapSearchPage extends SimpleBot {
 				.sorted(Comparator.comparing(Category::category))
 				.toList();
 	}
-	
-	private void createArea(List<Category> categories) {
-		var sb = new StringBuilder()
-			.append("<noinclude>{{Bot created|VirenerusBot#").append(this.getBotName()).append("}}\n")
-			.append("""
-				{{Documentation|content=
-				This template produces the area in square miles of a geographic feature, like a country.
-				<wikitext doctable>
-					<wikitext-row>{{Area|Ustalav}}</wikitext-row>
-					<wikitext-row>{{Area|Kelesh}}</wikitext-row>
-					<wikitext-row>{{Area|Kelesh|year=4610}}</wikitext-row>
-					<wikitext-row>{{Area|Kelesh|year=4608}}</wikitext-row>
-				</wikitext>
-				<templatedata>
-				{
-					"params": {
-						"1": {
-							"label": "area",
-							"description": "Nation or geographical feature",
-							"type": "string",
-							"required": true
-						},
-						"year": {
-							"description": "to retrieve the size in a specific year AR",
-							"type": "number"
-						}
-					},
-					"format": "inline"
-				}
-				</templatedata>
-				}}[[Category:Templates]]
-				</noinclude><includeonly>{{#ifContent:{{#ask:[[-Has subobject::Template:Area/data]][[Name::{{{1}}}]][[Year start::≤{{{year|9998}}}]][[Year end::>>{{{year|9998}}}]]|?Area|limit=1|mainlabel=-|headers=hide|searchlabel=}}||&nbsp;mi²}}{{Validate parameters}}</includeonly>
-				""");
-		run.getWiki().editIfChange(PageRef.of(NS.TEMPLATE, "Area"), sb.toString(), "Automatic update");
-		
-		var arr = Jackson.JSON.createArrayNode();
-		for(var cat:categories) {
-			for(var e:cat.entries) {
-				var values = e.assemble(v-> {
-					if(v.areaM2 == null) return null;
-					
-					var area = new BigDecimal(0.000000386102d*v.areaM2);
-					if(area.doubleValue()>100) {
-						area = area.setScale(0,RoundingMode.HALF_UP);
-					}
-					else if(area.doubleValue()>10) {
-						area = area.setScale(1,RoundingMode.HALF_UP);
-					}
-					else {
-						area = area.setScale(2,RoundingMode.HALF_UP);
-					}
-					if(area.compareTo(BigDecimal.ZERO) == 0)
-						return null;
-					return area;
-				});
-				
-				createJsonEntry(arr::add, e.key, values, Jackson.JSON.getNodeFactory()::numberNode);
-			}
-		}
-		run.getWiki().editJsonIfChange(PageRef.of(NS.TEMPLATE, "Area/data"), arr, "Automatic update");
-	}
-	
-	private void createSearchAspect(List<Category> categories) {
-		var sb = new StringBuilder()
-			.append("<noinclude>{{Bot created|VirenerusBot#").append(this.getBotName()).append("}}\n")
-			.append("This page works like {{tl|DisplayMap/Search}}, "
-				+ "but generates the aspect ratio instead of a bbox.</noinclude><includeonly>{{#switch:{{{1}}}");
-		for(var cat:categories) {
-			for(var e:cat.entries) {
-				var values = e.assemble(v-> {
-					if(v.bbox.length!=4) return null;
-					
-					var left = WebMercator.longitudeToX(v.bbox[0].doubleValue());
-					var right = WebMercator.longitudeToX(v.bbox[2].doubleValue());
-					var bottom = WebMercator.latitudeToY(v.bbox[1].doubleValue());
-					var top = WebMercator.latitudeToY(v.bbox[3].doubleValue());
-					
-					var width = right-left;
-					var height = top-bottom;
-					return new BigDecimal(width/height);
-				});
-				
-				createSwitchEntry(sb, e.key, values, v->v.setScale(2,RoundingMode.HALF_UP).toPlainString());
-			}
-		}
-		sb.append("|1.62}}</includeonly>");
-		
-		
-		run.getWiki().editIfChange(PageRef.of(NS.TEMPLATE, "DisplayMap/Search aspect"), sb.toString(), "Automatic update");
-	}
-	
-	private void createSearchLastYear(List<Category> categories) {
-		var sb = new StringBuilder()
-			.append("<noinclude>{{Bot created|VirenerusBot#").append(this.getBotName()).append("}}\n")
-			.append("This page works like {{tl|DisplayMap/Search}}, "
-				+ "but returns the last year where the feature exists.</noinclude><includeonly>{{#switch:{{{1}}}");
-		for(var cat:categories) {
-			for(var e:cat.entries) {
-				int max = Integer.MIN_VALUE;
-				boolean current = false;
-				for(var v:e.timedValues) {
-					if(v.timeYear.timeEnd == null)
-						current = true;
-					else
-						max = Math.max(max, v.timeYear.timeEnd);
-				}
-				if(!current && max > Integer.MIN_VALUE) {
-					sb.append("\n|").append(e.key).append("=").append(max-1);
-				}
-			}
-		}
-		sb.append("|}}</includeonly>");
-		
-		
-		run.getWiki().editIfChange(PageRef.of(NS.TEMPLATE, "DisplayMap/Search last year"), sb.toString(), "Automatic update");
-	}
 
-	private void createSearch(List<Category> categories) {
+	private void createSearchDocs(List<Category> categories) {
+		//create free text
 		var sb = new StringBuilder()
-				.append("<noinclude>{{Bot created|VirenerusBot#").append(this.getBotName()).append("}}\n")
-				.append("This page is a helper for the by name parameter.\n")
-				.append("The full list of entries are:\n<ul>\n");
+				.append("{{Bot created|VirenerusBot#").append(this.getBotName()).append("}}\n")
+				.append("[[Category:Facts owned by bots]]")
+				.append("This page collectrs facts about the [[Map]]. Those facts can easily be accessed via {{tl|Map fact}}.\n")
+				.append("The actual facts are stored in")
+				.append(Chars.asList(Hash32.ALPHABET).stream().map(v->"[[/"+v+"]]").collect(Collectors.joining(", ")))
+				.append(".\n<ul>\n");
 		
 		
 		for(var cat:categories) {
@@ -225,21 +189,8 @@ public class MapSearchPage extends SimpleBot {
 			}
 			sb.append("</ul>\n");
 		}
-		sb.append("</ul></noinclude><includeonly>{{#switch:{{{1}}}");
-		for(var cat:categories) {
-			for(var e:cat.entries) {
-				createSwitchEntry(
-					sb,
-					e.key,
-					e.assemble(v->v.bbox),
-					v->Arrays.stream(v).map(BigDecimal::toPlainString).collect(Collectors.joining(","))
-				);
-			}
-		}
-		sb.append("|}}</includeonly>");
-		
-		
-		run.getWiki().editIfChange(PageRef.of(NS.TEMPLATE, "DisplayMap/Search"), sb.toString(), "Automatic update");
+		sb.append("</ul>");
+		run.getWiki().editIfChange(PageRef.of(NS.FACTS, "Map"), sb.toString(), "Automatic update");
 	}
 
 	private static String key(Multiset<String> labelCounts, String label, String category) {
@@ -252,47 +203,6 @@ public class MapSearchPage extends SimpleBot {
 			throw new IllegalStateException("Illegal key "+key);
 		return key;
 	}
-	
-	private <T> void createJsonEntry(Consumer<ObjectNode> collector, String key, List<Assembled<T>> values, Function<T, JsonNode> toJson) {
-		if(values.isEmpty()) return;
-		
-		var res = Jackson.JSON.createObjectNode()
-				.put("Name", key);
-		for(var v:values) {
-			collector.accept(res.deepCopy()
-				.set("area", toJson.apply(v.value))
-				.put("year start", Optional.ofNullable(v.timeYear.timeStart).orElse(-9999))
-				.put("year end", Optional.ofNullable(v.timeYear.timeEnd).orElse(9999))
-			);
-		}
-	}
-	
-	private <T> void createSwitchEntry(StringBuilder sb, String key, List<Assembled<T>> values, Function<T, String> toString) {
-		if(values.isEmpty()) return;
-		
-		sb.append("\n|").append(key).append("=");
-		if(values.size()==1 && values.getFirst().timeYear.isAlways()) {
-			sb.append(toString.apply(values.getFirst().value));
-			return;
-		}
-		var last = values.stream().filter(v->v.timeYear.timeEnd==null).findAny().orElse(null);
-		sb.append("{{#if:{{{year|}}}|");
-		
-		//open many if/else statements
-		for(var v:values) {
-			sb.append("{{#ifexpr:").append(v.timeYear.toExpr()).append("|").append(toString.apply(v.value)).append("|");
-		}
-		//close if/else statements
-		for(var v:values) {
-			sb.append("}}");
-		}
-		
-		sb.append("|");
-		if(last != null)
-			sb.append(toString.apply(last.value));
-		sb.append("}}");
-	}
-	
 
 	@Override
 	public String getDescription() {
@@ -339,15 +249,5 @@ public class MapSearchPage extends SimpleBot {
 	}
 	
 	record Category(String category, List<Result> entries) {}
-	record Result(String key, String label, int labelCount, List<TimedResult> timedValues) {
-
-		public <T> List<Assembled<T>> assemble(Function<TimedResult, T> mapping) {
-			return timedValues.stream()
-				.map(v->new Assembled<>(v.timeYear, mapping.apply(v)))
-				.filter(v->v.value!=null)
-				.toList();
-		}
-	}
-	record Assembled<T>(TimeRange timeYear, T value) {}
-	//record TimedResult(TimeRange timeYear, TimeRange timeIndex, BigDecimal[] bbox, Double areaM2) {}
+	record Result(String key, String label, int labelCount, List<TimedResult> timedValues) {}
 }

@@ -34,6 +34,7 @@ import io.github.pfwikis.bots.common.api.generated.AAPIUpload;
 import io.github.pfwikis.bots.common.api.generated.AAPIUserbymail;
 import io.github.pfwikis.bots.common.api.generated.AAPIUserrights;
 import io.github.pfwikis.bots.common.api.generated.params.AAPIAskApi_version;
+import io.github.pfwikis.bots.common.api.generated.params.AAPIEditContentmodel;
 import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryCategorymembersProp;
 import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryInfoProp;
 import io.github.pfwikis.bots.common.api.generated.params.AAPIQueryLogeventsProp;
@@ -102,7 +103,7 @@ public class WikiAPI {
 		return false;
 	}
 	
-	public boolean editJsonIfChange(ContainsPageRef page, JsonNode content, String reason) {
+	public boolean editJsonIfChange(ContainsPageRef page, JsonNode content, String reason, AAPIEditContentmodel contentModel) {
 		String old = null;
 		try {
 			var oldRaw = wiki.getWikitext(page);
@@ -112,7 +113,7 @@ public class WikiAPI {
 		var contentStr = Jackson.JSON.writeValueAsString(content);
 		
 		if(!contentStr.equals(old)) {
-			wiki.edit(page, contentStr, reason);
+			wiki.edit(page, contentStr, reason, contentModel);
 			server.storeInCache(CacheId.PAGE_EXISTS, page.toPageRef(), true);
 			return true;
 		}
@@ -435,7 +436,6 @@ public class WikiAPI {
 			.add(group),
 			UserrightsResponse.class);
 	}
-	
 	
 	/*
 	public ArrayList<Revision> getRevisions(String title, Duration timeRange) {

@@ -14,6 +14,7 @@ import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
@@ -27,6 +28,7 @@ import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 import com.beust.jcommander.Parameters;
 import com.google.common.util.concurrent.Uninterruptibles;
 
+import io.github.pfwikis.bots.common.api.generated.params.AAPIEditContentmodel;
 import io.github.pfwikis.bots.common.api.generated.params.NS;
 import io.github.pfwikis.bots.common.api.model.PageRef;
 import io.github.pfwikis.bots.common.api.model.PageTitle;
@@ -35,6 +37,7 @@ import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.paizoretriever.PZCategoryResponse.PZCategory;
 import io.github.pfwikis.bots.paizoretriever.RatingsModel.Bottomline;
 import io.github.pfwikis.bots.paizoretriever.State.Props;
+import io.github.pfwikis.bots.utils.Hash32;
 import io.github.pfwikis.bots.utils.Jackson;
 import lombok.Getter;
 import lombok.Setter;
@@ -196,23 +199,35 @@ public class PaizoRetriever extends DualBot {
 			api.editIfChange(PageRef.of("Template:Paizo store"), sb.toString(), "Automatic update from store");
 		
 			
-			var all = Jackson.JSON.createObjectNode();
-			pages.stream()
-				.sorted(Comparator.comparing(p->p.getSku()))
-				.forEach(p->{
-					var r = Jackson.JSON.createObjectNode();
-					boolean anyVal = false;
-					for(var def : pageDefs) {
-						var val = def.getter.apply(p);
-						if(val != null) {
-							anyVal = true;
-							r.set(def.name, val);
+			
+			
+			var perHash=pages.stream().collect(Collectors.groupingBy(e->Hash32.hash32(e.getSku(), 1)));
+				
+			for(var e:perHash.entrySet()) {
+				var res = Jackson.JSON.createObjectNode();
+				e.getValue().stream()
+					.sorted(Comparator.comparing(p->p.getSku()))
+					.forEach(p->{
+						var r = Jackson.JSON.createObjectNode();
+						boolean anyVal = false;
+						for(var def : pageDefs) {
+							var val = def.getter.apply(p);
+							if(val != null) {
+								anyVal = true;
+								r.set(def.name, val);
+							}
 						}
-					}
-					if(anyVal)
-						all.set(p.getSku(), r);
-				});
-			api.editJsonIfChange(PageRef.of("Template:Paizo store/Simple data"), all, "Automatic update from store");
+						if(anyVal)
+							res.set(p.getSku(), r);
+					});
+				var page = PageRef.of(NS.FACTS, "Paizo store/"+e.getKey());
+				api.editJsonIfChange(page, res, "Automatic Update from store", AAPIEditContentmodel.JSONDATA);
+			}
+			api.editIfChange(
+				PageRef.of(NS.FACTS, "Paizo store"),
+				"{{Bot created|VirenerusBot#Paizo Retriever}}[[Category:Facts owned by bots]]",
+				"Automatic Update from store"
+			);
 		});
 	}
 

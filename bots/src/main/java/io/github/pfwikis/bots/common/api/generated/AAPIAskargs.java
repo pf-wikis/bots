@@ -48,13 +48,13 @@ public class AAPIAskargs implements AAPIModule, AAPIMainActionModule {
 
 	private AAPIAskargsApi_version api_version;
 
-	/**<span class="apihelp-empty">(no description)</span>
+	/**The query conditions, i.e. the requirements for a subject to be included
 	 */
 	public List<String> getConditions() {
 		return this.conditions;
 	}
 
-	/**<span class="apihelp-empty">(no description)</span>
+	/**The query printouts, i.e. the properties to show per subject
 	 */
 	public AAPIAskargs printouts(String printouts) {
 		this.printouts = List.of(printouts);
@@ -62,20 +62,20 @@ public class AAPIAskargs implements AAPIModule, AAPIMainActionModule {
 		return this;
 	}
 
-	/**<span class="apihelp-empty">(no description)</span>
+	/**The query printouts, i.e. the properties to show per subject
 	 */
 	public AAPIAskargs printouts(String... printouts) {
 		this.printouts = List.of(printouts);
 		return this;
 	}
 
-	/**<span class="apihelp-empty">(no description)</span>
+	/**The query printouts, i.e. the properties to show per subject
 	 */
 	public List<String> getPrintouts() {
 		return this.printouts;
 	}
 
-	/**<span class="apihelp-empty">(no description)</span>
+	/**The query parameters, i.e. all non-condition and non-printout arguments
 	 */
 	public AAPIAskargs parameters(String parameters) {
 		this.parameters = List.of(parameters);
@@ -83,14 +83,14 @@ public class AAPIAskargs implements AAPIModule, AAPIMainActionModule {
 		return this;
 	}
 
-	/**<span class="apihelp-empty">(no description)</span>
+	/**The query parameters, i.e. all non-condition and non-printout arguments
 	 */
 	public AAPIAskargs parameters(String... parameters) {
 		this.parameters = List.of(parameters);
 		return this;
 	}
 
-	/**<span class="apihelp-empty">(no description)</span>
+	/**The query parameters, i.e. all non-condition and non-printout arguments
 	 */
 	public List<String> getParameters() {
 		return this.parameters;

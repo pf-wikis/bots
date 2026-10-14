@@ -9,7 +9,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-/**<span class="apihelp-empty">(no description)</span>*/
+/**The info to provide.*/
 @Getter
 @RequiredArgsConstructor
 public enum AAPISmwinfoInfo {
