@@ -10,6 +10,8 @@ import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -24,6 +26,8 @@ import io.github.pfwikis.bots.common.api.model.PageRef;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
 import io.github.pfwikis.bots.utils.Jackson;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ObjectNode;
 
 public class MapSearchPage extends SimpleBot {
 
@@ -77,6 +81,7 @@ public class MapSearchPage extends SimpleBot {
 			.append("<noinclude>{{Bot created|VirenerusBot#").append(this.getBotName()).append("}}\n")
 			.append("""
 				{{Documentation|content=
+				This template produces the area in square miles of a geographic feature, like a country.
 				<wikitext doctable>
 					<wikitext-row>{{Area|Ustalav}}</wikitext-row>
 					<wikitext-row>{{Area|Kelesh}}</wikitext-row>
@@ -104,9 +109,8 @@ public class MapSearchPage extends SimpleBot {
 				</noinclude><includeonly>{{#ifContent:{{formatnum:{{Area/Helper|{{{1}}}|year={{{year|}}}}}}}||&nbsp;mi²}}{{Validate parameters}}</includeonly>
 				""");
 		run.getWiki().editIfChange(PageRef.of(NS.TEMPLATE, "Area"), sb.toString(), "Automatic update");
-		sb = new StringBuilder()
-			.append("<noinclude>[[Category:Helper Template]]</noinclude><includeonly>")
-			.append("{{#switch:{{{1}}}");
+		
+		var arr = Jackson.JSON.createArrayNode();
 		for(var cat:categories) {
 			for(var e:cat.entries) {
 				var values = e.assemble(v-> {
@@ -127,11 +131,10 @@ public class MapSearchPage extends SimpleBot {
 					return area;
 				});
 				
-				createSwitchEntry(sb, e.key, values, BigDecimal::toPlainString);
+				createJsonEntry(arr::add, e.key, values, Jackson.JSON.getNodeFactory()::numberNode);
 			}
 		}
-		sb.append("\n}}</includeonly>");
-		run.getWiki().editIfChange(PageRef.of(NS.TEMPLATE, "Area/Helper"), sb.toString(), "Automatic update");
+		run.getWiki().editJsonIfChange(PageRef.of(NS.TEMPLATE, "Area/data"), arr, "Automatic update");
 	}
 	
 	private void createSearchAspect(List<Category> categories) {
@@ -248,6 +251,20 @@ public class MapSearchPage extends SimpleBot {
 		if(key.contains("=") || key.contains("|"))
 			throw new IllegalStateException("Illegal key "+key);
 		return key;
+	}
+	
+	private <T> void createJsonEntry(Consumer<ObjectNode> collector, String key, List<Assembled<T>> values, Function<T, JsonNode> toJson) {
+		if(values.isEmpty()) return;
+		
+		var res = Jackson.JSON.createObjectNode()
+				.put("Name", key);
+		for(var v:values) {
+			collector.accept(res.deepCopy()
+				.set("area", toJson.apply(v.value))
+				.put("year start", Optional.ofNullable(v.timeYear.timeStart).orElse(-9999))
+				.put("year end", Optional.ofNullable(v.timeYear.timeEnd).orElse(9999))
+			);
+		}
 	}
 	
 	private <T> void createSwitchEntry(StringBuilder sb, String key, List<Assembled<T>> values, Function<T, String> toString) {

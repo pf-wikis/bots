@@ -90,12 +90,14 @@ public class DriveThru extends DualBot {
 				.map(r->Pair.of(r, p.productId))
 			)
 			.sorted(Comparator.comparing(Pair::getKey))
-			.forEach(p->res.put(p.getKey(), p.getValue()));
+			.forEach(p->res.putObject(p.getKey())
+					.put("URL", p.getValue())
+			);
 		
 		run.withOwnUser(w-> {
 	
 			w.editJsonIfChange(
-				PageRef.of(NS.TEMPLATE, "Drivethru store/URL"),
+				PageRef.of(NS.TEMPLATE, "Drivethru store/data"),
 				res,
 				"Automatic update from store"
 			);

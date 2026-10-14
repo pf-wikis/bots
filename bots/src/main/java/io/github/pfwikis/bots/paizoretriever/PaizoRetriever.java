@@ -179,7 +179,7 @@ public class PaizoRetriever extends DualBot {
 					.append("|link=none}}");
 			}
 			sb
-				.append("\b|{{Error|Unknown property {{{1}}}}}}}")
+				.append("\n|{{Error|Unknown property {{{1}}}}}}}")
 				.append(outro)
 				.append("<noinclude>\n")
 				.append("{{Documentation|content=\n")

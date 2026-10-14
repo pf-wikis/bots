@@ -24,6 +24,10 @@ public class SFactsProperties {
 		SFactTypes.URL)
 		.setDescription("An affiliate link that supports the historical society.")
 		.setGenerateWikitext("{{#if:{{{Pubcode|}}}|{{Drivethru store|URL|{{#regex-replace:{{uc:{{{Pubcode}}}}}|/[^A-Z0-9]/|}}}}}}");
+	public static final SProperty<BigDecimal> Area = new SProperty<>(
+			"Area",
+			SFactTypes.DECIMAL)
+			.setDescription("An area in square miles.");
 	public static final SProperty<List<PageTitle>> Artist = new SProperty<>(
 		"Artist",
 		SFactTypes.PAGE_LIST)
@@ -240,6 +244,9 @@ public class SFactsProperties {
 		SFactTypes.DATE)
 		.setDescription("The AT time this work of fiction is set in.")
 		.setFormNote("Only fill this if it is different from the start date.");
+	public static final SProperty<String> Id = new SProperty<>(
+			"Id",
+			SFactTypes.STRING);
 	public static final SProperty<List<PageTitle>> Includes_work = new SProperty<>(
 		"Includes work",
 		SFactTypes.PAGE_LIST)
@@ -418,6 +425,14 @@ public class SFactsProperties {
 		"Year",
 		SFactTypes.INTEGER)
 		.setDescription("A numeric year when something happened.");
+	public static final SProperty<Integer> Year_end = new SProperty<>(
+			"Year end",
+			SFactTypes.INTEGER)
+			.setDescription("A numeric year of a year range. Exclusive.");
+	public static final SProperty<Integer> Year_start = new SProperty<>(
+			"Year start",
+			SFactTypes.INTEGER)
+			.setDescription("A numeric year of a year range. Inclusive.");
 	public static final SProperty<Temporal> Release_date_sort = new SProperty<>(
 		"Release date sort",
 		SFactTypes.DATE)
