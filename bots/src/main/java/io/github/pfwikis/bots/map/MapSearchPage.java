@@ -106,7 +106,7 @@ public class MapSearchPage extends SimpleBot {
 				}
 				</templatedata>
 				}}[[Category:Templates]]
-				</noinclude><includeonly>{{#ifContent:{{formatnum:{{Area/Helper|{{{1}}}|year={{{year|}}}}}}}||&nbsp;mi²}}{{Validate parameters}}</includeonly>
+				</noinclude><includeonly>{{#ifContent:{{#ask:[[-Has subobject::Template:Area/data]][[Name::{{{1}}}]][[Year start::≤{{{year|9998}}}]][[Year end::>>{{{year|9998}}}]]|?Area|limit=1|mainlabel=-|headers=hide|searchlabel=}}||&nbsp;mi²}}{{Validate parameters}}</includeonly>
 				""");
 		run.getWiki().editIfChange(PageRef.of(NS.TEMPLATE, "Area"), sb.toString(), "Automatic update");
 		
