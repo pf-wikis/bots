@@ -177,7 +177,7 @@ public class PaizoRetriever extends DualBot {
 				sb
 					.append("\n|")
 					.append(def.name)
-					.append("={{#show:Template:Paizo store/Simple data#{{{2}}}|?")
+					.append("={{#show:Facts:Paizo store/{{#hash32:{{{2}}}|1}}#{{{2}}}|?")
 					.append(def.name)
 					.append("|link=none}}");
 			}
