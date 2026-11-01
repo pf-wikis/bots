@@ -142,6 +142,10 @@ public class SFactsProperties {
 		"Dimensions",
 		SFactTypes.STRING)
 		.setDescription("How big the product is.");
+	public static final SProperty<Integer> DriveThru_id = new SProperty<>(
+		"DriveThru id",
+		SFactTypes.INTEGER)
+		.setDescription("The DriveThru product id.");
 	public static final SProperty<String> Grid = new SProperty<>(
 		"Grid",
 		SFactTypes.STRING)

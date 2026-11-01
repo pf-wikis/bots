@@ -99,7 +99,7 @@ public class DriveThru extends DualBot {
 			e.getValue().stream()
 				.sorted(Comparator.comparing(Pair::getKey))
 				.forEach(p->res.putObject(p.getKey())
-					.put("URL", p.getValue())
+					.put("DriveThru id", p.getValue())
 				);
 			var page = PageRef.of(NS.FACTS, "Drivethru store/"+e.getKey());
 			run.withOwnUser(w-> {
