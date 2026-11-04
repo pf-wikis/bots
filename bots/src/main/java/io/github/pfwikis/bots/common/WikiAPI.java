@@ -65,6 +65,7 @@ import io.github.pfwikis.bots.common.api.responses.UserByMail;
 import io.github.pfwikis.bots.common.api.responses.UserrightsResponse;
 import io.github.pfwikis.bots.utils.Jackson;
 import io.github.pfwikis.bots.utils.SimpleCache.CacheId;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import tools.jackson.databind.JavaType;
 import tools.jackson.databind.JsonNode;
@@ -76,6 +77,7 @@ public class WikiAPI {
 		return new WikiAPI(wiki, name, password, antiProtectionSecret);
 	}
 
+	@Getter
 	private io.github.pfwikis.bots.common.Wiki server;
 	private MWApi wiki;
 
@@ -246,7 +248,7 @@ public class WikiAPI {
 	public <T> List<Result<T>> semanticAsk(Class<T> printoutType, String query) {
 		var result = new ArrayList<Result<T>>();
 		Integer offset = 0;
-		int limit = 1000;
+		int limit = 100;
 		
 		while(offset != null) {
 			var resp = wiki.<SemanticAsk.Query<T>>complexRun(

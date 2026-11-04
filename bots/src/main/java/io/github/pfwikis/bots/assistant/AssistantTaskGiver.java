@@ -1,5 +1,6 @@
 package io.github.pfwikis.bots.assistant;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,6 +11,8 @@ import com.beust.jcommander.Parameters;
 
 import io.github.pfwikis.bots.common.Discord;
 import io.github.pfwikis.bots.common.api.generated.params.NS;
+import io.github.pfwikis.bots.common.api.model.PageRef;
+import io.github.pfwikis.bots.common.api.model.PageTitle;
 import io.github.pfwikis.bots.common.api.responses.SemanticAsk.Result;
 import io.github.pfwikis.bots.common.bots.RunContext;
 import io.github.pfwikis.bots.common.bots.SimpleBot;
@@ -37,9 +40,13 @@ public class AssistantTaskGiver extends SimpleBot {
 			.distinct()
 			.collect(Collectors.toSet());
 		
-		
-		var res = run.getWiki().semanticAsk(Printouts.class, "[[Category:Pages with errors]]|?Category=categories");
-		res.removeIf(r->r.getPage().getTitle().getNs().equals(NS.USER));
+		List<PageRef> res = new ArrayList<>();
+		for(var errorCat : cats) {
+			log.info("Retrieving pages in {}", errorCat.toPageTitle());
+			res.addAll(run.getWiki().getPagesInCategory(errorCat));
+		}
+		res.removeIf(r->r.getTitle().getNs().equals(NS.USER));
+		res = res.stream().distinct().toList();
 		if(res.isEmpty()) {
 			return;
 		}
@@ -50,10 +57,10 @@ public class AssistantTaskGiver extends SimpleBot {
 			.append(". Please and thank you!\n");
 		for(var p:res.subList(0, Math.min(res.size(), 10))) {
 			var errors = new HashSet<>(cats);
-			errors.retainAll(p.getPrintouts().getCategories().stream().map(c->c.getPage()).toList());
+			errors.retainAll(run.getWiki().getCategories(p));
 			sb
 				.append("* ")
-				.append(Discord.wikiLink(run.getServer(), p.getPage().getTitle().toString(), p.getFullurl()))
+				.append(Discord.wikiLink(run.getServer(), p.toString(), p.getTitle().toWikiLink(run.getWiki())))
 				.append(" for ");
 			if(errors.isEmpty()) {
 				sb.append("an uncategorized error, please check the page");
@@ -79,6 +86,5 @@ public class AssistantTaskGiver extends SimpleBot {
 	
 	@Data
 	public static class Printouts {
-		private List<Result<?>> categories;
 	}
 }

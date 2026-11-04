@@ -1,5 +1,8 @@
 package io.github.pfwikis.bots.common.api.model;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -91,8 +94,10 @@ public class PageTitle implements Comparable<PageTitle>, ContainsPageRef {
 
 	/**Creates a wikilink with resolved displayname*/
 	public String toWikiLink(WikiAPI wiki) {
-		throw new NotImplementedError();
-		//return wiki.toWikiLink(this.toFullTitle());
+		return wiki.getServer().getUrl()
+				+"/wiki/"
+				+URLEncoder.encode(this.toFullTitle().replace(' ', '_'), StandardCharsets.UTF_8)
+					.replace("%3A", ":");
 	}
 	
 	public String toWikitextLink(boolean withNamespacePrefix) {
